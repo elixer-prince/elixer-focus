@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+/.github export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore
+resources/assets/music/lofi-girl-playlist.mp3 filter=lfs diff=lfs merge=lfs -text
+resources/assets/music/90s-chill-lofi-playlist-japanese-town.mp3 filter=lfs diff=lfs merge=lfs -text
