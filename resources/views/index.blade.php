@@ -45,4 +45,19 @@
             <p>Your browser does not support the audio element.</p>
         </audio>
     </div>
+
+    <div>
+        <div class="font-bold">
+            lofi hip hop mix 📚 beats to relax/study to (Part 1)
+        </div>
+
+        <audio controls loop>
+            <source
+                src="{{ Vite::asset("resources/assets/music/lofi-girl-playlist.mp3") }}"
+                type="audio/mpeg"
+            />
+
+            <p>Your browser does not support the audio element.</p>
+        </audio>
+    </div>
 </x-layouts.app>
