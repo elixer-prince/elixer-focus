@@ -6,10 +6,7 @@
         <h1 class="font-bold">Elixer Focus</h1>
     </header>
 
-    <div
-        x-data="{ startTimeInSeconds: 25, time: 0 }"
-        x-init="time = startTimeInSeconds"
-    >
+    <div x-data="countdownTimer" x-init="time = startTimeInSeconds">
         <div
             :class="time <= 10 ? 'text-red-500' : ''"
             class="text-8xl font-bold"
@@ -17,23 +14,63 @@
         ></div>
 
         <div class="flex gap-4">
-            <x-button x-on:click="time--" class="bg-neutral-500 text-white">
+            <x-button
+                x-on:click="startCountdown()"
+                class="bg-neutral-500 text-white"
+            >
                 Start
             </x-button>
             <x-button
-                x-on:click="alert('pause clicked')"
+                x-on:click="pauseCountdown()"
                 class="bg-neutral-500 text-white"
             >
                 Pause
             </x-button>
             <x-button
-                x-on:click="time = startTimeInSeconds"
+                x-on:click="resetCountdown()"
                 class="bg-neutral-500 text-white"
             >
                 Reset
             </x-button>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('countdownTimer', () => ({
+                startTimeInSeconds: 25,
+                time: 0,
+                interval: null,
+                intervalStarted: false,
+                startCountdown() {
+                    if (this.intervalStarted) return;
+
+                    this.intervalStarted = true;
+                    this.interval = setInterval(() => {
+                        if (this.time <= 0) {
+                            this.resetCountdown();
+                            this.removeInterval();
+                            return;
+                        }
+
+                        this.time--;
+                    }, 1000);
+                },
+                pauseCountdown() {
+                    if (!this.intervalStarted) return;
+
+                    this.removeInterval();
+                },
+                resetCountdown() {
+                    this.time = this.startTimeInSeconds;
+                },
+                removeInterval() {
+                    this.intervalStarted = false;
+                    clearInterval(this.interval);
+                },
+            }));
+        });
+    </script>
 
     <div>
         <div class="font-bold">90s Chill Lofi Playlist</div>
