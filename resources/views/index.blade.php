@@ -6,32 +6,34 @@
         <h1 class="font-bold">Elixer Focus</h1>
     </header>
 
-    {{--
-        <div x-data="{ time: 1500 }">
-        <div class="font-bold" x-text="time"></div>
-        
-        <div>
-        <x-button
-        x-on:click="alert('start clicked')"
-        class="bg-neutral-500 text-white"
-        >
-        Start
-        </x-button>
-        <x-button
-        x-on:click="alert('pause clicked')"
-        class="bg-neutral-500 text-white"
-        >
-        Pause
-        </x-button>
-        <x-button
-        x-on:click="alert('stop clicked')"
-        class="bg-neutral-500 text-white"
-        >
-        Reset
-        </x-button>
+    <div
+        x-data="{ startTimeInSeconds: 25, time: 0 }"
+        x-init="time = startTimeInSeconds"
+    >
+        <div
+            :class="time <= 10 ? 'text-red-500' : ''"
+            class="text-8xl font-bold"
+            x-text="time"
+        ></div>
+
+        <div class="flex gap-4">
+            <x-button x-on:click="time--" class="bg-neutral-500 text-white">
+                Start
+            </x-button>
+            <x-button
+                x-on:click="alert('pause clicked')"
+                class="bg-neutral-500 text-white"
+            >
+                Pause
+            </x-button>
+            <x-button
+                x-on:click="time = startTimeInSeconds"
+                class="bg-neutral-500 text-white"
+            >
+                Reset
+            </x-button>
         </div>
-        </div>
-    --}}
+    </div>
 
     <div>
         <div class="font-bold">90s Chill Lofi Playlist</div>
