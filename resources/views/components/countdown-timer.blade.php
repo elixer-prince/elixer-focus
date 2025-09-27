@@ -6,7 +6,7 @@
     "
 >
     <div
-        :class="remainingTimeInSeconds <= 10 ? 'text-red-500' : ''"
+        :class="remainingTimeInSeconds <= 10 ? 'text-red-500 animate-pulse' : ''"
         class="text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
@@ -14,7 +14,27 @@
     {{-- TODO: Add a sound effect via JavaScript instead --}}
     <audio
         x-ref="beepSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/beep-sound-effect.mp3") }}"
+        src="{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}"
+    ></audio>
+
+    <audio
+        x-ref="onClickSoundEffect"
+        src="{{ Vite::asset("resources/assets/audio/sound-effects/on-click.mp3") }}"
+    ></audio>
+
+    <audio
+        x-ref="offClickSoundEffect"
+        src="{{ Vite::asset("resources/assets/audio/sound-effects/off-click.mp3") }}"
+    ></audio>
+
+    <audio
+        x-ref="tickingSoundEffect"
+        src="{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}"
+    ></audio>
+
+    <audio
+        x-ref="resetTimerSoundEffect"
+        src="{{ Vite::asset("resources/assets/audio/sound-effects/reset-timer.mp3") }}"
     ></audio>
 
     <div class="flex gap-4">
@@ -31,7 +51,7 @@
             Pause
         </x-button>
         <x-button
-            x-on:click="resetCountdown()"
+            x-on:click="resetCountdownWithSound()"
             class="bg-neutral-500 text-white"
         >
             Reset
@@ -44,11 +64,12 @@
         Alpine.data('countdownTimer', () => ({
             // Default or get from user
             // BUG:It fails if there is a non perfect decimal or with more than two places
-            startTimeInMinutes: 0.25,
+            startTimeInMinutes: 0.1,
             startTimeInSeconds: 0,
             remainingTimeInSeconds: 0,
             interval: null,
             intervalStarted: false,
+            timerPaused: false,
 
             /*
              |---------------------------------
@@ -60,28 +81,86 @@
             startCountdown() {
                 if (this.intervalStarted) return;
 
+                this.playOnClickSound();
+
+                // Calculate the end time based on the current time and remaining time
+                // becuase browser throttling make the timer inaccurate.
+                this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
+
                 this.intervalStarted = true;
                 this.interval = setInterval(() => {
-                    if (this.remainingTimeInSeconds <= 0) {
-                        this.resetCountdown();
-                        this.removeInterval();
-                        // TODO: Send a notification or email that the timer ended
-                        // TODO:Maybe make this user defined in the future
-                        alert("Time's up!");
-                        return;
+                    this.remainingTimeInSeconds = Math.max(
+                        0,
+                        Math.round((this.endTime - Date.now()) / 1000),
+                    );
+
+                    if (this.remainingTimeInSeconds <= 5) {
+                        this.stopTickingSound();
                     }
 
-                    this.remainingTimeInSeconds--;
+                    if (this.remainingTimeInSeconds <= 0) {
+                        this.playBeepSound();
+                        this.resetCountdown();
+                        // TODO: Send a notification or email that the timer ended
+                        // TODO:Maybe make this user defined in the future
+
+                        // I set the timeout to 25ms because the alert
+                        // would block the sound from playing immediately.
+                        return setTimeout(() => alert("Time's up!"), 25);
+                    }
                 }, 1000);
             },
             pauseCountdown() {
                 if (!this.intervalStarted) return;
 
+                this.timerPaused = true;
+
+                this.playOffClickSound();
+                this.pauseTickingSound();
+
                 this.removeInterval();
             },
             resetCountdown() {
-                this.$refs.beepSoundEffect.play();
+                if (this.intervalStarted) {
+                    this.pauseTickingSound();
+                    this.removeInterval();
+                }
+
+                this.timerPaused = false;
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
+            },
+            resetCountdownWithSound() {
+                if (this.intervalStarted || this.timerPaused)
+                    this.playResetTimerSoundEffect();
+
+                this.resetCountdown();
+            },
+
+            /*
+             |---------------------------------
+             | Sound Methods
+             |---------------------------------
+             |
+             */
+
+            playBeepSound() {
+                this.$refs.beepSoundEffect.play();
+            },
+            playOnClickSound() {
+                this.$refs.onClickSoundEffect.play();
+            },
+            playOffClickSound() {
+                this.$refs.offClickSoundEffect.play();
+            },
+            stopTickingSound() {
+                this.$refs.tickingSoundEffect.play();
+            },
+            pauseTickingSound() {
+                this.$refs.tickingSoundEffect.pause();
+                this.$refs.tickingSoundEffect.currentTime = 0;
+            },
+            playResetTimerSoundEffect() {
+                this.$refs.resetTimerSoundEffect.play();
             },
 
             /*
