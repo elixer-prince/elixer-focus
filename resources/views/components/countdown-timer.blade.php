@@ -96,32 +96,10 @@
                 this.playOnClickSound();
 
                 // Calculate the end time based on the current time and remaining time
-                // becuase browser throttling make the timer inaccurate.
+                // because browser throttling makes the timer inaccurate.
                 this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
 
-                this.intervalStarted = true;
-                this.interval = setInterval(() => {
-                    this.remainingTimeInSeconds = Math.max(
-                        0,
-                        Math.round((this.endTime - Date.now()) / 1000),
-                    );
-
-                    if (this.remainingTimeInSeconds <= 5) {
-                        this.stopTickingSound();
-                    }
-
-                    if (this.remainingTimeInSeconds <= 0) {
-                        this.isBreak = !this.isBreak;
-                        this.playBeepSound();
-                        this.resetCountdown();
-                        // TODO: Send a notification or email that the timer ended
-                        // TODO:Maybe make this user defined in the future
-
-                        // I set the timeout to 25ms because the alert
-                        // would block the sound from playing immediately.
-                        return setTimeout(() => alert("Time's up!"), 25);
-                    }
-                }, 1000);
+                this.startInterval();
             },
             pauseCountdown() {
                 if (!this.intervalStarted) return;
@@ -183,6 +161,31 @@
              |
              */
 
+            startInterval() {
+                this.intervalStarted = true;
+
+                this.interval = setInterval(() => {
+                    this.remainingTimeInSeconds = Math.max(
+                        0,
+                        Math.round((this.endTime - Date.now()) / 1000),
+                    );
+
+                    if (this.remainingTimeInSeconds <= 5) {
+                        this.stopTickingSound();
+                    }
+
+                    if (this.remainingTimeInSeconds <= 0) {
+                        this.toggleSessionType();
+                        this.playBeepSound();
+                        // TODO: Send a notification or email that the timer ended
+                        // TODO:Maybe make this user defined in the future
+
+                        // I set the timeout to 25ms because the alert
+                        // would block the sound from playing immediately.
+                        return setTimeout(() => alert("Time's up!"), 25);
+                    }
+                }, 1000);
+            },
             removeInterval() {
                 this.intervalStarted = false;
                 clearInterval(this.interval);
