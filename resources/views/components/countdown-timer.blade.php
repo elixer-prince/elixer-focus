@@ -64,7 +64,7 @@
         Alpine.data('countdownTimer', () => ({
             // Default or get from user
             // BUG:It fails if there is a non perfect decimal or with more than two places
-            startTimeInMinutes: 0.1,
+            startTimeInMinutes: 25, // Default to 25 minutes
             startTimeInSeconds: 0,
             remainingTimeInSeconds: 0,
             interval: null,
