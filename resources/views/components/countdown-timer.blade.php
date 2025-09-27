@@ -134,6 +134,9 @@
              |
              */
 
+            // TODO: Give the user the ability to choose the sound used
+            // here. Each theme could have predefined sounds but there could be
+            // a mixed theme that allows aspects from each theme.
             playBeepSound() {
                 this.$refs.beepSoundEffect.play();
             },
