@@ -1,7 +1,6 @@
 <div
     x-data="countdownTimer"
     x-init="
-        startTimeInSeconds = startTimeInMinutes * 60;
         remainingTimeInSeconds = startTimeInSeconds;
     "
 >
@@ -62,14 +61,20 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('countdownTimer', () => ({
-            // Default or get from user
-            // BUG:It fails if there is a non perfect decimal or with more than two places
-            startTimeInMinutes: 25, // Default to 25 minutes
-            startTimeInSeconds: 0,
+            get startTimeInMinutes() {
+                // TODO: Default or get them from user
+                // BUG:It fails if there is a non perfect decimal or with more than two places
+                if (this.isBreak) return 5;
+                return 25;
+            },
+            get startTimeInSeconds() {
+                return this.startTimeInMinutes * 60;
+            },
             remainingTimeInSeconds: 0,
             interval: null,
             intervalStarted: false,
             timerPaused: false,
+            isBreak: false, // TODO: Make this user definable in the future
 
             /*
              |---------------------------------
@@ -99,6 +104,7 @@
                     }
 
                     if (this.remainingTimeInSeconds <= 0) {
+                        this.isBreak = !this.isBreak;
                         this.playBeepSound();
                         this.resetCountdown();
                         // TODO: Send a notification or email that the timer ended
