@@ -10,6 +10,13 @@
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
 
+    <x-button
+        class="my-8 bg-neutral-500 text-white"
+        x-on:click="toggleSessionType()"
+    >
+        Toggle session type
+    </x-button>
+
     {{-- TODO: Add a sound effect via JavaScript instead --}}
     <audio
         x-ref="beepSoundEffect"
@@ -184,6 +191,10 @@
                 const minutes = Math.floor(seconds / 60);
                 const secs = seconds % 60;
                 return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            },
+            toggleSessionType() {
+                this.isBreak = !this.isBreak;
+                this.resetCountdown();
             },
         }));
     });
