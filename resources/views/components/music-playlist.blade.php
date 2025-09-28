@@ -11,8 +11,16 @@
         Alpine.data('musicPlaylist', () => ({
             playlist: [
                 {
+                    title: 'Calming White Noise',
+                    src: '{{ Vite::asset("resources/assets/music/white-noise-for-studying.mp3") }}',
+                },
+                {
                     title: '90s Chill Lofi Playlist',
                     src: '{{ Vite::asset("resources/assets/music/90s-chill-lofi-playlist-japanese-town.mp3") }}',
+                },
+                {
+                    title: 'lofi hip hop mix 📚 beats to relax/study to (Part 1)',
+                    src: '{{ Vite::asset("resources/assets/music/lofi-girl-playlist.mp3") }}',
                 },
             ],
         }));
