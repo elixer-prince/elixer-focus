@@ -1,12 +1,20 @@
-<div>
-    <div class="font-bold">White Noise To Calm My Mind</div>
+<div x-data="musicPlaylist">
+    <div class="font-bold" x-text="playlist[0].title"></div>
 
-    <audio controls loop>
-        <source
-            src="{{ Vite::asset("resources/assets/music/white-noise-for-studying.mp3") }}"
-            type="audio/mpeg"
-        />
-
+    <audio :src="playlist[0].src" controls loop>
         <p>Your browser does not support the audio element.</p>
     </audio>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('musicPlaylist', () => ({
+            playlist: [
+                {
+                    title: '90s Chill Lofi Playlist',
+                    src: '{{ Vite::asset("resources/assets/music/90s-chill-lofi-playlist-japanese-town.mp3") }}',
+                },
+            ],
+        }));
+    });
+</script>
