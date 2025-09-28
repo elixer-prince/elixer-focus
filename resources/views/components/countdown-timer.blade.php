@@ -190,9 +190,9 @@
                         // TODO: Send a notification or email that the timer ended
                         // TODO:Maybe make this user defined in the future
 
-                        // I set the timeout to 25ms because the alert
+                        // I set the timeout to 250ms because the alert
                         // would block the sound from playing immediately.
-                        return setTimeout(() => alert("Time's up!"), 25);
+                        return setTimeout(() => alert("Time's up!"), 250);
                     }
                 }, 1000);
             },
