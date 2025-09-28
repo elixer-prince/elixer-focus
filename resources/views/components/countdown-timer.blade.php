@@ -4,20 +4,27 @@
         remainingTimeInSeconds = startTimeInSeconds;
     "
 >
+    <div class="flex items-baseline gap-2">
+        <p>
+            Session type:
+            <span x-text="isBreak ? 'Break' : 'Focus'"></span>
+        </p>
+
+        <button
+            class="cursor-pointer rounded-md bg-neutral-500 px-2 py-1 text-sm font-bold text-white"
+            x-on:click="toggleSessionType()"
+        >
+            Switch
+        </button>
+    </div>
+
     <div
         :class="remainingTimeInSeconds <= 10 ? 'text-red-500 animate-pulse' : ''"
         class="text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
 
-    <x-button
-        class="my-8 bg-neutral-500 text-white"
-        x-on:click="toggleSessionType()"
-    >
-        Toggle session type
-    </x-button>
-
-    {{-- TODO: Add a sound effect via JavaScript instead --}}
+    {{-- TODO: Add a sound effects via JavaScript instead --}}
     <audio
         x-ref="beepSoundEffect"
         src="{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}"
