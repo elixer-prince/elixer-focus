@@ -19,7 +19,9 @@
     </div>
 
     <div
-        :class="remainingTimeInSeconds <= 10 ? 'text-red-500 animate-pulse' : ''"
+        :class="[
+            remainingTimeInSeconds <= 10 && !timerPaused ? 'animate-pulse' : '', remainingTimeInSeconds <= 10 ? 'text-red-500' : ''
+        ]"
         class="text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
@@ -77,18 +79,21 @@
         Alpine.data('countdownTimer', () => ({
             get startTimeInMinutes() {
                 // TODO: Default or get them from user
-                // BUG:It fails if there is a non perfect decimal or with more than two places
-                if (this.isBreak) return 5;
+                // BUG: It fails if there is a non perfect decimal or with more than two places
+                // TODO: Get pomodoroCount value from the user preferences
+                if (this.isBreak) return this.pomodoroCount < 4 ? 5 : 15;
+
                 return 25;
             },
             get startTimeInSeconds() {
                 return this.startTimeInMinutes * 60;
             },
-            remainingTimeInSeconds: 0,
             interval: null,
             intervalStarted: false,
-            timerPaused: false,
             isBreak: false, // TODO: Make this user definable in the future
+            pomodoroCount: 0,
+            remainingTimeInSeconds: 0,
+            timerPaused: false,
 
             /*
              |---------------------------------
@@ -185,8 +190,13 @@
                     }
 
                     if (this.remainingTimeInSeconds <= 0) {
+                        if (!this.isBreak) this.pomodoroCount++;
+
+                        if (this.pomodoroCount > 4) this.pomodoroCount = 0;
+
                         this.toggleSessionType();
                         this.playBeepSound();
+
                         // TODO: Send a notification or email that the timer ended
                         // TODO:Maybe make this user defined in the future
 
