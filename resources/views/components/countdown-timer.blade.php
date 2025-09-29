@@ -119,13 +119,13 @@
                 this.timerPaused = true;
 
                 this.playOffClickSound();
-                this.pauseTickingSound();
+                this.stopTickingSound();
 
                 this.removeInterval();
             },
             resetCountdown() {
                 if (this.intervalStarted) {
-                    this.pauseTickingSound();
+                    this.stopTickingSound();
                     this.removeInterval();
                 }
 
@@ -158,10 +158,10 @@
             playOffClickSound() {
                 this.$refs.offClickSoundEffect.play();
             },
-            stopTickingSound() {
+            playTickingSound() {
                 this.$refs.tickingSoundEffect.play();
             },
-            pauseTickingSound() {
+            stopTickingSound() {
                 this.$refs.tickingSoundEffect.pause();
                 this.$refs.tickingSoundEffect.currentTime = 0;
             },
@@ -186,7 +186,7 @@
                     );
 
                     if (this.remainingTimeInSeconds <= 5) {
-                        this.stopTickingSound();
+                        this.playTickingSound();
                     }
 
                     if (this.remainingTimeInSeconds <= 0) {
