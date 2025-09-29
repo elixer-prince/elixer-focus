@@ -1,12 +1,12 @@
 <div x-data="countdownTimer">
     <div class="mx-auto flex w-fit items-baseline gap-2">
-        <p>
+        <p class="font-bold">
             Session type:
             <span x-text="isBreak ? 'Break' : 'Focus'"></span>
         </p>
 
         <button
-            class="cursor-pointer rounded-md bg-neutral-950 px-2 py-1 text-sm font-bold text-white"
+            class="cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors hover:bg-neutral-950/25"
             x-on:click="toggleSessionType()"
         >
             Switch
@@ -17,7 +17,7 @@
         :class="[
             remainingTimeInSeconds <= 10 && !timerPaused ? 'animate-pulse' : '', remainingTimeInSeconds <= 10 ? 'text-red-500' : ''
         ]"
-        class="mx-auto flex aspect-square w-fit items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
+        class="mx-auto my-8 flex aspect-square w-fit items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
 
@@ -47,7 +47,7 @@
         src="{{ Vite::asset("resources/assets/audio/sound-effects/reset-timer.mp3") }}"
     ></audio>
 
-    <div class="flex gap-4">
+    <div class="mx-auto flex w-fit gap-4">
         <x-button
             x-on:click="startCountdown()"
             class="bg-neutral-500 text-white"
