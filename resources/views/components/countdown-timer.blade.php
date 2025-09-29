@@ -185,8 +185,14 @@
                         Math.round((this.endTime - Date.now()) / 1000),
                     );
 
-                    if (this.remainingTimeInSeconds <= 5) {
+                    if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
+                        tickingStarted = true;
                         this.playTickingSound();
+                    }
+
+                    if (this.remainingTimeInSeconds > 5 && tickingStarted) {
+                        tickingStarted = false;
+                        this.stopTickingSound();
                     }
 
                     if (this.remainingTimeInSeconds <= 0) {
