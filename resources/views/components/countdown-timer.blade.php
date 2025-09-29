@@ -1,9 +1,4 @@
-<div
-    x-data="countdownTimer"
-    x-init="
-        remainingTimeInSeconds = startTimeInSeconds;
-    "
->
+<div x-data="countdownTimer">
     <div class="flex items-baseline gap-2">
         <p>
             Session type:
@@ -77,6 +72,9 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('countdownTimer', () => ({
+            init() {
+                this.remainingTimeInSeconds = this.startTimeInSeconds;
+            },
             get startTimeInMinutes() {
                 // TODO: Default or get them from user
                 // BUG: It fails if there is a non perfect decimal or with more than two places
@@ -178,7 +176,7 @@
 
             startInterval() {
                 this.intervalStarted = true;
-
+                let tickingStarted = false;
                 this.interval = setInterval(() => {
                     this.remainingTimeInSeconds = Math.max(
                         0,
