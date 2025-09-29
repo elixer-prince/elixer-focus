@@ -1,12 +1,12 @@
 <div x-data="countdownTimer">
-    <div class="flex items-baseline gap-2">
+    <div class="mx-auto flex w-fit items-baseline gap-2">
         <p>
             Session type:
             <span x-text="isBreak ? 'Break' : 'Focus'"></span>
         </p>
 
         <button
-            class="cursor-pointer rounded-md bg-neutral-500 px-2 py-1 text-sm font-bold text-white"
+            class="cursor-pointer rounded-md bg-neutral-950 px-2 py-1 text-sm font-bold text-white"
             x-on:click="toggleSessionType()"
         >
             Switch
@@ -17,7 +17,7 @@
         :class="[
             remainingTimeInSeconds <= 10 && !timerPaused ? 'animate-pulse' : '', remainingTimeInSeconds <= 10 ? 'text-red-500' : ''
         ]"
-        class="text-8xl font-bold"
+        class="mx-auto flex aspect-square w-fit items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
 
