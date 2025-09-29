@@ -24,12 +24,6 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('musicPlaylist', () => ({
             chosenSongIndex: 0,
-            init() {
-                this.$watch('chosenSongIndex', () => {
-                    this.$refs.audio.load();
-                    this.$refs.audio.play();
-                });
-            },
             playlist: [
                 {
                     title: 'Calming White Noise',
@@ -44,6 +38,20 @@
                     src: '{{ Vite::asset("resources/assets/music/lofi-girl-playlist.mp3") }}',
                 },
             ],
+
+            init() {
+                const storedIndex = localStorage.getItem('chosenSongIndex');
+
+                if (storedIndex !== null && !isNaN(storedIndex)) {
+                    this.chosenSongIndex = Number(storedIndex);
+                }
+
+                this.$watch('chosenSongIndex', (value) => {
+                    localStorage.setItem('chosenSongIndex', value);
+                    this.$refs.audio.load();
+                    this.$refs.audio.play();
+                });
+            },
         }));
     });
 </script>
