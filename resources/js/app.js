@@ -1,3 +1,3 @@
 import "./bootstrap";
 
-import.meta.glob(["../assets/audio/sound-effects/**"]);
+import.meta.glob(["../assets/audio/**"]);
