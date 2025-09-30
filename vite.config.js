@@ -10,5 +10,4 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
-    assetsInclude: ["**/*.mp3", "**/*.wav"],
 });
