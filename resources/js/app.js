@@ -1,3 +1,3 @@
 import "./bootstrap";
 
-import.meta.glob(["../assets/audio/**"]);
+import.meta.glob(["../assets/audio/**/*.{mp3,wav}"]);
