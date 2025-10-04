@@ -15,30 +15,19 @@
 
     <div class="font-bold" x-text="playlist[chosenSongIndex].title"></div>
 
-    <audio x-ref="audio" :src="playlist[chosenSongIndex].src" controls loop>
-        <p>Your browser does not support the audio element.</p>
-    </audio>
+    <iframe
+        allow="autoplay"
+        class=""
+        title="YouTube video player"
+        :src="convertToEmbedUrl(playlist[chosenSongIndex].src)"
+        referrerpolicy="strict-origin-when-cross-origin"
+        x-ref="audio"
+    ></iframe>
 </div>
 
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('musicPlaylist', () => ({
-            chosenSongIndex: 0,
-            playlist: [
-                {
-                    title: 'Calming White Noise',
-                    src: '{{ Vite::asset("resources/assets/music/white-noise-for-studying.mp3") }}',
-                },
-                {
-                    title: '90s Chill Lofi Playlist',
-                    src: '{{ Vite::asset("resources/assets/music/90s-chill-lofi-playlist-japanese-town.mp3") }}',
-                },
-                {
-                    title: 'Lofi Hip Hop (Lofi Girl)',
-                    src: '{{ Vite::asset("resources/assets/music/lofi-girl-playlist.mp3") }}',
-                },
-            ],
-
             init() {
                 const storedIndex = localStorage.getItem('chosenSongIndex');
 
@@ -51,6 +40,35 @@
                     this.$refs.audio.load();
                     this.$refs.audio.play();
                 });
+            },
+            chosenSongIndex: 0,
+            playlist: [
+                {
+                    title: 'Calming White Noise',
+                    src: 'https://www.youtube.com/watch?v=yLOM8R6lbzg&t=3599s',
+                },
+                {
+                    title: '90s Chill Lofi Playlist',
+                    src: 'https://www.youtube.com/watch?v=sF80I-TQiW0',
+                },
+                {
+                    title: 'Lofi Hip Hop (Lofi Girl)',
+                    src: 'https://www.youtube.com/watch?v=n61ULEU7CO0',
+                },
+            ],
+
+            /*
+             |---------------------------------
+             | Helper Methods
+             |---------------------------------
+             |
+             */
+
+            convertToEmbedUrl(url) {
+                const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
+                return videoIdMatch
+                    ? `https://www.youtube.com/embed/${videoIdMatch[1]}`
+                    : null;
             },
         }));
     });
