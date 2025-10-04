@@ -1,51 +1,25 @@
 <div x-data="musicPlaylist">
-    <div class="my-4 flex gap-4">
-        <template x-for="song in playlist">
-            <label :key="playlist.indexOf(song)">
-                <input
-                    type="radio"
-                    :value="playlist.indexOf(song)"
-                    x-model="chosenSongIndex"
-                />
+    <template x-for="(song, index) in playlist" :key="index">
+        <label>
+            <input type="radio" :value="index" x-model="chosenSongIndex" />
+            <span x-text="song.title"></span>
+        </label>
+    </template>
 
-                <span class="font-bold" x-text="song.title"></span>
-            </label>
-        </template>
-    </div>
-
-    <div class="font-bold" x-text="playlist[chosenSongIndex].title"></div>
-
-    <iframe
-        allow="autoplay"
-        class=""
-        title="YouTube video player"
-        :src="convertToEmbedUrl(playlist[chosenSongIndex].src)"
-        referrerpolicy="strict-origin-when-cross-origin"
-        x-ref="audio"
-    ></iframe>
+    <div class="sr-only" id="player"></div>
 </div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('musicPlaylist', () => ({
-            init() {
-                const storedIndex = localStorage.getItem('chosenSongIndex');
-
-                if (storedIndex !== null && !isNaN(storedIndex)) {
-                    this.chosenSongIndex = Number(storedIndex);
-                }
-
-                this.$watch('chosenSongIndex', (value) => {
-                    localStorage.setItem('chosenSongIndex', value);
-                    this.$refs.audio.load();
-                    this.$refs.audio.play();
-                });
-            },
+            player: null,
             chosenSongIndex: 0,
             playlist: [
                 {
                     title: 'Calming White Noise',
-                    src: 'https://www.youtube.com/watch?v=yLOM8R6lbzg&t=3599s',
+                    src: 'https://www.youtube.com/watch?v=yLOM8R6lbzg',
                 },
                 {
                     title: '90s Chill Lofi Playlist',
@@ -57,19 +31,51 @@
                 },
             ],
 
-            /*
-             |---------------------------------
-             | Helper Methods
-             |---------------------------------
-             |
-             */
+            init() {
+                const storedIndex = localStorage.getItem('chosenSongIndex');
 
-            convertToEmbedUrl(url) {
-                const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
-                return videoIdMatch
-                    ? `https://www.youtube.com/embed/${videoIdMatch[1]}`
-                    : null;
+                if (storedIndex !== null && !isNaN(storedIndex))
+                    this.chosenSongIndex = Number(storedIndex);
+
+                this.$watch('chosenSongIndex', (value) => {
+                    localStorage.setItem('chosenSongIndex', value);
+                    if (this.player) {
+                        const videoId = this.extractVideoId(
+                            this.playlist[value].src,
+                        );
+                        this.player.loadVideoById(videoId);
+                    }
+                });
+
+                // Create player if the Iframe API is already loaded
+                if (window.YT && YT.Player) {
+                    this.createPlayer();
+                }
+            },
+
+            createPlayer() {
+                const videoId = this.extractVideoId(
+                    this.playlist[this.chosenSongIndex].src,
+                );
+                this.player = new YT.Player('player', {
+                    videoId: videoId,
+                    playerVars: { autoplay: 1, playsinline: 1 },
+                    events: {
+                        onReady: (event) => event.target.playVideo(),
+                    },
+                });
+            },
+
+            extractVideoId(url) {
+                const match = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
+                return match ? match[1] : null;
             },
         }));
     });
+
+    function onYouTubeIframeAPIReady() {
+        document
+            .querySelector('[x-data="musicPlaylist"]')
+            .__x.$data.createPlayer();
+    }
 </script>
