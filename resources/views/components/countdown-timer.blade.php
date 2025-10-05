@@ -11,6 +11,9 @@
         >
             Switch
         </button>
+
+        {{-- TODO: Make the 4 dynamic. --}}
+        <span class="font-bold" x-text="`${pomodoroCount} / 4`"></span>
     </div>
 
     <div
