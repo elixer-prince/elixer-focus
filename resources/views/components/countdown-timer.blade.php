@@ -83,8 +83,20 @@
             timerPaused: false,
 
             init() {
-                // TODO: Get the initialValue from localStorage or user preferences
-                this.remainingTimeInSeconds = this.startTimeInSeconds;
+                this.remainingTimeInSeconds =
+                    Number(localStorage.getItem('remainingTimeInSeconds')) ||
+                    this.startTimeInSeconds;
+
+                this.pomodoroCount =
+                    Number(localStorage.getItem('pomodoroCount')) || 0;
+
+                this.$watch('remainingTimeInSeconds', (value) => {
+                    localStorage.setItem('remainingTimeInSeconds', value);
+                });
+
+                this.$watch('pomodoroCount', (value) => {
+                    localStorage.setItem('pomodoroCount', value);
+                });
             },
 
             get startTimeInMinutes() {
