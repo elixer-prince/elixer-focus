@@ -6,7 +6,7 @@
         </label>
     </template>
 
-    <div class="sr-only" id="player"></div>
+    <div class="" id="player"></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
