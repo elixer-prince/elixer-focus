@@ -6,7 +6,7 @@
 >
     <head>
         <meta charset="utf-8" />
-        <meta name="author" content="Elixer Prince" />
+        <meta name="author" content="Elixer Prince (Daniel J. Leith)" />
         <meta
             name="description"
             content="{{ $pageDescription ?? "Page description..." }}"
