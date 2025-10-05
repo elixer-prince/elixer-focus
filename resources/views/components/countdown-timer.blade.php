@@ -72,9 +72,18 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('countdownTimer', () => ({
+            interval: null,
+            intervalStarted: false,
+            isBreak: false,
+            pomodoroCount: 0,
+            remainingTimeInSeconds: 0,
+            timerPaused: false,
+
             init() {
+                // TODO: Get the initialValue from localStorage or user preferences
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
             },
+
             get startTimeInMinutes() {
                 // TODO: Default or get them from user
                 // BUG: It fails if there is a non perfect decimal or with more than two places
@@ -86,12 +95,6 @@
             get startTimeInSeconds() {
                 return this.startTimeInMinutes * 60;
             },
-            interval: null,
-            intervalStarted: false,
-            isBreak: false, // TODO: Make this user definable in the future
-            pomodoroCount: 0,
-            remainingTimeInSeconds: 0,
-            timerPaused: false,
 
             /*
              |---------------------------------
