@@ -75,6 +75,7 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('countdownTimer', () => ({
+            endTime: 0,
             interval: null,
             intervalStarted: false,
             isBreak: false,
@@ -87,16 +88,45 @@
                     Number(localStorage.getItem('remainingTimeInSeconds')) ||
                     this.startTimeInSeconds;
 
-                this.pomodoroCount =
-                    Number(localStorage.getItem('pomodoroCount')) || 0;
-
                 this.$watch('remainingTimeInSeconds', (value) => {
                     localStorage.setItem('remainingTimeInSeconds', value);
                 });
 
+                this.pomodoroCount =
+                    Number(localStorage.getItem('pomodoroCount')) || 0;
+
                 this.$watch('pomodoroCount', (value) => {
                     localStorage.setItem('pomodoroCount', value);
                 });
+
+                this.isBreak =
+                    this.toBool(localStorage.getItem('isBreak')) || false;
+
+                this.$watch('isBreak', (value) => {
+                    localStorage.setItem('isBreak', value);
+                });
+
+                this.timerPaused =
+                    this.toBool(localStorage.getItem('timerPaused')) || false;
+
+                this.$watch('timerPaused', (value) => {
+                    localStorage.setItem('timerPaused', value);
+                });
+
+                this.intervalStarted =
+                    this.toBool(localStorage.getItem('intervalStarted')) || false;
+
+                this.$watch('intervalStarted', (value) => {
+                    localStorage.setItem('intervalStarted', value);
+                });
+
+                this.endTime = Number(localStorage.getItem('endTime')) || null;
+
+                this.$watch('endTime', (value) => {
+                    localStorage.setItem('endTime', value);
+                });
+
+                this.startCountdown();
             },
 
             get startTimeInMinutes() {
@@ -112,11 +142,11 @@
             },
 
             /*
-             |---------------------------------
-             | Timer Controls
-             |---------------------------------
-             |
-             */
+            |---------------------------------
+            | Timer Controls
+            |---------------------------------
+            |
+            */
 
             startCountdown() {
                 if (this.intervalStarted) return;
@@ -156,11 +186,11 @@
             },
 
             /*
-             |---------------------------------
-             | Sound Methods
-             |---------------------------------
-             |
-             */
+            |---------------------------------
+            | Sound Methods
+            |---------------------------------
+            |
+            */
 
             // TODO: Give the user the ability to choose the sound used
             // here. Each theme could have predefined sounds but there could be
@@ -186,11 +216,15 @@
             },
 
             /*
-             |---------------------------------
-             | Helper Methods
-             |---------------------------------
-             |
-             */
+            |---------------------------------
+            | Helper Methods
+            |---------------------------------
+            |
+            */
+
+            toBool(value) {
+                return value === 'true';
+            },
 
             startInterval() {
                 this.intervalStarted = true;
