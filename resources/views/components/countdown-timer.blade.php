@@ -63,6 +63,7 @@
         >
             Pause
         </x-button>
+
         <x-button
             x-on:click="resetCountdownWithSound()"
             class="bg-neutral-500 text-white"
@@ -74,6 +75,11 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
+        Alpine.store('timerSettings', {
+            pomodoroDuration: 25,
+            shortBreakDuration: 5,
+            longBreakDuration: 15,
+        });
         Alpine.data('countdownTimer', () => ({
             endTime: 0,
             interval: null,
@@ -123,12 +129,13 @@
             },
 
             get startTimeInMinutes() {
-                // If the the count is 4 it uses a longer break time, else it uses a
-                // shorter one. If it is not a break session it uses the focis start time.
                 // BUG: It fails if there is a non perfect decimal or with more than two places
-                if (this.isBreak) return this.pomodoroCount < 4 ? 5 : 15;
+                if (this.isBreak)
+                    return this.pomodoroCount < 4
+                        ? this.$store.timerSettings.shortBreakDuration
+                        : this.$store.timerSettings.longBreakDuration;
 
-                return 25;
+                return this.$store.timerSettings.pomodoroDuration;
             },
             get startTimeInSeconds() {
                 // Converts the start time in minutes to seconds
