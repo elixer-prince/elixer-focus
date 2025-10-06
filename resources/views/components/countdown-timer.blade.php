@@ -51,21 +51,16 @@
     ></audio>
 
     <div class="mx-auto flex w-fit gap-4">
-        <x-button
-            x-on:click="startCountdown()"
-            class="bg-neutral-500 text-white"
-        >
+        <x-button @click="startCountdown()" class="bg-neutral-500 text-white">
             Start
         </x-button>
-        <x-button
-            x-on:click="pauseCountdown()"
-            class="bg-neutral-500 text-white"
-        >
+
+        <x-button @click="pauseCountdown()" class="bg-neutral-500 text-white">
             Pause
         </x-button>
 
         <x-button
-            x-on:click="resetCountdownWithSound()"
+            @click="resetCountdownWithSound()"
             class="bg-neutral-500 text-white"
         >
             Reset
