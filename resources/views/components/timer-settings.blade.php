@@ -6,7 +6,7 @@
             <label for="pomodoro-duration">Focus Duration</label>
             <input
                 id="pomodoro-duration"
-                type="text"
+                type="number"
                 class="rounded-md border-2 px-2 py-1 font-bold"
                 placeholder="Pomodoro Duration"
                 :value="$store.timerSettings.pomodoroDuration"
@@ -17,7 +17,7 @@
             <input
                 id="short-break"
                 class="rounded-md border-2 px-2 py-1 font-bold"
-                type="text"
+                type="number"
                 placeholder="Short break"
                 :value="$store.timerSettings.shortBreakDuration"
             />
@@ -27,7 +27,7 @@
             <input
                 id="long-break"
                 class="rounded-md border-2 px-2 py-1 font-bold"
-                type="text"
+                type="number"
                 placeholder="Long break"
                 :value="$store.timerSettings.longBreakDuration"
             />
