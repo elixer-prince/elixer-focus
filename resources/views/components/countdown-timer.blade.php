@@ -113,31 +113,25 @@
                     localStorage.setItem('timerPaused', value);
                 });
 
-                this.intervalStarted =
-                    this.toBool(localStorage.getItem('intervalStarted')) || false;
-
-                this.$watch('intervalStarted', (value) => {
-                    localStorage.setItem('intervalStarted', value);
-                });
-
                 this.endTime = Number(localStorage.getItem('endTime')) || null;
 
                 this.$watch('endTime', (value) => {
                     localStorage.setItem('endTime', value);
                 });
 
-                this.startCountdown();
+                if (!this.timerPaused) this.startCountdown();
             },
 
             get startTimeInMinutes() {
-                // TODO: Default or get them from user
+                // If the the count is 4 it uses a longer break time, else it uses a
+                // shorter one. If it is not a break session it uses the focis start time.
                 // BUG: It fails if there is a non perfect decimal or with more than two places
-                // TODO: Get pomodoroCount value from the user preferences
                 if (this.isBreak) return this.pomodoroCount < 4 ? 5 : 15;
 
                 return 25;
             },
             get startTimeInSeconds() {
+                // Converts the start time in minutes to seconds
                 return this.startTimeInMinutes * 60;
             },
 
@@ -154,7 +148,7 @@
                 this.playOnClickSound();
 
                 // Calculate the end time based on the current time and remaining time
-                // because browser throttling makes the timer inaccurate.
+                // because browser throttling makes decrementing inaccurate.
                 this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
 
                 this.startInterval();
@@ -227,6 +221,7 @@
             },
 
             startInterval() {
+                this.timerPaused = false;
                 this.intervalStarted = true;
                 let tickingStarted = false;
                 this.interval = setInterval(() => {
