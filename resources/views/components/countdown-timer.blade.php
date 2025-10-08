@@ -126,9 +126,9 @@
                 // If the the count is 4 it uses a longer break time, else it uses a
                 // shorter one. If it is not a break session it uses the focis start time.
                 // BUG: It fails if there is a non perfect decimal or with more than two places
-                if (this.isBreak) return this.pomodoroCount < 4 ? 5 : 15;
+                if (this.isBreak) return this.pomodoroCount < 4 ? 10 : 30;
 
-                return 25;
+                return 50;
             },
             get startTimeInSeconds() {
                 // Converts the start time in minutes to seconds
