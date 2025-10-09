@@ -257,10 +257,6 @@
             |
             */
 
-            toBool(value) {
-                return value === 'true';
-            },
-
             startInterval() {
                 this.timerPaused = false;
                 this.intervalStarted = true;
@@ -325,7 +321,17 @@
             convertMinutesToSeconds(minutes)
             {
                 return this.startTimeInMinutes * 60;
-            }
+            },
+
+            /**
+             * This turns the value provided into a boolean.
+             *
+             * @param value - The value to be converted.
+             * @returns {boolean} The result of the conversion.
+             */
+            toBool(value) {
+                return value === 'true';
+            },
         }));
     });
 </script>
