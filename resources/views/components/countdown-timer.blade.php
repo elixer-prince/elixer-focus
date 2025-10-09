@@ -109,46 +109,57 @@
             },
 
             init() {
+                this.initialiseVariables();
+                this.watchVariables();
+
+                if (!this.timerPaused) this.startCountdown();
+            },
+
+            initialiseVariables()
+            {
+                // Sound Effects
                 this.tickingSoundEffect = new Audio(
                     '{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}',
                 );
 
+                // Timer
                 this.remainingTimeInSeconds =
                     Number(localStorage.getItem('remainingTimeInSeconds')) ||
                     this.startTimeInSeconds;
 
+                this.pomodoroCount =
+                    Number(localStorage.getItem('pomodoroCount')) || 0;
+
+                this.isBreak =
+                    this.toBool(localStorage.getItem('isBreak')) || false;
+
+                this.timerPaused =
+                    this.toBool(localStorage.getItem('timerPaused')) || false;
+
+                this.endTime = Number(localStorage.getItem('endTime')) || null;
+            },
+
+            watchVariables()
+            {
                 this.$watch('remainingTimeInSeconds', (value) => {
                     localStorage.setItem('remainingTimeInSeconds', value);
                 });
-
-                this.pomodoroCount =
-                    Number(localStorage.getItem('pomodoroCount')) || 0;
 
                 this.$watch('pomodoroCount', (value) => {
                     localStorage.setItem('pomodoroCount', value);
                 });
 
-                this.isBreak =
-                    this.toBool(localStorage.getItem('isBreak')) || false;
-
                 this.$watch('isBreak', (value) => {
                     localStorage.setItem('isBreak', value);
                 });
-
-                this.timerPaused =
-                    this.toBool(localStorage.getItem('timerPaused')) || false;
 
                 this.$watch('timerPaused', (value) => {
                     localStorage.setItem('timerPaused', value);
                 });
 
-                this.endTime = Number(localStorage.getItem('endTime')) || null;
-
                 this.$watch('endTime', (value) => {
                     localStorage.setItem('endTime', value);
                 });
-
-                if (!this.timerPaused) this.startCountdown();
             },
 
             /*
