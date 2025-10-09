@@ -315,8 +315,6 @@
              */
             toggleSessionType() {
                 this.isBreak = !this.isBreak;
-                // TODO: move resetCountdown() out of this function.
-                this.resetCountdown();
             },
 
             /**
