@@ -302,6 +302,19 @@
                 this.intervalStarted = false;
                 clearInterval(this.interval);
             },
+
+            /**
+             * Toggle the session type.
+             *
+             * If the session is a break session it switched to a focus session
+             * and vice versa.
+             */
+            toggleSessionType()
+            {
+                this.isBreak = !this.isBreak;
+                // TODO: move resetCountdown() out of this function.
+                this.resetCountdown();
+            },
             formatTime(seconds) {
                 const minutes = Math.floor(seconds / 60);
                 const secondsRemainder = seconds % 60;
