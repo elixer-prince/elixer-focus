@@ -12,7 +12,7 @@
             Switch
         </button>
 
-        <span class="font-bold" x-text="`${pomodoroCount} / ${$store.countdownTimerSettings.sessionCountLimit}`"></span>
+        <span class="font-bold" x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit}`"></span>
     </div>
 
     <div
@@ -67,7 +67,7 @@
             interval: null,
             intervalStarted: false,
             isBreak: false,
-            pomodoroCount: 0,
+            currentSessionCount: 0,
             remainingTimeInSeconds: 0,
             timerPaused: false,
 
@@ -94,7 +94,7 @@
                     TODO: I might fix the check for pomodoro session limit here.
                 */
                 if (this.isBreak)
-                    return this.pomodoroCount < this.$store.coundownTimerSettings.sessionCountLimit
+                    return this.currentSessionCount < this.$store.countdownTimerSettings.sessionCountLimit
                         ? this.$store.countdownTimerSettings.shortBreakDuration
                         : this.$store.countdownTimerSettings.longBreakDuration;
 
@@ -144,8 +144,8 @@
                     Number(localStorage.getItem('remainingTimeInSeconds')) ||
                     this.startTimeInSeconds;
 
-                this.pomodoroCount =
-                    Number(localStorage.getItem('pomodoroCount')) || 0;
+                this.currentSessionCount =
+                    Number(localStorage.getItem('currentSessionCount')) || 0;
 
                 this.isBreak =
                     this.toBool(localStorage.getItem('isBreak')) || false;
@@ -161,8 +161,8 @@
                     localStorage.setItem('remainingTimeInSeconds', value);
                 });
 
-                this.$watch('pomodoroCount', (value) => {
-                    localStorage.setItem('pomodoroCount', value);
+                this.$watch('currentSessionCount', (value) => {
+                    localStorage.setItem('currentSessionCount', value);
                 });
 
                 this.$watch('isBreak', (value) => {
@@ -282,9 +282,9 @@
                     }
 
                     if (this.remainingTimeInSeconds <= 0) {
-                        if (!this.isBreak) this.pomodoroCount++;
+                        if (!this.isBreak) this.currentSessionCount++;
 
-                        if (this.pomodoroCount > 4) this.pomodoroCount = 0;
+                        if (this.currentSessionCount > 4) this.currentSessionCount = 0;
 
                         this.toggleSessionType();
                         this.playBeepSound();
