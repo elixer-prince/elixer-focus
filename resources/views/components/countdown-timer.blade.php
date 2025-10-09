@@ -222,7 +222,7 @@
                 offClickSoundEffect.play();
             },
             playTickingSound() {
-                this.$refs.tickingSoundEffect.play();
+                this.tickingSoundEffect.play();
             },
             stopTickingSound() {
                 this.tickingSoundEffect.pause();
