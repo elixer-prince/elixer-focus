@@ -292,8 +292,8 @@
                         // TODO: Send a notification or email that the timer ended
                         // TODO:Maybe make this user defined in the future
 
-                        // I set the timeout to one second because the alert
-                        // would block the sound from playing immediately.
+                        // The timeout is set to one second because the alert
+                        // would block the sound from playing immediately otherwise.
                         return setTimeout(() => alert("Time's up!"), 1000);
                     }
                 }, 1000);
