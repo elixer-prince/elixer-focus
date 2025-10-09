@@ -303,7 +303,6 @@
              * Destroy the existing timer interval.
              */
             destroyInterval() {
-                this.intervalStarted = false;
                 clearInterval(this.interval);
             },
 
