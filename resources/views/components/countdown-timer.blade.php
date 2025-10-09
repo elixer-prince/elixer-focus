@@ -1,8 +1,8 @@
 <div x-data="countdownTimer">
-    <div class="mx-auto flex w-fit items-baseline gap-2">
-        <p class="font-bold">
-            Session type:
+    <div class="mx-auto flex w-fit items-center gap-2">
+        <p class="font-black text-2xl">
             <span x-text="isBreak ? 'Break' : 'Focus'"></span>
+            Session
         </p>
 
         <button
