@@ -188,12 +188,12 @@
                 this.playOffClickSound();
                 this.stopTickingSound();
 
-                this.removeInterval();
+                this.destroyInterval();
             },
             resetCountdown() {
                 if (this.intervalStarted) {
                     this.stopTickingSound();
-                    this.removeInterval();
+                    this.destroyInterval();
                 }
 
                 this.timerPaused = false;
@@ -296,7 +296,11 @@
                     }
                 }, 1000);
             },
-            removeInterval() {
+
+            /**
+             * Destroy the existing timer interval.
+             */
+            destroyInterval() {
                 this.intervalStarted = false;
                 clearInterval(this.interval);
             },
