@@ -121,8 +121,7 @@
                 if (!this.timerPaused) this.startCountdown();
             },
 
-            initialiseVariables()
-            {
+            initialiseVariables() {
                 // Sound Effects
                 this.onClickSoundEffect = new Audio(
                     '{{ Vite::asset("resources/assets/audio/sound-effects/on-click.mp3") }}',
@@ -157,8 +156,7 @@
                 this.endTime = Number(localStorage.getItem('endTime')) || null;
             },
 
-            watchVariables()
-            {
+            watchVariables() {
                 this.$watch('remainingTimeInSeconds', (value) => {
                     localStorage.setItem('remainingTimeInSeconds', value);
                 });
@@ -257,9 +255,9 @@
             },
 
             /*
-            |---------------------------------
+            |-----------------------------------------------------
             | Helper Methods
-            |---------------------------------
+            |-----------------------------------------------------
             |
             */
 
@@ -315,8 +313,7 @@
              * If the session is a break session it switched to a focus session
              * and vice versa.
              */
-            toggleSessionType()
-            {
+            toggleSessionType() {
                 this.isBreak = !this.isBreak;
                 // TODO: move resetCountdown() out of this function.
                 this.resetCountdown();
@@ -340,8 +337,7 @@
              * @param {number} minutes - The minutes to be converted to seconds.
              * @returns {number} Seconds converted from minutes.
              */
-            convertMinutesToSeconds(minutes)
-            {
+            convertMinutesToSeconds(minutes) {
                 return this.startTimeInMinutes * 60;
             },
 
