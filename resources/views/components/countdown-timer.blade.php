@@ -149,19 +149,6 @@
                 if (!this.timerPaused) this.startCountdown();
             },
 
-            get startTimeInMinutes() {
-                // BUG: It fails if there is a non perfect decimal or with more than two places
-                if (this.isBreak)
-                    return this.pomodoroCount < 4
-                        ? this.$store.timerSettings.shortBreakDuration
-                        : this.$store.timerSettings.longBreakDuration;
-
-                return this.$store.timerSettings.pomodoroDuration;
-            },
-            get startTimeInSeconds() {
-                return this.convertMinutesToSeconds(this.startTimeInMinutes);
-            },
-
             /*
             |---------------------------------
             | Timer Controls
