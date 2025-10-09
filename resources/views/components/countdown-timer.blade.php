@@ -44,13 +44,21 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.store('timerSettings', {
-            pomodoroDuration: 25,
-            shortBreakDuration: 5,
-            longBreakDuration: 15,
+        Alpine.store('countdownTimerSettings', {
+            /*
+            |-----------------------------------------------------------
+            | Session Durations
+            |-----------------------------------------------------------
+            |
+            | These control how long a session takes as well as how
+            | many intervals there are between long and short breaks.
+            |
+            */
+
             focusDuration: 50,
             shortBreakDuration: 10,
             longBreakDuration: 30,
+            sessionCountLimit: 4,
         });
         Alpine.data('countdownTimer', () => ({
             endTime: 0,
