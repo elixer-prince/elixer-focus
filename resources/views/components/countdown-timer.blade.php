@@ -48,6 +48,9 @@
             pomodoroDuration: 25,
             shortBreakDuration: 5,
             longBreakDuration: 15,
+            focusDuration: 50,
+            shortBreakDuration: 10,
+            longBreakDuration: 30,
         });
         Alpine.data('countdownTimer', () => ({
             endTime: 0,
