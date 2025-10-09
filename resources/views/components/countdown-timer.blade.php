@@ -58,7 +58,6 @@
             focusDuration: 50,
             shortBreakDuration: 10,
             longBreakDuration: 30,
-            sessionCountLimit: 4,
         });
         Alpine.data('countdownTimer', () => ({
             endTime: 0,
