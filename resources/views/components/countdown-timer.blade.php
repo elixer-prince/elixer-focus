@@ -315,6 +315,13 @@
                 // TODO: move resetCountdown() out of this function.
                 this.resetCountdown();
             },
+
+            /**
+             * Formats the seconds provided to a human-readable string value.
+             *
+             * @param {number} seconds - The seconds to be formatted.
+             * @returns {string} The seconds formatted as a string.
+             */
             formatTime(seconds) {
                 const minutes = Math.floor(seconds / 60);
                 const secondsRemainder = seconds % 60;
