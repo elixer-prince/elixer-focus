@@ -41,6 +41,8 @@
     </div>
 </div>
 
+{{-- COUNTDOWN TIMER LOGIC --}}
+
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.store('countdownTimerSettings', {
