@@ -59,6 +59,42 @@
             timerPaused: false,
             tickingSoundEffect: null,
 
+            /**
+             * The start time in minutes that will be converted to seconds.
+             *
+             * This is calculated based on if the user has completed an amount of session
+             * that is equal to that of the session count limit. The session count limit.
+             *
+             * @returns {number} The minutes to be converted to seconds.
+             */
+            get startTimeInMinutes() {
+                /*
+                    FIXME: The timer looks incorrectly formatted if there is a non-perfect
+                     decimal or a decimal with more than two places of precision s provided.
+
+                    TODO: I might fix the check for pomodoro session limit here.
+                */
+                if (this.isBreak)
+                    return this.pomodoroCount < this.$store.coundownTimerSettings.sessionCountLimit
+                        ? this.$store.countdownTimerSettings.shortBreakDuration
+                        : this.$store.countdownTimerSettings.longBreakDuration;
+
+                return this.$store.countdownTimerSettings.focusDuration;
+            },
+
+            /**
+             * The start time in seconds that will be formatted and displayed on
+             * the timer display.
+             *
+             * This is calculated based on the start time in minutes and changes dynamically
+             * with the start time in minutes.
+             *
+             * @returns {number} The start time in minutes converted to seconds.
+             * */
+            get startTimeInSeconds() {
+                return this.convertMinutesToSeconds(this.startTimeInMinutes);
+            },
+
             init() {
                 this.tickingSoundEffect = new Audio(
                     '{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}',
