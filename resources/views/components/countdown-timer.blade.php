@@ -112,8 +112,7 @@
                 return this.$store.timerSettings.pomodoroDuration;
             },
             get startTimeInSeconds() {
-                // Converts the start time in minutes to seconds
-                return this.startTimeInMinutes * 60;
+                return this.convertMinutesToSeconds(this.startTimeInMinutes);
             },
 
             /*
@@ -263,6 +262,17 @@
                 this.isBreak = !this.isBreak;
                 this.resetCountdown();
             },
+
+            /**
+             * Converts minutes to seconds.
+             *
+             * @param {number} minutes - The minutes to be converted to seconds.
+             * @returns {number} Seconds converted from minutes.
+             */
+            convertMinutesToSeconds(minutes)
+            {
+                return this.startTimeInMinutes * 60;
+            }
         }));
     });
 </script>
