@@ -69,7 +69,7 @@
             isBreak: false,
             currentSessionCount: 0,
             remainingTimeInSeconds: 0,
-            timerPaused: false,
+            timerPaused: true,
 
             // Sound Effects
             onClickSoundEffect: null,
@@ -118,7 +118,9 @@
                 this.initialiseVariables();
                 this.watchVariables();
 
-                if (!this.timerPaused) this.startCountdown();
+                if (this.timerPaused && !this.intervalStarted) return;
+
+                this.startCountdown();
             },
 
             initialiseVariables() {
@@ -150,8 +152,11 @@
                 this.isBreak =
                     this.toBool(localStorage.getItem('isBreak')) || false;
 
+                this.intervalStarted =
+                    this.toBool(localStorage.getItem('intervalStarted')) || false;
+
                 this.timerPaused =
-                    this.toBool(localStorage.getItem('timerPaused')) || false;
+                    this.toBool(localStorage.getItem('timerPaused')) || true;
 
                 this.endTime = Number(localStorage.getItem('endTime')) || null;
             },
@@ -173,6 +178,10 @@
                     localStorage.setItem('timerPaused', value);
                 });
 
+                this.$watch('intervalStarted', (value) => {
+                    localStorage.setItem('intervalStarted', value);
+                });
+
                 this.$watch('endTime', (value) => {
                     localStorage.setItem('endTime', value);
                 });
@@ -186,7 +195,7 @@
             */
 
             startCountdown() {
-                if (this.intervalStarted) return;
+                if (this.intervalStarted && !this.timerPaused) return;
 
                 this.playOnClickSound();
 
@@ -197,26 +206,25 @@
                 this.startInterval();
             },
             pauseCountdown() {
-                if (!this.intervalStarted) return;
+                if (!this.intervalStarted || this.timerPaused) return;
 
                 this.timerPaused = true;
-
                 this.playOffClickSound();
                 this.stopTickingSound();
-
                 this.destroyInterval();
             },
             resetCountdown() {
                 if (this.intervalStarted) {
                     this.stopTickingSound();
+                    this.intervalStarted = false;
                     this.destroyInterval();
                 }
 
-                this.timerPaused = false;
+                this.timerPaused = true;
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
             },
             resetCountdownWithSound() {
-                if (this.intervalStarted || this.timerPaused)
+                if (this.intervalStarted)
                     this.playResetTimerSoundEffect();
 
                 this.resetCountdown();
@@ -264,7 +272,9 @@
             startInterval() {
                 this.timerPaused = false;
                 this.intervalStarted = true;
+
                 let tickingStarted = false;
+
                 this.interval = setInterval(() => {
                     this.remainingTimeInSeconds = Math.max(
                         0,
