@@ -130,7 +130,7 @@
                         ? this.$store.timerSettings.shortBreakDuration
                         : this.$store.timerSettings.longBreakDuration;
 
-                return this.$store.timerSettings.pomodoroDuration;
+                return 25;
             },
             get startTimeInSeconds() {
                 // Converts the start time in minutes to seconds
