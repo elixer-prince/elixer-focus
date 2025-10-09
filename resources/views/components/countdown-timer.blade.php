@@ -213,9 +213,11 @@
             |
             */
 
-            // TODO: Give the user the ability to choose the sound used
-            // here. Each theme could have predefined sounds but there could be
-            // a mixed theme that allows aspects from each theme.
+            /*
+                TODO: Give the user the ability to choose the sound used here.
+                 Each theme could have predefined sounds but there could be
+                 a mixed theme that allows aspects from each theme.
+             */
             playBeepSound() {
                 const beepSoundEffect = new Audio(
                     '{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}',
