@@ -6,7 +6,9 @@
         <h1 class="font-bold">Elixer Focus</h1>
     </header>
 
-    <x-timer-settings />
+    <x-countdown-timer />
+
+    {{-- <x-timer-settings /> --}}
 
     <x-music-playlist />
 </x-layouts.app>
