@@ -12,8 +12,7 @@
             Switch
         </button>
 
-        {{-- TODO: Make the 4 dynamic. --}}
-        <span class="font-bold" x-text="`${pomodoroCount} / 4`"></span>
+        <span class="font-bold" x-text="`${pomodoroCount} / ${$store.countdownTimerSettings.sessionCountLimit}`"></span>
     </div>
 
     <div
@@ -55,6 +54,7 @@
             |
             */
 
+            sessionCountLimit: 4,
             focusDuration: 50,
             shortBreakDuration: 10,
             longBreakDuration: 30,
