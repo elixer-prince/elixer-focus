@@ -61,6 +61,7 @@
             shortBreakDuration: 10,
             longBreakDuration: 30,
         });
+
         Alpine.data('countdownTimer', () => ({
             endTime: 0,
             interval: null,
