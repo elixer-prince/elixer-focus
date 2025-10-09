@@ -24,32 +24,6 @@
         x-text="formatTime(remainingTimeInSeconds)"
     ></div>
 
-    {{-- TODO: Add a sound effects via JavaScript instead --}}
-    <audio
-        x-ref="beepSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}"
-    ></audio>
-
-    <audio
-        x-ref="onClickSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/sound-effects/on-click.mp3") }}"
-    ></audio>
-
-    <audio
-        x-ref="offClickSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/sound-effects/off-click.mp3") }}"
-    ></audio>
-
-    <audio
-        x-ref="tickingSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}"
-    ></audio>
-
-    <audio
-        x-ref="resetTimerSoundEffect"
-        src="{{ Vite::asset("resources/assets/audio/sound-effects/reset-timer.mp3") }}"
-    ></audio>
-
     <div class="mx-auto flex w-fit gap-4">
         <x-button @click="startCountdown()" class="bg-neutral-500 text-white">
             Start
@@ -83,8 +57,13 @@
             pomodoroCount: 0,
             remainingTimeInSeconds: 0,
             timerPaused: false,
+            tickingSoundEffect: null,
 
             init() {
+                this.tickingSoundEffect = new Audio(
+                    '{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}',
+                );
+
                 this.remainingTimeInSeconds =
                     Number(localStorage.getItem('remainingTimeInSeconds')) ||
                     this.startTimeInSeconds;
@@ -192,23 +171,35 @@
             // here. Each theme could have predefined sounds but there could be
             // a mixed theme that allows aspects from each theme.
             playBeepSound() {
-                this.$refs.beepSoundEffect.play();
+                const beepSoundEffect = new Audio(
+                    '{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}',
+                );
+                beepSoundEffect.play();
             },
             playOnClickSound() {
-                this.$refs.onClickSoundEffect.play();
+                const onClickSoundEffect = new Audio(
+                    '{{ Vite::asset("resources/assets/audio/sound-effects/on-click.mp3") }}',
+                );
+                onClickSoundEffect.play();
             },
             playOffClickSound() {
-                this.$refs.offClickSoundEffect.play();
+                const offClickSoundEffect = new Audio(
+                    '{{ Vite::asset("resources/assets/audio/sound-effects/off-click.mp3") }}',
+                );
+                offClickSoundEffect.play();
             },
             playTickingSound() {
                 this.$refs.tickingSoundEffect.play();
             },
             stopTickingSound() {
-                this.$refs.tickingSoundEffect.pause();
-                this.$refs.tickingSoundEffect.currentTime = 0;
+                this.tickingSoundEffect.pause();
+                this.tickingSoundEffect.currentTime = 0;
             },
             playResetTimerSoundEffect() {
-                this.$refs.resetTimerSoundEffect.play();
+                const resetTimerSoundEffect = new Audio(
+                    '{{ Vite::asset("resources/assets/audio/sound-effects/reset-timer.mp3") }}',
+                );
+                resetTimerSoundEffect.play();
             },
 
             /*
