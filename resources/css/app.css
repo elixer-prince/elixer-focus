@@ -6,6 +6,6 @@
 @source '../**/*.js';
 
 @theme {
-    /* Choose a good font */
+    /* TODO: Choose a good font */
     --font-prmary: sans-serif;
 }
