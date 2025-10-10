@@ -15,4 +15,4 @@ document.addEventListener("alpine:init", () => {
         shortBreakDuration: 10,
         longBreakDuration: 30,
     });
-})
+});
