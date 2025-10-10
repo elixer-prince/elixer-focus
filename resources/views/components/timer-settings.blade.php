@@ -3,15 +3,16 @@
 
     <div x-data class="flex items-end gap-4">
         <div class="flex flex-col">
-            <label for="pomodoro-duration">Focus Duration</label>
+            <label for="focus-duration">Focus Duration</label>
             <input
-                id="pomodoro-duration"
+                id="focus-duration"
                 type="number"
                 class="rounded-md border-2 px-2 py-1 font-bold"
-                placeholder="Pomodoro Duration"
-                :value="$store.timerSettings.pomodoroDuration"
+                placeholder="Focus Duration"
+                :value="$store.countdownTimerSettings.focusDuration"
             />
         </div>
+
         <div class="flex flex-col">
             <label for="short-break">Short Break</label>
             <input
@@ -19,9 +20,10 @@
                 class="rounded-md border-2 px-2 py-1 font-bold"
                 type="number"
                 placeholder="Short break"
-                :value="$store.timerSettings.shortBreakDuration"
+                :value="$store.countdownTimerSettings.shortBreakDuration"
             />
         </div>
+
         <div class="flex flex-col">
             <label for="long-break">Long Break</label>
             <input
@@ -29,7 +31,7 @@
                 class="rounded-md border-2 px-2 py-1 font-bold"
                 type="number"
                 placeholder="Long break"
-                :value="$store.timerSettings.longBreakDuration"
+                :value="$store.countdownTimerSettings.longBreakDuration"
             />
         </div>
 
