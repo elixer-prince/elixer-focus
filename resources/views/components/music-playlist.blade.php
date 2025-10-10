@@ -47,18 +47,18 @@
                     }
                 });
 
-                // Create player if the Iframe API is already loaded
-                if (window.YT && YT.Player) {
-                    this.createPlayer();
-                }
+                // If the API is already loaded, create the player
+                if (window.YT && YT.Player) return this.createPlayer();
+
+                // Wait for global callback
+                window._createPlayerAfterAPI = () => this.createPlayer();
             },
 
             createPlayer() {
-                const videoId = this.extractVideoId(
-                    this.playlist[this.chosenSongIndex].src,
-                );
+                const videoId = this.extractVideoId(this.playlist[this.chosenSongIndex].src);
                 this.player = new YT.Player('player', {
                     videoId: videoId,
+                    host: 'https://www.youtube-nocookie.com',
                     playerVars: { autoplay: 1, playsinline: 1 },
                     events: {
                         onReady: (event) => event.target.playVideo(),
@@ -71,11 +71,12 @@
                 return match ? match[1] : null;
             },
         }));
+
     });
 
     function onYouTubeIframeAPIReady() {
-        document
-            .querySelector('[x-data="musicPlaylist"]')
-            .__x.$data.createPlayer();
+        if (window._createPlayerAfterAPI) {
+            window._createPlayerAfterAPI();
+        }
     }
 </script>
