@@ -1,4 +1,5 @@
 import "./bootstrap";
-import "./stores/countdown-timer.js";
+import "./stores/index.js";
+import "./components/index.js";
 
 import.meta.glob(["../assets/**"]);
