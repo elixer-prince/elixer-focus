@@ -279,7 +279,7 @@
                 this.timerPaused = false;
                 this.intervalStarted = true;
 
-                let tickingStarted = false;
+                let tickingStarted;
 
                 this.interval = setInterval(() => {
                     this.remainingTimeInSeconds = Math.max(
@@ -300,10 +300,11 @@
                     if (this.remainingTimeInSeconds <= 0) {
                         if (!this.isBreak) this.currentSessionCount++;
 
-                        if (this.currentSessionCount > 4) this.currentSessionCount = 0;
+                        if (this.currentSessionCount === 4) this.currentSessionCount = 0;
 
                         this.toggleSessionType();
                         this.playBeepSound();
+                        this.resetCountdown();
 
                         // TODO: Send a notification or email that the timer ended
                         // TODO:Maybe make this user defined in the future
