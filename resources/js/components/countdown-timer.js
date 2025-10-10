@@ -1,3 +1,9 @@
+import onClickSoundURL from "./../../assets/audio/sound-effects/on-click.mp3";
+import offClickSoundURL from "./../../assets/audio/off-click.mp3";
+import tickingSoundURL from "./../../assets/audio/ticking-effects/on-click.mp3";
+import beepSoundURL from "./../../assets/audio/beep-sounds/on-click.mp3";
+import resetTimerSoundURL from "./../../assets/audio/reset-timer/on-click.mp3";
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('countdownTimer', () => ({
         endTime: 0,
@@ -62,21 +68,11 @@ document.addEventListener('alpine:init', () => {
 
         initialiseVariables() {
             // Sound Effects
-            this.onClickSoundEffect = new Audio(
-                '{{ Vite::asset("resources/assets/audio/sound-effects/on-click.mp3") }}',
-            );
-            this.offClickSoundEffect = new Audio(
-                '{{ Vite::asset("resources/assets/audio/sound-effects/off-click.mp3") }}',
-            );
-            this.tickingSoundEffect = new Audio(
-                '{{ Vite::asset("resources/assets/audio/sound-effects/ticking.mp3") }}',
-            );
-            this.beepSoundEffect = new Audio(
-                '{{ Vite::asset("resources/assets/audio/sound-effects/beep.mp3") }}',
-            );
-            this.resetTimerSoundEffect = new Audio(
-                '{{ Vite::asset("resources/assets/audio/sound-effects/reset-timer.mp3") }}',
-            );
+            this.onClickSoundEffect = new Audio(onClickSoundURL);
+            this.offClickSoundEffect = new Audio(offClickSoundURL);
+            this.tickingSoundEffect = new Audio(tickingSoundURL);
+            this.beepSoundEffect = new Audio(beepSoundURL);
+            this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
 
             // Timer
             this.remainingTimeInSeconds =
