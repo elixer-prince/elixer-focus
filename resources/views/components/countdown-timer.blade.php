@@ -229,10 +229,12 @@
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
             },
             resetCountdownWithSound() {
-                if (this.intervalStarted)
-                    this.playResetTimerSoundEffect();
+                if (confirm("Are you sure you want to reset the timer?")) {
+                    if (this.intervalStarted)
+                        this.playResetTimerSoundEffect();
 
-                this.resetCountdown();
+                    this.resetCountdown();
+                }
             },
 
             /*
@@ -330,7 +332,8 @@
              * and vice versa.
              */
             toggleSessionType() {
-                this.isBreak = !this.isBreak;
+                if (confirm("Are you sure you want to switch the session type?"))
+                    this.isBreak = !this.isBreak;
             },
 
             /**
