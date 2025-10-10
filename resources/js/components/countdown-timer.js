@@ -1,8 +1,8 @@
 import onClickSoundURL from "./../../assets/audio/sound-effects/on-click.mp3";
-import offClickSoundURL from "./../../assets/audio/off-click.mp3";
-import tickingSoundURL from "./../../assets/audio/ticking-effects/on-click.mp3";
-import beepSoundURL from "./../../assets/audio/beep-sounds/on-click.mp3";
-import resetTimerSoundURL from "./../../assets/audio/reset-timer/on-click.mp3";
+import offClickSoundURL from "./../../assets/audio/sound-effects/off-click.mp3";
+import tickingSoundURL from "./../../assets/audio/sound-effects/ticking.mp3";
+import beepSoundURL from "./../../assets/audio/sound-effects/beep.mp3";
+import resetTimerSoundURL from "./../../assets/audio/sound-effects/reset-timer.mp3";
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('countdownTimer', () => ({
