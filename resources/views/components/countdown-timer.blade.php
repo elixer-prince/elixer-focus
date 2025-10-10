@@ -352,7 +352,7 @@
              * @returns {number} Seconds converted from minutes.
              */
             convertMinutesToSeconds(minutes) {
-                return this.startTimeInMinutes * 60;
+                return minutes * 60;
             },
 
             /**
