@@ -300,11 +300,11 @@
                     if (this.remainingTimeInSeconds <= 0) {
                         if (!this.isBreak) this.currentSessionCount++;
 
-                        if (this.currentSessionCount === 4) this.currentSessionCount = 0;
-
                         this.toggleSessionType();
-                        this.playBeepSound();
                         this.resetCountdown();
+                        this.playBeepSound();
+
+                        if (this.currentSessionCount >= 4) this.currentSessionCount = 0;
 
                         // TODO: Send a notification or email that the timer ended
                         // TODO:Maybe make this user defined in the future
