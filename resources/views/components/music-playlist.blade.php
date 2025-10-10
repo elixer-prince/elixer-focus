@@ -1,12 +1,14 @@
 <div x-data="musicPlaylist">
-    <template x-for="(song, index) in playlist" :key="index">
-        <label>
-            <input type="radio" :value="index" x-model="chosenSongIndex" />
-            <span x-text="song.title"></span>
-        </label>
-    </template>
+    <div class="mb-2">
+        <template x-for="(song, index) in playlist" :key="index">
+            <label>
+                <input type="radio" :value="index" x-model="chosenSongIndex" />
+                <span x-text="song.title"></span>
+            </label>
+        </template>
+    </div>
 
-    <div class="" id="player"></div>
+    <div class="rounded-xl mb-8" id="player"></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
