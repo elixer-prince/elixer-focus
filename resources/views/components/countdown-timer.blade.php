@@ -27,7 +27,7 @@
     ></div>
 
     <div class="mx-auto flex w-fit gap-4">
-        <x-button @click="startCountdown()" class="bg-neutral-500 text-white">
+        <x-button @click="startCountdownWithSound()" class="bg-neutral-500 text-white">
             Start
         </x-button>
 
@@ -200,13 +200,15 @@
             startCountdown() {
                 if (this.intervalStarted && !this.timerPaused) return;
 
-                this.playOnClickSound();
-
                 // Calculate the end time based on the current time and remaining time
                 // because browser throttling makes decrementing inaccurate.
                 this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
 
                 this.startInterval();
+            },
+            startCountdownWithSound() {
+                if (this.timerPaused) this.playOnClickSound();
+                this.startCountdown();
             },
             pauseCountdown() {
                 if (!this.intervalStarted || this.timerPaused) return;
