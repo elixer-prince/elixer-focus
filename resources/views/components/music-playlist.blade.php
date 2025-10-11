@@ -1,9 +1,13 @@
 <div x-data="musicPlaylist">
     <div class="mb-2">
         <template x-for="(song, index) in playlist" :key="index">
-            <label>
+            <label class="block">
                 <input type="radio" :value="index" x-model="chosenSongIndex" />
                 <span x-text="song.title"></span>
+
+                <template x-if="song.isRecommended">
+                    <span class="border-2 text-neutral-500 font-bold text-xs rounded-full px-2 py-1">Recommended</span>
+                </template>
             </label>
         </template>
     </div>
