@@ -1,5 +1,7 @@
 <div x-data="musicPlaylist">
     <div class="mb-2">
+        <p class="font-bold">Choose a song</p>
+
         <template x-for="(song, index) in playlist" :key="index">
             <label class="block">
                 <input type="radio" :value="index" x-model="chosenSongIndex" />
