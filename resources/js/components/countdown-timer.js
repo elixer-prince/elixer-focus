@@ -279,6 +279,9 @@ document.addEventListener('alpine:init', () => {
         stopSound() {
             this.tickingSoundEffect.pause();
             this.tickingSoundEffect.currentTime = 0;
+        stopSound(effect) {
+            effect.pause();
+            effect.currentTime = 0;
         },
     }));
 });
