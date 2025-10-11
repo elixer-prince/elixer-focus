@@ -137,20 +137,20 @@ document.addEventListener('alpine:init', () => {
             this.startInterval();
         },
         startCountdownWithSound() {
-            if (this.timerPaused) this.playOnClickSound();
+            if (this.timerPaused) this.playSound(this.onClickSoundEffect);
             this.startCountdown();
         },
         pauseCountdown() {
             if (!this.intervalStarted || this.timerPaused) return;
 
             this.timerPaused = true;
-            this.playOffClickSound();
-            this.stopTickingSound();
+            this.playSound(this.offClickSoundEffect);
+            this.stopSound(this.tickingSoundEffect);
             this.destroyInterval();
         },
         resetCountdown() {
             if (this.intervalStarted) {
-                this.stopTickingSound();
+                this.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
             }
@@ -161,42 +161,10 @@ document.addEventListener('alpine:init', () => {
         resetCountdownWithSound() {
             if (confirm("Are you sure you want to reset the timer?")) {
                 if (this.intervalStarted)
-                    this.playResetTimerSoundEffect();
+                    this.playSound(this.resetTimerSoundEffect);
 
                 this.resetCountdown();
             }
-        },
-
-        /*
-        |---------------------------------
-        | Sound Methods
-        |---------------------------------
-        |
-        */
-
-        /*
-            TODO: Give the user the ability to choose the sound used here.
-             Each theme could have predefined sounds but there could be
-             a mixed theme that allows aspects from each theme.
-         */
-        playBeepSound() {
-            this.beepSoundEffect.play();
-        },
-        playOnClickSound() {
-            this.onClickSoundEffect.play();
-        },
-        playOffClickSound() {
-            this.offClickSoundEffect.play();
-        },
-        playTickingSound() {
-            this.tickingSoundEffect.play();
-        },
-        stopTickingSound() {
-            this.tickingSoundEffect.pause();
-            this.tickingSoundEffect.currentTime = 0;
-        },
-        playResetTimerSoundEffect() {
-            this.resetTimerSoundEffect.play();
         },
 
         /*
@@ -221,12 +189,12 @@ document.addEventListener('alpine:init', () => {
 
                 if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
                     tickingStarted = true;
-                    this.playTickingSound();
+                    this.playSound(this.tickingSoundEffect);
                 }
 
                 if (this.remainingTimeInSeconds > 5 && tickingStarted) {
                     tickingStarted = false;
-                    this.stopTickingSound();
+                    this.stopSound(this.tickingSoundEffect);
                 }
 
                 if (this.remainingTimeInSeconds <= 0) {
@@ -234,7 +202,7 @@ document.addEventListener('alpine:init', () => {
 
                     this.toggleSessionType();
                     this.resetCountdown();
-                    this.playBeepSound();
+                    this.playSound(this.beepSoundEffect);
 
                     if (this.currentSessionCount >= 4) this.currentSessionCount = 0;
 
@@ -301,6 +269,16 @@ document.addEventListener('alpine:init', () => {
          */
         toBool(value) {
             return value === 'true';
+        },
+
+        playSound(effect) {
+            effect.currentTime = 0;
+            effect.play();
+        },
+
+        stopSound() {
+            this.tickingSoundEffect.pause();
+            this.tickingSoundEffect.currentTime = 0;
         },
     }));
 });
