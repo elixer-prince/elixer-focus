@@ -265,8 +265,10 @@ document.addEventListener('alpine:init', () => {
             this.isBreak = !this.isBreak;
         },
         toggleSessionTypeWithConfirmation() {
-            if (confirm("Are you sure you want to switch the session type?"))
+            if (confirm("Are you sure you want to switch the session type?")) {
                 this.toggleSessionType();
+                this.resetCountdown();
+            }
         },
 
         /**

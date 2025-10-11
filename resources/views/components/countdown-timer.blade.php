@@ -7,10 +7,7 @@
 
         <button
             class="cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors hover:bg-neutral-950/25"
-            @click="
-                toggleSessionTypeWithConfirmation();
-                resetCountdown();
-            "
+            @click="toggleSessionTypeWithConfirmation()"
         >
             Switch
         </button>
