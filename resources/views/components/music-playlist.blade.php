@@ -22,14 +22,17 @@
                 {
                     title: 'Calming White Noise',
                     src: 'https://www.youtube.com/watch?v=yLOM8R6lbzg',
+                    isRecommended: true,
                 },
                 {
                     title: '90s Chill Lofi Playlist',
                     src: 'https://www.youtube.com/watch?v=sF80I-TQiW0',
+                    isRecommended: false,
                 },
                 {
                     title: 'Lofi Hip Hop (Lofi Girl)',
                     src: 'https://www.youtube.com/watch?v=n61ULEU7CO0',
+                    isRecommended: false,
                 },
             ],
 
