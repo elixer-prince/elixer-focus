@@ -31,10 +31,9 @@ document.addEventListener('alpine:init', () => {
          */
         get startTimeInMinutes() {
             /*
-                FIXME: The timer looks incorrectly formatted if there is a non-perfect
-                 decimal or a decimal with more than two places of precision s provided.
-
-                TODO: I might fix the check for pomodoro session limit here.
+                FIXME: The timer looks incorrectly formatted if there is a
+                 non-perfect decimal or a decimal with more than two places of
+                 precision provided.
             */
             if (this.isBreak)
                 return this.currentSessionCount < this.$store.countdownTimerSettings.sessionCountLimit
