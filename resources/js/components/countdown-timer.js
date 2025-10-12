@@ -31,11 +31,6 @@ document.addEventListener('alpine:init', () => {
          * @returns {number} The minutes to be converted to seconds.
          */
         get startTimeInMinutes() {
-            /*
-                FIXME: The timer looks incorrectly formatted if there is a
-                 non-perfect decimal or a decimal with more than two places of
-                 precision provided.
-            */
             if (this.isBreak)
                 return this.currentSessionCount < this.$store.countdownTimerSettings.sessionCountLimit
                     ? this.$store.countdownTimerSettings.shortBreakDuration
