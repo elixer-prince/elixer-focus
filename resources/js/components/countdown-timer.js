@@ -203,7 +203,8 @@ document.addEventListener('alpine:init', () => {
                     this.resetCountdown();
                     this.playSound(this.beepSoundEffect);
 
-                    if (this.currentSessionCount >= 4) this.currentSessionCount = 0;
+                    if (this.currentSessionCount >= 4)
+                        this.resetCurrentSessionCount();
 
                     // TODO: Send a notification or email that the timer ended
                     // TODO:Maybe make this user defined in the future
@@ -213,6 +214,10 @@ document.addEventListener('alpine:init', () => {
                     return setTimeout(() => alert("Time's up!"), 1000);
                 }
             }, 1000);
+        },
+
+        resetCurrentSessionCount() {
+            this.currentSessionCount = 0;
         },
 
         /**
