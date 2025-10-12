@@ -159,12 +159,16 @@ document.addEventListener('alpine:init', () => {
             this.remainingTimeInSeconds = this.startTimeInSeconds;
         },
         resetCountdownWithSound() {
-            if (confirm("Are you sure you want to reset the timer?")) {
-                if (this.intervalStarted)
-                    this.playSound(this.resetTimerSoundEffect);
+            if (this.intervalStarted) {
+                if (confirm("Are you sure you want to reset the timer?")) {
+                    if (this.intervalStarted)
+                        this.playSound(this.resetTimerSoundEffect);
 
-                this.resetCountdown();
+                    this.resetCountdown();
+                }
             }
+
+            alert("The timer isn't running!");
         },
 
         /*
