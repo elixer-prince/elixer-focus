@@ -178,7 +178,7 @@ document.addEventListener('alpine:init', () => {
             this.timerPaused = false;
             this.intervalStarted = true;
 
-            let tickingStarted;
+            let tickingStarted = false;
 
             this.interval = setInterval(() => {
                 this.remainingTimeInSeconds = Math.max(
