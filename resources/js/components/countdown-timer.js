@@ -149,6 +149,7 @@ document.addEventListener('alpine:init', () => {
 
             this.startCountdown();
         },
+
         pauseCountdown() {
             if (!this.intervalStarted || this.timerPaused) return;
 
@@ -157,6 +158,7 @@ document.addEventListener('alpine:init', () => {
             this.stopSound(this.tickingSoundEffect);
             this.destroyInterval();
         },
+
         resetCountdown() {
             if (this.intervalStarted) {
                 this.stopSound(this.tickingSoundEffect);
