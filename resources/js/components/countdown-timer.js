@@ -161,9 +161,9 @@ document.addEventListener('alpine:init', () => {
 
                     this.resetCountdown();
                 }
+            } else {
+                alert("The timer isn't running!");
             }
-
-            alert("The timer isn't running!");
         },
 
         /*
