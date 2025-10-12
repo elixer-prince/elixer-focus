@@ -12,12 +12,16 @@
             Switch
         </button>
 
-        <span class="font-bold" x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit}`"></span>
+        <span
+            class="font-bold"
+            x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit} &mdash; Total Sessions: ${totalSessionsCompleted}`"
+        ></span>
     </div>
 
     <div
         :class="[
-            remainingTimeInSeconds <= 10 && !timerPaused ? 'animate-pulse' : '', remainingTimeInSeconds <= 10 ? 'text-red-500' : ''
+            remainingTimeInSeconds <= 10 && !timerPaused ? 'animate-pulse' : '',
+            remainingTimeInSeconds <= 10 ? 'text-red-500' : ''
         ]"
         class="mx-auto my-8 flex aspect-square w-fit max-w-full items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
         x-text="formatTime(remainingTimeInSeconds)"

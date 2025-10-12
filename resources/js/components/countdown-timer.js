@@ -12,6 +12,7 @@ document.addEventListener('alpine:init', () => {
         intervalStarted: false,
         isBreak: false,
         currentSessionCount: 0,
+        totalSessionsCompleted: 0,
         remainingTimeInSeconds: 0,
         timerPaused: true,
 
@@ -77,6 +78,9 @@ document.addEventListener('alpine:init', () => {
             this.currentSessionCount =
                JSON.parse(localStorage.getItem('currentSessionCount')) || 0;
 
+            this.totalSessionsCompleted =
+                JSON.parse(localStorage.getItem('totalSessionsCompleted')) || 0;
+
             this.isBreak =
                 localStorage.getItem('isBreak')
                     ? JSON.parse(localStorage.getItem('isBreak'))
@@ -102,6 +106,10 @@ document.addEventListener('alpine:init', () => {
 
             this.$watch('currentSessionCount', (value) => {
                 localStorage.setItem('currentSessionCount', JSON.stringify(value));
+            });
+
+            this.$watch('totalSessionsCompleted', (value) => {
+                localStorage.setItem('totalSessionsCompleted', JSON.stringify(value));
             });
 
             this.$watch('isBreak', (value) => {
@@ -208,7 +216,10 @@ document.addEventListener('alpine:init', () => {
                 }
 
                 if (this.remainingTimeInSeconds <= 0) {
-                    if (!this.isBreak) this.currentSessionCount++;
+                    if (!this.isBreak) {
+                        this.currentSessionCount++;
+                        this.totalSessionsCompleted++;
+                    }
 
                     this.toggleSessionType();
                     this.resetCountdown();
