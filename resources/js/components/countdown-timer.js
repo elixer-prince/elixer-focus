@@ -24,8 +24,8 @@ document.addEventListener('alpine:init', () => {
         /**
          * The start time in minutes that will be converted to seconds.
          *
-         * This is calculated based on if the user has completed an amount of session
-         * that is equal to that of the session count limit. The session count limit.
+         * This is calculated based on if the user has completed an amount of
+         * sessions that is equal to that of the session count limit.
          *
          * @returns {number} The minutes to be converted to seconds.
          */
