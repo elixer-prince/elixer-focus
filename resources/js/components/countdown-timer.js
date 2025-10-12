@@ -288,16 +288,6 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * This turns the value provided into a boolean.
-         *
-         * @param value - The value to be converted.
-         * @returns {boolean} The result of the conversion.
-         */
-        toBool(value) {
-            return value === 'true';
-        },
-
-        /**
          * Plays the specified sound.
          *
          * This method takes the URL path of a sound and plays it from
