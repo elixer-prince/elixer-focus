@@ -207,9 +207,6 @@ document.addEventListener('alpine:init', () => {
                     if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
                         this.resetCurrentSessionCount();
 
-                    // TODO: Send a notification or email that the timer ended
-                    // TODO:Maybe make this user defined in the future
-
                     // The timeout is set to one second because the alert
                     // would block the sound from playing immediately otherwise.
                     return setTimeout(() => alert("Time's up!"), 1000);
