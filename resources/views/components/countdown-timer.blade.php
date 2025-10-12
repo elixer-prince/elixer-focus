@@ -14,7 +14,7 @@
 
         <span
             class="font-bold"
-            x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit} &mdash; Total Sessions: ${totalSessionsCompleted}`"
+            x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit} &mdash; Total Focus Sessions: ${totalSessionsCompleted}`"
         ></span>
     </div>
 
