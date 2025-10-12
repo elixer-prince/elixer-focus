@@ -71,47 +71,53 @@ document.addEventListener('alpine:init', () => {
 
             // TIMER VARIABLES
             this.remainingTimeInSeconds =
-                Number(localStorage.getItem('remainingTimeInSeconds')) ||
+                JSON.parse(localStorage.getItem('remainingTimeInSeconds')) ||
                 this.startTimeInSeconds;
 
             this.currentSessionCount =
-                Number(localStorage.getItem('currentSessionCount')) || 0;
+               JSON.parse(localStorage.getItem('currentSessionCount')) || 0;
 
             this.isBreak =
-                this.toBool(localStorage.getItem('isBreak')) || false;
+                localStorage.getItem('isBreak')
+                    ? JSON.parse(localStorage.getItem('isBreak'))
+                    : false;
 
             this.intervalStarted =
-                this.toBool(localStorage.getItem('intervalStarted')) || false;
+                localStorage.getItem('intervalStarted')
+                    ? JSON.parse(localStorage.getItem('intervalStarted'))
+                    : false;
 
             this.timerPaused =
-                this.toBool(localStorage.getItem('timerPaused')) || true;
+                localStorage.getItem('timerPaused')
+                    ? JSON.parse(localStorage.getItem('timerPaused'))
+                    : true;
 
-            this.endTime = Number(localStorage.getItem('endTime')) || null;
+            this.endTime = JSON.parse(localStorage.getItem('endTime')) || null;
         },
 
         watchVariables() {
             this.$watch('remainingTimeInSeconds', (value) => {
-                localStorage.setItem('remainingTimeInSeconds', value);
+                localStorage.setItem('remainingTimeInSeconds', JSON.stringify(value));
             });
 
             this.$watch('currentSessionCount', (value) => {
-                localStorage.setItem('currentSessionCount', value);
+                localStorage.setItem('currentSessionCount', JSON.stringify(value));
             });
 
             this.$watch('isBreak', (value) => {
-                localStorage.setItem('isBreak', value);
+                localStorage.setItem('isBreak', JSON.stringify(value));
             });
 
             this.$watch('timerPaused', (value) => {
-                localStorage.setItem('timerPaused', value);
+                localStorage.setItem('timerPaused', JSON.stringify(value));
             });
 
             this.$watch('intervalStarted', (value) => {
-                localStorage.setItem('intervalStarted', value);
+                localStorage.setItem('intervalStarted', JSON.stringify(value));
             });
 
             this.$watch('endTime', (value) => {
-                localStorage.setItem('endTime', value);
+                localStorage.setItem('endTime', JSON.stringify(value));
             });
         },
 
