@@ -129,8 +129,6 @@ document.addEventListener('alpine:init', () => {
         */
 
         startCountdown() {
-            if (this.intervalStarted && !this.timerPaused) return;
-
             // Calculate the end time based on the current time and remaining time
             // because browser throttling makes decrementing inaccurate.
             this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
@@ -147,6 +145,8 @@ document.addEventListener('alpine:init', () => {
         },
         startCountdownWithSound() {
             if (this.timerPaused) this.playSound(this.onClickSoundEffect);
+            if (this.intervalStarted && !this.timerPaused) return;
+
             this.startCountdown();
         },
         pauseCountdown() {
