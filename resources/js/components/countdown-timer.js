@@ -271,14 +271,27 @@ document.addEventListener('alpine:init', () => {
             return value === 'true';
         },
 
+        /**
+         * Plays the specified sound.
+         *
+         * This method takes the URL path of a sound and plays it from
+         * the beginning.
+         *
+         * @param effect - The sound effect to be played.
+         */
         playSound(effect) {
             effect.currentTime = 0;
             effect.play();
         },
 
-        stopSound() {
-            this.tickingSoundEffect.pause();
-            this.tickingSoundEffect.currentTime = 0;
+        /**
+         * Stops the specified sound.
+         *
+         * This function pauses the specified sound effect and reset the
+         * current time to zero to simulate stopping.
+         *
+         * @param effect - The sound effect to be stopped.
+         */
         stopSound(effect) {
             effect.pause();
             effect.currentTime = 0;
