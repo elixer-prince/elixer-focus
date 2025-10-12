@@ -189,6 +189,8 @@ document.addEventListener('alpine:init', () => {
         |
         */
 
+        // INTERVAL CONTROLS
+
         startInterval() {
             this.timerPaused = false;
             this.intervalStarted = true;
@@ -226,28 +228,13 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * Updates the remaining time in seconds based on the end time.
-         */
-        updateRemainingTimeInSeconds() {
-            this.remainingTimeInSeconds = Math.max(
-                0,
-                Math.round((this.endTime - Date.now()) / 1000),
-            );
-        },
-
-        /**
-         * Resets the current session count back to zero.
-         */
-        resetCurrentSessionCount() {
-            this.currentSessionCount = 0;
-        },
-
-        /**
          * Destroy the existing timer interval.
          */
         destroyInterval() {
             clearInterval(this.interval);
         },
+
+        // SESSION CONTROLS
 
         /**
          * Toggle the session type.
@@ -265,27 +252,26 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // TIMER CONTROLS
+
         /**
-         * Formats the seconds provided to a human-readable string value.
-         *
-         * @param {number} seconds - The seconds to be formatted.
-         * @returns {string} The seconds formatted as a string.
+         * Updates the remaining time in seconds based on the end time.
          */
-        formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secondsRemainder = seconds % 60;
-            return `${minutes.toString().padStart(2, '0')}:${secondsRemainder.toString().padStart(2, '0')}`;
+        updateRemainingTimeInSeconds() {
+            this.remainingTimeInSeconds = Math.max(
+                0,
+                Math.round((this.endTime - Date.now()) / 1000),
+            );
         },
 
         /**
-         * Converts minutes to seconds.
-         *
-         * @param {number} minutes - The minutes to be converted to seconds.
-         * @returns {number} Seconds converted from minutes.
+         * Resets the current session count back to zero.
          */
-        convertMinutesToSeconds(minutes) {
-            return minutes * 60;
+        resetCurrentSessionCount() {
+            this.currentSessionCount = 0;
         },
+
+        // SOUND CONTROLS
 
         /**
          * Plays the specified sound.
@@ -311,6 +297,30 @@ document.addEventListener('alpine:init', () => {
         stopSound(effect) {
             effect.pause();
             effect.currentTime = 0;
+        },
+
+        // UTILITIES
+
+        /**
+         * Converts minutes to seconds.
+         *
+         * @param {number} minutes - The minutes to be converted to seconds.
+         * @returns {number} Seconds converted from minutes.
+         */
+        convertMinutesToSeconds(minutes) {
+            return minutes * 60;
+        },
+
+        /**
+         * Formats the seconds provided to a human-readable string value.
+         *
+         * @param {number} seconds - The seconds to be formatted.
+         * @returns {string} The seconds formatted as a string.
+         */
+        formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secondsRemainder = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secondsRemainder.toString().padStart(2, '0')}`;
         },
     }));
 });
