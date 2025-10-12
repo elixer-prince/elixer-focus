@@ -6,6 +6,7 @@ import resetTimerSoundURL from "./../../assets/audio/sound-effects/reset-timer.m
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('countdownTimer', () => ({
+        // TIMER VARIABLES
         endTime: 0,
         interval: null,
         intervalStarted: false,
@@ -14,7 +15,7 @@ document.addEventListener('alpine:init', () => {
         remainingTimeInSeconds: 0,
         timerPaused: true,
 
-        // Sound Effects
+        // SOUND EFFECTS
         onClickSoundEffect: null,
         offClickSoundEffect: null,
         tickingSoundEffect: null,
@@ -66,14 +67,14 @@ document.addEventListener('alpine:init', () => {
         },
 
         initialiseVariables() {
-            // Sound Effects
+            // SOUND EFFECTS
             this.onClickSoundEffect = new Audio(onClickSoundURL);
             this.offClickSoundEffect = new Audio(offClickSoundURL);
             this.tickingSoundEffect = new Audio(tickingSoundURL);
             this.beepSoundEffect = new Audio(beepSoundURL);
             this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
 
-            // Timer
+            // TIMER VARIABLES
             this.remainingTimeInSeconds =
                 Number(localStorage.getItem('remainingTimeInSeconds')) ||
                 this.startTimeInSeconds;
@@ -121,7 +122,7 @@ document.addEventListener('alpine:init', () => {
 
         /*
         |---------------------------------
-        | Timer Controls
+        | TIMER CONTROLS
         |---------------------------------
         |
         */
@@ -168,7 +169,7 @@ document.addEventListener('alpine:init', () => {
 
         /*
         |-----------------------------------------------------
-        | Helper Methods
+        | HELPER METHODS
         |-----------------------------------------------------
         |
         */
@@ -216,6 +217,9 @@ document.addEventListener('alpine:init', () => {
             }, 1000);
         },
 
+        /**
+         * Resets the current session count back to zero.
+         */
         resetCurrentSessionCount() {
             this.currentSessionCount = 0;
         },
