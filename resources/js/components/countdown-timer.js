@@ -58,7 +58,7 @@ document.addEventListener('alpine:init', () => {
 
             if (this.timerPaused && !this.intervalStarted) return;
 
-            this.startCountdown();
+            this.startCountDownOnRefresh();
         },
 
         initialiseVariables() {
@@ -130,6 +130,14 @@ document.addEventListener('alpine:init', () => {
             this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
 
             this.startInterval();
+        },
+        startCountDownOnRefresh() {
+            console.log(`timerPaused: ${this.timerPaused}\nintervalStarted: ${this.intervalStarted}`);
+            if (!this.timerPaused && this.intervalStarted) return;
+
+            // this.startCountdown()
+
+            alert('no')
         },
         startCountdownWithSound() {
             if (this.timerPaused) this.playSound(this.onClickSoundEffect);
