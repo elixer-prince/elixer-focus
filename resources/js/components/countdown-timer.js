@@ -203,7 +203,7 @@ document.addEventListener('alpine:init', () => {
                     this.resetCountdown();
                     this.playSound(this.beepSoundEffect);
 
-                    if (this.currentSessionCount >= 4)
+                    if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
                         this.resetCurrentSessionCount();
 
                     // TODO: Send a notification or email that the timer ended
