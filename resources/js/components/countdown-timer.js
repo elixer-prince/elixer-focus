@@ -174,7 +174,6 @@ document.addEventListener('alpine:init', () => {
         |
         */
 
-        // TODO: Clean this function up!
         startInterval() {
             this.timerPaused = false;
             this.intervalStarted = true;
