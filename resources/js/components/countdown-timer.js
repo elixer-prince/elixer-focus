@@ -181,10 +181,7 @@ document.addEventListener('alpine:init', () => {
             let tickingStarted = false;
 
             this.interval = setInterval(() => {
-                this.remainingTimeInSeconds = Math.max(
-                    0,
-                    Math.round((this.endTime - Date.now()) / 1000),
-                );
+                this.updateRemainingTimeInSeconds();
 
                 if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
                     tickingStarted = true;
@@ -211,6 +208,16 @@ document.addEventListener('alpine:init', () => {
                     return setTimeout(() => alert("Time's up!"), 1000);
                 }
             }, 1000);
+        },
+
+        /**
+         * Updates the remaining time in seconds based on the end time.
+         */
+        updateRemainingTimeInSeconds() {
+            this.remainingTimeInSeconds = Math.max(
+                0,
+                Math.round((this.endTime - Date.now()) / 1000),
+            );
         },
 
         /**
