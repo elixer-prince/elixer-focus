@@ -42,5 +42,12 @@
         >
             Reset
         </x-button>
+
+        <x-button
+            @click="skipCountdown()"
+            class="bg-neutral-500 text-white"
+        >
+            Skip
+        </x-button>
     </div>
 </div>

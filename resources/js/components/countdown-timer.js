@@ -187,6 +187,35 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        /**
+         * Skips the timer before it ends if it is running.
+         */
+        skipCountdown() {
+            if (!this.intervalStarted)
+                return alert("The timer isn't running!");
+
+            if (confirm("Are you sure you want to skip the current session?")) {
+                this.playSound(this.resetTimerSoundEffect);
+                this.stopSound(this.tickingSoundEffect);
+
+                if (!this.isBreak) {
+                    this.currentSessionCount++;
+                    this.totalSessionsCompleted++;
+                }
+
+                this.destroyInterval();
+                this.intervalStarted = false;
+                this.timerPaused = true;
+
+                this.toggleSessionType();
+
+                this.remainingTimeInSeconds = this.startTimeInSeconds;
+
+                if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
+                    this.resetCurrentSessionCount();
+            }
+        },
+
         /*
         |-----------------------------------------------------
         | HELPER METHODS
