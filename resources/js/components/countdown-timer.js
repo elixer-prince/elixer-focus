@@ -57,8 +57,10 @@ document.addEventListener('alpine:init', () => {
             this.initialiseVariables();
             this.watchVariables();
 
+            // If the timer wasn't running and is currently paused do nothing.
             if (this.timerPaused && !this.intervalStarted) return;
 
+            // Otherwise, start the countdown.
             this.startCountDownOnRefresh();
         },
 
@@ -136,6 +138,9 @@ document.addEventListener('alpine:init', () => {
         |
         */
 
+        /**
+         * Sets the countdown timer end time and starts the timer.
+         */
         startCountdown() {
             // Calculate the end time based on the current time and remaining time
             // because browser throttling makes decrementing inaccurate.
@@ -144,37 +149,53 @@ document.addEventListener('alpine:init', () => {
             this.startInterval();
         },
         startCountDownOnRefresh() {
+            // If the timer was started but paused, do nothing.
             if (this.timerPaused && this.intervalStarted) return;
 
             this.startCountdown()
         },
         startCountdownWithSound() {
+            // If the timer was started but not paused, do nothing.
             if (this.intervalStarted && !this.timerPaused) return;
 
+            // Otherwise, the button sound is played before staring the timer.
             this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
             this.startCountdown();
         },
 
+        /**
+         * Pauses the countdown timer if it is currently running.
+         */
         pauseCountdown() {
+            // If the timer wasn't running or the timer is paused, do nothing.
             if (!this.intervalStarted || this.timerPaused) return;
 
+            // Otherwise, the button sound is played and the timer is paused.
             this.timerPaused = true;
             this.$store.utilityFunctions.playSound(this.offClickSoundEffect);
             this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
             this.destroyInterval();
         },
 
+        /**
+         * Resets the timer to its starting value.
+         */
         resetCountdown() {
+            // If the timer is running stop it before resetting to the
+            // start time.
             if (this.intervalStarted) {
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
             }
 
-            this.timerPaused = true;
+            // This is defined outside the if statement because the timer
+            // should be reset the start time when the function is called,
+            // even if it wasn't started.
             this.remainingTimeInSeconds = this.startTimeInSeconds;
         },
         resetCountdownWithSound() {
+            // Alert the user if the timer isn't running.
             if (!this.intervalStarted)
                 return alert("The timer isn't running!");
 
@@ -190,6 +211,7 @@ document.addEventListener('alpine:init', () => {
          * Skips the timer before it ends if it is running.
          */
         skipCountdown() {
+            // Alert the user if the timer isn't running.
             if (!this.intervalStarted)
                 return alert("The timer isn't running!");
 
