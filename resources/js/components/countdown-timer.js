@@ -190,6 +190,7 @@ document.addEventListener('alpine:init', () => {
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
+                this.timerPaused = true;
             }
 
             // This is defined outside the if statement because the timer
