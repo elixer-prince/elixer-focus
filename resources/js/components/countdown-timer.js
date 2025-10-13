@@ -204,9 +204,7 @@ document.addEventListener('alpine:init', () => {
                 return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to reset the timer?")) {
-                if (this.intervalStarted)
-                    this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
-
+                this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
                 this.resetCountdown();
             }
         },
