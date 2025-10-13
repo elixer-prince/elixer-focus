@@ -151,7 +151,7 @@ document.addEventListener('alpine:init', () => {
         startCountdownWithSound() {
             if (this.intervalStarted && !this.timerPaused) return;
 
-            this.playSound(this.onClickSoundEffect);
+            this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
             this.startCountdown();
         },
 
@@ -159,14 +159,14 @@ document.addEventListener('alpine:init', () => {
             if (!this.intervalStarted || this.timerPaused) return;
 
             this.timerPaused = true;
-            this.playSound(this.offClickSoundEffect);
-            this.stopSound(this.tickingSoundEffect);
+            this.$store.utilityFunctions.playSound(this.offClickSoundEffect);
+            this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
             this.destroyInterval();
         },
 
         resetCountdown() {
             if (this.intervalStarted) {
-                this.stopSound(this.tickingSoundEffect);
+                this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
             }
@@ -180,7 +180,7 @@ document.addEventListener('alpine:init', () => {
 
             if (confirm("Are you sure you want to reset the timer?")) {
                 if (this.intervalStarted)
-                    this.playSound(this.resetTimerSoundEffect);
+                    this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
 
                 this.resetCountdown();
             }
@@ -194,8 +194,8 @@ document.addEventListener('alpine:init', () => {
                 return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to skip the current session?")) {
-                this.playSound(this.resetTimerSoundEffect);
-                this.stopSound(this.tickingSoundEffect);
+                this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
+                this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
 
                 if (!this.isBreak) {
                     this.currentSessionCount++;
@@ -235,12 +235,12 @@ document.addEventListener('alpine:init', () => {
 
                 if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
                     tickingStarted = true;
-                    this.playSound(this.tickingSoundEffect);
+                    this.$store.utilityFunctions.playSound(this.tickingSoundEffect);
                 }
 
                 if (this.remainingTimeInSeconds > 5 && tickingStarted) {
                     tickingStarted = false;
-                    this.stopSound(this.tickingSoundEffect);
+                    this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 }
 
                 if (this.remainingTimeInSeconds <= 0) {
@@ -251,7 +251,7 @@ document.addEventListener('alpine:init', () => {
 
                     this.toggleSessionType();
                     this.resetCountdown();
-                    this.playSound(this.beepSoundEffect);
+                    this.$store.utilityFunctions.playSound(this.beepSoundEffect);
 
                     if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
                         this.resetCurrentSessionCount();
@@ -305,34 +305,6 @@ document.addEventListener('alpine:init', () => {
          */
         resetCurrentSessionCount() {
             this.currentSessionCount = 0;
-        },
-
-        // SOUND CONTROLS
-
-        /**
-         * Plays the specified sound.
-         *
-         * This method takes the URL path of a sound and plays it from
-         * the beginning.
-         *
-         * @param effect - The sound effect to be played.
-         */
-        playSound(effect) {
-            effect.currentTime = 0;
-            effect.play();
-        },
-
-        /**
-         * Stops the specified sound.
-         *
-         * This function pauses the specified sound effect and reset the
-         * current time to zero to simulate stopping.
-         *
-         * @param effect - The sound effect to be stopped.
-         */
-        stopSound(effect) {
-            effect.pause();
-            effect.currentTime = 0;
         },
     }));
 });
