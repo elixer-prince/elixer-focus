@@ -108,6 +108,9 @@ document.addEventListener('alpine:init', () => {
 
             this.$watch('currentSessionCount', (value) => {
                 localStorage.setItem('currentSessionCount', JSON.stringify(value));
+
+                if (value >= this.$store.countdownTimerSettings.sessionCountLimit)
+                    this.resetCurrentSessionCount();
             });
 
             this.$watch('totalSessionsCompleted', (value) => {
@@ -231,9 +234,6 @@ document.addEventListener('alpine:init', () => {
                 this.toggleSessionType();
 
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
-
-                if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
-                    this.resetCurrentSessionCount();
             }
         },
 
@@ -274,9 +274,6 @@ document.addEventListener('alpine:init', () => {
                     this.toggleSessionType();
                     this.resetCountdown();
                     this.$store.utilityFunctions.playSound(this.beepSoundEffect);
-
-                    if (this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit)
-                        this.resetCurrentSessionCount();
 
                     // The timeout is set to one second because the alert
                     // would block the sound from playing immediately otherwise.
