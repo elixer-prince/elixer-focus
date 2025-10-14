@@ -67,6 +67,10 @@
                 notUrgentButImportantTasks: ["Task 1", "Task 2", "Task 3"],
                 urgentButNotImportantTasks: ["Task 1", "Task 2", "Task 3"],
                 notUrgentNorImportantTasks: ["Task 1", "Task 2", "Task 3"],
+
+                deleteAllNotUrgentNorImportantTasks() {
+                    alert("Deleting all not urgent or important tasks...");
+                },
             }));
         });
     </script>
