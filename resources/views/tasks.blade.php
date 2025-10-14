@@ -4,7 +4,7 @@
     </p>
 
     <div x-data="tasks">
-        <div>
+        <div class="my-4">
             <h2 class="font-bold">Urgent and Important (Do now)</h2>
 
             <ul>
@@ -17,7 +17,7 @@
             </ul>
         </div>
 
-        <div>
+        <div class="my-4">
             <h2 class="font-bold">Not Urgent but Important (Plan/Schedule)</h2>
 
             <ul>
@@ -30,7 +30,7 @@
             </ul>
         </div>
 
-        <div>
+        <div class="my-4">
             <h2 class="font-bold">Urgent but Not Important (Delegate)</h2>
 
             <ul>
