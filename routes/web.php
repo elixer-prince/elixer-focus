@@ -13,6 +13,6 @@ Route::prefix("auth")->group(function () {
 
 // TODO: Add Settings Routes
 Route::prefix("settings")->group(function () {
-    // elixerfocus.com/settings/general
+    Route::view("/", "settings");
     // elixerfocus.com/settings/timer
 });
