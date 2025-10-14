@@ -8,7 +8,7 @@
 
     <x-countdown-timer />
 
-    {{-- <x-timer-settings /> --}}
+     <x-timer-settings />
 
     <x-music-playlist />
 </x-layouts.app>

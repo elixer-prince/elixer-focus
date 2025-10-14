@@ -15,6 +15,7 @@ document.addEventListener('alpine:init', () => {
         totalSessionsCompleted: 0,
         remainingTimeInSeconds: 0,
         timerPaused: true,
+        totalStartTimeInSeconds: 0,
 
         // SOUND EFFECTS
         onClickSoundEffect: null,
@@ -104,6 +105,8 @@ document.addEventListener('alpine:init', () => {
                     : true;
 
             this.endTime = JSON.parse(localStorage.getItem('endTime')) || null;
+
+            this.totalStartTimeInSeconds = this.startTimeInSeconds;
         },
 
         watchVariables() {
@@ -139,6 +142,63 @@ document.addEventListener('alpine:init', () => {
 
             this.$watch('endTime', (value) => {
                 localStorage.setItem('endTime', JSON.stringify(value));
+            });
+
+            this.$watch(() => this.$store.countdownTimerSettings.focusDuration, (newMinutes) => {
+                if (!this.isBreak) { // Only adjust if currently a focus session
+                    const newTotalStartTime = this.$store.timerFunctions.convertMinutesToSeconds(newMinutes);
+                    const timeDiff = newTotalStartTime - this.totalStartTimeInSeconds;
+
+                    // Adjust remaining time by the difference but never less than zero
+                    this.remainingTimeInSeconds = Math.max(0, this.remainingTimeInSeconds + timeDiff);
+
+                    // Update total start time
+                    this.totalStartTimeInSeconds = newTotalStartTime;
+
+                    // Update endTime based on new remaining time
+                    this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
+
+                    if (this.intervalStarted) {
+                        this.destroyInterval();
+                        this.startInterval();
+                    } else {
+                        this.displayTimeRemainingInPageTitle();
+                    }
+                }
+            });
+
+            // Similarly watch shortBreakDuration and longBreakDuration and adjust when `isBreak` is true
+
+            this.$watch(() => this.$store.countdownTimerSettings.shortBreakDuration, (newMinutes) => {
+                if (this.isBreak && this.currentSessionCount < this.$store.countdownTimerSettings.sessionCountLimit) {
+                    const newTotalStartTime = this.$store.timerFunctions.convertMinutesToSeconds(newMinutes);
+                    const timeDiff = newTotalStartTime - this.totalStartTimeInSeconds;
+                    this.remainingTimeInSeconds = Math.max(0, this.remainingTimeInSeconds + timeDiff);
+                    this.totalStartTimeInSeconds = newTotalStartTime;
+                    this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
+                    if (this.intervalStarted) {
+                        this.destroyInterval();
+                        this.startInterval();
+                    } else {
+                        this.displayTimeRemainingInPageTitle();
+                    }
+                }
+            });
+
+            this.$watch(() => this.$store.countdownTimerSettings.longBreakDuration, (newMinutes) => {
+                if (this.isBreak && this.currentSessionCount >= this.$store.countdownTimerSettings.sessionCountLimit) {
+                    const newTotalStartTime = this.$store.timerFunctions.convertMinutesToSeconds(newMinutes);
+                    const timeDiff = newTotalStartTime - this.totalStartTimeInSeconds;
+                    this.remainingTimeInSeconds = Math.max(0, this.remainingTimeInSeconds + timeDiff);
+                    this.totalStartTimeInSeconds = newTotalStartTime;
+                    this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
+                    if (this.intervalStarted) {
+                        this.destroyInterval();
+                        this.startInterval();
+                    } else {
+                        this.displayTimeRemainingInPageTitle();
+                    }
+                }
             });
         },
 

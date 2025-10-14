@@ -11,8 +11,11 @@ document.addEventListener("alpine:init", () => {
         */
 
         sessionCountLimit: 4,
-        focusDuration: 50,
-        shortBreakDuration: 10,
-        longBreakDuration: 30,
+        focusDuration:
+            JSON.parse(localStorage.getItem('focusDuration')) || 50,
+        shortBreakDuration:
+            JSON.parse(localStorage.getItem('shortBreakDuration')) || 10,
+        longBreakDuration:
+            JSON.parse(localStorage.getItem('longBreakDuration')) || 30,
     });
 });
