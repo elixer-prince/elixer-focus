@@ -5,14 +5,14 @@
     <header>
         <h1 class="font-bold">Elixer Focus</h1>
 
-        <div>
-            <div>
+        <ul>
+            <li>
                 <a class="text-blue-500" href="/tasks" wire:navigate>Tasks</a>
-            </div>
-            <div>
+            </li>
+            <li>
                 <a class="text-blue-500" href="/settings" wire:navigate>Settings</a>
-            </div>
-        </div>
+            </li>
+        </ul>
     </header>
 
     <x-countdown-timer />
