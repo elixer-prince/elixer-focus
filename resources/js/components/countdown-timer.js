@@ -60,6 +60,11 @@ document.addEventListener('alpine:init', () => {
             // If the timer wasn't running and is currently paused do nothing.
             if (this.timerPaused && !this.intervalStarted) return;
 
+            // Otherwise, if it was running display the remaining time in
+            // the title.
+            if (this.intervalStarted)
+                this.displayTimeRemainingInPageTitle();
+
             // Otherwise, start the countdown.
             this.startCountDownOnRefresh();
         },
@@ -104,6 +109,9 @@ document.addEventListener('alpine:init', () => {
         watchVariables() {
             this.$watch('remainingTimeInSeconds', (value) => {
                 localStorage.setItem('remainingTimeInSeconds', JSON.stringify(value));
+
+                if (this.intervalStarted)
+                    this.displayTimeRemainingInPageTitle();
             });
 
             this.$watch('currentSessionCount', (value) => {
@@ -187,6 +195,7 @@ document.addEventListener('alpine:init', () => {
             // If the timer is running stop it before resetting to the
             // start time.
             if (this.intervalStarted) {
+                document.title = "Welcome to Elixer Focus";
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
@@ -297,6 +306,7 @@ document.addEventListener('alpine:init', () => {
          * and vice versa.
          */
         toggleSessionType() {
+            document.title = "Welcome to Elixer Focus";
             this.isBreak = !this.isBreak;
         },
         toggleSessionTypeWithConfirmation() {
@@ -323,6 +333,13 @@ document.addEventListener('alpine:init', () => {
          */
         resetCurrentSessionCount() {
             this.currentSessionCount = 0;
+        },
+
+        displayTimeRemainingInPageTitle() {
+            if (!this.isBreak)
+                return document.title = `Time to focus: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
+
+            document.title = `Break left: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
         },
     }));
 });
