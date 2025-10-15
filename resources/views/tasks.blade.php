@@ -45,7 +45,7 @@
                     x-for="(task, index) in urgentAndImportantTasks"
                     :key="index"
                 >
-                    <li x-sort:item>
+                    <li class="cursor-pointer" x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('urgentAndImportantTasks', index)"
@@ -101,7 +101,7 @@
                     x-for="(task, index) in notUrgentButImportantTasks"
                     :key="index"
                 >
-                    <li x-sort:item>
+                    <li class="cursor-pointer" x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('notUrgentButImportantTasks', index)"
@@ -155,7 +155,7 @@
                     x-for="(task, index) in urgentButNotImportantTasks"
                     :key="index"
                 >
-                    <li x-sort:item>
+                    <li class="cursor-pointer" x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('urgentButNotImportantTasks', index)"
@@ -215,7 +215,7 @@
                     x-for="(task, index) in notUrgentNorImportantTasks"
                     :key="index"
                 >
-                    <li x-sort:item>
+                    <li class="cursor-pointer" x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('notUrgentNorImportantTasks', index)"
