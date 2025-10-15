@@ -164,14 +164,51 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('tasks', () => ({
-                urgentAndImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
-                notUrgentButImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
-                urgentButNotImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
-                notUrgentNorImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
+                urgentAndImportantTasks:
+                    JSON.parse(
+                        localStorage.getItem('urgentAndImportantTasks'),
+                    ) || [],
+                notUrgentButImportantTasks:
+                    JSON.parse(
+                        localStorage.getItem('notUrgentButImportantTasks'),
+                    ) || [],
+                urgentButNotImportantTasks:
+                    JSON.parse(
+                        localStorage.getItem('urgentButNotImportantTasks'),
+                    ) || [],
+                notUrgentNorImportantTasks:
+                    JSON.parse(
+                        localStorage.getItem('notUrgentNorImportantTasks'),
+                    ) || [],
 
-                deleteTaskAfterConfirmation() {
-                    if (confirm('Are you sure you want to delete this task?'))
-                        this.$el.parentElement.remove();
+                init() {
+                    this.$watch('urgentAndImportantTasks', (value) => {
+                        localStorage.setItem(
+                            'urgentAndImportantTasks',
+                            JSON.stringify(value),
+                        );
+                    });
+
+                    this.$watch('notUrgentButImportantTasks', (value) => {
+                        localStorage.setItem(
+                            'notUrgentButImportantTasks',
+                            JSON.stringify(value),
+                        );
+                    });
+
+                    this.$watch('urgentButNotImportantTasks', (value) => {
+                        localStorage.setItem(
+                            'urgentButNotImportantTasks',
+                            JSON.stringify(value),
+                        );
+                    });
+
+                    this.$watch('notUrgentNorImportantTasks', (value) => {
+                        localStorage.setItem(
+                            'notUrgentNorImportantTasks',
+                            JSON.stringify(value),
+                        );
+                    });
                 },
 
                 deleteAllNotUrgentNorImportantTasks() {
