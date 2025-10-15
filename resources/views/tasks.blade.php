@@ -17,7 +17,7 @@
                     <li>
                         <span x-text="task"></span>
                         <button
-                            @click="deleteTaskAfterConfirmation()"
+                            @click="deleteTaskAfterConfirmation('urgentAndImportantTasks', index)"
                             class="cursor-pointer text-sm text-red-500 underline"
                         >
                             Delete
@@ -38,7 +38,7 @@
                     <li>
                         <span x-text="task"></span>
                         <button
-                            @click="deleteTaskAfterConfirmation()"
+                            @click="deleteTaskAfterConfirmation('notUrgentButImportantTasks', index)"
                             class="cursor-pointer text-sm text-red-500 underline"
                         >
                             Delete
@@ -59,7 +59,7 @@
                     <li>
                         <span x-text="task"></span>
                         <button
-                            @click="deleteTaskAfterConfirmation()"
+                            @click="deleteTaskAfterConfirmation('urgentButNotImportantTasks', index)"
                             class="cursor-pointer text-sm text-red-500 underline"
                         >
                             Delete
@@ -85,7 +85,7 @@
                     <li>
                         <span x-text="task"></span>
                         <button
-                            @click="deleteTaskAfterConfirmation()"
+                            @click="deleteTaskAfterConfirmation('notUrgentNorImportantTasks', index)"
                             class="cursor-pointer text-sm text-red-500 underline"
                         >
                             Delete
