@@ -251,6 +251,11 @@
                 },
 
                 deleteAllNotUrgentNorImportantTasks() {
+                    if (this.notUrgentNorImportantTasks.length === 0)
+                        return alert(
+                            'Good job! You have no tasks in this quadrant! 😊',
+                        );
+
                     if (
                         confirm(
                             'Are you sure you want to delete all your distractions',
