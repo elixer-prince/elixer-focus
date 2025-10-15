@@ -52,7 +52,9 @@ document.addEventListener("alpine:init", () => {
          * @returns {number} The start time in minutes converted to seconds.
          * */
         get startTimeInSeconds() {
-            return this.$store.timerFunctions.convertMinutesToSeconds(this.startTimeInMinutes);
+            return this.$store.timerFunctions.convertMinutesToSeconds(
+                this.startTimeInMinutes,
+            );
         },
 
         init() {
@@ -153,11 +155,17 @@ document.addEventListener("alpine:init", () => {
                 localStorage.setItem("endTime", JSON.stringify(value));
             });
 
-            this.$watch(() => this.$store.countdownTimerSettings.focusDuration, (newMinutes) => {
-                if (!this.isBreak) { // Only adjust if currently a focus session
-                    const newTotalStartTime = this.$store.timerFunctions.convertMinutesToSeconds(newMinutes);
-                    const timeDiff = newTotalStartTime - this.totalStartTimeInSeconds;
             this.$watch(
+                () => this.$store.countdownTimerSettings.focusDuration,
+                (newMinutes) => {
+                    if (!this.isBreak) {
+                        // Only adjust if currently a focus session
+                        const newTotalStartTime =
+                            this.$store.timerFunctions.convertMinutesToSeconds(
+                                newMinutes,
+                            );
+                        const timeDiff =
+                            newTotalStartTime - this.totalStartTimeInSeconds;
 
                         // Adjust remaining time by the difference but never less than zero
                         this.remainingTimeInSeconds = Math.max(
