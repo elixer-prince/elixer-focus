@@ -72,7 +72,9 @@
         <div class="my-4">
             <div class="flex">
                 <h2 class="font-bold">Not Urgent NOR Important (Delete)</h2>
-                <button font-bold cursor-pointer underline">Remove all distractions</button>
+                <button class="cursor-pointer font-bold text-red-500 underline">
+                    Remove all distractions
+                </button>
             </div>
 
             <ul>
