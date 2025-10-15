@@ -19,11 +19,19 @@
 
             <div>
                 <template x-if="urgentAndImportantInputShown">
-                    <input
-                        @keydown.enter="addUrgentAndImportantTask()"
-                        type="text"
-                        class="border"
-                    />
+                    <div>
+                        <input
+                            @keydown.enter="addUrgentAndImportantTask()"
+                            type="text"
+                            class="border"
+                        />
+                        <button
+                            @click="urgentAndImportantInputShown = false"
+                            class="cursor-pointer font-bold text-neutral-500 underline"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </template>
 
                 <template x-if="urgentAndImportantTasks.length === 0">
@@ -66,11 +74,19 @@
 
             <div>
                 <template x-if="notUrgentButImportantInputShown">
-                    <input
-                        @keydown.enter="addNotUrgentButImportantTask()"
-                        type="text"
-                        class="border"
-                    />
+                    <div>
+                        <input
+                            @keydown.enter="addNotUrgentButImportantTask()"
+                            type="text"
+                            class="border"
+                        />
+                        <button
+                            @click="notUrgentButImportantInputShown = false"
+                            class="cursor-pointer font-bold text-neutral-500 underline"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </template>
 
                 <template x-if="notUrgentButImportantTasks.length === 0">
@@ -111,11 +127,19 @@
 
             <div>
                 <template x-if="urgentButNotImportantInputShown">
-                    <input
-                        @keydown.enter="addUrgentButNotImportantTask()"
-                        type="text"
-                        class="border"
-                    />
+                    <div>
+                        <input
+                            @keydown.enter="addUrgentButNotImportantTask()"
+                            type="text"
+                            class="border"
+                        />
+                        <button
+                            @click="urgentButNotImportantInputShown = false"
+                            class="cursor-pointer font-bold text-neutral-500 underline"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </template>
 
                 <template x-if="urgentButNotImportantTasks.length === 0">
@@ -162,11 +186,19 @@
 
             <div>
                 <template x-if="notUrgentNorImportantInputShown">
-                    <input
-                        @keydown.enter="addNotUrgentNorImportantTask()"
-                        type="text"
-                        class="border"
-                    />
+                    <div>
+                        <input
+                            @keydown.enter="addNotUrgentNorImportantTask()"
+                            type="text"
+                            class="border"
+                        />
+                        <button
+                            @click="notUrgentNorImportantInputShown = false"
+                            class="cursor-pointer font-bold text-neutral-500 underline"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </template>
 
                 <template x-if="notUrgentNorImportantTasks.length === 0">
