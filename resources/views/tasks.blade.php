@@ -17,11 +17,19 @@
                 </button>
             </div>
 
-            <input
-                @keydown.enter="addUrgentAndImportantTask()"
-                type="text"
-                class="border"
-            />
+            <div>
+                <template x-if="urgentAndImportantInputShown">
+                    <input
+                        @keydown.enter="addUrgentAndImportantTask()"
+                        type="text"
+                        class="border"
+                    />
+                </template>
+
+                <template x-if="urgentAndImportantTasks.length === 0">
+                    <p>You have no tasks in this quadrant...</p>
+                </template>
+            </div>
 
             <ul>
                 <template
@@ -56,11 +64,19 @@
                 </div>
             </div>
 
-            <input
-                @keydown.enter="addNotUrgentButImportantTask()"
-                type="text"
-                class="border"
-            />
+            <div>
+                <template x-if="notUrgentButImportantInputShown">
+                    <input
+                        @keydown.enter="addNotUrgentButImportantTask()"
+                        type="text"
+                        class="border"
+                    />
+                </template>
+
+                <template x-if="notUrgentButImportantTasks.length === 0">
+                    <p>You have no tasks in this quadrant...</p>
+                </template>
+            </div>
 
             <ul>
                 <template
@@ -93,11 +109,19 @@
                 </div>
             </div>
 
-            <input
-                @keydown.enter="addUrgentButNotImportantTask()"
-                type="text"
-                class="border"
-            />
+            <div>
+                <template x-if="urgentButNotImportantInputShown">
+                    <input
+                        @keydown.enter="addUrgentButNotImportantTask()"
+                        type="text"
+                        class="border"
+                    />
+                </template>
+
+                <template x-if="urgentButNotImportantTasks.length === 0">
+                    <p>You have no tasks in this quadrant...</p>
+                </template>
+            </div>
 
             <ul>
                 <template
@@ -136,11 +160,19 @@
                 </div>
             </div>
 
-            <input
-                @keydown.enter="addNotUrgentNorImportantTask()"
-                type="text"
-                class="border"
-            />
+            <div>
+                <template x-if="notUrgentNorImportantInputShown">
+                    <input
+                        @keydown.enter="addNotUrgentNorImportantTask()"
+                        type="text"
+                        class="border"
+                    />
+                </template>
+
+                <template x-if="notUrgentNorImportantTasks.length === 0">
+                    <p>You have no tasks in this quadrant...</p>
+                </template>
+            </div>
 
             <ul>
                 <template
