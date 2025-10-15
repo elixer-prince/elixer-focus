@@ -97,12 +97,12 @@
     </div>
 
     <script>
-        document.addEventListener("alpine:init", () => {
-            Alpine.data("tasks", () => ({
-                urgentAndImportantTasks: ["Task 1", "Task 2", "Task 3"],
-                notUrgentButImportantTasks: ["Task 1", "Task 2", "Task 3"],
-                urgentButNotImportantTasks: ["Task 1", "Task 2", "Task 3"],
-                notUrgentNorImportantTasks: ["Task 1", "Task 2", "Task 3"],
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('tasks', () => ({
+                urgentAndImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
+                notUrgentButImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
+                urgentButNotImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
+                notUrgentNorImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
 
                 deleteAllNotUrgentNorImportantTasks() {
                     alert('Deleting all not urgent or important tasks...');
