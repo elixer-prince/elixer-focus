@@ -24,6 +24,7 @@
                             @keydown.enter="addUrgentAndImportantTask()"
                             type="text"
                             class="border"
+                            placeholder="Complete my overdue assignments!"
                         />
                         <button
                             @click="urgentAndImportantInputShown = false"
@@ -79,6 +80,7 @@
                             @keydown.enter="addNotUrgentButImportantTask()"
                             type="text"
                             class="border"
+                            placeholder="Wash the dishes..."
                         />
                         <button
                             @click="notUrgentButImportantInputShown = false"
@@ -132,6 +134,7 @@
                             @keydown.enter="addUrgentButNotImportantTask()"
                             type="text"
                             class="border"
+                            placeholder="Interruptions, emails, etc."
                         />
                         <button
                             @click="urgentButNotImportantInputShown = false"
@@ -191,6 +194,7 @@
                             @keydown.enter="addNotUrgentNorImportantTask()"
                             type="text"
                             class="border"
+                            placeholder="Watch a movie"
                         />
                         <button
                             @click="notUrgentNorImportantInputShown = false"
