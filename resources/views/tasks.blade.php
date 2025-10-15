@@ -244,6 +244,12 @@
                     }
                 },
 
+                deleteTaskAfterConfirmation(category, index) {
+                    if (confirm('Are you sure you want to delete this task?')) {
+                        this[category].splice(index, 1);
+                    }
+                },
+
                 deleteAllNotUrgentNorImportantTasks() {
                     if (
                         confirm(
