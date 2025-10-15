@@ -211,6 +211,39 @@
                     });
                 },
 
+                showInputForAddingUrgentAndImportantTasks() {},
+                showInputForAddingNotUrgentButImportantTasks() {},
+                showInputForAddingUrgentButNotImportantTasks() {},
+                showInputForAddingNotUrgentNorImportantTasks() {},
+
+                addUrgentAndImportantTask() {
+                    if (this.$el.value.trim() !== '') {
+                        this.urgentAndImportantTasks.unshift(this.$el.value);
+                        this.$el.value = '';
+                    }
+                },
+
+                addNotUrgentButImportantTask() {
+                    if (this.$el.value.trim() !== '') {
+                        this.notUrgentButImportantTasks.unshift(this.$el.value);
+                        this.$el.value = '';
+                    }
+                },
+
+                addUrgentButNotImportantTask() {
+                    if (this.$el.value.trim() !== '') {
+                        this.urgentButNotImportantTasks.unshift(this.$el.value);
+                        this.$el.value = '';
+                    }
+                },
+
+                addNotUrgentNorImportantTask() {
+                    if (this.$el.value.trim() !== '') {
+                        this.notUrgentNorImportantTasks.unshift(this.$el.value);
+                        this.$el.value = '';
+                    }
+                },
+
                 deleteAllNotUrgentNorImportantTasks() {
                     if (
                         confirm(
