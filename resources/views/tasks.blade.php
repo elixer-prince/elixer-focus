@@ -220,6 +220,7 @@
                     if (this.$el.value.trim() !== '') {
                         this.urgentAndImportantTasks.unshift(this.$el.value);
                         this.$el.value = '';
+                        this.urgentAndImportantInputShown = false;
                     }
                 },
 
@@ -227,6 +228,7 @@
                     if (this.$el.value.trim() !== '') {
                         this.notUrgentButImportantTasks.unshift(this.$el.value);
                         this.$el.value = '';
+                        this.notUrgentButImportantInputShown = false;
                     }
                 },
 
@@ -234,6 +236,7 @@
                     if (this.$el.value.trim() !== '') {
                         this.urgentButNotImportantTasks.unshift(this.$el.value);
                         this.$el.value = '';
+                        this.urgentButNotImportantInputShown = false;
                     }
                 },
 
@@ -241,6 +244,7 @@
                     if (this.$el.value.trim() !== '') {
                         this.notUrgentNorImportantTasks.unshift(this.$el.value);
                         this.$el.value = '';
+                        this.notUrgentNorImportantInputShown = false;
                     }
                 },
 
