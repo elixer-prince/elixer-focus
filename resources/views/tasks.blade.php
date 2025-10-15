@@ -110,7 +110,13 @@
                 },
 
                 deleteAllNotUrgentNorImportantTasks() {
-                    alert('Deleting all not urgent or important tasks...');
+                    if (
+                        confirm(
+                            'Are you sure you want to delete all your distractions',
+                        )
+                    ) {
+                        this.notUrgentNorImportantTasks = [];
+                    }
                 },
             }));
         });
