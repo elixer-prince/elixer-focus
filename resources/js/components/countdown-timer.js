@@ -450,9 +450,6 @@ document.addEventListener("alpine:init", () => {
             );
         },
 
-        /**
-         * Resets the current session count back to zero.
-         */
         resetCurrentCountdownSessionCount() {
             this.currentSessionCount = 0;
         },
