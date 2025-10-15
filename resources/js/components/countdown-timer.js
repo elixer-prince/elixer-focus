@@ -66,7 +66,8 @@ document.addEventListener("alpine:init", () => {
 
             // Otherwise, if it was running display the remaining time in
             // the title.
-            if (this.intervalStarted) this.displayTimeRemainingInPageTitle();
+            if (this.intervalStarted)
+                this.displayCountdownTimeRemainingInPageTitle();
 
             // Otherwise, start the countdown.
             this.startCountDownOnRefresh();
@@ -116,7 +117,7 @@ document.addEventListener("alpine:init", () => {
                 );
 
                 if (this.intervalStarted)
-                    this.displayTimeRemainingInPageTitle();
+                    this.displayCountdownTimeRemainingInPageTitle();
             });
 
             this.$watch("currentSessionCount", (value) => {
@@ -129,7 +130,7 @@ document.addEventListener("alpine:init", () => {
                     value >=
                     this.$store.countdownTimerSettings.sessionCountLimit
                 )
-                    this.resetCurrentSessionCount();
+                    this.resetCurrentCountdownSessionCount();
             });
 
             this.$watch("totalSessionsCompleted", (value) => {
@@ -184,7 +185,7 @@ document.addEventListener("alpine:init", () => {
                             this.destroyInterval();
                             this.startInterval();
                         } else {
-                            this.displayTimeRemainingInPageTitle();
+                            this.displayCountdownTimeRemainingInPageTitle();
                         }
                     }
                 },
@@ -217,7 +218,7 @@ document.addEventListener("alpine:init", () => {
                             this.destroyInterval();
                             this.startInterval();
                         } else {
-                            this.displayTimeRemainingInPageTitle();
+                            this.displayCountdownTimeRemainingInPageTitle();
                         }
                     }
                 },
@@ -248,7 +249,7 @@ document.addEventListener("alpine:init", () => {
                             this.destroyInterval();
                             this.startInterval();
                         } else {
-                            this.displayTimeRemainingInPageTitle();
+                            this.displayCountdownTimeRemainingInPageTitle();
                         }
                     }
                 },
@@ -452,11 +453,11 @@ document.addEventListener("alpine:init", () => {
         /**
          * Resets the current session count back to zero.
          */
-        resetCurrentSessionCount() {
+        resetCurrentCountdownSessionCount() {
             this.currentSessionCount = 0;
         },
 
-        displayTimeRemainingInPageTitle() {
+        displayCountdownTimeRemainingInPageTitle() {
             if (!this.isBreak)
                 return this.displayFocusTimeRemainingInPageTitle();
 
