@@ -452,18 +452,28 @@ document.addEventListener("alpine:init", () => {
         },
 
         displayCountdownTimeRemainingInPageTitle() {
-            if (!this.isBreak)
+            if (this.currentSessionIsNotBreak())
                 return this.displayFocusTimeRemainingInPageTitle();
 
             this.displayBreakTimeRemainingInPageTitle();
         },
 
+        currentSessionIsNotBreak() {
+            return !this.isBreak;
+        },
+
         displayFocusTimeRemainingInPageTitle() {
-            document.title = `Time to focus: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
+            document.title = `Time to focus: ${this.getRemainingTimeInMinutesAndSeconds()}`;
         },
 
         displayBreakTimeRemainingInPageTitle() {
-            document.title = `Break left: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
+            document.title = `Break left: ${this.getRemainingTimeInMinutesAndSeconds()}`;
+        },
+
+        getRemainingTimeInMinutesAndSeconds() {
+            return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
+                this.remainingTimeInSeconds,
+            );
         },
     }));
 });
