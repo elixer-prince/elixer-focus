@@ -40,12 +40,12 @@
                 </template>
             </div>
 
-            <ul>
+            <ul x-sort>
                 <template
                     x-for="(task, index) in urgentAndImportantTasks"
                     :key="index"
                 >
-                    <li>
+                    <li x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('urgentAndImportantTasks', index)"
@@ -96,12 +96,12 @@
                 </template>
             </div>
 
-            <ul>
+            <ul x-sort>
                 <template
                     x-for="(task, index) in notUrgentButImportantTasks"
                     :key="index"
                 >
-                    <li>
+                    <li x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('notUrgentButImportantTasks', index)"
@@ -150,12 +150,12 @@
                 </template>
             </div>
 
-            <ul>
+            <ul x-sort>
                 <template
                     x-for="(task, index) in urgentButNotImportantTasks"
                     :key="index"
                 >
-                    <li>
+                    <li x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('urgentButNotImportantTasks', index)"
@@ -210,12 +210,12 @@
                 </template>
             </div>
 
-            <ul>
+            <ul x-sort>
                 <template
                     x-for="(task, index) in notUrgentNorImportantTasks"
                     :key="index"
                 >
-                    <li>
+                    <li x-sort:item>
                         <span x-text="task"></span>
                         <button
                             @click="deleteTaskAfterConfirmation('notUrgentNorImportantTasks', index)"
