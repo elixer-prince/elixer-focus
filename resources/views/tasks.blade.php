@@ -10,7 +10,7 @@
             <div class="flex">
                 <h2 class="font-bold">Urgent and Important (Do now)</h2>
                 <button
-                    @click="addUrgentAndImportantTask()"
+                    @click="showInputForAddingUrgentAndImportantTasks()"
                     class="cursor-pointer font-bold text-blue-500 underline"
                 >
                     Add Task
@@ -56,7 +56,7 @@
                 </h2>
                 <div>
                     <button
-                        @click="addNotUrgentButImportantTask()"
+                        @click="showInputForAddingNotUrgentButImportantTasks()"
                         class="cursor-pointer font-bold text-blue-500 underline"
                     >
                         Add Task
@@ -101,7 +101,7 @@
                 <h2 class="font-bold">Urgent but Not Important (Delegate)</h2>
                 <div>
                     <button
-                        @click="addUrgentButNotImportantTask()"
+                        @click="showInputForAddingUrgentButNotImportantTasks()"
                         class="cursor-pointer font-bold text-blue-500 underline"
                     >
                         Add Task
@@ -146,7 +146,7 @@
                 <h2 class="font-bold">Not Urgent NOR Important (Delete)</h2>
                 <div>
                     <button
-                        @click="addNotUrgentNorImportantTask()"
+                        @click="showInputForAddingNotUrgentNorImportantTasks()"
                         class="cursor-pointer font-bold text-blue-500 underline"
                     >
                         Add Task
