@@ -104,6 +104,11 @@
                 urgentButNotImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
                 notUrgentNorImportantTasks: ['Task 1', 'Task 2', 'Task 3'],
 
+                deleteTaskAfterConfirmation() {
+                    if (confirm('Are you sure you want to delete this task?'))
+                        this.$el.parentElement.remove();
+                },
+
                 deleteAllNotUrgentNorImportantTasks() {
                     alert('Deleting all not urgent or important tasks...');
                 },
