@@ -458,8 +458,16 @@ document.addEventListener("alpine:init", () => {
 
         displayTimeRemainingInPageTitle() {
             if (!this.isBreak)
-                return (document.title = `Time to focus: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`);
+                return this.displayFocusTimeRemainingInPageTitle();
 
+            this.displayBreakTimeRemainingInPageTitle();
+        },
+
+        displayFocusTimeRemainingInPageTitle() {
+            document.title = `Time to focus: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
+        },
+
+        displayBreakTimeRemainingInPageTitle() {
             document.title = `Break left: ${this.$store.timerFunctions.formatTimeInMinutesAndSeconds(this.remainingTimeInSeconds)}`;
         },
     }));
