@@ -1,12 +1,12 @@
 <div x-data="countdownTimer">
     <div class="mx-auto flex w-fit items-center gap-2">
-        <p class="font-black text-2xl">
+        <p class="text-2xl font-black">
             <span x-text="isBreak ? 'Break' : 'Focus'"></span>
             Session
         </p>
 
         <button
-            class="cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors hover:bg-neutral-950/25"
+            class="cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors"
             @click="toggleSessionTypeWithConfirmation()"
         >
             Switch
@@ -30,7 +30,10 @@
     ></div>
 
     <div class="mx-auto flex w-fit gap-4">
-        <x-button @click="startCountdownWithSound()" class="bg-neutral-500 text-white">
+        <x-button
+            @click="startCountdownWithSound()"
+            class="bg-neutral-500 text-white"
+        >
             Start
         </x-button>
 
@@ -45,10 +48,7 @@
             Reset
         </x-button>
 
-        <x-button
-            @click="skipCountdown()"
-            class="bg-neutral-500 text-white"
-        >
+        <x-button @click="skipCountdown()" class="bg-neutral-500 text-white">
             Skip
         </x-button>
     </div>

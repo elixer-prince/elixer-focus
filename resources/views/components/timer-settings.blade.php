@@ -41,22 +41,36 @@
             />
         </div>
 
-        <x-button @click="saveChanges()" class="bg-neutral-500 text-white">Save Changes</x-button>
+        <x-button @click="saveChanges()" class="bg-neutral-500 text-white">
+            Save Changes
+        </x-button>
     </div>
 </div>
 
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data("timerSettings", () => ({
-            saveChanges () {
-                this.$store.countdownTimerSettings.focusDuration = this.$refs.focusInput.value;
-                localStorage.setItem('focusDuration', JSON.stringify(this.$refs.focusInput.value));
-                this.$store.countdownTimerSettings.shortBreakDuration = this.$refs.shortBreakInput.value;
-                localStorage.setItem('shortBreakDuration', JSON.stringify(this.$refs.shortBreakInput.value));
-                this.$store.countdownTimerSettings.longBreakDuration = this.$refs.longBreakInput.value;
-                localStorage.setItem('longBreakDuration', JSON.stringify(this.$refs.longBreakInput.value));
+        Alpine.data('timerSettings', () => ({
+            saveChanges() {
+                this.$store.countdownTimerSettings.focusDuration =
+                    this.$refs.focusInput.value;
+                localStorage.setItem(
+                    'focusDuration',
+                    JSON.stringify(this.$refs.focusInput.value),
+                );
+                this.$store.countdownTimerSettings.shortBreakDuration =
+                    this.$refs.shortBreakInput.value;
+                localStorage.setItem(
+                    'shortBreakDuration',
+                    JSON.stringify(this.$refs.shortBreakInput.value),
+                );
+                this.$store.countdownTimerSettings.longBreakDuration =
+                    this.$refs.longBreakInput.value;
+                localStorage.setItem(
+                    'longBreakDuration',
+                    JSON.stringify(this.$refs.longBreakInput.value),
+                );
 
-                alert("Timer Settings saved");
+                alert('Timer Settings saved');
             },
         }));
     });

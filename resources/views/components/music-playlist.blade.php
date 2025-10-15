@@ -4,17 +4,25 @@
 
         <template x-for="(song, index) in playlist" :key="index">
             <label class="block">
-                <input type="radio" :value="index" x-model="chosenSongIndex" />
+                <input
+                    type="radio"
+                    :value="index"
+                    x-model="chosenSongIndex"
+                />
                 <span x-text="song.title"></span>
 
                 <template x-if="song.isRecommended">
-                    <span class="border-2 text-neutral-500 font-bold text-xs rounded-full px-2 py-1">Recommended</span>
+                    <span
+                        class="rounded-full border-2 px-2 py-1 text-xs font-bold text-neutral-500"
+                    >
+                        Recommended
+                    </span>
                 </template>
             </label>
         </template>
     </div>
 
-    <div class="rounded-xl mb-8" id="player"></div>
+    <div class="mb-8 rounded-xl" id="player"></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -66,7 +74,9 @@
             },
 
             createPlayer() {
-                const videoId = this.extractVideoId(this.playlist[this.chosenSongIndex].src);
+                const videoId = this.extractVideoId(
+                    this.playlist[this.chosenSongIndex].src,
+                );
                 this.player = new YT.Player('player', {
                     videoId: videoId,
                     host: 'https://www.youtube-nocookie.com',
@@ -82,7 +92,6 @@
                 return match ? match[1] : null;
             },
         }));
-
     });
 
     function onYouTubeIframeAPIReady() {

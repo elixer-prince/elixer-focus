@@ -7,7 +7,9 @@
 
         <div>
             <div>
-                <a class="text-blue-500" href="/settings" wire:navigate>Settings</a>
+                <a class="text-blue-500" href="/settings" wire:navigate>
+                    Settings
+                </a>
             </div>
         </div>
     </header>

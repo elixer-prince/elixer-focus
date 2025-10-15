@@ -1,6 +1,8 @@
 <x-layouts.app>
     <p>
-        <a href="/" class="underline text-blue-500" wire:navigate>Back to home</a>
+        <a href="/" class="text-blue-500 underline" wire:navigate>
+            Back to home
+        </a>
     </p>
 
     <div>
