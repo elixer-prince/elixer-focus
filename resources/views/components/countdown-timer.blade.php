@@ -15,6 +15,7 @@
         <span
             class="font-bold"
             x-text="`${currentSessionCount} / ${$store.countdownTimerSettings.sessionCountLimit} &mdash; Total Focus Sessions: ${totalSessionsCompleted}`"
+            x-cloak
         ></span>
     </div>
 
@@ -25,6 +26,7 @@
         ]"
         class="mx-auto my-8 flex aspect-square w-fit max-w-full items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
         x-text="$store.timerFunctions.formatTimeInMinutesAndSeconds(remainingTimeInSeconds)"
+        x-cloak
     ></div>
 
     <div class="mx-auto flex w-fit gap-4">
