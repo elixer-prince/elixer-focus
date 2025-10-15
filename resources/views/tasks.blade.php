@@ -37,7 +37,12 @@
                 >
                     <li>
                         <span x-text="task"></span>
-                        <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
+                        <button
+                            @click="deleteTaskAfterConfirmation()"
+                            class="cursor-pointer text-sm text-red-500 underline"
+                        >
+                            Delete
+                        </button>
                     </li>
                 </template>
             </ul>
@@ -53,7 +58,12 @@
                 >
                     <li>
                         <span x-text="task"></span>
-                        <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
+                        <button
+                            @click="deleteTaskAfterConfirmation()"
+                            class="cursor-pointer text-sm text-red-500 underline"
+                        >
+                            Delete
+                        </button>
                     </li>
                 </template>
             </ul>
@@ -72,7 +82,12 @@
                 >
                     <li>
                         <span x-text="task"></span>
-                        <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
+                        <button
+                            @click="deleteTaskAfterConfirmation()"
+                            class="cursor-pointer text-sm text-red-500 underline"
+                        >
+                            Delete
+                        </button>
                     </li>
                 </template>
             </ul>
