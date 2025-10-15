@@ -10,10 +10,18 @@
             <h2 class="font-bold">Urgent and Important (Do now)</h2>
 
             <ul>
-                <template x-for="(task, index) in urgentAndImportantTasks" :key="index">
+                <template
+                    x-for="(task, index) in urgentAndImportantTasks"
+                    :key="index"
+                >
                     <li>
                         <span x-text="task"></span>
-                        <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
+                        <button
+                            @click="deleteTaskAfterConfirmation()"
+                            class="cursor-pointer text-sm text-red-500 underline"
+                        >
+                            Delete
+                        </button>
                     </li>
                 </template>
             </ul>
@@ -23,7 +31,10 @@
             <h2 class="font-bold">Not Urgent but Important (Plan/Schedule)</h2>
 
             <ul>
-                <template x-for="(task, index) in notUrgentButImportantTasks" :key="index">
+                <template
+                    x-for="(task, index) in notUrgentButImportantTasks"
+                    :key="index"
+                >
                     <li>
                         <span x-text="task"></span>
                         <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
@@ -36,7 +47,10 @@
             <h2 class="font-bold">Urgent but Not Important (Delegate)</h2>
 
             <ul>
-                <template x-for="(task, index) in urgentButNotImportantTasks" :key="index">
+                <template
+                    x-for="(task, index) in urgentButNotImportantTasks"
+                    :key="index"
+                >
                     <li>
                         <span x-text="task"></span>
                         <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
@@ -52,7 +66,10 @@
             </div>
 
             <ul>
-                <template x-for="(task, index) in notUrgentNorImportantTasks" :key="index">
+                <template
+                    x-for="(task, index) in notUrgentNorImportantTasks"
+                    :key="index"
+                >
                     <li>
                         <span x-text="task"></span>
                         <button class="text-red-500 text-sm cursor-pointer underline">Delete</button>
