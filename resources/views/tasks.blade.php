@@ -7,7 +7,21 @@
 
     <div x-data="tasks">
         <div class="my-4">
-            <h2 class="font-bold">Urgent and Important (Do now)</h2>
+            <div class="flex">
+                <h2 class="font-bold">Urgent and Important (Do now)</h2>
+                <button
+                    @click="addUrgentAndImportantTask()"
+                    class="cursor-pointer font-bold text-blue-500 underline"
+                >
+                    Add Task
+                </button>
+            </div>
+
+            <input
+                @keydown.enter="addUrgentAndImportantTask()"
+                type="text"
+                class="border"
+            />
 
             <ul>
                 <template
@@ -28,7 +42,25 @@
         </div>
 
         <div class="my-4">
-            <h2 class="font-bold">Not Urgent but Important (Plan/Schedule)</h2>
+            <div class="flex">
+                <h2 class="font-bold">
+                    Not Urgent but Important (Plan/Schedule)
+                </h2>
+                <div>
+                    <button
+                        @click="addNotUrgentButImportantTask()"
+                        class="cursor-pointer font-bold text-blue-500 underline"
+                    >
+                        Add Task
+                    </button>
+                </div>
+            </div>
+
+            <input
+                @keydown.enter="addNotUrgentButImportantTask()"
+                type="text"
+                class="border"
+            />
 
             <ul>
                 <template
@@ -49,7 +81,23 @@
         </div>
 
         <div class="my-4">
-            <h2 class="font-bold">Urgent but Not Important (Delegate)</h2>
+            <div class="flex">
+                <h2 class="font-bold">Urgent but Not Important (Delegate)</h2>
+                <div>
+                    <button
+                        @click="addUrgentButNotImportantTask()"
+                        class="cursor-pointer font-bold text-blue-500 underline"
+                    >
+                        Add Task
+                    </button>
+                </div>
+            </div>
+
+            <input
+                @keydown.enter="addUrgentButNotImportantTask()"
+                type="text"
+                class="border"
+            />
 
             <ul>
                 <template
@@ -72,10 +120,27 @@
         <div class="my-4">
             <div class="flex">
                 <h2 class="font-bold">Not Urgent NOR Important (Delete)</h2>
-                <button class="cursor-pointer font-bold text-red-500 underline">
-                    Remove all distractions
-                </button>
+                <div>
+                    <button
+                        @click="addNotUrgentNorImportantTask()"
+                        class="cursor-pointer font-bold text-blue-500 underline"
+                    >
+                        Add Task
+                    </button>
+                    <button
+                        @click="deleteAllNotUrgentNorImportantTasks()"
+                        class="cursor-pointer font-bold text-red-500 underline"
+                    >
+                        Remove all distractions
+                    </button>
+                </div>
             </div>
+
+            <input
+                @keydown.enter="addNotUrgentNorImportantTask()"
+                type="text"
+                class="border"
+            />
 
             <ul>
                 <template
