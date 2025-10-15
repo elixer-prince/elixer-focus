@@ -168,18 +168,22 @@
                     JSON.parse(
                         localStorage.getItem('urgentAndImportantTasks'),
                     ) || [],
+                urgentAndImportantInputShown: false,
                 notUrgentButImportantTasks:
                     JSON.parse(
                         localStorage.getItem('notUrgentButImportantTasks'),
                     ) || [],
+                notUrgentButImportantInputShown: false,
                 urgentButNotImportantTasks:
                     JSON.parse(
                         localStorage.getItem('urgentButNotImportantTasks'),
                     ) || [],
+                urgentButNotImportantInputShown: false,
                 notUrgentNorImportantTasks:
                     JSON.parse(
                         localStorage.getItem('notUrgentNorImportantTasks'),
                     ) || [],
+                notUrgentNorImportantInputShown: false,
 
                 init() {
                     this.$watch('urgentAndImportantTasks', (value) => {
@@ -211,10 +215,21 @@
                     });
                 },
 
-                showInputForAddingUrgentAndImportantTasks() {},
-                showInputForAddingNotUrgentButImportantTasks() {},
-                showInputForAddingUrgentButNotImportantTasks() {},
-                showInputForAddingNotUrgentNorImportantTasks() {},
+                showInputForAddingUrgentAndImportantTasks() {
+                    this.urgentAndImportantInputShown = true;
+                },
+
+                showInputForAddingNotUrgentButImportantTasks() {
+                    this.notUrgentButImportantInputShown = true;
+                },
+
+                showInputForAddingUrgentButNotImportantTasks() {
+                    this.urgentButNotImportantInputShown = true;
+                },
+
+                showInputForAddingNotUrgentNorImportantTasks() {
+                    this.notUrgentNorImportantInputShown = true;
+                },
 
                 addUrgentAndImportantTask() {
                     if (this.$el.value.trim() !== '') {
