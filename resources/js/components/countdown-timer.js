@@ -307,7 +307,8 @@ document.addEventListener("alpine:init", () => {
 
         skipCountdown() {
             // Alert the user if the timer isn't running.
-            if (!this.intervalStarted) return alert("The timer isn't running!");
+            if (this.timerIsNotRunning())
+                return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to skip the current session?")) {
                 this.playResetTimerSoundEffect();
@@ -430,6 +431,14 @@ document.addEventListener("alpine:init", () => {
 
         timerHasEnded() {
             return this.remainingTimeInSeconds <= 0;
+        },
+
+        timerIsRunning() {
+            return this.intervalStarted;
+        },
+
+        timerIsNotRunning() {
+            return !this.intervalStarted;
         },
 
         // Controlling Timer Playback
