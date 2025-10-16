@@ -25,7 +25,7 @@ document.addEventListener("alpine:init", () => {
         resetTimerSoundEffect: null,
 
         get startTimeInMinutes() {
-            if (this.isBreak)
+            if (this.currentSessionIsBreak())
                 return this.currentSessionCount <
                     this.$store.countdownTimerSettings.sessionCountLimit
                     ? this.$store.countdownTimerSettings.shortBreakDuration
@@ -180,7 +180,7 @@ document.addEventListener("alpine:init", () => {
                 () => this.$store.countdownTimerSettings.shortBreakDuration,
                 (newMinutes) => {
                     if (
-                        this.isBreak &&
+                        this.currentSessionIsBreak() &&
                         this.currentSessionCount <
                             this.$store.countdownTimerSettings.sessionCountLimit
                     ) {
@@ -211,7 +211,7 @@ document.addEventListener("alpine:init", () => {
                 () => this.$store.countdownTimerSettings.longBreakDuration,
                 (newMinutes) => {
                     if (
-                        this.isBreak &&
+                        this.currentSessionIsBreak() &&
                         this.currentSessionCount >=
                             this.$store.countdownTimerSettings.sessionCountLimit
                     ) {
