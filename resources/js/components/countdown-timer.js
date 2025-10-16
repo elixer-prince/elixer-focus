@@ -418,6 +418,10 @@ document.addEventListener("alpine:init", () => {
 
         // SESSION CONTROLS
 
+        resetSessionCount() {
+            this.currentSessionCount = 0;
+        },
+
         toggleSessionType() {
             this.isBreak = !this.isBreak;
         },
@@ -429,8 +433,8 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
-        resetPageTitleToDefault() {
-            document.title = "Welcome to Elixer Focus";
+        currentSessionIsNotBreak() {
+            return !this.isBreak;
         },
 
         // TIMER CONTROLS
@@ -444,8 +448,10 @@ document.addEventListener("alpine:init", () => {
             return Math.max(0, Math.round((this.endTime - Date.now()) / 1000));
         },
 
-        resetSessionCount() {
-            this.currentSessionCount = 0;
+        getRemainingTimeInMinutesAndSeconds() {
+            return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
+                this.remainingTimeInSeconds,
+            );
         },
 
         displayCountdownTimeRemainingInPageTitle() {
@@ -453,10 +459,6 @@ document.addEventListener("alpine:init", () => {
                 return this.displayFocusTimeRemainingInPageTitle();
 
             this.displayBreakTimeRemainingInPageTitle();
-        },
-
-        currentSessionIsNotBreak() {
-            return !this.isBreak;
         },
 
         displayFocusTimeRemainingInPageTitle() {
@@ -467,10 +469,8 @@ document.addEventListener("alpine:init", () => {
             document.title = `Break left: ${this.getRemainingTimeInMinutesAndSeconds()}`;
         },
 
-        getRemainingTimeInMinutesAndSeconds() {
-            return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
-                this.remainingTimeInSeconds,
-            );
+        resetPageTitleToDefault() {
+            document.title = "Welcome to Elixer Focus";
         },
     }));
 });
