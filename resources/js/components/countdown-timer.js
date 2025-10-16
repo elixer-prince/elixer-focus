@@ -348,10 +348,8 @@ document.addEventListener("alpine:init", () => {
 
                 if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
 
-                if (this.remainingTimeInSeconds > 5 && tickingStarted) {
-                    this.$store.utilityFunctions.stopSound(
-                        this.tickingSoundEffect,
-                    );
+                if (this.remainingTimeInSeconds > 5) {
+                    this.stopTickingSoundEffect();
                 }
 
                 if (this.timerHasEnded()) {
@@ -512,5 +510,9 @@ document.addEventListener("alpine:init", () => {
         },
 
         // Stop the sounds
+
+        stopTickingSoundEffect() {
+            this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
+        },
     }));
 });
