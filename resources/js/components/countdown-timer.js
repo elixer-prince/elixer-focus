@@ -24,14 +24,6 @@ document.addEventListener("alpine:init", () => {
         beepSoundEffect: null,
         resetTimerSoundEffect: null,
 
-        /**
-         * The start time in minutes that will be converted to seconds.
-         *
-         * This is calculated based on if the user has completed an amount of
-         * sessions that is equal to that of the session count limit.
-         *
-         * @returns {number} The minutes to be converted to seconds.
-         */
         get startTimeInMinutes() {
             if (this.isBreak)
                 return this.currentSessionCount <
@@ -42,15 +34,6 @@ document.addEventListener("alpine:init", () => {
             return this.$store.countdownTimerSettings.focusDuration;
         },
 
-        /**
-         * The start time in seconds that will be formatted and displayed on
-         * the timer display.
-         *
-         * This is calculated based on the start time in minutes and changes dynamically
-         * with the start time in minutes.
-         *
-         * @returns {number} The start time in minutes converted to seconds.
-         * */
         get startTimeInSeconds() {
             return this.$store.timerFunctions.convertMinutesToSeconds(
                 this.startTimeInMinutes,
@@ -333,9 +316,6 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
-        /**
-         * Skips the timer before it ends if it is running.
-         */
         skipCountdown() {
             // Alert the user if the timer isn't running.
             if (!this.intervalStarted) return alert("The timer isn't running!");
