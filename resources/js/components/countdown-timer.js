@@ -348,9 +348,7 @@ document.addEventListener("alpine:init", () => {
 
                 if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
 
-                if (this.remainingTimeInSeconds > 5) {
-                    this.stopTickingSoundEffect();
-                }
+                if (this.timerIsNotAboutToEnd()) this.stopTickingSoundEffect();
 
                 if (this.timerHasEnded()) {
                     if (this.currentSessionIsFocus())
@@ -424,6 +422,10 @@ document.addEventListener("alpine:init", () => {
 
         timerIsAboutToEnd() {
             return this.remainingTimeInSeconds <= 5;
+        },
+
+        timerIsNotAboutToEnd() {
+            return this.remainingTimeInSeconds > 5;
         },
 
         timerHasEnded() {
