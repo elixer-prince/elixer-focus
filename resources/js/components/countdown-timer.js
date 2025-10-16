@@ -345,7 +345,7 @@ document.addEventListener("alpine:init", () => {
         },
 
         createInterval() {
-            let tickingStarted = false;
+            this.startInterval();
 
             this.interval = setInterval(() => {
                 this.updateRemainingSeconds();
@@ -357,7 +357,6 @@ document.addEventListener("alpine:init", () => {
                 }
 
                 if (this.remainingTimeInSeconds > 5 && tickingStarted) {
-                    tickingStarted = false;
                     this.$store.utilityFunctions.stopSound(
                         this.tickingSoundEffect,
                     );
