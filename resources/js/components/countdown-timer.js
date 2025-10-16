@@ -409,9 +409,9 @@ document.addEventListener("alpine:init", () => {
             return !this.isBreak;
         },
 
-        currentSessionIsBreak() {
-            return this.isBreak;
-        },
+        //---------------------------------------------------------------
+        // TIMER CONTROLS
+        //---------------------------------------------------------------
 
         // Controlling Timer Playback
 
