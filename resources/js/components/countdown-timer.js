@@ -43,8 +43,7 @@ document.addEventListener("alpine:init", () => {
             this.initialiseVariables();
             this.watchVariables();
 
-            // If the timer wasn't running and is currently paused do nothing.
-            if (this.timerPaused && !this.intervalStarted) return;
+            if (this.timerIsRunningAndIsPaused()) return;
 
             // Otherwise, if it was running display the remaining time in
             // the title.
@@ -435,6 +434,18 @@ document.addEventListener("alpine:init", () => {
 
         timerIsNotRunning() {
             return !this.intervalStarted;
+        },
+
+        timerIsNotPaused() {
+            return this.timerPaused;
+        },
+
+        timerIsPaused() {
+            return !this.timerPaused;
+        },
+
+        timerIsNotRunningAndIsPaused() {
+            return this.timerIsNotRunning() && this.timerIsPaused();
         },
 
         // Controlling Timer Playback
