@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::view("/", "index");
+Route::view("/tasks", "tasks");
 
 // TODO: Add Authentication Routes
 Route::prefix("auth")->group(function () {
