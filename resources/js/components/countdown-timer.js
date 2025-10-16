@@ -367,7 +367,7 @@ document.addEventListener("alpine:init", () => {
                     );
                 }
 
-                if (this.remainingTimeInSeconds <= 0) {
+                if (this.timerHasEnded()) {
                     if (this.currentSessionIsFocus()) {
                         this.currentSessionCount++;
                         this.totalSessionsCompleted++;
@@ -424,6 +424,12 @@ document.addEventListener("alpine:init", () => {
 
         currentSessionIsBreak() {
             return this.isBreak;
+        },
+
+        // Timer Checks
+
+        timerHasEnded() {
+            return this.remainingTimeInSeconds <= 0;
         },
 
         // Controlling Timer Playback
