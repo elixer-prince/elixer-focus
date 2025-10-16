@@ -40,6 +40,11 @@
                     src: 'https://www.youtube.com/watch?v=n61ULEU7CO0',
                     isRecommended: false,
                 },
+                {
+                    title: 'Chillstep Music for Programming / Cyber / Coding',
+                    src: 'https://www.youtube.com/watch?v=M5QY2_8704o',
+                    isRecommended: false,
+                },
             ],
 
             init() {
