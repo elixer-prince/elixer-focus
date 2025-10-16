@@ -342,8 +342,7 @@ document.addEventListener("alpine:init", () => {
                 if (this.timerIsNotAboutToEnd()) this.stopTickingSoundEffect();
 
                 if (this.timerHasEnded()) {
-                    if (this.currentSessionIsFocus())
-                        this.incrementSessionCountAndTotalSessionsCompleted();
+                    this.incrementSessionIfFocus();
 
                     this.toggleSessionType();
                     this.resetCountdown();
@@ -402,6 +401,11 @@ document.addEventListener("alpine:init", () => {
 
         incrementTotalSessionsCompleted() {
             this.totalSessionsCompleted++;
+        },
+
+        incrementSessionIfFocus() {
+            if (this.currentSessionIsFocus())
+                this.incrementSessionCountAndTotalSessionsCompleted();
         },
 
         // Session Checks
