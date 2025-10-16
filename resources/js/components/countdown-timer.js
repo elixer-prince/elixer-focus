@@ -43,7 +43,7 @@ document.addEventListener("alpine:init", () => {
             this.initialiseVariables();
             this.watchVariables();
 
-            if (this.timerIsRunningAndIsPaused()) return;
+            if (this.timerIsNotRunningAndIsPaused()) return;
 
             // Otherwise, if it was running display the remaining time in
             // the title.
