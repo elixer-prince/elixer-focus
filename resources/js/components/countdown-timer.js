@@ -254,7 +254,7 @@ document.addEventListener("alpine:init", () => {
             if (this.intervalStarted && !this.timerPaused) return;
 
             // Otherwise, the button sound is played before staring the timer.
-            this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
+            this.playOnClickSoundEffect();
             this.startCountdown();
         },
 
@@ -274,7 +274,7 @@ document.addEventListener("alpine:init", () => {
 
             // Otherwise, the button sound is played and the timer is paused.
             this.timerPaused = true;
-            this.$store.utilityFunctions.playSound(this.offClickSoundEffect);
+            this.playOffClickSoundEffect();
             this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
             this.destroyInterval();
         },
@@ -300,9 +300,7 @@ document.addEventListener("alpine:init", () => {
             if (!this.intervalStarted) return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to reset the timer?")) {
-                this.$store.utilityFunctions.playSound(
-                    this.resetTimerSoundEffect,
-                );
+                this.playResetTimerSoundEffect();
                 this.resetCountdown();
             }
         },
@@ -312,9 +310,7 @@ document.addEventListener("alpine:init", () => {
             if (!this.intervalStarted) return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to skip the current session?")) {
-                this.$store.utilityFunctions.playSound(
-                    this.resetTimerSoundEffect,
-                );
+                this.playResetTimerSoundEffect();
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
 
                 if (this.currentSessionIsFocus()) {
@@ -350,11 +346,7 @@ document.addEventListener("alpine:init", () => {
             this.interval = setInterval(() => {
                 this.updateRemainingSeconds();
 
-                if (this.timerIsAboutToEnd()) {
-                    this.$store.utilityFunctions.playSound(
-                        this.tickingSoundEffect,
-                    );
-                }
+                if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
 
                 if (this.remainingTimeInSeconds > 5 && tickingStarted) {
                     this.$store.utilityFunctions.stopSound(
@@ -501,6 +493,22 @@ document.addEventListener("alpine:init", () => {
 
         playBeepSoundEffect() {
             this.$store.utilityFunctions.playSound(this.beepSoundEffect);
+        },
+
+        playTickingSoundEffect() {
+            this.$store.utilityFunctions.playSound(this.tickingSoundEffect);
+        },
+
+        playResetTimerSoundEffect() {
+            this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
+        },
+
+        playOnClickSoundEffect() {
+            this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
+        },
+
+        playOffClickSoundEffect() {
+            this.$store.utilityFunctions.playSound(this.offClickSoundEffect);
         },
 
         // Stop the sounds
