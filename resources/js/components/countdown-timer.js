@@ -405,6 +405,8 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
+        // Session Checks
+
         currentSessionIsFocus() {
             return !this.isBreak;
         },
