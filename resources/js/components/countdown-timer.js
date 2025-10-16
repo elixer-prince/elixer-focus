@@ -365,10 +365,8 @@ document.addEventListener("alpine:init", () => {
                 }
 
                 if (this.timerHasEnded()) {
-                    if (this.currentSessionIsFocus()) {
-                        this.currentSessionCount++;
-                        this.totalSessionsCompleted++;
-                    }
+                    if (this.currentSessionIsFocus())
+                        this.incrementSessionCountAndTotalSessionsCompleted();
 
                     this.toggleSessionType();
                     this.resetCountdown();
@@ -398,10 +396,6 @@ document.addEventListener("alpine:init", () => {
         // SESSION CONTROLS
         //---------------------------------------------------------------
 
-        resetSessionCount() {
-            this.currentSessionCount = 0;
-        },
-
         toggleSessionType() {
             this.isBreak = !this.isBreak;
         },
@@ -411,6 +405,23 @@ document.addEventListener("alpine:init", () => {
                 this.toggleSessionType();
                 this.resetCountdown();
             }
+        },
+
+        resetSessionCount() {
+            this.currentSessionCount = 0;
+        },
+
+        incrementSessionCountAndTotalSessionsCompleted() {
+            this.incrementSessionCount();
+            this.incrementTotalSessionsCompleted();
+        },
+
+        incrementSessionCount() {
+            this.currentSessionCount++;
+        },
+
+        incrementTotalSessionsCompleted() {
+            this.totalSessionsCompleted++;
         },
 
         // Session Checks
