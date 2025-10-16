@@ -337,8 +337,8 @@ document.addEventListener("alpine:init", () => {
         //---------------------------------------------------------------
 
         startInterval() {
-            this.startTimer();
             this.intervalStarted = true;
+        },
 
             let tickingStarted = false;
 
