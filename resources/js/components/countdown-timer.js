@@ -240,7 +240,6 @@ document.addEventListener("alpine:init", () => {
         },
 
         startCountDownOnRefresh() {
-            // If the timer was started but paused, do nothing.
             if (this.timerPaused && this.intervalStarted) return;
 
             this.startCountdown();
@@ -250,16 +249,13 @@ document.addEventListener("alpine:init", () => {
             // If the timer was started but not paused, do nothing.
             if (this.intervalStarted && !this.timerPaused) return;
 
-            // Otherwise, the button sound is played before staring the timer.
             this.playOnClickSoundEffect();
             this.startCountdown();
         },
 
         pauseCountdown() {
-            // If the timer wasn't running or the timer is paused, do nothing.
             if (!this.intervalStarted || this.timerPaused) return;
 
-            // Otherwise, the button sound is played and the timer is paused.
             this.timerPaused = true;
             this.playOffClickSoundEffect();
             this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
@@ -267,8 +263,6 @@ document.addEventListener("alpine:init", () => {
         },
 
         resetCountdown() {
-            // If the timer is running stop it before resetting to the
-            // start time.
             if (this.intervalStarted) {
                 this.resetPageTitleToDefault();
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
@@ -283,7 +277,6 @@ document.addEventListener("alpine:init", () => {
             this.remainingTimeInSeconds = this.startTimeInSeconds;
         },
         resetCountdownWithSound() {
-            // Alert the user if the timer isn't running.
             if (!this.intervalStarted) return alert("The timer isn't running!");
 
             if (confirm("Are you sure you want to reset the timer?")) {
@@ -306,9 +299,7 @@ document.addEventListener("alpine:init", () => {
                 this.destroyInterval();
                 this.intervalStarted = false;
                 this.pauseTimer();
-
                 this.toggleSessionType();
-
                 this.remainingTimeInSeconds = this.startTimeInSeconds;
             }
         },
@@ -443,7 +434,20 @@ document.addEventListener("alpine:init", () => {
             return this.timerIsNotRunning() && this.timerIsPaused();
         },
 
-        // Controlling Timer Playback
+        timerIsNotRunningOrIsNotPaused() {
+            return this.timerIsNotRunning() || this.timerIsNotPaused();
+        },
+
+        timerIsRunningButIsPaused() {
+            return this.timerIsRunning() && this.timerIsPaused();
+        },
+
+        timerIsRunningAndNotPaused() {
+            return this.timerIsRunning() && this.timerIsNotPaused();
+        },
+
+        // TIMER PLAYBACK
+
         initialiseTimer() {
             this.startTimer();
             this.createAndStartInterval();
