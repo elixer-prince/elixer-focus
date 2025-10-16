@@ -268,9 +268,6 @@ document.addEventListener("alpine:init", () => {
             this.endTime = this.calculateEndTime();
         },
 
-        /**
-         * Pauses the countdown timer if it is currently running.
-         */
         pauseCountdown() {
             // If the timer wasn't running or the timer is paused, do nothing.
             if (!this.intervalStarted || this.timerPaused) return;
@@ -282,9 +279,6 @@ document.addEventListener("alpine:init", () => {
             this.destroyInterval();
         },
 
-        /**
-         * Resets the timer to its starting value.
-         */
         resetCountdown() {
             // If the timer is running stop it before resetting to the
             // start time.
