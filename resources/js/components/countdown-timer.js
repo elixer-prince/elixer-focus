@@ -419,7 +419,6 @@ document.addEventListener("alpine:init", () => {
         // SESSION CONTROLS
 
         toggleSessionType() {
-            document.title = "Welcome to Elixer Focus";
             this.isBreak = !this.isBreak;
         },
 
@@ -428,6 +427,10 @@ document.addEventListener("alpine:init", () => {
                 this.toggleSessionType();
                 this.resetCountdown();
             }
+        },
+
+        resetPageTitleToDefault() {
+            document.title = "Welcome to Elixer Focus";
         },
 
         // TIMER CONTROLS
