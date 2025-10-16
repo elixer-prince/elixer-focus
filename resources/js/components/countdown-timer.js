@@ -412,21 +412,12 @@ document.addEventListener("alpine:init", () => {
             }, 1000);
         },
 
-        /**
-         * Destroy the existing timer interval.
-         */
         destroyInterval() {
             clearInterval(this.interval);
         },
 
         // SESSION CONTROLS
 
-        /**
-         * Toggle the session type.
-         *
-         * If the session is a break session it switched to a focus session
-         * and vice versa.
-         */
         toggleSessionType() {
             document.title = "Welcome to Elixer Focus";
             this.isBreak = !this.isBreak;
