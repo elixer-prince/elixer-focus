@@ -236,7 +236,7 @@ document.addEventListener("alpine:init", () => {
 
         startCountdown() {
             this.setEndTime();
-            this.createInterval();
+            this.createAndStartInterval();
         },
 
         startCountDownOnRefresh() {
@@ -276,8 +276,8 @@ document.addEventListener("alpine:init", () => {
             this.resetCountdown();
         },
         resetCountdownWithSound() {
-            if (!this.intervalStarted) return alert("The timer isn't running!");
             if (this.timerIsNotRunning())
+                return this.informUserOfTimerNotRunning();
 
             if (confirm("Are you sure you want to reset the timer?")) {
                 this.playResetTimerSoundEffect();
@@ -400,7 +400,9 @@ document.addEventListener("alpine:init", () => {
             return this.isBreak;
         },
 
-        // Timer Checks
+        // TIMER CHECKS
+
+        // Basic Checks
 
         timerIsAboutToEnd() {
             return this.remainingTimeInSeconds <= 5;
@@ -429,6 +431,8 @@ document.addEventListener("alpine:init", () => {
         timerIsPaused() {
             return !this.timerPaused;
         },
+
+        // Compound Checks
 
         timerIsNotRunningAndIsPaused() {
             return this.timerIsNotRunning() && this.timerIsPaused();
