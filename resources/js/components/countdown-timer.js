@@ -247,10 +247,7 @@ document.addEventListener("alpine:init", () => {
         */
 
         startCountdown() {
-            // Calculate the end time based on the current time and remaining time
-            // because browser throttling makes decrementing inaccurate.
-            this.endTime = Date.now() + this.remainingTimeInSeconds * 1000;
-
+            this.setEndTime();
             this.startInterval();
         },
         startCountDownOnRefresh() {
@@ -266,6 +263,16 @@ document.addEventListener("alpine:init", () => {
             // Otherwise, the button sound is played before staring the timer.
             this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
             this.startCountdown();
+        },
+
+        calculateEndTime() {
+            // Calculate the end time based on the current time and remaining time
+            // because browser throttling makes decrementing inaccurate.
+            return Date.now() + this.remainingTimeInSeconds * 1000;
+        },
+
+        setEndTime() {
+            this.endTime = this.calculateEndTime();
         },
 
         /**
