@@ -287,7 +287,7 @@ document.addEventListener("alpine:init", () => {
 
         skipCountdown() {
             if (this.timerIsNotRunning())
-                return alert("The timer isn't running!");
+                return this.informUserOfTimerNotRunning();
 
             if (confirm("Are you sure you want to skip the current session?")) {
                 this.playResetTimerSoundEffect();
@@ -351,6 +351,10 @@ document.addEventListener("alpine:init", () => {
         informUserOfTimerEnd() {
             // Delayed by one second because the alert would block sounds otherwise.
             setTimeout(() => alert("Time's up!"), 1000);
+        },
+
+        informUserOfTimerNotRunning() {
+            alert("The timer isn't running!");
         },
 
         //---------------------------------------------------------------
