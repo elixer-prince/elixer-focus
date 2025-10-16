@@ -166,7 +166,7 @@ document.addEventListener("alpine:init", () => {
 
                         if (this.intervalStarted) {
                             this.destroyInterval();
-                            this.startInterval();
+                            this.createInterval();
                         } else {
                             this.displayCountdownTimeRemainingInPageTitle();
                         }
@@ -199,7 +199,7 @@ document.addEventListener("alpine:init", () => {
                             Date.now() + this.remainingTimeInSeconds * 1000;
                         if (this.intervalStarted) {
                             this.destroyInterval();
-                            this.startInterval();
+                            this.createInterval();
                         } else {
                             this.displayCountdownTimeRemainingInPageTitle();
                         }
@@ -230,7 +230,7 @@ document.addEventListener("alpine:init", () => {
                             Date.now() + this.remainingTimeInSeconds * 1000;
                         if (this.intervalStarted) {
                             this.destroyInterval();
-                            this.startInterval();
+                            this.createInterval();
                         } else {
                             this.displayCountdownTimeRemainingInPageTitle();
                         }
@@ -241,7 +241,7 @@ document.addEventListener("alpine:init", () => {
 
         startCountdown() {
             this.setEndTime();
-            this.startInterval();
+            this.createInterval();
         },
         startCountDownOnRefresh() {
             // If the timer was started but paused, do nothing.
