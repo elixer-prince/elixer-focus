@@ -350,7 +350,7 @@ document.addEventListener("alpine:init", () => {
             this.interval = setInterval(() => {
                 this.updateRemainingSeconds();
 
-                    tickingStarted = true;
+                if (this.timerIsAboutToEnd()) {
                     this.$store.utilityFunctions.playSound(
                         this.tickingSoundEffect,
                     );
@@ -369,9 +369,7 @@ document.addEventListener("alpine:init", () => {
 
                     this.toggleSessionType();
                     this.resetCountdown();
-                    this.$store.utilityFunctions.playSound(
-                        this.beepSoundEffect,
-                    );
+                    this.playBeepSoundEffect();
 
                     return this.informUserOfTimerEnd();
                 }
@@ -495,5 +493,17 @@ document.addEventListener("alpine:init", () => {
         resetPageTitleToDefault() {
             document.title = "Welcome to Elixer Focus";
         },
+
+        //---------------------------------------------------------------
+        // SOUND CONTROLS
+        //---------------------------------------------------------------
+
+        // Start the sounds
+
+        playBeepSoundEffect() {
+            this.$store.utilityFunctions.playSound(this.beepSoundEffect);
+        },
+
+        // Stop the sounds
     }));
 });
