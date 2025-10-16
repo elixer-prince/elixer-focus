@@ -340,7 +340,9 @@ document.addEventListener("alpine:init", () => {
             this.intervalStarted = true;
         },
 
-            let tickingStarted = false;
+        stopInterval() {
+            this.intervalStarted = false;
+        },
 
             this.createInterval(tickingStarted);
         },
