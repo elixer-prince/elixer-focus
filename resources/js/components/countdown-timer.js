@@ -296,7 +296,7 @@ document.addEventListener("alpine:init", () => {
             // If the timer is running stop it before resetting to the
             // start time.
             if (this.intervalStarted) {
-                document.title = "Welcome to Elixer Focus";
+                this.resetPageTitleToDefault();
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
                 this.intervalStarted = false;
                 this.destroyInterval();
