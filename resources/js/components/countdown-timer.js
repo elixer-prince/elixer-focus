@@ -130,7 +130,7 @@ document.addEventListener("alpine:init", () => {
                     value >=
                     this.$store.countdownTimerSettings.sessionCountLimit
                 )
-                    this.resetCurrentCountdownSessionCount();
+                    this.resetSessionCount();
             });
 
             this.$watch("totalSessionsCompleted", (value) => {
@@ -377,7 +377,7 @@ document.addEventListener("alpine:init", () => {
             let tickingStarted = false;
 
             this.interval = setInterval(() => {
-                this.updateRemainingSecondsBasedOnEndTime();
+                this.updateRemainingSeconds();
 
                 if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
                     tickingStarted = true;
@@ -449,7 +449,7 @@ document.addEventListener("alpine:init", () => {
             return Math.max(0, Math.round((this.endTime - Date.now()) / 1000));
         },
 
-        resetCurrentSessionCount() {
+        resetSessionCount() {
             this.currentSessionCount = 0;
         },
 
