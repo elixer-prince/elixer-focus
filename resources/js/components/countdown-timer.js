@@ -311,16 +311,14 @@ document.addEventListener("alpine:init", () => {
 
             if (confirm("Are you sure you want to skip the current session?")) {
                 this.playResetTimerSoundEffect();
-                this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
+                this.stopTickingSoundEffect();
 
-                if (this.currentSessionIsFocus()) {
-                    this.currentSessionCount++;
-                    this.totalSessionsCompleted++;
-                }
+                if (this.currentSessionIsFocus())
+                    this.incrementSessionCountAndTotalSessionsCompleted();
 
                 this.destroyInterval();
                 this.intervalStarted = false;
-                this.timerPaused = true;
+                this.pauseTimer();
 
                 this.toggleSessionType();
 
