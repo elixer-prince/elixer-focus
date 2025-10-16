@@ -48,7 +48,6 @@ document.addEventListener("alpine:init", () => {
             if (this.timerIsRunning())
                 this.displayCountdownTimeRemainingInPageTitle();
 
-            // Otherwise, start the countdown.
             this.startCountDownOnRefresh();
         },
 
