@@ -413,7 +413,7 @@ document.addEventListener("alpine:init", () => {
         // TIMER CONTROLS
         //---------------------------------------------------------------
 
-        // State Controls
+        // Controlling Timer Playback
 
         startTimer() {
             this.timerPaused = false;
@@ -423,7 +423,7 @@ document.addEventListener("alpine:init", () => {
             this.timerPaused = true;
         },
 
-        // Handle Remaining Time
+        // Handling Remaining Time
 
         updateRemainingSeconds() {
             this.remainingTimeInSeconds =
