@@ -335,13 +335,10 @@ document.addEventListener("alpine:init", () => {
         },
 
         createInterval() {
-            this.startInterval();
-
             this.interval = setInterval(() => {
                 this.updateRemainingSeconds();
 
                 if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
-
                 if (this.timerIsNotAboutToEnd()) this.stopTickingSoundEffect();
 
                 if (this.timerHasEnded()) {
@@ -355,6 +352,11 @@ document.addEventListener("alpine:init", () => {
                     return this.informUserOfTimerEnd();
                 }
             }, 1000);
+        },
+
+        createAndStartInterval() {
+            this.createInterval();
+            this.startInterval();
         },
 
         destroyInterval() {
@@ -458,7 +460,7 @@ document.addEventListener("alpine:init", () => {
 
         initialiseTimer() {
             this.startTimer();
-            this.createInterval();
+            this.createAndStartInterval();
         },
 
         // Handling Remaining Time
