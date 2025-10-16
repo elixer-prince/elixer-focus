@@ -253,16 +253,6 @@ document.addEventListener("alpine:init", () => {
             this.startCountdown();
         },
 
-        calculateEndTime() {
-            // Calculate the end time based on the current time and remaining time
-            // because browser throttling makes decrementing inaccurate.
-            return Date.now() + this.remainingTimeInSeconds * 1000;
-        },
-
-        setEndTime() {
-            this.endTime = this.calculateEndTime();
-        },
-
         pauseCountdown() {
             // If the timer wasn't running or the timer is paused, do nothing.
             if (!this.intervalStarted || this.timerPaused) return;
@@ -481,6 +471,18 @@ document.addEventListener("alpine:init", () => {
             return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
                 this.remainingTimeInSeconds,
             );
+        },
+
+        // Handling end time
+
+        calculateEndTime() {
+            // Calculate the end time based on the current time and remaining time
+            // because browser throttling makes decrementing inaccurate.
+            return Date.now() + this.remainingTimeInSeconds * 1000;
+        },
+
+        setEndTime() {
+            this.endTime = this.calculateEndTime();
         },
 
         // Updating the page title
