@@ -422,6 +422,7 @@ document.addEventListener("alpine:init", () => {
             document.title = "Welcome to Elixer Focus";
             this.isBreak = !this.isBreak;
         },
+
         toggleSessionTypeWithConfirmation() {
             if (confirm("Are you sure you want to switch the session type?")) {
                 this.toggleSessionType();
