@@ -246,9 +246,6 @@ document.addEventListener("alpine:init", () => {
         |
         */
 
-        /**
-         * Sets the countdown timer end time and starts the timer.
-         */
         startCountdown() {
             // Calculate the end time based on the current time and remaining time
             // because browser throttling makes decrementing inaccurate.
