@@ -45,9 +45,7 @@ document.addEventListener("alpine:init", () => {
 
             if (this.timerIsNotRunningAndIsPaused()) return;
 
-            // Otherwise, if it was running display the remaining time in
-            // the title.
-            if (this.intervalStarted)
+            if (this.timerIsRunning())
                 this.displayCountdownTimeRemainingInPageTitle();
 
             // Otherwise, start the countdown.
