@@ -255,17 +255,17 @@ document.addEventListener("alpine:init", () => {
         pauseCountdown() {
             if (this.timerIsNotRunningOrIsNotPaused()) return;
 
-            this.timerPaused = true;
+            this.stopTickingSoundEffect();
             this.playOffClickSoundEffect();
-            this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
+            this.pauseTimer();
             this.destroyInterval();
         },
 
         resetCountdown() {
             if (this.timerIsRunning()) {
                 this.resetPageTitleToDefault();
-                this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
-                this.intervalStarted = false;
+                this.stopTickingSoundEffect();
+                this.stopInterval();
                 this.destroyInterval();
                 this.pauseTimer();
             }
@@ -297,10 +297,10 @@ document.addEventListener("alpine:init", () => {
                     this.incrementSessionCountAndTotalSessionsCompleted();
 
                 this.destroyInterval();
-                this.intervalStarted = false;
+                this.stopInterval();
                 this.pauseTimer();
                 this.toggleSessionType();
-                this.remainingTimeInSeconds = this.startTimeInSeconds;
+                this.resetCountdown();
             }
         },
 
