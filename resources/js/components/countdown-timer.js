@@ -377,7 +377,7 @@ document.addEventListener("alpine:init", () => {
             let tickingStarted = false;
 
             this.interval = setInterval(() => {
-                this.updateRemainingTimeInSecondsBasedOnEndTime();
+                this.updateRemainingSecondsBasedOnEndTime();
 
                 if (this.remainingTimeInSeconds <= 5 && !tickingStarted) {
                     tickingStarted = true;
@@ -440,14 +440,16 @@ document.addEventListener("alpine:init", () => {
 
         // TIMER CONTROLS
 
-        updateRemainingTimeInSecondsBasedOnEndTime() {
-            this.remainingTimeInSeconds = Math.max(
-                0,
-                Math.round((this.endTime - Date.now()) / 1000),
-            );
+        updateRemainingSeconds() {
+            this.remainingTimeInSeconds =
+                this.calculateRemainingSecondsBasedOnEndTime();
         },
 
-        resetCurrentCountdownSessionCount() {
+        calculateRemainingSecondsBasedOnEndTime() {
+            return Math.max(0, Math.round((this.endTime - Date.now()) / 1000));
+        },
+
+        resetCurrentSessionCount() {
             this.currentSessionCount = 0;
         },
 
