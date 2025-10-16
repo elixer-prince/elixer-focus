@@ -238,12 +238,14 @@ document.addEventListener("alpine:init", () => {
             this.setEndTime();
             this.createInterval();
         },
+
         startCountDownOnRefresh() {
             // If the timer was started but paused, do nothing.
             if (this.timerPaused && this.intervalStarted) return;
 
             this.startCountdown();
         },
+
         startCountdownWithSound() {
             // If the timer was started but not paused, do nothing.
             if (this.intervalStarted && !this.timerPaused) return;
