@@ -26,12 +26,11 @@ document.addEventListener("alpine:init", () => {
 
         get startTimeInMinutes() {
             if (this.currentSessionIsBreak())
-                return this.currentSessionCount <
-                    this.$store.countdownTimerSettings.sessionCountLimit
-                    ? this.$store.countdownTimerSettings.shortBreakDuration
-                    : this.$store.countdownTimerSettings.longBreakDuration;
+                return this.currentSessionCount < this.getSessionCountLimit()
+                    ? this.getShortBreakDuration()
+                    : this.getLongBreakDuration();
 
-            return this.$store.countdownTimerSettings.focusDuration;
+            return this.getFocusDuration();
         },
 
         get startTimeInSeconds() {
@@ -521,6 +520,26 @@ document.addEventListener("alpine:init", () => {
 
         stopTickingSoundEffect() {
             this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
+        },
+
+        //---------------------------------------------------------------
+        // GET STORE VALUES
+        //---------------------------------------------------------------
+
+        getSessionCountLimit() {
+            return this.$store.countdownTimerSettings.sessionCountLimit;
+        },
+
+        getFocusDuration() {
+            return this.$store.countdownTimerSettings.focusDuration;
+        },
+
+        getShortBreakDuration() {
+            return this.$store.countdownTimerSettings.shortBreakDuration;
+        },
+
+        getLongBreakDuration() {
+            return this.$store.countdownTimerSettings.longBreakDuration;
         },
     }));
 });
