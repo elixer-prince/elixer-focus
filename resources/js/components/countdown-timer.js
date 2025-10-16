@@ -379,15 +379,22 @@ document.addEventListener("alpine:init", () => {
                         this.beepSoundEffect,
                     );
 
-                    // The timeout is set to one second because the alert
-                    // would block the sound from playing immediately otherwise.
-                    return setTimeout(() => alert("Time's up!"), 1000);
+                    return this.informUserOfTimerEnd();
                 }
             }, 1000);
         },
 
         destroyInterval() {
             clearInterval(this.interval);
+        },
+
+        //--------------------------------------------------------------
+        // PROVIDE USER FEEDBACK
+        //--------------------------------------------------------------
+
+        informUserOfTimerEnd() {
+            // Delayed by one second because the alert would block sounds otherwise.
+            setTimeout(() => alert("Time's up!"), 1000);
         },
 
         //---------------------------------------------------------------
