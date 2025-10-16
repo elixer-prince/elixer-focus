@@ -425,11 +425,11 @@ document.addEventListener("alpine:init", () => {
         },
 
         timerIsNotPaused() {
-            return this.timerPaused;
+            return !this.timerPaused;
         },
 
         timerIsPaused() {
-            return !this.timerPaused;
+            return this.timerPaused;
         },
 
         // Compound Checks
