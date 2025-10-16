@@ -142,7 +142,7 @@ document.addEventListener("alpine:init", () => {
             this.$watch(
                 () => this.$store.countdownTimerSettings.focusDuration,
                 (newMinutes) => {
-                    if (!this.isBreak) {
+                    if (this.currentSessionIsFocus()) {
                         // Only adjust if currently a focus session
                         const newTotalStartTime =
                             this.$store.timerFunctions.convertMinutesToSeconds(
@@ -326,7 +326,7 @@ document.addEventListener("alpine:init", () => {
                 );
                 this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
 
-                if (!this.isBreak) {
+                if (this.currentSessionIsFocus()) {
                     this.currentSessionCount++;
                     this.totalSessionsCompleted++;
                 }
@@ -374,7 +374,7 @@ document.addEventListener("alpine:init", () => {
                 }
 
                 if (this.remainingTimeInSeconds <= 0) {
-                    if (!this.isBreak) {
+                    if (this.currentSessionIsFocus()) {
                         this.currentSessionCount++;
                         this.totalSessionsCompleted++;
                     }
@@ -413,7 +413,7 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
-        currentSessionIsNotBreak() {
+        currentSessionIsFocus() {
             return !this.isBreak;
         },
 
@@ -439,7 +439,7 @@ document.addEventListener("alpine:init", () => {
         // Updating the page title
 
         displayCountdownTimeRemainingInPageTitle() {
-            if (this.currentSessionIsNotBreak())
+            if (this.currentSessionIsFocus())
                 return this.displayFocusTimeRemainingInPageTitle();
 
             this.displayBreakTimeRemainingInPageTitle();
