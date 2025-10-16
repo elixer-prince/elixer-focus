@@ -349,7 +349,9 @@ document.addEventListener("alpine:init", () => {
             this.createInterval();
         },
 
-        createInterval(tickingStarted) {
+        createInterval() {
+            let tickingStarted = false;
+
             this.interval = setInterval(() => {
                 this.updateRemainingSeconds();
 
