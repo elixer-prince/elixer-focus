@@ -7,22 +7,22 @@ import resetTimerSoundURL from "./../../assets/audio/sound-effects/reset-timer.m
 document.addEventListener("alpine:init", () => {
     Alpine.data("countdownTimer", () => ({
         // TIMER VARIABLES
+        currentSessionCount: 0,
         endTime: 0,
         interval: null,
         intervalStarted: false,
         isBreak: false,
-        currentSessionCount: 0,
-        totalSessionsCompleted: 0,
         remainingTimeInSeconds: 0,
         timerPaused: true,
+        totalSessionsCompleted: 0,
         totalStartTimeInSeconds: 0,
 
         // SOUND EFFECTS
-        onClickSoundEffect: null,
-        offClickSoundEffect: null,
-        tickingSoundEffect: null,
         beepSoundEffect: null,
+        offClickSoundEffect: null,
+        onClickSoundEffect: null,
         resetTimerSoundEffect: null,
+        tickingSoundEffect: null,
 
         get startTimeInMinutes() {
             if (this.currentSessionIsBreak())
