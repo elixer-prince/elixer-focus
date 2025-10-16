@@ -306,7 +306,6 @@ document.addEventListener("alpine:init", () => {
         },
 
         skipCountdown() {
-            // Alert the user if the timer isn't running.
             if (this.timerIsNotRunning())
                 return alert("The timer isn't running!");
 
