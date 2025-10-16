@@ -439,6 +439,8 @@ document.addEventListener("alpine:init", () => {
 
         // TIMER CONTROLS
 
+        // Handle Remaining Time
+
         updateRemainingSeconds() {
             this.remainingTimeInSeconds =
                 this.calculateRemainingSecondsBasedOnEndTime();
@@ -453,6 +455,8 @@ document.addEventListener("alpine:init", () => {
                 this.remainingTimeInSeconds,
             );
         },
+
+        // Updating the page title
 
         displayCountdownTimeRemainingInPageTitle() {
             if (this.currentSessionIsNotBreak())
