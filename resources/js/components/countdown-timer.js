@@ -239,13 +239,6 @@ document.addEventListener("alpine:init", () => {
             );
         },
 
-        /*
-        |---------------------------------
-        | TIMER CONTROLS
-        |---------------------------------
-        |
-        */
-
         startCountdown() {
             this.setEndTime();
             this.startInterval();
@@ -345,14 +338,9 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
-        /*
-        |-----------------------------------------------------
-        | HELPER METHODS
-        |-----------------------------------------------------
-        |
-        */
-
+        //---------------------------------------------------------------
         // INTERVAL CONTROLS
+        //---------------------------------------------------------------
 
         startInterval() {
             this.startTimer();
@@ -400,7 +388,9 @@ document.addEventListener("alpine:init", () => {
             clearInterval(this.interval);
         },
 
+        //---------------------------------------------------------------
         // SESSION CONTROLS
+        //---------------------------------------------------------------
 
         resetSessionCount() {
             this.currentSessionCount = 0;
@@ -421,7 +411,11 @@ document.addEventListener("alpine:init", () => {
             return !this.isBreak;
         },
 
+        //---------------------------------------------------------------
         // TIMER CONTROLS
+        //---------------------------------------------------------------
+
+        // State Controls
 
         startTimer() {
             this.timerPaused = false;
