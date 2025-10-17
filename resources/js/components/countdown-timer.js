@@ -536,29 +536,29 @@ document.addEventListener("alpine:init", () => {
         // Start the sounds
 
         playBeepSoundEffect() {
-            this.$store.utilityFunctions.playSound(this.beepSoundEffect);
+            this.$store.utility.playSound(this.beepSoundEffect);
         },
 
         playTickingSoundEffect() {
-            this.$store.utilityFunctions.playSound(this.tickingSoundEffect);
+            this.$store.utility.playSound(this.tickingSoundEffect);
         },
 
         playResetTimerSoundEffect() {
-            this.$store.utilityFunctions.playSound(this.resetTimerSoundEffect);
+            this.$store.utility.playSound(this.resetTimerSoundEffect);
         },
 
         playOnClickSoundEffect() {
-            this.$store.utilityFunctions.playSound(this.onClickSoundEffect);
+            this.$store.utility.playSound(this.onClickSoundEffect);
         },
 
         playOffClickSoundEffect() {
-            this.$store.utilityFunctions.playSound(this.offClickSoundEffect);
+            this.$store.utility.playSound(this.offClickSoundEffect);
         },
 
         // Stop the sounds
 
         stopTickingSoundEffect() {
-            this.$store.utilityFunctions.stopSound(this.tickingSoundEffect);
+            this.$store.utility.stopSound(this.tickingSoundEffect);
         },
 
         //---------------------------------------------------------------
