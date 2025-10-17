@@ -272,11 +272,6 @@ document.addEventListener("alpine:init", () => {
                 this.destroyInterval();
                 this.pauseTimer();
             }
-
-            // This is defined outside the if statement because the timer
-            // should be reset the start time when the function is called,
-            // even if it wasn't started.
-            this.resetCountdown();
         },
         resetCountdownWithSound() {
             if (this.timerIsNotRunning())
