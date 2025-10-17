@@ -52,12 +52,7 @@ document.addEventListener("alpine:init", () => {
         },
 
         initialiseVariables() {
-            // SOUND EFFECTS
-            this.onClickSoundEffect = new Audio(onClickSoundURL);
-            this.offClickSoundEffect = new Audio(offClickSoundURL);
-            this.tickingSoundEffect = new Audio(tickingSoundURL);
-            this.beepSoundEffect = new Audio(beepSoundURL);
-            this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
+            this.initialiseSoundEffects();
 
             // TIMER VARIABLES
             this.remainingTimeInSeconds =
@@ -85,6 +80,14 @@ document.addEventListener("alpine:init", () => {
             this.endTime = JSON.parse(localStorage.getItem("endTime")) || null;
 
             this.totalStartTimeInSeconds = this.startTimeInSeconds;
+        },
+
+        initialiseSoundEffects() {
+            this.onClickSoundEffect = new Audio(onClickSoundURL);
+            this.offClickSoundEffect = new Audio(offClickSoundURL);
+            this.tickingSoundEffect = new Audio(tickingSoundURL);
+            this.beepSoundEffect = new Audio(beepSoundURL);
+            this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
         },
 
         watchVariables() {
