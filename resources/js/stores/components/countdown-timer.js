@@ -1,5 +1,5 @@
 document.addEventListener("alpine:init", () => {
-    Alpine.store('countdownTimerSettings', {
+    Alpine.store("countdownTimerSettings", {
         /*
         |-----------------------------------------------------------
         | Session Durations
@@ -11,11 +11,10 @@ document.addEventListener("alpine:init", () => {
         */
 
         sessionCountLimit: 4,
-        focusDuration:
-            JSON.parse(localStorage.getItem('focusDuration')) || 25,
+        focusDuration: JSON.parse(localStorage.getItem("focusDuration")) || 25,
         shortBreakDuration:
-            JSON.parse(localStorage.getItem('shortBreakDuration')) || 5,
+            JSON.parse(localStorage.getItem("shortBreakDuration")) || 5,
         longBreakDuration:
-            JSON.parse(localStorage.getItem('longBreakDuration')) || 15,
+            JSON.parse(localStorage.getItem("longBreakDuration")) || 15,
     });
 });
