@@ -270,6 +270,7 @@ document.addEventListener("alpine:init", () => {
                 this.stopTickingSoundEffect();
                 this.stopInterval();
                 this.destroyInterval();
+                this.stopAndDestroyInterval();
                 this.pauseTimer();
             }
         },
@@ -294,9 +295,8 @@ document.addEventListener("alpine:init", () => {
                 if (this.currentSessionIsFocus())
                     this.incrementSessionCountAndTotalSessionsCompleted();
 
-                this.destroyInterval();
-                this.stopInterval();
                 this.pauseTimer();
+                this.stopAndDestroyInterval();
                 this.toggleSessionType();
                 this.resetCountdown();
             }
@@ -340,6 +340,11 @@ document.addEventListener("alpine:init", () => {
 
         destroyInterval() {
             clearInterval(this.interval);
+        },
+
+        stopAndDestroyInterval() {
+            this.stopInterval();
+            this.destroyInterval();
         },
 
         //--------------------------------------------------------------
