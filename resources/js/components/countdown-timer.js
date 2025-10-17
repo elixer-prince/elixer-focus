@@ -53,7 +53,7 @@ document.addEventListener("alpine:init", () => {
 
         initialiseTimerState() {
             this.initialiseSoundEffects();
-            this.InitialiseTimerVariables();
+            this.initialiseTimerVariables();
         },
 
         initialiseSoundEffects() {
