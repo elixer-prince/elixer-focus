@@ -266,10 +266,9 @@ document.addEventListener("alpine:init", () => {
 
         resetCountdown() {
             if (this.timerIsRunning()) {
-                this.resetPageTitleToDefault();
                 this.stopTickingSoundEffect();
-                this.stopInterval();
-                this.destroyInterval();
+                this.resetPageTitleToDefault();
+                this.setEndTime();
                 this.resetRemainingTime();
                 this.stopAndDestroyInterval();
                 this.pauseTimer();
