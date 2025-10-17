@@ -253,7 +253,7 @@ document.addEventListener("alpine:init", () => {
         },
 
         pauseCountdown() {
-            if (this.timerIsNotRunningOrIsNotPaused()) return;
+            if (this.timerIsNotRunningOrIsPaused()) return;
 
             this.stopTickingSoundEffect();
             this.playOffClickSoundEffect();
@@ -442,8 +442,8 @@ document.addEventListener("alpine:init", () => {
             return this.timerIsNotRunning() && this.timerIsPaused();
         },
 
-        timerIsNotRunningOrIsNotPaused() {
-            return this.timerIsNotRunning() || this.timerIsNotPaused();
+        timerIsNotRunningOrIsPaused() {
+            return this.timerIsNotRunning() || this.timerIsPaused();
         },
 
         timerIsRunningButIsPaused() {
