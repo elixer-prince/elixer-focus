@@ -40,8 +40,8 @@ document.addEventListener("alpine:init", () => {
         },
 
         init() {
-            this.initialiseVariables();
-            this.watchVariables();
+            this.initialiseTimerState();
+            this.watchTimerState();
 
             if (this.timerIsNotRunningAndIsPaused()) return;
 
@@ -51,7 +51,7 @@ document.addEventListener("alpine:init", () => {
             this.startCountDownOnRefresh();
         },
 
-        initialiseVariables() {
+        initialiseTimerState() {
             this.initialiseSoundEffects();
 
             // TIMER VARIABLES
@@ -90,7 +90,7 @@ document.addEventListener("alpine:init", () => {
             this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
         },
 
-        watchVariables() {
+        watchTimerState() {
             this.$watch("remainingTimeInSeconds", (value) => {
                 localStorage.setItem(
                     "remainingTimeInSeconds",
