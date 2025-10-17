@@ -236,7 +236,7 @@ document.addEventListener("alpine:init", () => {
 
         startCountdown() {
             this.setEndTime();
-            this.createAndStartInterval();
+            this.initialiseTimer();
         },
 
         startCountDownOnRefresh() {
