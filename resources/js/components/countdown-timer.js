@@ -39,6 +39,13 @@ document.addEventListener("alpine:init", () => {
             );
         },
 
+        /*
+         |---------------------------------------------------------------
+         |  INITIALISATION
+         |---------------------------------------------------------------
+         |
+         */
+
         init() {
             this.initialiseTimerState();
             this.watchTimerState();
@@ -276,6 +283,7 @@ document.addEventListener("alpine:init", () => {
                 this.pauseTimer();
             }
         },
+
         resetCountdownWithSound() {
             if (this.timerIsNotRunning())
                 return this.informUserOfTimerNotRunning();
@@ -305,9 +313,12 @@ document.addEventListener("alpine:init", () => {
             }
         },
 
-        //---------------------------------------------------------------
-        // INTERVAL CONTROLS
-        //---------------------------------------------------------------
+        /*
+         |---------------------------------------------------------------
+         |  INTERVAL CONTROLS
+         |---------------------------------------------------------------
+         |
+         */
 
         startInterval() {
             this.intervalStarted = true;
@@ -350,9 +361,12 @@ document.addEventListener("alpine:init", () => {
             this.destroyInterval();
         },
 
-        //--------------------------------------------------------------
-        // PROVIDE USER FEEDBACK
-        //--------------------------------------------------------------
+        /*
+         |---------------------------------------------------------------
+         |  PROVIDE USER FEEDBACK
+         |---------------------------------------------------------------
+         |
+         */
 
         informUserOfTimerEnd() {
             // Delayed by one second because the alert would block sounds otherwise.
@@ -363,9 +377,12 @@ document.addEventListener("alpine:init", () => {
             alert("The timer isn't running!");
         },
 
-        //---------------------------------------------------------------
-        // SESSION CONTROLS
-        //---------------------------------------------------------------
+        /*
+         |---------------------------------------------------------------
+         |  SESSION CONTROLS
+         |---------------------------------------------------------------
+         |
+         */
 
         toggleSessionType() {
             this.isBreak = !this.isBreak;
@@ -529,9 +546,12 @@ document.addEventListener("alpine:init", () => {
             document.title = "Welcome to Elixer Focus";
         },
 
-        //---------------------------------------------------------------
-        // SOUND CONTROLS
-        //---------------------------------------------------------------
+        /*
+        |---------------------------------------------------------------
+        |  SOUND CONTROLS
+        |---------------------------------------------------------------
+        |
+        */
 
         // Start the sounds
 
@@ -561,9 +581,12 @@ document.addEventListener("alpine:init", () => {
             this.$store.utility.stopSound(this.tickingSoundEffect);
         },
 
-        //---------------------------------------------------------------
-        // GET STORE VALUES
-        //---------------------------------------------------------------
+        /*
+         |---------------------------------------------------------------
+         |  GET STORE VALUES
+         |---------------------------------------------------------------
+         |
+         */
 
         getSessionCountLimit() {
             return this.$store.countdownTimerSettings.sessionCountLimit;
