@@ -457,16 +457,16 @@ document.addEventListener("alpine:init", () => {
         // TIMER PLAYBACK
 
         initialiseTimer() {
-            this.startTimer();
+            this.unpauseTimer();
             this.createAndStartInterval();
-        },
-
-        startTimer() {
-            this.timerPaused = false;
         },
 
         pauseTimer() {
             this.timerPaused = true;
+        },
+
+        unpauseTimer() {
+            this.timerPaused = false;
         },
 
         // Handling Remaining Time
