@@ -1,5 +1,5 @@
 document.addEventListener("alpine:init", () => {
-    Alpine.store("utilityFunctions", {
+    Alpine.store("utility", {
         playSound(effect) {
             effect.currentTime = 0;
             effect.play();
