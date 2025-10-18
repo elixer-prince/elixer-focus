@@ -5,603 +5,600 @@ import beepSoundURL from "./../../assets/audio/sound-effects/beep.mp3";
 import resetTimerSoundURL from "./../../assets/audio/sound-effects/reset-timer.mp3";
 
 document.addEventListener("alpine:init", () => {
-    Alpine.data("countdownTimer", () => ({
-        // TIMER VARIABLES
-        currentSessionCount: 0,
-        endTime: 0,
-        interval: null,
-        intervalStarted: false,
-        isBreak: false,
-        remainingTimeInSeconds: 0,
-        timerPaused: true,
-        totalSessionsCompleted: 0,
-        totalStartTimeInSeconds: 0,
+    Alpine.data("countdownTimer", function () {
+        return {
+            // TIMER VARIABLES
+            currentSessionCount: this.$persist(0),
+            endTime: ths.$persist(0),
+            interval: null,
+            intervalStarted: this.$persist(false),
+            isBreak: this.$persist(false),
+            remainingTimeInSeconds: this.$persist(0),
+            timerPaused: this.$persist(true),
+            totalSessionsCompleted: this.$persist(0),
+            totalStartTimeInSeconds: 0,
 
-        // SOUND EFFECTS
-        beepSoundEffect: null,
-        offClickSoundEffect: null,
-        onClickSoundEffect: null,
-        resetTimerSoundEffect: null,
-        tickingSoundEffect: null,
+            // SOUND EFFECTS
+            beepSoundEffect: null,
+            offClickSoundEffect: null,
+            onClickSoundEffect: null,
+            resetTimerSoundEffect: null,
+            tickingSoundEffect: null,
 
-        get startTimeInMinutes() {
-            if (this.currentSessionIsBreak())
-                return this.currentSessionCount < this.getSessionCountLimit()
-                    ? this.getShortBreakDuration()
-                    : this.getLongBreakDuration();
+            get startTimeInMinutes() {
+                if (this.currentSessionIsBreak())
+                    return this.currentSessionCount <
+                        this.getSessionCountLimit()
+                        ? this.getShortBreakDuration()
+                        : this.getLongBreakDuration();
 
-            return this.getFocusDuration();
-        },
+                return this.getFocusDuration();
+            },
 
-        get startTimeInSeconds() {
-            return this.$store.timerFunctions.convertMinutesToSeconds(
-                this.startTimeInMinutes,
-            );
-        },
-
-        /*
-         |---------------------------------------------------------------
-         |  INITIALISATION
-         |---------------------------------------------------------------
-         |
-         */
-
-        init() {
-            this.initialiseTimerState();
-            this.watchTimerState();
-
-            if (this.timerIsNotRunningAndIsPaused()) return;
-
-            if (this.timerIsRunning())
-                this.displayCountdownTimeRemainingInPageTitle();
-
-            this.startCountDownOnRefresh();
-        },
-
-        initialiseTimerState() {
-            this.initialiseSoundEffects();
-            this.initialiseTimerVariables();
-        },
-
-        initialiseSoundEffects() {
-            this.onClickSoundEffect = new Audio(onClickSoundURL);
-            this.offClickSoundEffect = new Audio(offClickSoundURL);
-            this.tickingSoundEffect = new Audio(tickingSoundURL);
-            this.beepSoundEffect = new Audio(beepSoundURL);
-            this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
-        },
-
-        initialiseTimerVariables() {
-            this.remainingTimeInSeconds =
-                JSON.parse(localStorage.getItem("remainingTimeInSeconds")) ||
-                this.startTimeInSeconds;
-
-            this.currentSessionCount =
-                JSON.parse(localStorage.getItem("currentSessionCount")) || 0;
-
-            this.totalSessionsCompleted =
-                JSON.parse(localStorage.getItem("totalSessionsCompleted")) || 0;
-
-            this.isBreak = localStorage.getItem("isBreak")
-                ? JSON.parse(localStorage.getItem("isBreak"))
-                : false;
-
-            this.intervalStarted = localStorage.getItem("intervalStarted")
-                ? JSON.parse(localStorage.getItem("intervalStarted"))
-                : false;
-
-            this.timerPaused = localStorage.getItem("timerPaused")
-                ? JSON.parse(localStorage.getItem("timerPaused"))
-                : true;
-
-            this.endTime = JSON.parse(localStorage.getItem("endTime")) || null;
-
-            this.totalStartTimeInSeconds = this.startTimeInSeconds;
-        },
-
-        watchTimerState() {
-            this.$watch("remainingTimeInSeconds", (value) => {
-                localStorage.setItem(
-                    "remainingTimeInSeconds",
-                    JSON.stringify(value),
+            get startTimeInSeconds() {
+                return this.$store.timerFunctions.convertMinutesToSeconds(
+                    this.startTimeInMinutes,
                 );
+            },
 
-                if (this.intervalStarted)
+            /*
+           |---------------------------------------------------------------
+           |  INITIALISATION
+           |---------------------------------------------------------------
+           |
+           */
+
+            init() {
+                this.initialiseTimerState();
+                this.watchTimerState();
+
+                if (this.timerIsNotRunningAndIsPaused()) return;
+
+                if (this.timerIsRunning())
                     this.displayCountdownTimeRemainingInPageTitle();
-            });
 
-            this.$watch("currentSessionCount", (value) => {
-                localStorage.setItem(
-                    "currentSessionCount",
-                    JSON.stringify(value),
+                this.startCountDownOnRefresh();
+            },
+
+            initialiseTimerState() {
+                this.initialiseSoundEffects();
+                this.initialiseTimerVariables();
+            },
+
+            initialiseSoundEffects() {
+                this.onClickSoundEffect = new Audio(onClickSoundURL);
+                this.offClickSoundEffect = new Audio(offClickSoundURL);
+                this.tickingSoundEffect = new Audio(tickingSoundURL);
+                this.beepSoundEffect = new Audio(beepSoundURL);
+                this.resetTimerSoundEffect = new Audio(resetTimerSoundURL);
+            },
+
+            initialiseTimerVariables() {
+                this.totalStartTimeInSeconds = this.startTimeInSeconds;
+            },
+
+            watchTimerState() {
+                this.$watch("remainingTimeInSeconds", (value) => {
+                    localStorage.setItem(
+                        "remainingTimeInSeconds",
+                        JSON.stringify(value),
+                    );
+
+                    if (this.intervalStarted)
+                        this.displayCountdownTimeRemainingInPageTitle();
+                });
+
+                this.$watch("currentSessionCount", (value) => {
+                    localStorage.setItem(
+                        "currentSessionCount",
+                        JSON.stringify(value),
+                    );
+
+                    if (
+                        value >=
+                        this.$store.countdownTimerSettings.sessionCountLimit
+                    )
+                        this.resetSessionCount();
+                });
+
+                this.$watch("totalSessionsCompleted", (value) => {
+                    localStorage.setItem(
+                        "totalSessionsCompleted",
+                        JSON.stringify(value),
+                    );
+                });
+
+                this.$watch("isBreak", (value) => {
+                    localStorage.setItem("isBreak", JSON.stringify(value));
+                });
+
+                this.$watch("timerPaused", (value) => {
+                    localStorage.setItem("timerPaused", JSON.stringify(value));
+                });
+
+                this.$watch("intervalStarted", (value) => {
+                    localStorage.setItem(
+                        "intervalStarted",
+                        JSON.stringify(value),
+                    );
+                });
+
+                this.$watch("endTime", (value) => {
+                    localStorage.setItem("endTime", JSON.stringify(value));
+                });
+
+                this.$watch(
+                    () => this.$store.countdownTimerSettings.focusDuration,
+                    (newMinutes) => {
+                        if (this.currentSessionIsFocus()) {
+                            // Only adjust if currently a focus session
+                            const newTotalStartTime =
+                                this.$store.timerFunctions.convertMinutesToSeconds(
+                                    newMinutes,
+                                );
+                            const timeDiff =
+                                newTotalStartTime -
+                                this.totalStartTimeInSeconds;
+
+                            // Adjust remaining time by the difference but never less than zero
+                            this.remainingTimeInSeconds = Math.max(
+                                0,
+                                this.remainingTimeInSeconds + timeDiff,
+                            );
+
+                            // Update total start time
+                            this.totalStartTimeInSeconds = newTotalStartTime;
+
+                            // Update endTime based on new remaining time
+                            this.endTime =
+                                Date.now() + this.remainingTimeInSeconds * 1000;
+
+                            if (this.intervalStarted) {
+                                this.destroyInterval();
+                                this.createInterval();
+                            } else {
+                                this.displayCountdownTimeRemainingInPageTitle();
+                            }
+                        }
+                    },
                 );
+
+                // Similarly watch shortBreakDuration and longBreakDuration and adjust when `isBreak` is true
+
+                this.$watch(
+                    () => this.$store.countdownTimerSettings.shortBreakDuration,
+                    (newMinutes) => {
+                        if (
+                            this.currentSessionIsBreak() &&
+                            this.currentSessionCount <
+                                this.$store.countdownTimerSettings
+                                    .sessionCountLimit
+                        ) {
+                            const newTotalStartTime =
+                                this.$store.timerFunctions.convertMinutesToSeconds(
+                                    newMinutes,
+                                );
+                            const timeDiff =
+                                newTotalStartTime -
+                                this.totalStartTimeInSeconds;
+                            this.remainingTimeInSeconds = Math.max(
+                                0,
+                                this.remainingTimeInSeconds + timeDiff,
+                            );
+                            this.totalStartTimeInSeconds = newTotalStartTime;
+                            this.endTime =
+                                Date.now() + this.remainingTimeInSeconds * 1000;
+                            if (this.intervalStarted) {
+                                this.destroyInterval();
+                                this.createInterval();
+                            } else {
+                                this.displayCountdownTimeRemainingInPageTitle();
+                            }
+                        }
+                    },
+                );
+
+                this.$watch(
+                    () => this.$store.countdownTimerSettings.longBreakDuration,
+                    (newMinutes) => {
+                        if (
+                            this.currentSessionIsBreak() &&
+                            this.currentSessionCount >=
+                                this.$store.countdownTimerSettings
+                                    .sessionCountLimit
+                        ) {
+                            const newTotalStartTime =
+                                this.$store.timerFunctions.convertMinutesToSeconds(
+                                    newMinutes,
+                                );
+                            const timeDiff =
+                                newTotalStartTime -
+                                this.totalStartTimeInSeconds;
+                            this.remainingTimeInSeconds = Math.max(
+                                0,
+                                this.remainingTimeInSeconds + timeDiff,
+                            );
+                            this.totalStartTimeInSeconds = newTotalStartTime;
+                            this.endTime =
+                                Date.now() + this.remainingTimeInSeconds * 1000;
+                            if (this.intervalStarted) {
+                                this.destroyInterval();
+                                this.createInterval();
+                            } else {
+                                this.displayCountdownTimeRemainingInPageTitle();
+                            }
+                        }
+                    },
+                );
+            },
+
+            startCountdown() {
+                this.setEndTime();
+                this.initialiseTimer();
+            },
+
+            startCountDownOnRefresh() {
+                if (this.timerIsRunningButIsPaused()) return;
+
+                this.startCountdown();
+            },
+
+            startCountdownWithSound() {
+                if (this.timerIsRunningAndNotPaused()) return;
+
+                this.playOnClickSoundEffect();
+                this.startCountdown();
+            },
+
+            pauseCountdown() {
+                if (this.timerIsNotRunningOrIsPaused()) return;
+
+                this.stopTickingSoundEffect();
+                this.playOffClickSoundEffect();
+                this.pauseTimer();
+                this.destroyInterval();
+            },
+
+            resetCountdown() {
+                if (this.timerIsRunning()) {
+                    this.stopTickingSoundEffect();
+                    this.resetPageTitleToDefault();
+                    this.setEndTime();
+                    this.resetRemainingTime();
+                    this.stopAndDestroyInterval();
+                    this.pauseTimer();
+                }
+            },
+
+            resetCountdownWithSound() {
+                if (this.timerIsNotRunning())
+                    return this.informUserOfTimerNotRunning();
+
+                if (confirm("Are you sure you want to reset the timer?")) {
+                    this.playResetTimerSoundEffect();
+                    this.resetCountdown();
+                }
+            },
+
+            skipCountdown() {
+                if (this.timerIsNotRunning())
+                    return this.informUserOfTimerNotRunning();
 
                 if (
-                    value >=
-                    this.$store.countdownTimerSettings.sessionCountLimit
-                )
-                    this.resetSessionCount();
-            });
+                    confirm(
+                        "Are you sure you want to skip the current session?",
+                    )
+                ) {
+                    this.playResetTimerSoundEffect();
+                    this.stopTickingSoundEffect();
 
-            this.$watch("totalSessionsCompleted", (value) => {
-                localStorage.setItem(
-                    "totalSessionsCompleted",
-                    JSON.stringify(value),
-                );
-            });
+                    if (this.currentSessionIsFocus())
+                        this.incrementSessionCountAndTotalSessionsCompleted();
 
-            this.$watch("isBreak", (value) => {
-                localStorage.setItem("isBreak", JSON.stringify(value));
-            });
-
-            this.$watch("timerPaused", (value) => {
-                localStorage.setItem("timerPaused", JSON.stringify(value));
-            });
-
-            this.$watch("intervalStarted", (value) => {
-                localStorage.setItem("intervalStarted", JSON.stringify(value));
-            });
-
-            this.$watch("endTime", (value) => {
-                localStorage.setItem("endTime", JSON.stringify(value));
-            });
-
-            this.$watch(
-                () => this.$store.countdownTimerSettings.focusDuration,
-                (newMinutes) => {
-                    if (this.currentSessionIsFocus()) {
-                        // Only adjust if currently a focus session
-                        const newTotalStartTime =
-                            this.$store.timerFunctions.convertMinutesToSeconds(
-                                newMinutes,
-                            );
-                        const timeDiff =
-                            newTotalStartTime - this.totalStartTimeInSeconds;
-
-                        // Adjust remaining time by the difference but never less than zero
-                        this.remainingTimeInSeconds = Math.max(
-                            0,
-                            this.remainingTimeInSeconds + timeDiff,
-                        );
-
-                        // Update total start time
-                        this.totalStartTimeInSeconds = newTotalStartTime;
-
-                        // Update endTime based on new remaining time
-                        this.endTime =
-                            Date.now() + this.remainingTimeInSeconds * 1000;
-
-                        if (this.intervalStarted) {
-                            this.destroyInterval();
-                            this.createInterval();
-                        } else {
-                            this.displayCountdownTimeRemainingInPageTitle();
-                        }
-                    }
-                },
-            );
-
-            // Similarly watch shortBreakDuration and longBreakDuration and adjust when `isBreak` is true
-
-            this.$watch(
-                () => this.$store.countdownTimerSettings.shortBreakDuration,
-                (newMinutes) => {
-                    if (
-                        this.currentSessionIsBreak() &&
-                        this.currentSessionCount <
-                            this.$store.countdownTimerSettings.sessionCountLimit
-                    ) {
-                        const newTotalStartTime =
-                            this.$store.timerFunctions.convertMinutesToSeconds(
-                                newMinutes,
-                            );
-                        const timeDiff =
-                            newTotalStartTime - this.totalStartTimeInSeconds;
-                        this.remainingTimeInSeconds = Math.max(
-                            0,
-                            this.remainingTimeInSeconds + timeDiff,
-                        );
-                        this.totalStartTimeInSeconds = newTotalStartTime;
-                        this.endTime =
-                            Date.now() + this.remainingTimeInSeconds * 1000;
-                        if (this.intervalStarted) {
-                            this.destroyInterval();
-                            this.createInterval();
-                        } else {
-                            this.displayCountdownTimeRemainingInPageTitle();
-                        }
-                    }
-                },
-            );
-
-            this.$watch(
-                () => this.$store.countdownTimerSettings.longBreakDuration,
-                (newMinutes) => {
-                    if (
-                        this.currentSessionIsBreak() &&
-                        this.currentSessionCount >=
-                            this.$store.countdownTimerSettings.sessionCountLimit
-                    ) {
-                        const newTotalStartTime =
-                            this.$store.timerFunctions.convertMinutesToSeconds(
-                                newMinutes,
-                            );
-                        const timeDiff =
-                            newTotalStartTime - this.totalStartTimeInSeconds;
-                        this.remainingTimeInSeconds = Math.max(
-                            0,
-                            this.remainingTimeInSeconds + timeDiff,
-                        );
-                        this.totalStartTimeInSeconds = newTotalStartTime;
-                        this.endTime =
-                            Date.now() + this.remainingTimeInSeconds * 1000;
-                        if (this.intervalStarted) {
-                            this.destroyInterval();
-                            this.createInterval();
-                        } else {
-                            this.displayCountdownTimeRemainingInPageTitle();
-                        }
-                    }
-                },
-            );
-        },
-
-        startCountdown() {
-            this.setEndTime();
-            this.initialiseTimer();
-        },
-
-        startCountDownOnRefresh() {
-            if (this.timerIsRunningButIsPaused()) return;
-
-            this.startCountdown();
-        },
-
-        startCountdownWithSound() {
-            if (this.timerIsRunningAndNotPaused()) return;
-
-            this.playOnClickSoundEffect();
-            this.startCountdown();
-        },
-
-        pauseCountdown() {
-            if (this.timerIsNotRunningOrIsPaused()) return;
-
-            this.stopTickingSoundEffect();
-            this.playOffClickSoundEffect();
-            this.pauseTimer();
-            this.destroyInterval();
-        },
-
-        resetCountdown() {
-            if (this.timerIsRunning()) {
-                this.stopTickingSoundEffect();
-                this.resetPageTitleToDefault();
-                this.setEndTime();
-                this.resetRemainingTime();
-                this.stopAndDestroyInterval();
-                this.pauseTimer();
-            }
-        },
-
-        resetCountdownWithSound() {
-            if (this.timerIsNotRunning())
-                return this.informUserOfTimerNotRunning();
-
-            if (confirm("Are you sure you want to reset the timer?")) {
-                this.playResetTimerSoundEffect();
-                this.resetCountdown();
-            }
-        },
-
-        skipCountdown() {
-            if (this.timerIsNotRunning())
-                return this.informUserOfTimerNotRunning();
-
-            if (confirm("Are you sure you want to skip the current session?")) {
-                this.playResetTimerSoundEffect();
-                this.stopTickingSoundEffect();
-
-                if (this.currentSessionIsFocus())
-                    this.incrementSessionCountAndTotalSessionsCompleted();
-
-                this.pauseTimer();
-                this.stopAndDestroyInterval();
-                this.toggleSessionType();
-                this.resetCountdown();
-                this.resetRemainingTime();
-            }
-        },
-
-        /*
-         |---------------------------------------------------------------
-         |  INTERVAL CONTROLS
-         |---------------------------------------------------------------
-         |
-         */
-
-        startInterval() {
-            this.intervalStarted = true;
-        },
-
-        stopInterval() {
-            this.intervalStarted = false;
-        },
-
-        createInterval() {
-            this.interval = setInterval(() => {
-                this.updateRemainingSeconds();
-
-                if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
-                if (this.timerIsNotAboutToEnd()) this.stopTickingSoundEffect();
-
-                if (this.timerHasEnded()) {
-                    this.incrementSessionIfFocus();
-
+                    this.pauseTimer();
+                    this.stopAndDestroyInterval();
                     this.toggleSessionType();
                     this.resetCountdown();
-                    this.playBeepSoundEffect();
-
-                    return this.informUserOfTimerEnd();
+                    this.resetRemainingTime();
                 }
-            }, 1000);
-        },
+            },
 
-        createAndStartInterval() {
-            this.createInterval();
-            this.startInterval();
-        },
+            /*
+           |---------------------------------------------------------------
+           |  INTERVAL CONTROLS
+           |---------------------------------------------------------------
+           |
+           */
 
-        destroyInterval() {
-            clearInterval(this.interval);
-        },
+            startInterval() {
+                this.intervalStarted = true;
+            },
 
-        stopAndDestroyInterval() {
-            this.stopInterval();
-            this.destroyInterval();
-        },
+            stopInterval() {
+                this.intervalStarted = false;
+            },
 
-        /*
-         |---------------------------------------------------------------
-         |  PROVIDE USER FEEDBACK
-         |---------------------------------------------------------------
-         |
-         */
+            createInterval() {
+                this.interval = setInterval(() => {
+                    this.updateRemainingSeconds();
 
-        informUserOfTimerEnd() {
-            // Delayed by one second because the alert would block sounds otherwise.
-            setTimeout(() => alert("Time's up!"), 1000);
-        },
+                    if (this.timerIsAboutToEnd()) this.playTickingSoundEffect();
+                    if (this.timerIsNotAboutToEnd())
+                        this.stopTickingSoundEffect();
 
-        informUserOfTimerNotRunning() {
-            alert("The timer isn't running!");
-        },
+                    if (this.timerHasEnded()) {
+                        this.incrementSessionIfFocus();
 
-        /*
-         |---------------------------------------------------------------
-         |  SESSION CONTROLS
-         |---------------------------------------------------------------
-         |
-         */
+                        this.toggleSessionType();
+                        this.resetCountdown();
+                        this.playBeepSoundEffect();
 
-        toggleSessionType() {
-            this.isBreak = !this.isBreak;
-        },
+                        return this.informUserOfTimerEnd();
+                    }
+                }, 1000);
+            },
 
-        toggleSessionTypeWithConfirmation() {
-            if (confirm("Are you sure you want to switch the session type?")) {
-                this.toggleSessionType();
-                this.resetCountdown();
-            }
-        },
+            createAndStartInterval() {
+                this.createInterval();
+                this.startInterval();
+            },
 
-        resetSessionCount() {
-            this.currentSessionCount = 0;
-        },
+            destroyInterval() {
+                clearInterval(this.interval);
+            },
 
-        incrementSessionCountAndTotalSessionsCompleted() {
-            this.incrementSessionCount();
-            this.incrementTotalSessionsCompleted();
-        },
+            stopAndDestroyInterval() {
+                this.stopInterval();
+                this.destroyInterval();
+            },
 
-        incrementSessionCount() {
-            this.currentSessionCount++;
-        },
+            /*
+           |---------------------------------------------------------------
+           |  PROVIDE USER FEEDBACK
+           |---------------------------------------------------------------
+           |
+           */
 
-        incrementTotalSessionsCompleted() {
-            this.totalSessionsCompleted++;
-        },
+            informUserOfTimerEnd() {
+                // Delayed by one second because the alert would block sounds otherwise.
+                setTimeout(() => alert("Time's up!"), 1000);
+            },
 
-        incrementSessionIfFocus() {
-            if (this.currentSessionIsFocus())
-                this.incrementSessionCountAndTotalSessionsCompleted();
-        },
+            informUserOfTimerNotRunning() {
+                alert("The timer isn't running!");
+            },
 
-        // Session Checks
+            /*
+           |---------------------------------------------------------------
+           |  SESSION CONTROLS
+           |---------------------------------------------------------------
+           |
+           */
 
-        currentSessionIsFocus() {
-            return !this.isBreak;
-        },
+            toggleSessionType() {
+                this.isBreak = !this.isBreak;
+            },
 
-        currentSessionIsBreak() {
-            return this.isBreak;
-        },
+            toggleSessionTypeWithConfirmation() {
+                if (
+                    confirm("Are you sure you want to switch the session type?")
+                ) {
+                    this.toggleSessionType();
+                    this.resetCountdown();
+                }
+            },
 
-        // TIMER CHECKS
+            resetSessionCount() {
+                this.currentSessionCount = 0;
+            },
 
-        // Basic Checks
+            incrementSessionCountAndTotalSessionsCompleted() {
+                this.incrementSessionCount();
+                this.incrementTotalSessionsCompleted();
+            },
 
-        timerIsAboutToEnd() {
-            return this.remainingTimeInSeconds <= 5;
-        },
+            incrementSessionCount() {
+                this.currentSessionCount++;
+            },
 
-        timerIsNotAboutToEnd() {
-            return this.remainingTimeInSeconds > 5;
-        },
+            incrementTotalSessionsCompleted() {
+                this.totalSessionsCompleted++;
+            },
 
-        timerHasEnded() {
-            return this.remainingTimeInSeconds <= 0;
-        },
+            incrementSessionIfFocus() {
+                if (this.currentSessionIsFocus())
+                    this.incrementSessionCountAndTotalSessionsCompleted();
+            },
 
-        timerIsRunning() {
-            return this.intervalStarted;
-        },
+            // Session Checks
 
-        timerIsNotRunning() {
-            return !this.intervalStarted;
-        },
+            currentSessionIsFocus() {
+                return !this.isBreak;
+            },
 
-        timerIsNotPaused() {
-            return !this.timerPaused;
-        },
+            currentSessionIsBreak() {
+                return this.isBreak;
+            },
 
-        timerIsPaused() {
-            return this.timerPaused;
-        },
+            // TIMER CHECKS
 
-        // Compound Checks
+            // Basic Checks
 
-        timerIsNotRunningAndIsPaused() {
-            return this.timerIsNotRunning() && this.timerIsPaused();
-        },
+            timerIsAboutToEnd() {
+                return this.remainingTimeInSeconds <= 5;
+            },
 
-        timerIsNotRunningOrIsPaused() {
-            return this.timerIsNotRunning() || this.timerIsPaused();
-        },
+            timerIsNotAboutToEnd() {
+                return this.remainingTimeInSeconds > 5;
+            },
 
-        timerIsRunningButIsPaused() {
-            return this.timerIsRunning() && this.timerIsPaused();
-        },
+            timerHasEnded() {
+                return this.remainingTimeInSeconds <= 0;
+            },
 
-        timerIsRunningAndNotPaused() {
-            return this.timerIsRunning() && this.timerIsNotPaused();
-        },
+            timerIsRunning() {
+                return this.intervalStarted;
+            },
 
-        // TIMER PLAYBACK
+            timerIsNotRunning() {
+                return !this.intervalStarted;
+            },
 
-        initialiseTimer() {
-            this.unpauseTimer();
-            this.createAndStartInterval();
-        },
+            timerIsNotPaused() {
+                return !this.timerPaused;
+            },
 
-        pauseTimer() {
-            this.timerPaused = true;
-        },
+            timerIsPaused() {
+                return this.timerPaused;
+            },
 
-        unpauseTimer() {
-            this.timerPaused = false;
-        },
+            // Compound Checks
 
-        // Handling Remaining Time
+            timerIsNotRunningAndIsPaused() {
+                return this.timerIsNotRunning() && this.timerIsPaused();
+            },
 
-        updateRemainingSeconds() {
-            this.remainingTimeInSeconds =
-                this.calculateRemainingSecondsBasedOnEndTime();
-        },
+            timerIsNotRunningOrIsPaused() {
+                return this.timerIsNotRunning() || this.timerIsPaused();
+            },
 
-        resetRemainingTime() {
-            this.remainingTimeInSeconds = this.startTimeInSeconds;
-        },
+            timerIsRunningButIsPaused() {
+                return this.timerIsRunning() && this.timerIsPaused();
+            },
 
-        calculateRemainingSecondsBasedOnEndTime() {
-            return Math.max(0, Math.round((this.endTime - Date.now()) / 1000));
-        },
+            timerIsRunningAndNotPaused() {
+                return this.timerIsRunning() && this.timerIsNotPaused();
+            },
 
-        getRemainingTimeInMinutesAndSeconds() {
-            return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
-                this.remainingTimeInSeconds,
-            );
-        },
+            // TIMER PLAYBACK
 
-        // Handling end time
+            initialiseTimer() {
+                this.unpauseTimer();
+                this.createAndStartInterval();
+            },
 
-        calculateEndTime() {
-            // Calculate the end time based on the current time and remaining time
-            // because browser throttling makes decrementing inaccurate.
-            return Date.now() + this.remainingTimeInSeconds * 1000;
-        },
+            pauseTimer() {
+                this.timerPaused = true;
+            },
 
-        setEndTime() {
-            this.endTime = this.calculateEndTime();
-        },
+            unpauseTimer() {
+                this.timerPaused = false;
+            },
 
-        // Updating the page title
+            // Handling Remaining Time
 
-        displayCountdownTimeRemainingInPageTitle() {
-            if (this.currentSessionIsFocus())
-                return this.displayFocusTimeRemainingInPageTitle();
+            updateRemainingSeconds() {
+                this.remainingTimeInSeconds =
+                    this.calculateRemainingSecondsBasedOnEndTime();
+            },
 
-            this.displayBreakTimeRemainingInPageTitle();
-        },
+            resetRemainingTime() {
+                this.remainingTimeInSeconds = this.startTimeInSeconds;
+            },
 
-        displayFocusTimeRemainingInPageTitle() {
-            document.title = `Time to focus: ${this.getRemainingTimeInMinutesAndSeconds()}`;
-        },
+            calculateRemainingSecondsBasedOnEndTime() {
+                return Math.max(
+                    0,
+                    Math.round((this.endTime - Date.now()) / 1000),
+                );
+            },
 
-        displayBreakTimeRemainingInPageTitle() {
-            document.title = `Break left: ${this.getRemainingTimeInMinutesAndSeconds()}`;
-        },
+            getRemainingTimeInMinutesAndSeconds() {
+                return this.$store.timerFunctions.formatTimeInMinutesAndSeconds(
+                    this.remainingTimeInSeconds,
+                );
+            },
 
-        resetPageTitleToDefault() {
-            document.title = "Welcome to Elixer Focus";
-        },
+            // Handling end time
 
-        /*
-        |---------------------------------------------------------------
-        |  SOUND CONTROLS
-        |---------------------------------------------------------------
-        |
-        */
+            calculateEndTime() {
+                // Calculate the end time based on the current time and remaining time
+                // because browser throttling makes decrementing inaccurate.
+                return Date.now() + this.remainingTimeInSeconds * 1000;
+            },
 
-        // Start the sounds
+            setEndTime() {
+                this.endTime = this.calculateEndTime();
+            },
 
-        playBeepSoundEffect() {
-            this.$store.utility.playSound(this.beepSoundEffect);
-        },
+            // Updating the page title
 
-        playTickingSoundEffect() {
-            this.$store.utility.playSound(this.tickingSoundEffect);
-        },
+            displayCountdownTimeRemainingInPageTitle() {
+                if (this.currentSessionIsFocus())
+                    return this.displayFocusTimeRemainingInPageTitle();
 
-        playResetTimerSoundEffect() {
-            this.$store.utility.playSound(this.resetTimerSoundEffect);
-        },
+                this.displayBreakTimeRemainingInPageTitle();
+            },
 
-        playOnClickSoundEffect() {
-            this.$store.utility.playSound(this.onClickSoundEffect);
-        },
+            displayFocusTimeRemainingInPageTitle() {
+                document.title = `Time to focus: ${this.getRemainingTimeInMinutesAndSeconds()}`;
+            },
 
-        playOffClickSoundEffect() {
-            this.$store.utility.playSound(this.offClickSoundEffect);
-        },
+            displayBreakTimeRemainingInPageTitle() {
+                document.title = `Break left: ${this.getRemainingTimeInMinutesAndSeconds()}`;
+            },
 
-        // Stop the sounds
+            resetPageTitleToDefault() {
+                document.title = "Welcome to Elixer Focus";
+            },
 
-        stopTickingSoundEffect() {
-            this.$store.utility.stopSound(this.tickingSoundEffect);
-        },
+            /*
+          |---------------------------------------------------------------
+          |  SOUND CONTROLS
+          |---------------------------------------------------------------
+          |
+          */
 
-        /*
-         |---------------------------------------------------------------
-         |  GET STORE VALUES
-         |---------------------------------------------------------------
-         |
-         */
+            // Start the sounds
 
-        getSessionCountLimit() {
-            return this.$store.countdownTimerSettings.sessionCountLimit;
-        },
+            playBeepSoundEffect() {
+                this.$store.utility.playSound(this.beepSoundEffect);
+            },
 
-        getFocusDuration() {
-            return this.$store.countdownTimerSettings.focusDuration;
-        },
+            playTickingSoundEffect() {
+                this.$store.utility.playSound(this.tickingSoundEffect);
+            },
 
-        getShortBreakDuration() {
-            return this.$store.countdownTimerSettings.shortBreakDuration;
-        },
+            playResetTimerSoundEffect() {
+                this.$store.utility.playSound(this.resetTimerSoundEffect);
+            },
 
-        getLongBreakDuration() {
-            return this.$store.countdownTimerSettings.longBreakDuration;
-        },
-    }));
+            playOnClickSoundEffect() {
+                this.$store.utility.playSound(this.onClickSoundEffect);
+            },
+
+            playOffClickSoundEffect() {
+                this.$store.utility.playSound(this.offClickSoundEffect);
+            },
+
+            // Stop the sounds
+
+            stopTickingSoundEffect() {
+                this.$store.utility.stopSound(this.tickingSoundEffect);
+            },
+
+            /*
+           |---------------------------------------------------------------
+           |  GET STORE VALUES
+           |---------------------------------------------------------------
+           |
+           */
+
+            getSessionCountLimit() {
+                return this.$store.countdownTimerSettings.sessionCountLimit;
+            },
+
+            getFocusDuration() {
+                return this.$store.countdownTimerSettings.focusDuration;
+            },
+
+            getShortBreakDuration() {
+                return this.$store.countdownTimerSettings.shortBreakDuration;
+            },
+
+            getLongBreakDuration() {
+                return this.$store.countdownTimerSettings.longBreakDuration;
+            },
+        };
+    });
 });
