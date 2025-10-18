@@ -9,7 +9,7 @@ document.addEventListener("alpine:init", () => {
         return {
             // TIMER VARIABLES
             currentSessionCount: this.$persist(0),
-            endTime: ths.$persist(0),
+            endTime: this.$persist(0),
             interval: null,
             intervalStarted: this.$persist(false),
             isBreak: this.$persist(false),
