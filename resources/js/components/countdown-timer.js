@@ -78,12 +78,7 @@ document.addEventListener("alpine:init", () => {
             },
 
             watchTimerState() {
-                this.$watch("remainingTimeInSeconds", (value) => {
-                    localStorage.setItem(
-                        "remainingTimeInSeconds",
-                        JSON.stringify(value),
-                    );
-
+                this.$watch("remainingTimeInSeconds", () => {
                     if (this.intervalStarted)
                         this.displayCountdownTimeRemainingInPageTitle();
                 });
@@ -99,32 +94,6 @@ document.addEventListener("alpine:init", () => {
                         this.$store.countdownTimerSettings.sessionCountLimit
                     )
                         this.resetSessionCount();
-                });
-
-                this.$watch("totalSessionsCompleted", (value) => {
-                    localStorage.setItem(
-                        "totalSessionsCompleted",
-                        JSON.stringify(value),
-                    );
-                });
-
-                this.$watch("isBreak", (value) => {
-                    localStorage.setItem("isBreak", JSON.stringify(value));
-                });
-
-                this.$watch("timerPaused", (value) => {
-                    localStorage.setItem("timerPaused", JSON.stringify(value));
-                });
-
-                this.$watch("intervalStarted", (value) => {
-                    localStorage.setItem(
-                        "intervalStarted",
-                        JSON.stringify(value),
-                    );
-                });
-
-                this.$watch("endTime", (value) => {
-                    localStorage.setItem("endTime", JSON.stringify(value));
                 });
 
                 this.$watch(
