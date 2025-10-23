@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 
-const MusicPlayer = (props) => {
+const MusicPlayer = () => {
     const playerRef = useRef<HTMLDivElement>(null);
+    // @ts-ignore
     const [songs, setSongs] = useState([
         {
             id: 1,

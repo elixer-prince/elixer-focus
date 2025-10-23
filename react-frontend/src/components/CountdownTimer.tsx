@@ -2,14 +2,23 @@ import { useState } from "react";
 
 const CountdownTimer = () => {
     const sessionCountLimit = 4;
+    // @ts-ignore
     const [currentSessionCount, setCurrentSessionCount] = useState(0);
+    // @ts-ignore
     const [currentSessionType, setCurrentSessionType] = useState("Focus");
+    // @ts-ignore
     const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
+    // @ts-ignore
     const [interval, setInterval] = useState(null);
+    // @ts-ignore
     const [intervalStarted, setIntervalStarted] = useState(false);
+    // @ts-ignore
     const [timerPaused, setTimerPaused] = useState(true);
+    // @ts-ignore
     const [totalStartTimeInSeconds, setTotalStartTimeInSeconds] = useState(0);
+    // @ts-ignore
     const [endTime, setEndTime] = useState(0);
+    // @ts-ignore
     const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(0);
 
     return (
