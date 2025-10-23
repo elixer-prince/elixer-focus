@@ -3,6 +3,12 @@ import { useState } from "react";
 const CountdownTimer = () => {
     const sessionCountLimit = 4;
     // @ts-ignore
+    const [focusDuration, setFocusDuration] = useState(0);
+    // @ts-ignore
+    const [shortBreakDuration, setShortBreakDuration] = useState(0);
+    // @ts-ignore
+    const [longBreakDuration, setLongBreakDuration] = useState(0);
+    // @ts-ignore
     const [currentSessionCount, setCurrentSessionCount] = useState(0);
     // @ts-ignore
     const [currentSessionType, setCurrentSessionType] = useState("Focus");
