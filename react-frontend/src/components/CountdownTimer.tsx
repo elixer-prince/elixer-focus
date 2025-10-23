@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const CountdownTimer = () => {
-    const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(16);
+    const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(1500);
     const [currentSessionCount, setCurrentSessionCount] = useState(0);
     const [currentSessionType, setCurrentSessionType] = useState("Focus");
     const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
@@ -48,7 +48,14 @@ const CountdownTimer = () => {
                     &mdash; Total Focus Sessions: {totalSessionsCompleted}
                 </div>
             </header>
-            <div>{remainingTimeInSeconds}</div>
+
+            <article
+                className={
+                    "mx-auto my-8 flex aspect-square w-fit max-w-full items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
+                }
+            >
+                {remainingTimeInSeconds}
+            </article>
 
             <div>
                 <button
