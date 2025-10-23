@@ -25,6 +25,12 @@ const CountdownTimer = () => {
     // @ts-ignore
     const [endTime, setEndTime] = useState(0);
     // @ts-ignore
+    const [startTimeInMinutes, setStartTimeInMinutes] = useState(0);
+    // @ts-ignore
+    const [startTimeInSeconds, setStartTimeInSeconds] = useState(
+        convertMinutesToSeconds(startTimeInMinutes),
+    );
+    // @ts-ignore
     const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(0);
 
     // SOUND EFFECTS
