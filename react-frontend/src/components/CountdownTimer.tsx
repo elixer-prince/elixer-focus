@@ -149,6 +149,39 @@ const CountdownTimer = () => {
             </div>
         </section>
     );
+
+    /*
+    |----------------------------------------------------------------
+    |  INITIALISATION
+    |----------------------------------------------------------------
+    |
+    */
+
+    function initialiseVariables() {
+        setSessionCountLimit(getFromLocalStorage("sessionCountLimit") || 4);
+        setFocusDuration(getFromLocalStorage("focusDuration") || 25);
+        setShortBreakDuration(getFromLocalStorage("shortBreakDuration") || 5);
+        setLongBreakDuration(getFromLocalStorage("longBreakDuration") || 15);
+        setCurrentSessionCount(getFromLocalStorage("currentSessionCount") || 0);
+        setCurrentSessionType(
+            getFromLocalStorage("currentSessionType") || "Focus",
+        );
+        setTotalSessionsCompleted(
+            getFromLocalStorage("totalSessionsCompleted") || 0,
+        );
+        setTimerRunning(getFromLocalStorage("timerRunning") || false);
+        setTimerPaused(getFromLocalStorage("timerPaused") || true);
+        setStartTimeInSeconds(convertMinutesToSeconds(startTimeInMinutes));
+        setTotalStartTimeInSeconds(startTimeInSeconds);
+    }
+
+    function initialiseSoundEffects() {
+        setOnClickSoundEffect(new Audio(onClickSoundURL));
+        setOffClickSoundEffect(new Audio(offClickSoundURL));
+        setBeepSoundEffect(new Audio(beepSoundURL));
+        setTickingSoundEffect(new Audio(tickingSoundURL));
+        setResetTimerSoundEffect(new Audio(resetTimerSoundURL));
+    }
 };
 
 export default CountdownTimer;
