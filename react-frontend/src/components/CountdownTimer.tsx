@@ -49,6 +49,16 @@ const CountdownTimer = () => {
         return minutes * 60;
     };
 
+    const playSound = (effect: any) => {
+        effect.currentTime = 0;
+        effect.play();
+    };
+
+    const stopSound = (effect: any) => {
+        effect.pause();
+        effect.currentTime = 0;
+    };
+
     useEffect(() => {});
 
     return (
