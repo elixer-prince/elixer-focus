@@ -27,6 +27,24 @@ const CountdownTimer = () => {
     // @ts-ignore
     const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(0);
 
+    // SOUND EFFECTS
+    // @ts-ignore
+    const [onClickSoundEffect, setOnClickSoundEffect] = useState(null);
+    // @ts-ignore
+    const [offClickSoundEffect, setOffClickSoundEffect] = useState(null);
+    // @ts-ignore
+    const [beepSoundEffect, setBeepSoundEffect] = useState(null);
+    // @ts-ignore
+    const [tickingSoundEffect, setTickingSoundEffect] = useState(null);
+    // @ts-ignore
+    const [resetTimerSoundEffect, setResetTimerSoundEffect] = useState(null);
+
+    const convertMinutesToSeconds = (minutes: number) => {
+        return minutes * 60;
+    };
+
+    useEffect(() => {});
+
     return (
         <section>
             <header
