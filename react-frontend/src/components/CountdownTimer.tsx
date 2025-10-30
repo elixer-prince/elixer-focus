@@ -158,6 +158,29 @@ const CountdownTimer = () => {
         setBeepSoundEffect(new Audio(beepSoundURL));
         setTickingSoundEffect(new Audio(tickingSoundURL));
         setResetTimerSoundEffect(new Audio(resetTimerSoundURL));
+    function pauseTimer() {
+        if (timerPaused) return;
+
+        playSound(offClickSoundEffect);
+        clearInterval(timerInterval);
+        setTimerPaused(true);
+    }
+
+    function resetTimer() {
+        if (!timerRunning) return;
+
+        playSound(resetTimerSoundEffect);
+        clearInterval(timerInterval);
+        setTimerRunning(false);
+        saveToLocalStorage("timerRunning", false);
+        setTimerPaused(true);
+        saveToLocalStorage("timerPaused", true);
+
+        const newRemainingTime = convertMinutesToSeconds(startTimeInMinutes);
+
+        setRemainingTimeInSeconds(newRemainingTime);
+        saveToLocalStorage("remainingTimeInSeconds", newRemainingTime);
+    }
 
     function skipTimer() {
         playSound(resetTimerSoundEffect);
