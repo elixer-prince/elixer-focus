@@ -21,53 +21,42 @@ import resetTimerSoundURL from "./../assets/audio/sound-effects/reset-timer.mp3"
 type Audio = HTMLAudioElement | null;
 
 const CountdownTimer = () => {
-    const sessionCountLimit = 4;
-    // @ts-ignore
-    const [focusDuration, setFocusDuration] = useState(0);
-    // @ts-ignore
-    const [shortBreakDuration, setShortBreakDuration] = useState(0);
-    // @ts-ignore
-    const [longBreakDuration, setLongBreakDuration] = useState(0);
-    // @ts-ignore
-    const [currentSessionCount, setCurrentSessionCount] = useState(0);
-    // @ts-ignore
-    const [currentSessionType, setCurrentSessionType] = useState("Focus");
-    // @ts-ignore
-    const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
-    // @ts-ignore
-    const [interval, setInterval] = useState(null);
-    // @ts-ignore
-    const [intervalStarted, setIntervalStarted] = useState(false);
-    // @ts-ignore
-    const [timerPaused, setTimerPaused] = useState(true);
-    // @ts-ignore
-    const [totalStartTimeInSeconds, setTotalStartTimeInSeconds] = useState(0);
-    // @ts-ignore
-    const [endTime, setEndTime] = useState(0);
-    // @ts-ignore
-    const [startTimeInMinutes, setStartTimeInMinutes] = useState(0);
-    // @ts-ignore
-    const [startTimeInSeconds, setStartTimeInSeconds] = useState(
-        convertMinutesToSeconds(startTimeInMinutes),
-    );
-    // @ts-ignore
-    const [remainingTimeInSeconds, setRemainingTimeSeconds] = useState(0);
-
     // SOUND EFFECTS
-    // @ts-ignore
-    const [onClickSoundEffect, setOnClickSoundEffect] = useState(null);
-    // @ts-ignore
-    const [offClickSoundEffect, setOffClickSoundEffect] = useState(null);
-    // @ts-ignore
-    const [beepSoundEffect, setBeepSoundEffect] = useState(null);
-    // @ts-ignore
-    const [tickingSoundEffect, setTickingSoundEffect] = useState(null);
-    // @ts-ignore
-    const [resetTimerSoundEffect, setResetTimerSoundEffect] = useState(null);
+    const onClickSoundEffect: Audio = useMemo(
+        () => new Audio(onClickSoundURL),
+        [],
+    );
+    const offClickSoundEffect: Audio = useMemo(
+        () => new Audio(offClickSoundURL),
+        [],
+    );
+    const beepSoundEffect: Audio = useMemo(() => new Audio(beepSoundURL), []);
+    const tickingSoundEffect: Audio = useMemo(
+        () => new Audio(tickingSoundURL),
+        [],
+    );
+    const resetTimerSoundEffect: Audio = useMemo(
+        () => new Audio(resetTimerSoundURL),
+        [],
+    );
 
-    const convertMinutesToSeconds = (minutes: number) => {
-        return minutes * 60;
-    };
+    // MEMOS
+    const sessionCountLimit: number = useMemo(
+        () => getFromLocalStorage("sessionCountLimit") || 4,
+        [],
+    );
+    const focusDuration: number = useMemo(
+        () => getFromLocalStorage("focusDuration") || 25,
+        [],
+    );
+    const shortBreakDuration: number = useMemo(
+        () => getFromLocalStorage("shortBreakDuration") || 5,
+        [],
+    );
+    const longBreakDuration: number = useMemo(
+        () => getFromLocalStorage("longBreakDuration") || 15,
+        [],
+    );
 
     const formatTimeInMinutesAndSeconds = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
