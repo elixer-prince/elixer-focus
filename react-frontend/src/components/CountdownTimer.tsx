@@ -154,22 +154,6 @@ const CountdownTimer = () => {
         let nextSessionCount = currentSessionCount;
         let nextTotalCompleted = totalSessionsCompleted;
 
-    function initialiseVariables() {
-        setSessionCountLimit(getFromLocalStorage("sessionCountLimit") || 4);
-        setFocusDuration(getFromLocalStorage("focusDuration") || 25);
-        setShortBreakDuration(getFromLocalStorage("shortBreakDuration") || 5);
-        setLongBreakDuration(getFromLocalStorage("longBreakDuration") || 15);
-        setCurrentSessionCount(getFromLocalStorage("currentSessionCount") || 0);
-        setCurrentSessionType(
-            getFromLocalStorage("currentSessionType") || "Focus",
-        );
-        setTotalSessionsCompleted(
-            getFromLocalStorage("totalSessionsCompleted") || 0,
-        );
-        setTimerRunning(getFromLocalStorage("timerRunning") || false);
-        setTimerPaused(getFromLocalStorage("timerPaused") || true);
-        setStartTimeInSeconds(convertMinutesToSeconds(startTimeInMinutes));
-        setTotalStartTimeInSeconds(startTimeInSeconds);
         if (currentSessionType === "Focus") {
             nextTotalCompleted += 1;
 
@@ -192,6 +176,12 @@ const CountdownTimer = () => {
         saveToLocalStorage("currentSessionType", nextSessionType);
         saveToLocalStorage("currentSessionCount", nextSessionCount);
         saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
+    }
+
+    function calculateEndTime(remainingTimeInSeconds: number) {
+        // Calculate the end time based on the current time and remaining time
+        // because browser throttling makes decrementing inaccurate.
+        return Date.now() + remainingTimeInSeconds * 1000;
     }
 
     }
