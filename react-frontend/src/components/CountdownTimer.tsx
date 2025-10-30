@@ -152,12 +152,6 @@ const CountdownTimer = () => {
         setTotalStartTimeInSeconds(startTimeInSeconds);
     }
 
-    function initialiseSoundEffects() {
-        setOnClickSoundEffect(new Audio(onClickSoundURL));
-        setOffClickSoundEffect(new Audio(offClickSoundURL));
-        setBeepSoundEffect(new Audio(beepSoundURL));
-        setTickingSoundEffect(new Audio(tickingSoundURL));
-        setResetTimerSoundEffect(new Audio(resetTimerSoundURL));
     function pauseTimer() {
         if (timerPaused) return;
 
