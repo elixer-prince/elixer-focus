@@ -158,6 +158,14 @@ const CountdownTimer = () => {
         setBeepSoundEffect(new Audio(beepSoundURL));
         setTickingSoundEffect(new Audio(tickingSoundURL));
         setResetTimerSoundEffect(new Audio(resetTimerSoundURL));
+
+    function skipTimer() {
+        playSound(resetTimerSoundEffect);
+        clearInterval(timerInterval);
+        setTimerRunning(false);
+        setTimerPaused(true);
+
+        handleSessionTypeSwitch();
     }
 };
 
