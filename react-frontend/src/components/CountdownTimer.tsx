@@ -106,7 +106,7 @@ const CountdownTimer = () => {
                     "mx-auto my-8 flex aspect-square w-fit max-w-full items-center justify-center rounded-full border-2 p-20 text-8xl font-bold"
                 }
             >
-                {remainingTimeInSeconds}
+                {formatTimeInMinutesAndSeconds(remainingTimeInSeconds)}
             </article>
 
             <div>
