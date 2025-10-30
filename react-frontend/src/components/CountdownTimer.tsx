@@ -127,12 +127,6 @@ const CountdownTimer = () => {
         </section>
     );
 
-    /*
-    |----------------------------------------------------------------
-    |  INITIALISATION
-    |----------------------------------------------------------------
-    |
-    */
     function updateStartTime() {
         const newStartTime = (() => {
             switch (currentSessionType) {
@@ -155,6 +149,10 @@ const CountdownTimer = () => {
         saveToLocalStorage("remainingTimeInSeconds", newRemainingSeconds);
     }
 
+    function handleSessionTypeSwitch() {
+        let nextSessionType = currentSessionType;
+        let nextSessionCount = currentSessionCount;
+        let nextTotalCompleted = totalSessionsCompleted;
 
     function initialiseVariables() {
         setSessionCountLimit(getFromLocalStorage("sessionCountLimit") || 4);
@@ -172,6 +170,30 @@ const CountdownTimer = () => {
         setTimerPaused(getFromLocalStorage("timerPaused") || true);
         setStartTimeInSeconds(convertMinutesToSeconds(startTimeInMinutes));
         setTotalStartTimeInSeconds(startTimeInSeconds);
+        if (currentSessionType === "Focus") {
+            nextTotalCompleted += 1;
+
+            if (currentSessionCount + 1 >= sessionCountLimit) {
+                nextSessionType = "Long Break";
+                nextSessionCount = 0;
+            } else {
+                nextSessionType = "Short Break";
+                nextSessionCount += 1;
+            }
+        } else {
+            nextSessionType = "Focus";
+        }
+
+        setCurrentSessionType(nextSessionType);
+        setCurrentSessionCount(nextSessionCount);
+        setTotalSessionsCompleted(nextTotalCompleted);
+
+        // Persist
+        saveToLocalStorage("currentSessionType", nextSessionType);
+        saveToLocalStorage("currentSessionCount", nextSessionCount);
+        saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
+    }
+
     }
 
     function pauseTimer() {
