@@ -58,16 +58,34 @@ const CountdownTimer = () => {
         [],
     );
 
-    const formatTimeInMinutesAndSeconds = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const secondsRemainder = seconds % 60;
-        return `${minutes.toString().padStart(2, "0")}:${secondsRemainder.toString().padStart(2, "0")}`;
-    };
-
-    const playSound = (effect: any) => {
-        effect.currentTime = 0;
-        effect.play();
-    };
+    // MUTABLE STATES
+    const [timerInterval, setTimerInterval] = useState<any>(null);
+    const [currentSessionType, setCurrentSessionType] = useState(
+        getFromLocalStorage("currentSessionType") || "Focus",
+    );
+    const [currentSessionCount, setCurrentSessionCount] = useState<number>(
+        getFromLocalStorage("currentSessionCount") || 0,
+    );
+    const [totalSessionsCompleted, setTotalSessionsCompleted] =
+        useState<number>(getFromLocalStorage("totalSessionsCompleted") || 0);
+    const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
+        getFromLocalStorage("startTimeInMinutes") || 0,
+    );
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] =
+        useState<number>(
+            getFromLocalStorage("remainingTimeInSeconds") ||
+                convertMinutesToSeconds(startTimeInMinutes),
+        );
+    // @ts-ignore
+    const [endTime, setEndTime] = useState<number>(
+        getFromLocalStorage("endTime") || 0,
+    );
+    const [timerRunning, setTimerRunning] = useState<boolean>(
+        getFromLocalStorage("timerRunning") || false,
+    );
+    const [timerPaused, setTimerPaused] = useState<boolean>(
+        getFromLocalStorage("timerPaused") || true,
+    );
 
     useEffect(() => {
         updateStartTime();
