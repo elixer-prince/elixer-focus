@@ -69,45 +69,13 @@ const CountdownTimer = () => {
 
     return (
         <section>
-            <header
-                className={
-                    "mx-auto flex w-fit flex-col items-center justify-center gap-2"
-                }
-            >
-                <div className={"flex flex-col items-center gap-4"}>
-                    <h2 className={"text-2xl font-black"}>
-                        {currentSessionType} Session
-                    </h2>
-
-                    <div className={"flex gap-4"}>
-                        <button
-                            className={
-                                "cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors"
-                            }
-                        >
-                            Focus
-                        </button>
-                        <button
-                            className={
-                                "cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors"
-                            }
-                        >
-                            Short Break
-                        </button>
-                        <button
-                            className={
-                                "cursor-pointer rounded-md border-2 border-neutral-950 px-2 py-1 text-sm font-bold text-neutral-950 transition-colors"
-                            }
-                        >
-                            Long Break
-                        </button>
-                    </div>
-                </div>
-                <div className={"font-bold"}>
-                    Current Session: {currentSessionCount} / {sessionCountLimit}{" "}
-                    &mdash; Total Focus Sessions: {totalSessionsCompleted}
-                </div>
-            </header>
+            <CountdownTimerHeader
+                currentSessionType={currentSessionType}
+                setCurrentSessionType={setCurrentSessionType}
+                currentSessionCount={currentSessionCount}
+                sessionCountLimit={sessionCountLimit}
+                totalSessionsCompleted={totalSessionsCompleted}
+            />
 
             <article
                 className={
