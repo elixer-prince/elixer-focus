@@ -133,6 +133,28 @@ const CountdownTimer = () => {
     |----------------------------------------------------------------
     |
     */
+    function updateStartTime() {
+        const newStartTime = (() => {
+            switch (currentSessionType) {
+                case "Focus":
+                    return focusDuration;
+                case "Short Break":
+                    return shortBreakDuration;
+                case "Long Break":
+                    return longBreakDuration;
+                default:
+                    return focusDuration;
+            }
+        })();
+
+        const newRemainingSeconds = convertMinutesToSeconds(newStartTime);
+
+        setStartTimeInMinutes(newStartTime);
+        setRemainingTimeInSeconds(newRemainingSeconds);
+
+        saveToLocalStorage("remainingTimeInSeconds", newRemainingSeconds);
+    }
+
 
     function initialiseVariables() {
         setSessionCountLimit(getFromLocalStorage("sessionCountLimit") || 4);
