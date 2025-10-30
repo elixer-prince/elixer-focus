@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 // HELPER FUNCTIONS
-import { convertMinutesToSeconds, formatTimeInMinutesAndSeconds } from "../functions/timerFunctions.ts";
-import { getFromLocalStorage, playSound, saveToLocalStorage, stopSound } from "../functions/utilityFunctions.ts";
+import {convertMinutesToSeconds, formatTimeInMinutesAndSeconds,} from "../functions/timerFunctions.ts";
+import {getFromLocalStorage, playSound, saveToLocalStorage, stopSound,} from "../functions/utilityFunctions.ts";
 // COMPONENTS
 import CountdownTimerHeader from "./CountdownTimerHeader.tsx";
 // SOUND EFFECT URLS
@@ -102,7 +102,7 @@ const CountdownTimer = () => {
                 {formatTimeInMinutesAndSeconds(remainingTimeInSeconds)}
             </article>
 
-            <div>
+            <div className={"mb-8 flex justify-center gap-4"}>
                 <button
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
