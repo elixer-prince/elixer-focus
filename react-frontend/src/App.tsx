@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
-import MusicPlayer from "./components/MusicPlayer.tsx";
+// COMPONENTS
 import Navbar from "./components/Navbar.tsx";
+// PAGES
 import HomePage from "./pages/HomePage.tsx";
 import TasksPage from "./pages/TasksPage.tsx";
 
