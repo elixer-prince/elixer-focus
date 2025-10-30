@@ -1,14 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 // HELPER FUNCTIONS
-import {
-    convertMinutesToSeconds,
-    formatTimeInMinutesAndSeconds,
-} from "../functions/timerFunctions.ts";
-import {
-    getFromLocalStorage,
-    playSound,
-    saveToLocalStorage,
-} from "../functions/utilityFunctions.ts";
+import { convertMinutesToSeconds, formatTimeInMinutesAndSeconds } from "../functions/timerFunctions.ts";
+import { getFromLocalStorage, playSound, saveToLocalStorage, stopSound } from "../functions/utilityFunctions.ts";
 // COMPONENTS
 import CountdownTimerHeader from "./CountdownTimerHeader.tsx";
 // SOUND EFFECT URLS
