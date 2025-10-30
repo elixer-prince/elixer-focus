@@ -1,4 +1,24 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+// HELPER FUNCTIONS
+import {
+    convertMinutesToSeconds,
+    formatTimeInMinutesAndSeconds,
+} from "../functions/timerFunctions.ts";
+import {
+    getFromLocalStorage,
+    playSound,
+    saveToLocalStorage,
+} from "../functions/utilityFunctions.ts";
+// COMPONENTS
+import CountdownTimerHeader from "./CountdownTimerHeader.tsx";
+// SOUND EFFECT URLS
+import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
+import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
+import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
+import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
+import resetTimerSoundURL from "./../assets/audio/sound-effects/reset-timer.mp3";
+
+type Audio = HTMLAudioElement | null;
 
 const CountdownTimer = () => {
     const sessionCountLimit = 4;
