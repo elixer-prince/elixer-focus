@@ -17,7 +17,7 @@ const App = () => {
                 <Route path={"/tasks"} element={<TasksPage />} />
                 <Route path={"/settings"} element={<SettingsPage />} />
             </Routes>
-            <MusicPlayer />
+            {/*<MusicPlayer />*/}
         </>
     );
 };
