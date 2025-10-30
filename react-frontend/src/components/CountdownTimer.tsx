@@ -99,6 +99,7 @@ const CountdownTimer = () => {
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
+                    onClick={() => startTimer()}
                 >
                     Start
                 </button>
@@ -106,6 +107,7 @@ const CountdownTimer = () => {
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
+                    onClick={() => pauseTimer()}
                 >
                     Pause
                 </button>
@@ -113,6 +115,7 @@ const CountdownTimer = () => {
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
+                    onClick={() => resetTimer()}
                 >
                     Reset
                 </button>
@@ -120,6 +123,7 @@ const CountdownTimer = () => {
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
+                    onClick={() => skipTimer()}
                 >
                     Skip
                 </button>
