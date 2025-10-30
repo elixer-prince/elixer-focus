@@ -1,4 +1,5 @@
 import { useState } from "react";
+type Audio = HTMLAudioElement | null;
 
 const CountdownTimer = () => {
     const sessionCountLimit = 4;
