@@ -20,6 +20,14 @@ const Navbar = ({ appName }: { appName: string }) => {
                         Tasks
                     </Link>
                 </li>
+                <li>
+                    <Link
+                        className={"text-blue-500 hover:underline"}
+                        to={"/settings"}
+                    >
+                        Settings
+                    </Link>
+                </li>
             </ul>
         </nav>
     );
