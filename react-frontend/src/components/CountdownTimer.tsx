@@ -69,12 +69,9 @@ const CountdownTimer = () => {
         effect.play();
     };
 
-    const stopSound = (effect: any) => {
-        effect.pause();
-        effect.currentTime = 0;
-    };
-
-    useEffect(() => {});
+    useEffect(() => {
+        updateStartTime();
+    }, [currentSessionType]);
 
     return (
         <section>
