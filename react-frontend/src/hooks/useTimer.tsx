@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { convertMinutesToSeconds } from "../util/functions/conversion";
 import { playSound } from "../util/functions/sound";
 import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
 import { useTimerContext } from "./useTimerContext";
@@ -44,7 +45,9 @@ const useTimer = () => {
 
             if (remainingMs <= 0) {
                 playSound(beepSoundEffect.current);
-                setRemainingTimeInSeconds(0);
+                setRemainingTimeInSeconds(
+                    convertMinutesToSeconds(startTimeInMinutes),
+                );
                 clearInterval(timerInterval.current!);
                 setTimerRunning(false);
                 return;
