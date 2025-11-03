@@ -50,7 +50,7 @@ const TimerSection = () => {
 
     return (
         <TimerProvider>
-            <section>
+            <section className="flex min-h-screen items-center justify-center p-4">
                 {/* <CountdownTimerHeader
                 currentSessionType={currentSessionType}
                 setCurrentSessionType={setCurrentSessionType}
