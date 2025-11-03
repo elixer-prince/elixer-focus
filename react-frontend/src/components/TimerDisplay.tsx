@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     convertMinutesToSeconds,
     formatTimeInMinutesAndSeconds,
@@ -8,8 +9,9 @@ interface TimerDisplayProps {
 }
 
 const TimerDisplay = ({ startTimeInMinutes }: TimerDisplayProps) => {
-    const startTimeInSeconds = convertMinutesToSeconds(startTimeInMinutes);
-    const remainingTimeInSeconds = startTimeInSeconds;
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
+        convertMinutesToSeconds(startTimeInMinutes),
+    );
 
     return (
         <div className="flex aspect-square items-center justify-center overflow-hidden rounded-full border-8 border-yellow-500 p-8 text-7xl font-bold transition-all duration-1000 select-none hover:bg-neutral-800">
