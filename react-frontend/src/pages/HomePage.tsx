@@ -1,10 +1,10 @@
-import CountdownTimer from "../components/CountdownTimer.tsx";
+import TimerSection from "../components/Timer/Container.tsx";
 
 const HomePage = () => {
     return (
-        <>
-            <CountdownTimer />
-        </>
+        <main className="flex min-h-screen items-center justify-center p-4">
+            <TimerSection />
+        </main>
     );
 };
 
