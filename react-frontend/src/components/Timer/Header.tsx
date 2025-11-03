@@ -1,5 +1,5 @@
-import { saveToLocalStorage } from "../functions/utilityFunctions.ts";
-import type { SessionType } from "../functions/timerFunctions.ts";
+import { saveToLocalStorage } from "../util/utilityFunctions.ts";
+import type { SessionType } from "../../util/types.ts";
 
 const CountdownTimerHeader = ({
     currentSessionType,
