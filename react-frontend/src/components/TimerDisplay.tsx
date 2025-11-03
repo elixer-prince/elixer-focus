@@ -3,12 +3,19 @@ import {
     convertMinutesToSeconds,
     formatTimeInMinutesAndSeconds,
 } from "../utils/timerFunctions";
+import { playSound } from "../utils/utilityFunctions";
+import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
+import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
+import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
 
 interface TimerDisplayProps {
     startTimeInMinutes: number;
 }
 
 const TimerDisplay = ({ startTimeInMinutes }: TimerDisplayProps) => {
+    const onClickSoundEffect = useRef(new Audio(onClickSoundURL));
+    const offClickSoundEffect = useRef(new Audio(offClickSoundURL));
+    const beepSoundEffect = useRef(new Audio(beepSoundURL));
     const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
         convertMinutesToSeconds(startTimeInMinutes),
     );
