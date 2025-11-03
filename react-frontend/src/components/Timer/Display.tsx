@@ -1,13 +1,7 @@
 import useTimer from "../../hooks/useTimer";
 
-interface TimerDisplayProps {
-    startTimeInMinutes: number;
-}
-
-const TimerDisplay = ({ startTimeInMinutes }: TimerDisplayProps) => {
-    const { formattedTimeRemaining, handleTimerState } = useTimer({
-        startTimeInMinutes,
-    });
+const TimerDisplay = () => {
+    const { formattedTimeRemaining, handleTimerState } = useTimer();
 
     return (
         <button
