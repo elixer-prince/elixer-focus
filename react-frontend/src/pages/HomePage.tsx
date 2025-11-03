@@ -1,10 +1,11 @@
-import TimerSection from "../components/Timer/Container.tsx";
+import AppLayout from "../components/layout/App.tsx";
+import TimerSection from "../components/timer/Container.tsx";
 
 const HomePage = () => {
     return (
-        <main className="flex min-h-screen items-center justify-center p-4">
+        <AppLayout>
             <TimerSection />
-        </main>
+        </AppLayout>
     );
 };
 
