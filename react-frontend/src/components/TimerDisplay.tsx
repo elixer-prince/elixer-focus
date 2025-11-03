@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {
+    useEffect,
+    useRef,
+    useState,
+    type Dispatch,
+    type SetStateAction,
+} from "react";
 import {
     convertMinutesToSeconds,
     formatTimeInMinutesAndSeconds,
@@ -10,9 +16,15 @@ import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
 
 interface TimerDisplayProps {
     startTimeInMinutes: number;
+    timerRunning: boolean;
+    setTimerRunning: Dispatch<SetStateAction<boolean>>;
 }
 
-const TimerDisplay = ({ startTimeInMinutes }: TimerDisplayProps) => {
+const TimerDisplay = ({
+    startTimeInMinutes,
+    timerRunning,
+    setTimerRunning,
+}: TimerDisplayProps) => {
     const onClickSoundEffect = useRef(new Audio(onClickSoundURL));
     const offClickSoundEffect = useRef(new Audio(offClickSoundURL));
     const beepSoundEffect = useRef(new Audio(beepSoundURL));
@@ -22,7 +34,6 @@ const TimerDisplay = ({ startTimeInMinutes }: TimerDisplayProps) => {
     const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
         convertMinutesToSeconds(startTimeInMinutes),
     );
-    const [timerRunning, setTimerRunning] = useState(false);
 
     const interval = useRef<ReturnType<typeof setInterval> | null>(null);
 
