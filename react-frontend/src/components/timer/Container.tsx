@@ -1,4 +1,5 @@
 import { TimerProvider } from "../../contexts/TimerContext";
+import TimerControls from "./Controls";
 import TimerDisplay from "./Display";
 
 const TimerSection = () => {
@@ -21,7 +22,6 @@ const TimerSection = () => {
     // );
 
     // MUTABLE STATES
-    // const [timerInterval, setTimerInterval] = useState<any>(null);
     // const [currentSessionType, setCurrentSessionType] = useState(
     //     getFromLocalStorage("currentSessionType") || "Focus",
     // );
@@ -38,19 +38,13 @@ const TimerSection = () => {
     //         getFromLocalStorage("remainingTimeInSeconds") ||
     //             convertMinutesToSeconds(startTimeInMinutes),
     //     );
-    // const [endTime, setEndTime] = useState<number>(
-    //     getFromLocalStorage("endTime") || 0,
-    // );
-    // const [timerRunning, setTimerRunning] = useState<boolean>(
-    //     getFromLocalStorage("timerRunning") || false,
-    // );
     // const [timerPaused, setTimerPaused] = useState<boolean>(
     //     getFromLocalStorage("timerPaused") || true,
     // );
 
     return (
         <TimerProvider>
-            <section className="flex min-h-screen items-center justify-center p-4">
+            <section className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
                 {/* <CountdownTimerHeader
                 currentSessionType={currentSessionType}
                 setCurrentSessionType={setCurrentSessionType}
@@ -60,6 +54,8 @@ const TimerSection = () => {
             /> */}
 
                 <TimerDisplay />
+
+                <TimerControls />
 
                 {/* <div className={"mb-8 flex justify-center gap-4"}>
                 <button
