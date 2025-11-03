@@ -12,6 +12,10 @@ import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
 import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
 import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
 
+interface TimerProviderProps {
+    children: ReactNode;
+}
+
 type TimerContextType = {
     beepSoundEffect: RefObject<HTMLAudioElement>;
     offClickSoundEffect: RefObject<HTMLAudioElement>;
@@ -24,12 +28,12 @@ type TimerContextType = {
 
 const TimerContext = createContext<TimerContextType | undefined>(undefined);
 
-const TimerProvider = ({ children }: { children: ReactNode }) => {
+const TimerProvider = ({ children }: TimerProviderProps) => {
     const beepSoundEffect = useRef(new Audio(beepSoundURL));
     const offClickSoundEffect = useRef(new Audio(offClickSoundURL));
     const onClickSoundEffect = useRef(new Audio(onClickSoundURL));
-    const [startTimeInMinutes, setStartTimeInMinutes] = useState(25);
-    const [timerRunning, setTimerRunning] = useState(false);
+    const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(25);
+    const [timerRunning, setTimerRunning] = useState<boolean>(false);
 
     const contextValue: TimerContextType = useMemo(
         () => ({
