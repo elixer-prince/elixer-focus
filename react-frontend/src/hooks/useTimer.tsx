@@ -11,7 +11,9 @@ const useTimer = () => {
         onClickSoundEffect,
         startTimeInMinutes,
         timerRunning,
+        timerPaused,
         setTimerRunning,
+        setTimerPaused,
     } = useTimerContext();
 
     const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);

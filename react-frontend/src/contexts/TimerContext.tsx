@@ -22,8 +22,10 @@ type TimerContextType = {
     onClickSoundEffect: RefObject<HTMLAudioElement>;
     startTimeInMinutes: number;
     timerRunning: boolean;
-    setTimerRunning: Dispatch<SetStateAction<boolean>>;
+    timerPaused: boolean;
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
+    setTimerRunning: Dispatch<SetStateAction<boolean>>;
+    setTimerPaused: Dispatch<SetStateAction<boolean>>;
 };
 
 const TimerContext = createContext<TimerContextType | undefined>(undefined);
@@ -34,6 +36,7 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     const onClickSoundEffect = useRef(new Audio(onClickSoundURL));
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(25);
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
+    const [timerPaused, setTimerPaused] = useState<boolean>(true);
 
     const contextValue: TimerContextType = useMemo(
         () => ({
@@ -42,10 +45,12 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
             onClickSoundEffect,
             startTimeInMinutes,
             timerRunning,
-            setTimerRunning,
+            timerPaused,
             setStartTimeInMinutes,
+            setTimerRunning,
+            setTimerPaused,
         }),
-        [startTimeInMinutes, timerRunning],
+        [startTimeInMinutes, timerRunning, timerPaused],
     );
 
     return (
