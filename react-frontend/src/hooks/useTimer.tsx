@@ -6,22 +6,28 @@ import { useTimerContext } from "./context/useTimerContext";
 const useTimer = () => {
     const {
         timerInterval,
-        // Sound Effects
+
+        // SOUND EFFECTS
         beepSoundEffect,
         offClickSoundEffect,
         onClickSoundEffect,
-        // Time Remaining
-        startTimeInMinutes,
-        remainingTimeInSeconds,
+
+        // TIMER TIMING
+
+        // Not Reactive
         pauseRemaining,
         timerEndTime: endTime,
-        // Timer State
-        timerRunning,
-        // timerPaused, //
-        // State Change
-        setTimerRunning,
-        // setTimerPaused, //
+
+        // Reactive
+        startTimeInMinutes,
+        remainingTimeInSeconds,
         setRemainingTimeInSeconds,
+
+        // TIMER STATE
+        timerRunning,
+        setTimerRunning,
+        // timerPaused, //
+        // setTimerPaused, //
     } = useTimerContext();
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
@@ -29,7 +35,7 @@ const useTimer = () => {
     );
 
     const startTimer = () => {
-        const now = Date.now();
+        const now = Date.now(); // current timestamp
 
         const timeRemainingInMilliseconds =
             convertMinutesToSeconds(startTimeInMinutes * 60) * 1000;
@@ -40,7 +46,7 @@ const useTimer = () => {
 
         endTime.current = now + durationInMilliseconds;
 
-        // Clear the pause reference so it doesn’t affect next start
+        // clear the pause reference so it doesn’t affect next start
         pauseRemaining.current = null;
 
         timerInterval.current = setInterval(() => {
