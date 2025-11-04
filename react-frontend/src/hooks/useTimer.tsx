@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { convertMinutesToSeconds } from "../util/functions/conversion";
 import { playSound } from "../util/functions/sound";
 import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
-import { useTimerContext } from "./useTimerContext";
+import { useTimerContext } from "./context/useTimerContext";
 
 const useTimer = () => {
     const {
