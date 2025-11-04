@@ -1,7 +1,7 @@
 import { SessionProvider } from "../../contexts/SessionContext";
 import { TimerProvider } from "../../contexts/TimerContext";
 import TimerControls from "./TimerControls";
-import TimerDisplay from "./TimerDisplay";
+import TimerFocusRing from "./TimerFocusRing";
 
 const TimerSection = () => {
     return (
@@ -16,44 +16,9 @@ const TimerSection = () => {
                 totalSessionsCompleted={totalSessionsCompleted}
             /> */}
 
-                    <TimerDisplay />
+                    <TimerFocusRing />
 
                     <TimerControls />
-
-                    {/* <div className={"mb-8 flex justify-center gap-4"}>
-                <button
-                    className={
-                        "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
-                    }
-                    onClick={() => startTimer()}
-                >
-                    Start
-                </button>
-                <button
-                    className={
-                        "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
-                    }
-                    onClick={() => pauseTimer()}
-                >
-                    Pause
-                </button> */}
-                    {/* <button
-                    className={
-                        "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
-                    }
-                    onClick={() => resetTimer()}
-                >
-                    Reset
-                </button> */}
-                    {/* <button
-                    className={
-                        "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
-                    }
-                    onClick={() => skipTimer()}
-                >
-                    Skip
-                </button> */}
-                    {/* </div> */}
                 </section>
             </SessionProvider>
         </TimerProvider>
