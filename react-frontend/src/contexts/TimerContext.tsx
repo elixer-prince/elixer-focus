@@ -11,6 +11,7 @@ import {
 import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
 import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
 import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
+import { convertMinutesToSeconds } from "../util/functions/conversion";
 
 interface TimerProviderProps {
     children: ReactNode;
@@ -45,7 +46,9 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
     const [timerPaused, setTimerPaused] = useState<boolean>(true);
     const pauseRemaining = useRef<number | null>(null);
-    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(0);
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
+        convertMinutesToSeconds(startTimeInMinutes),
+    );
 
     const contextValue: TimerContextType = useMemo(
         () => ({
