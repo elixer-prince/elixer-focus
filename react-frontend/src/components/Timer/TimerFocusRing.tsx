@@ -19,6 +19,10 @@ const TimerFocusRing = () => {
     const circumference = 2 * Math.PI * radius;
     const dashoffset = circumference - (circumference * progress) / 100;
 
+    const angle = 2 * Math.PI * (1 - progress / 100);
+    const dotX = 155 + radius * Math.cos(angle);
+    const dotY = 155 + radius * Math.sin(angle);
+
     return (
         <button
             className="relative aspect-square max-w-full overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
@@ -30,7 +34,7 @@ const TimerFocusRing = () => {
             </div>
             <svg
                 className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
-                viewBox="0 0 310 310"
+                viewBox="0 0 318 318"
             >
                 <circle
                     className="fill-none stroke-neutral-700 stroke-10"
@@ -46,6 +50,12 @@ const TimerFocusRing = () => {
                     strokeDasharray={circumference}
                     strokeDashoffset={dashoffset}
                     style={{ transition: "stroke-dashoffset 1s linear" }}
+                />
+                <circle
+                    className="fill-yellow-500"
+                    cx={dotX}
+                    cy={dotY}
+                    r={12}
                 />
             </svg>
             <span className="text-7xl">{formattedTimeRemaining}</span>
