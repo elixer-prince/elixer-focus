@@ -9,19 +9,21 @@ import {
     type SetStateAction,
 } from "react";
 import { convertMinutesToSeconds } from "../util/functions/conversion";
+import { getFromLocalStorage } from "../util/functions/storage";
 import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
 import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
 import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
-import { getFromLocalStorage } from "../util/functions/storage";
+import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
 
 interface TimerProviderProps {
     children: ReactNode;
 }
 
 type TimerContextType = {
-    beepSoundEffect: RefObject<HTMLAudioElement>;
-    offClickSoundEffect: RefObject<HTMLAudioElement>;
-    onClickSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerTickingSoundEffect: RefObject<HTMLAudioElement>;
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
     pauseRemaining: RefObject<number | null>;
@@ -51,6 +53,7 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     const timerBeepSoundEffect = useRef(new Audio(beepSoundURL));
     const timerOffClickSoundEffect = useRef(new Audio(offClickSoundURL));
     const timerOnClickSoundEffect = useRef(new Audio(onClickSoundURL));
+    const timerTickingSoundEffect = useRef(new Audio(tickingSoundURL));
 
     /**
      * The timer interval is null at component initialisation and does not
@@ -84,9 +87,10 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
 
     const contextValue: TimerContextType = useMemo(
         () => ({
-            beepSoundEffect: timerBeepSoundEffect,
-            offClickSoundEffect: timerOffClickSoundEffect,
-            onClickSoundEffect: timerOnClickSoundEffect,
+            timerBeepSoundEffect,
+            timerOffClickSoundEffect,
+            timerOnClickSoundEffect,
+            timerTickingSoundEffect,
             timerInterval,
             timerEndTime: timerEndTime,
             pauseRemaining,
