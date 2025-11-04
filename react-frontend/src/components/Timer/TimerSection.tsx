@@ -1,6 +1,7 @@
+import { SessionProvider } from "../../contexts/SessionContext";
 import { TimerProvider } from "../../contexts/TimerContext";
-import TimerControls from "./Controls";
-import TimerDisplay from "./Display";
+import TimerControls from "./TimerControls";
+import TimerDisplay from "./TimerDisplay";
 
 const TimerSection = () => {
     // MEMOS
@@ -44,8 +45,9 @@ const TimerSection = () => {
 
     return (
         <TimerProvider>
-            <section className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
-                {/* <CountdownTimerHeader
+            <SessionProvider>
+                <section className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
+                    {/* <CountdownTimerHeader
                 currentSessionType={currentSessionType}
                 setCurrentSessionType={setCurrentSessionType}
                 currentSessionCount={currentSessionCount}
@@ -53,11 +55,11 @@ const TimerSection = () => {
                 totalSessionsCompleted={totalSessionsCompleted}
             /> */}
 
-                <TimerDisplay />
+                    <TimerDisplay />
 
-                <TimerControls />
+                    <TimerControls />
 
-                {/* <div className={"mb-8 flex justify-center gap-4"}>
+                    {/* <div className={"mb-8 flex justify-center gap-4"}>
                 <button
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
@@ -74,7 +76,7 @@ const TimerSection = () => {
                 >
                     Pause
                 </button> */}
-                {/* <button
+                    {/* <button
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
@@ -82,7 +84,7 @@ const TimerSection = () => {
                 >
                     Reset
                 </button> */}
-                {/* <button
+                    {/* <button
                     className={
                         "cursor-pointer rounded-md bg-neutral-500 px-4 py-2 font-bold text-neutral-50"
                     }
@@ -90,8 +92,9 @@ const TimerSection = () => {
                 >
                     Skip
                 </button> */}
-                {/* </div> */}
-            </section>
+                    {/* </div> */}
+                </section>
+            </SessionProvider>
         </TimerProvider>
     );
 
