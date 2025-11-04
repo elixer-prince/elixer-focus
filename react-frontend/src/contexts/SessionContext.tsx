@@ -27,6 +27,7 @@ type SessionContextType = {
     setSessionCountLimit: Dispatch<SetStateAction<number>>;
     setCurrentSessionType: Dispatch<SetStateAction<SessionType>>;
     setCurrentSessionCount: Dispatch<SetStateAction<number>>;
+    setTotalSessionsCompleted: Dispatch<SetStateAction<number>>;
 };
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
