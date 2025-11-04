@@ -24,7 +24,10 @@ const TimerFocusRing = () => {
             className="relative aspect-square max-w-full overflow-hidden rounded-full p-10 transition-all duration-1000 select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
             onClick={handleTimerState}
         >
-            <div>{remainingTimeInSeconds}</div>
+            <div>
+                {remainingTimeInSeconds}{" "}
+                <span className="text-sm font-bold text-yellow-500">secs</span>
+            </div>
             <svg
                 className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
                 viewBox="0 0 310 310"
