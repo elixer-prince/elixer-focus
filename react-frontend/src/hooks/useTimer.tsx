@@ -14,7 +14,7 @@ const useTimer = () => {
         startTimeInMinutes,
         remainingTimeInSeconds,
         pauseRemaining,
-        endTime,
+        timerEndTime: endTime,
         // Timer State
         timerRunning,
         // timerPaused, //
@@ -30,7 +30,9 @@ const useTimer = () => {
 
     const startTimer = () => {
         const now = Date.now();
-        const timeRemainingInMilliseconds = startTimeInMinutes * 60 * 1000;
+
+        const timeRemainingInMilliseconds =
+            convertMinutesToSeconds(startTimeInMinutes * 60) * 1000;
 
         const durationInMilliseconds = pauseRemaining.current
             ? pauseRemaining.current * 1000
@@ -43,8 +45,7 @@ const useTimer = () => {
 
         timerInterval.current = setInterval(() => {
             const now = Date.now();
-            const remainingMilliseconds =
-                (endTime.current ?? now) - now;
+            const remainingMilliseconds = (endTime.current ?? now) - now;
 
             if (remainingMilliseconds <= 0) {
                 playSound(beepSoundEffect.current);
@@ -80,7 +81,12 @@ const useTimer = () => {
         }
     };
 
-    return { formattedTimeRemaining, handleTimerState };
+    return {
+        startTimeInMinutes,
+        formattedTimeRemaining,
+        handleTimerState,
+        remainingTimeInSeconds,
+    };
 };
 
 export default useTimer;
