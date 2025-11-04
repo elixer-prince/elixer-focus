@@ -30,22 +30,23 @@ const useTimer = () => {
 
     const startTimer = () => {
         const now = Date.now();
+        const timeRemainingInMilliseconds = startTimeInMinutes * 60 * 1000;
 
-        const durationInMs =
-            pauseRemaining.current !== null
-                ? pauseRemaining.current * 1000
-                : startTimeInMinutes * 60 * 1000;
+        const durationInMilliseconds = pauseRemaining.current
+            ? pauseRemaining.current * 1000
+            : timeRemainingInMilliseconds;
 
-        endTime.current = now + durationInMs;
+        endTime.current = now + durationInMilliseconds;
 
-        // clear the pause reference so it doesn’t affect next start
+        // Clear the pause reference so it doesn’t affect next start
         pauseRemaining.current = null;
 
         timerInterval.current = setInterval(() => {
             const now = Date.now();
-            const remainingMs = (endTime.current ?? now) - now;
+            const remainingMilliseconds =
+                (endTime.current ?? now) - now;
 
-            if (remainingMs <= 0) {
+            if (remainingMilliseconds <= 0) {
                 playSound(beepSoundEffect.current);
                 setRemainingTimeInSeconds(
                     convertMinutesToSeconds(startTimeInMinutes),
@@ -55,7 +56,7 @@ const useTimer = () => {
                 return;
             }
 
-            setRemainingTimeInSeconds(Math.ceil(remainingMs / 1000));
+            setRemainingTimeInSeconds(Math.ceil(remainingMilliseconds / 1000));
         }, 1000);
 
         setTimerRunning(true);
