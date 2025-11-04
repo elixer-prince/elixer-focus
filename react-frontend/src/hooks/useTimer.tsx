@@ -1,4 +1,7 @@
-import { convertMinutesToSeconds } from "../util/functions/conversion";
+import {
+    convertMinutesToMilliseconds,
+    convertMinutesToSeconds,
+} from "../util/functions/conversion";
 import { playSound } from "../util/functions/sound";
 import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
 import { useTimerContext } from "./context/useTimerContext";
@@ -38,7 +41,7 @@ const useTimer = () => {
         const now = Date.now(); // current timestamp
 
         const timeRemainingInMilliseconds =
-            convertMinutesToSeconds(startTimeInMinutes * 60) * 1000;
+            convertMinutesToMilliseconds(startTimeInMinutes);
 
         const durationInMilliseconds = pauseRemaining.current
             ? pauseRemaining.current * 1000
