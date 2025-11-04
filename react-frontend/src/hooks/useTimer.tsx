@@ -12,9 +12,9 @@ const useTimer = () => {
         timerInterval,
 
         // SOUND EFFECTS
-        beepSoundEffect,
-        offClickSoundEffect,
-        onClickSoundEffect,
+        timerBeepSoundEffect,
+        timerOffClickSoundEffect,
+        timerOnClickSoundEffect,
 
         // TIMER TIMING
 
@@ -58,7 +58,7 @@ const useTimer = () => {
             const remainingMilliseconds = (endTime.current ?? now) - now;
 
             if (remainingMilliseconds <= 0) {
-                playSound(beepSoundEffect.current);
+                playSound(timerBeepSoundEffect.current);
                 setRemainingTimeInSeconds(
                     convertMinutesToSeconds(startTimeInMinutes),
                 );
@@ -83,10 +83,10 @@ const useTimer = () => {
 
     const handleTimerState = () => {
         if (timerRunning) {
-            playSound(offClickSoundEffect.current);
+            playSound(timerOffClickSoundEffect.current);
             stopTimer();
         } else {
-            playSound(onClickSoundEffect.current);
+            playSound(timerOnClickSoundEffect.current);
             startTimer();
         }
     };
