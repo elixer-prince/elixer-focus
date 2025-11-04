@@ -2,6 +2,7 @@ import {
     convertMinutesToMilliseconds,
     convertMinutesToSeconds,
 } from "../util/functions/conversion";
+import { getCurrentTimestamp } from "../util/functions/date";
 import { playSound } from "../util/functions/sound";
 import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
 import { useTimerContext } from "./context/useTimerContext";
@@ -38,7 +39,7 @@ const useTimer = () => {
     );
 
     const startTimer = () => {
-        const now = Date.now(); // current timestamp
+        const now = getCurrentTimestamp();
 
         const timeRemainingInMilliseconds =
             convertMinutesToMilliseconds(startTimeInMinutes);
@@ -53,7 +54,7 @@ const useTimer = () => {
         pauseRemaining.current = null;
 
         timerInterval.current = setInterval(() => {
-            const now = Date.now();
+            const now = getCurrentTimestamp();
             const remainingMilliseconds = (endTime.current ?? now) - now;
 
             if (remainingMilliseconds <= 0) {
