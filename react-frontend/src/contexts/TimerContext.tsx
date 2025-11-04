@@ -21,11 +21,16 @@ type TimerContextType = {
     offClickSoundEffect: RefObject<HTMLAudioElement>;
     onClickSoundEffect: RefObject<HTMLAudioElement>;
     startTimeInMinutes: number;
+    timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
+    endTime: RefObject<number | null>;
     timerRunning: boolean;
     timerPaused: boolean;
+    remainingTimeInSeconds: number;
+    pauseRemaining: RefObject<number | null>;
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
     setTimerRunning: Dispatch<SetStateAction<boolean>>;
     setTimerPaused: Dispatch<SetStateAction<boolean>>;
+    setRemainingTimeInSeconds: Dispatch<SetStateAction<number>>;
 };
 
 const TimerContext = createContext<TimerContextType | undefined>(undefined);
@@ -35,8 +40,12 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     const offClickSoundEffect = useRef(new Audio(offClickSoundURL));
     const onClickSoundEffect = useRef(new Audio(onClickSoundURL));
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(25);
+    const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const endTime = useRef<number | null>(null);
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
     const [timerPaused, setTimerPaused] = useState<boolean>(true);
+    const pauseRemaining = useRef<number | null>(null);
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(0);
 
     const contextValue: TimerContextType = useMemo(
         () => ({
@@ -44,13 +53,18 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
             offClickSoundEffect,
             onClickSoundEffect,
             startTimeInMinutes,
+            timerInterval,
+            endTime,
             timerRunning,
             timerPaused,
+            pauseRemaining,
+            remainingTimeInSeconds,
             setStartTimeInMinutes,
             setTimerRunning,
             setTimerPaused,
+            setRemainingTimeInSeconds,
         }),
-        [startTimeInMinutes, timerRunning, timerPaused],
+        [startTimeInMinutes, timerRunning, timerPaused, remainingTimeInSeconds],
     );
 
     return (

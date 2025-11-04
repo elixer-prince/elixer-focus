@@ -1,4 +1,3 @@
-import { useRef, useState } from "react";
 import { convertMinutesToSeconds } from "../util/functions/conversion";
 import { playSound } from "../util/functions/sound";
 import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
@@ -6,23 +5,24 @@ import { useTimerContext } from "./context/useTimerContext";
 
 const useTimer = () => {
     const {
+        timerInterval,
+        // Sound Effects
         beepSoundEffect,
         offClickSoundEffect,
         onClickSoundEffect,
+        // Time Remaining
         startTimeInMinutes,
+        remainingTimeInSeconds,
+        pauseRemaining,
+        endTime,
+        // Timer State
         timerRunning,
-        timerPaused,
+        // timerPaused, //
+        // State Change
         setTimerRunning,
-        setTimerPaused,
+        // setTimerPaused, //
+        setRemainingTimeInSeconds,
     } = useTimerContext();
-
-    const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-    const endTime = useRef<number | null>(null);
-    const pauseRemaining = useRef<number | null>(null);
-
-    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
-        startTimeInMinutes * 60,
-    );
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
         remainingTimeInSeconds,
