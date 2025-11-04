@@ -4,45 +4,6 @@ import TimerControls from "./TimerControls";
 import TimerDisplay from "./TimerDisplay";
 
 const TimerSection = () => {
-    // MEMOS
-    // const sessionCountLimit: number = useMemo(
-    //     () => getFromLocalStorage("sessionCountLimit") || 4,
-    //     [],
-    // );
-    // const focusDuration: number = useMemo(
-    //     () => getFromLocalStorage("focusDuration") || 25,
-    //     [],
-    // );
-    // const shortBreakDuration: number = useMemo(
-    //     () => getFromLocalStorage("shortBreakDuration") || 5,
-    //     [],
-    // );
-    // const longBreakDuration: number = useMemo(
-    //     () => getFromLocalStorage("longBreakDuration") || 15,
-    //     [],
-    // );
-
-    // MUTABLE STATES
-    // const [currentSessionType, setCurrentSessionType] = useState(
-    //     getFromLocalStorage("currentSessionType") || "Focus",
-    // );
-    // const [currentSessionCount, setCurrentSessionCount] = useState<number>(
-    //     getFromLocalStorage("currentSessionCount") || 0,
-    // );
-    // const [totalSessionsCompleted, setTotalSessionsCompleted] =
-    //     useState<number>(getFromLocalStorage("totalSessionsCompleted") || 0);
-    // const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
-    //     getFromLocalStorage("startTimeInMinutes") || 0,
-    // );
-    // const [remainingTimeInSeconds, setRemainingTimeInSeconds] =
-    //     useState<number>(
-    //         getFromLocalStorage("remainingTimeInSeconds") ||
-    //             convertMinutesToSeconds(startTimeInMinutes),
-    //     );
-    // const [timerPaused, setTimerPaused] = useState<boolean>(
-    //     getFromLocalStorage("timerPaused") || true,
-    // );
-
     return (
         <TimerProvider>
             <SessionProvider>

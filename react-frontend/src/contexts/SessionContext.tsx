@@ -14,21 +14,60 @@ interface SessionProviderProps {
 type SessionType = "Focus" | "Short Break" | "Long Break";
 
 type SessionContextType = {
-    sessionType: SessionType;
-    setSessionType: Dispatch<SetStateAction<SessionType>>;
+    focusDuration: number;
+    shortBreakDuration: number;
+    longBreakDuration: number;
+    sessionCountLimit: number;
+    currentSessionType: SessionType;
+    currentSessionCount: number;
+    totalSessionsCompleted: number;
+    setFocusDuration: Dispatch<SetStateAction<number>>;
+    setShortBreakDuration: Dispatch<SetStateAction<number>>;
+    setLongBreakDuration: Dispatch<SetStateAction<number>>;
+    setSessionCountLimit: Dispatch<SetStateAction<number>>;
+    setCurrentSessionType: Dispatch<SetStateAction<SessionType>>;
+    setCurrentSessionCount: Dispatch<SetStateAction<number>>;
 };
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 const SessionProvider = ({ children }: SessionProviderProps) => {
-    const [sessionType, setSessionType] = useState<SessionType>("Focus");
+    const [focusDuration, setFocusDuration] = useState<number>(25);
+    const [shortBreakDuration, setShortBreakDuration] = useState<number>(5);
+    const [longBreakDuration, setLongBreakDuration] = useState<number>(15);
+    const [sessionCountLimit, setSessionCountLimit] = useState<number>(4);
+    const [currentSessionType, setCurrentSessionType] =
+        useState<SessionType>("Focus");
+    const [currentSessionCount, setCurrentSessionCount] = useState<number>(0);
+    const [totalSessionsCompleted, setTotalSessionsCompleted] =
+        useState<number>(0);
 
     const contextValue: SessionContextType = useMemo(
         () => ({
-            sessionType,
-            setSessionType,
+            focusDuration,
+            shortBreakDuration,
+            longBreakDuration,
+            sessionCountLimit,
+            currentSessionType,
+            currentSessionCount,
+            totalSessionsCompleted,
+            setFocusDuration,
+            setShortBreakDuration,
+            setLongBreakDuration,
+            setSessionCountLimit,
+            setCurrentSessionType,
+            setCurrentSessionCount,
+            setTotalSessionsCompleted,
         }),
-        [sessionType],
+        [
+            focusDuration,
+            shortBreakDuration,
+            longBreakDuration,
+            sessionCountLimit,
+            currentSessionType,
+            currentSessionCount,
+            totalSessionsCompleted,
+        ],
     );
 
     return (
