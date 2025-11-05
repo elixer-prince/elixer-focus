@@ -1,7 +1,7 @@
 import useTimer from "../../hooks/useTimer";
 import { convertMinutesToSeconds } from "../../util/functions/conversion";
 
-const TimerFocusRing = () => {
+const CountdownDisplay = () => {
     const {
         startTimeInMinutes,
         formattedTimeRemaining,
@@ -81,4 +81,4 @@ const TimerFocusRing = () => {
     );
 };
 
-export default TimerFocusRing;
+export default CountdownDisplay;
