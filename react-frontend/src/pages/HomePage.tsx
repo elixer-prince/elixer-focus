@@ -1,10 +1,11 @@
-import CountdownTimer from "../components/CountdownTimer.tsx";
+import AppLayout from "../components/layouts/App.tsx";
+import TimerSection from "../components/Timer/TimerSection.tsx";
 
 const HomePage = () => {
     return (
-        <>
-            <CountdownTimer />
-        </>
+        <AppLayout>
+            <TimerSection />
+        </AppLayout>
     );
 };
 
