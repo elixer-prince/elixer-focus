@@ -1,5 +1,9 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+    themes:
+        dark --default,
+        light --preferslight;
+}
 
 @theme {
     --font-roboto: "Roboto", sans-serif;
