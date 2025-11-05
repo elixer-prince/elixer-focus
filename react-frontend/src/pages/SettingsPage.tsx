@@ -1,4 +1,4 @@
-import AppLayout from "../components/layouts/App";
+import AppLayout from "../components/layouts/AppLayout";
 
 const SettingsPage = () => {
     return (
