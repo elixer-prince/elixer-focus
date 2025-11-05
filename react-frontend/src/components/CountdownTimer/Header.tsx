@@ -30,7 +30,7 @@ import type { SessionType } from "../../util/types.ts";
 //     saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
 // }
 
-const TimerHeader = ({
+const CountdownTimerHeader = ({
     currentSessionType,
     setCurrentSessionType,
     currentSessionCount,
@@ -94,4 +94,4 @@ const TimerHeader = ({
     }
 };
 
-export default TimerHeader;
+export default CountdownTimerHeader;
