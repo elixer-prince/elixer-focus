@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Navbar from "../Navbar/Navbar";
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -7,10 +8,7 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
     return (
         <>
-            <div>
-                (Navbar)
-                <div>(MusicPlayer)</div>
-            </div>
+            <Navbar />
 
             <main>{children}</main>
 
