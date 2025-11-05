@@ -25,7 +25,7 @@ const TimerFocusRing = () => {
 
     return (
         <button
-            className="relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
+            className="relative w-70 flex aspect-square max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
             onClick={handleTimerState}
         >
             <span>
