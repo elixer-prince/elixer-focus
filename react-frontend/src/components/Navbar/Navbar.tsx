@@ -12,7 +12,10 @@ const Navbar = () => {
             </ul>
 
             <div>
-                <Link className={"btn btn-primary rounded-md"} to={"/settings"}>
+                <Link
+                    className={"btn btn-soft btn-primary"}
+                    to={"/settings"}
+                >
                     Settings
                 </Link>
             </div>
