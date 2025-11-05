@@ -20,32 +20,32 @@ const TimerFocusRing = () => {
     const dashoffset = circumference - (circumference * progress) / 100;
 
     const angle = 2 * Math.PI * (1 - progress / 100);
-    const dotX = 155 + radius * Math.cos(angle);
-    const dotY = 155 + radius * Math.sin(angle);
+    const dotX = 163 + radius * Math.cos(angle);
+    const dotY = 163 + radius * Math.sin(angle);
 
     return (
         <button
-            className="relative aspect-square max-w-full overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
+            className="relative flex aspect-square max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
             onClick={handleTimerState}
         >
-            <div>
+            <span>
                 {remainingTimeInSeconds}{" "}
                 <span className="text-sm font-bold text-yellow-500">secs</span>
-            </div>
+            </span>
             <svg
                 className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
-                viewBox="0 0 318 318"
+                viewBox="0 0 326 326"
             >
                 <circle
-                    className="fill-none stroke-neutral-700 stroke-10"
-                    cx="155"
-                    cy="155"
+                    className="fill-none stroke-neutral-600 stroke-8"
+                    cx="163"
+                    cy="163"
                     r={radius}
                 />
                 <circle
-                    className="fill-none stroke-yellow-500 stroke-10"
-                    cx="155"
-                    cy="155"
+                    className="fill-none stroke-yellow-500 stroke-8"
+                    cx="163"
+                    cy="163"
                     r={radius}
                     strokeDasharray={circumference}
                     strokeDashoffset={dashoffset}
