@@ -1,4 +1,4 @@
-import AppLayout from "./layouts/AppLayout.tsx";
+import AppLayout from "./layout/AppLayout.tsx";
 import TimerSection from "../components/CountdownTimer/TimerSection.tsx";
 
 const HomePage = () => {

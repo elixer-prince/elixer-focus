@@ -1,4 +1,4 @@
-import AppLayout from "./layouts/AppLayout";
+import AppLayout from "./layout/AppLayout";
 
 const SettingsPage = () => {
     return (
@@ -10,6 +10,7 @@ const SettingsPage = () => {
                         name="theme-radios"
                         className="radio radio-sm theme-controller"
                         value="default"
+                        checked // TODO: Use react to choose which is selected by default
                     />
                     Default
                 </label>
