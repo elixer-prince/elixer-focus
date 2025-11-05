@@ -1,6 +1,35 @@
 import { saveToLocalStorage } from "../util/utilityFunctions.ts";
 import type { SessionType } from "../../util/types.ts";
 
+// function handleSessionTypeSwitch() {
+//     let nextSessionType = currentSessionType;
+//     let nextSessionCount = currentSessionCount;
+//     let nextTotalCompleted = totalSessionsCompleted;
+
+//     if (currentSessionType === "Focus") {
+//         nextTotalCompleted += 1;
+
+//         if (currentSessionCount + 1 >= sessionCountLimit) {
+//             nextSessionType = "Long Break";
+//             nextSessionCount = 0;
+//         } else {
+//             nextSessionType = "Short Break";
+//             nextSessionCount += 1;
+//         }
+//     } else {
+//         nextSessionType = "Focus";
+//     }
+
+//     setCurrentSessionType(nextSessionType);
+//     setCurrentSessionCount(nextSessionCount);
+//     setTotalSessionsCompleted(nextTotalCompleted);
+
+//     // Persist
+//     saveToLocalStorage("currentSessionType", nextSessionType);
+//     saveToLocalStorage("currentSessionCount", nextSessionCount);
+//     saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
+// }
+
 const TimerHeader = ({
     currentSessionType,
     setCurrentSessionType,
