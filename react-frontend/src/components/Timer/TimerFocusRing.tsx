@@ -25,12 +25,12 @@ const TimerFocusRing = () => {
 
     return (
         <button
-            className="relative w-70 flex aspect-square max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:bg-neutral-800 hover:duration-1000 active:bg-neutral-700 active:duration-100"
+            className="hover:bg-base-200 active:bg-base-100 relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:duration-1000 active:duration-100"
             onClick={handleTimerState}
         >
             <span>
                 {remainingTimeInSeconds}{" "}
-                <span className="text-sm font-bold text-yellow-500">secs</span>
+                <span className="text-primary text-sm font-bold">secs</span>
             </span>
             <svg
                 className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
@@ -48,7 +48,7 @@ const TimerFocusRing = () => {
                             dx="0"
                             dy="0"
                             stdDeviation="6"
-                            floodColor="#eab308"
+                            floodColor="#656dfc"
                             floodOpacity="1"
                         />
                     </filter>
@@ -60,7 +60,7 @@ const TimerFocusRing = () => {
                     r={radius}
                 />
                 <circle
-                    className="fill-none stroke-yellow-500 stroke-8"
+                    className="stroke-primary fill-none stroke-8"
                     cx="172"
                     cy="172"
                     r={radius}
@@ -69,7 +69,7 @@ const TimerFocusRing = () => {
                     style={{ transition: "stroke-dashoffset 1s linear" }}
                 />
                 <circle
-                    className="fill-yellow-500"
+                    className="fill-primary"
                     cx={dotX}
                     cy={dotY}
                     r={12}
