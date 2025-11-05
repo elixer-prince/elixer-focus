@@ -15,11 +15,11 @@ import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
 import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
 import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
 
-interface CountdownTimerProviderProps {
+interface TimerProviderProps {
     children: ReactNode;
 }
 
-type CountdownTimerContextType = {
+type TimerContextType = {
     readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
@@ -38,11 +38,9 @@ type CountdownTimerContextType = {
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
 };
 
-const CountdownTimerContext = createContext<
-    CountdownTimerContextType | undefined
->(undefined);
+const TimerContext = createContext<TimerContextType | undefined>(undefined);
 
-const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
+const TimerProvider = ({ children }: TimerProviderProps) => {
     /*---------------------------------------------------------
     | Audio Elements
     |----------------------------------------------------------
@@ -87,7 +85,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
     const [timerPaused, setTimerPaused] = useState<boolean>(true);
 
-    const contextValue: CountdownTimerContextType = useMemo(
+    const contextValue: TimerContextType = useMemo(
         () => ({
             timerBeepSoundEffect,
             timerOffClickSoundEffect,
@@ -110,10 +108,10 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     );
 
     return (
-        <CountdownTimerContext.Provider value={contextValue}>
+        <TimerContext.Provider value={contextValue}>
             {children}
-        </CountdownTimerContext.Provider>
+        </TimerContext.Provider>
     );
 };
 
-export { CountdownTimerContext, CountdownTimerProvider };
+export { TimerContext, TimerProvider };

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { TimerContext } from "../../contexts/CountdownTimer/CountdownTimerContext";
+import { TimerContext } from "../../contexts/CountdownTimer/TimerContext";
 
 export const useTimerContext = () => {
     const context = useContext(TimerContext);

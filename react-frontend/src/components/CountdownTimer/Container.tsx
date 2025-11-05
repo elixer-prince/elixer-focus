@@ -1,4 +1,4 @@
-import { CountdownTimerProvider } from "../../contexts/CountdownTimer/CountdownTimerContext";
+import { CountdownTimerProvider } from "../../contexts/CountdownTimer/TimerContext";
 import { SessionProvider } from "../../contexts/SessionContext";
 import CountdownButtonControls from "./ButtonPanel/ButtonPanel";
 import CountdownDisplay from "./Display";
