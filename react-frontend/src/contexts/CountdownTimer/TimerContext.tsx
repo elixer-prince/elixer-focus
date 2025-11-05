@@ -10,10 +10,10 @@ import {
 } from "react";
 import { convertMinutesToSeconds } from "../../util/functions/conversion";
 import { getFromLocalStorage } from "../../util/functions/storage";
-import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
-import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
-import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
-import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
+import beepSoundURL from "./../../assets/audio/sound-effects/beep.mp3";
+import offClickSoundURL from "./../../assets/audio/sound-effects/off-click.mp3";
+import onClickSoundURL from "./../../assets/audio/sound-effects/on-click.mp3";
+import tickingSoundURL from "./../../assets/audio/sound-effects/ticking.mp3";
 
 interface TimerProviderProps {
     children: ReactNode;
