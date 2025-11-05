@@ -1,3 +1,2 @@
-@import "./elixer.css";
-@import "./br/index.css";
-@import "./anime/index.css";
+@import "./default/index.css";
+@import "./premium/index.css";

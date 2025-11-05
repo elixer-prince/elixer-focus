@@ -1,5 +1,5 @@
 @plugin "daisyui/theme" {
-    name: "mytheme";
+    name: "elixer";
     default: true; /* set as default */
     prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
     color-scheme: light; /* color of browser-provided UI */
