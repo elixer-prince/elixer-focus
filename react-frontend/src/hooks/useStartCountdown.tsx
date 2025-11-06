@@ -1,44 +1,29 @@
-import {
-    convertMinutesToMilliseconds,
-    convertMinutesToSeconds,
-} from "../util/functions/conversion";
-import { getCurrentTimestamp } from "../util/functions/date";
 import { playSound } from "../util/functions/sound";
-import { formatTimeInMinutesAndSeconds } from "../util/functions/timer/formatting";
-import { useTimerContext } from "./context/useTimerContext";
+import { getCurrentTimestamp } from "../util/functions/date.ts";
+import { convertMinutesToMilliseconds, convertMinutesToSeconds } from "../util/functions/conversion.ts";
+import { useContext } from "react";
+import { CountdownTimerContext } from "../contexts/CountdownTimerContext.tsx";
 
-const useTimer = () => {
+const useStartCountdown = () => {
+    const countdownTimerContext = useContext(CountdownTimerContext);
+
+    if (!countdownTimerContext) {
+        throw new Error();
+    }
+
     const {
         timerInterval,
-
-        // SOUND EFFECTS
         timerBeepSoundEffect,
-        timerOffClickSoundEffect,
-        timerOnClickSoundEffect,
-
-        // TIMER TIMING
-
-        // Not Reactive
         pauseRemaining,
         timerEndTime: endTime,
-
-        // Reactive
         startTimeInMinutes,
-        remainingTimeInSeconds,
         setRemainingTimeInSeconds,
-
-        // TIMER STATE
-        timerRunning,
         setTimerRunning,
         // timerPaused, //
         // setTimerPaused, //
-    } = useTimerContext();
+    } = countdownTimerContext;
 
-    const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
-        remainingTimeInSeconds,
-    );
-
-    const startTimer = () => {
+    const startCountdown = () => {
         const now = getCurrentTimestamp();
 
         const timeRemainingInMilliseconds =
@@ -73,30 +58,7 @@ const useTimer = () => {
         setTimerRunning(true);
     };
 
-    const stopTimer = () => {
-        if (timerInterval.current) clearInterval(timerInterval.current);
-
-        pauseRemaining.current = remainingTimeInSeconds;
-        endTime.current = null;
-        setTimerRunning(false);
-    };
-
-    const handleTimerState = () => {
-        if (timerRunning) {
-            playSound(timerOffClickSoundEffect.current);
-            stopTimer();
-        } else {
-            playSound(timerOnClickSoundEffect.current);
-            startTimer();
-        }
-    };
-
-    return {
-        startTimeInMinutes,
-        formattedTimeRemaining,
-        handleTimerState,
-        remainingTimeInSeconds,
-    };
+    return [startCountdown];
 };
 
-export default useTimer;
+export default useStartCountdown;
