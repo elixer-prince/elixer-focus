@@ -7,43 +7,47 @@ import {
     type SetStateAction,
 } from "react";
 
-interface SessionProviderProps {
+interface CountdownSessionProviderProps {
     children: ReactNode;
 }
 
-type SessionType = "Focus" | "Short Break" | "Long Break";
+type CountdownSessionType = "Focus" | "Short Break" | "Long Break";
 
-type SessionContextType = {
+type CountdownSessionContextType = {
     focusDuration: number;
     shortBreakDuration: number;
     longBreakDuration: number;
     sessionCountLimit: number;
-    currentSessionType: SessionType;
+    currentSessionType: CountdownSessionType;
     currentSessionCount: number;
     totalSessionsCompleted: number;
     setFocusDuration: Dispatch<SetStateAction<number>>;
     setShortBreakDuration: Dispatch<SetStateAction<number>>;
     setLongBreakDuration: Dispatch<SetStateAction<number>>;
     setSessionCountLimit: Dispatch<SetStateAction<number>>;
-    setCurrentSessionType: Dispatch<SetStateAction<SessionType>>;
+    setCurrentSessionType: Dispatch<SetStateAction<CountdownSessionType>>;
     setCurrentSessionCount: Dispatch<SetStateAction<number>>;
     setTotalSessionsCompleted: Dispatch<SetStateAction<number>>;
 };
 
-const SessionContext = createContext<SessionContextType | undefined>(undefined);
+const CountdownSessionContext = createContext<
+    CountdownSessionContextType | undefined
+>(undefined);
 
-const SessionProvider = ({ children }: SessionProviderProps) => {
+const CountdownSessionProvider = ({
+    children,
+}: CountdownSessionProviderProps) => {
     const [focusDuration, setFocusDuration] = useState<number>(25);
     const [shortBreakDuration, setShortBreakDuration] = useState<number>(5);
     const [longBreakDuration, setLongBreakDuration] = useState<number>(15);
     const [sessionCountLimit, setSessionCountLimit] = useState<number>(4);
     const [currentSessionType, setCurrentSessionType] =
-        useState<SessionType>("Focus");
+        useState<CountdownSessionType>("Focus");
     const [currentSessionCount, setCurrentSessionCount] = useState<number>(0);
     const [totalSessionsCompleted, setTotalSessionsCompleted] =
         useState<number>(0);
 
-    const contextValue: SessionContextType = useMemo(
+    const contextValue: CountdownSessionContextType = useMemo(
         () => ({
             focusDuration,
             shortBreakDuration,
@@ -72,10 +76,10 @@ const SessionProvider = ({ children }: SessionProviderProps) => {
     );
 
     return (
-        <SessionContext.Provider value={contextValue}>
+        <CountdownSessionContext.Provider value={contextValue}>
             {children}
-        </SessionContext.Provider>
+        </CountdownSessionContext.Provider>
     );
 };
 
-export { SessionContext, SessionProvider };
+export { CountdownSessionContext, CountdownSessionProvider };

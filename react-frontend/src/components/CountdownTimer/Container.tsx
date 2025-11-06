@@ -1,12 +1,12 @@
-import { TimerProvider } from "../../contexts/CountdownTimer/TimerContext";
-import { SessionProvider } from "../../contexts/SessionContext";
+import { CountdownTimerProvider } from "../../contexts/CountdownTimerContext";
+import { CountdownSessionProvider } from "../../contexts/CountdownSessionContext";
 import CountdownButtonControls from "./ButtonPanel/ButtonPanel";
 import CountdownDisplay from "./Display";
 
 const CountdownTimerContainer = () => {
     return (
-        <TimerProvider>
-            <SessionProvider>
+        <CountdownTimerProvider>
+            <CountdownSessionProvider>
                 <section className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
                     {/* <CountdownTimerHeader
                 currentSessionType={currentSessionType}
@@ -23,8 +23,8 @@ const CountdownTimerContainer = () => {
 
                     <CountdownButtonControls />
                 </section>
-            </SessionProvider>
-        </TimerProvider>
+            </CountdownSessionProvider>
+        </CountdownTimerProvider>
     );
 };
 

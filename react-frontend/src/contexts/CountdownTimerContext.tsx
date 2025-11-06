@@ -1,25 +1,25 @@
 import {
     createContext,
-    useMemo,
-    useRef,
-    useState,
     type Dispatch,
     type ReactNode,
     type RefObject,
     type SetStateAction,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
-import { convertMinutesToSeconds } from "../../util/functions/conversion";
-import { getFromLocalStorage } from "../../util/functions/storage";
-import beepSoundURL from "./../../assets/audio/sound-effects/beep.mp3";
-import offClickSoundURL from "./../../assets/audio/sound-effects/off-click.mp3";
-import onClickSoundURL from "./../../assets/audio/sound-effects/on-click.mp3";
-import tickingSoundURL from "./../../assets/audio/sound-effects/ticking.mp3";
+import { convertMinutesToSeconds } from "../util/functions/conversion";
+import { getFromLocalStorage } from "../util/functions/storage";
+import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
+import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
+import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
+import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
 
-interface TimerProviderProps {
+interface CountdownTimerProviderProps {
     children: ReactNode;
 }
 
-type TimerContextType = {
+type CountdownTimerContextType = {
     readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
@@ -38,9 +38,11 @@ type TimerContextType = {
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
 };
 
-const TimerContext = createContext<TimerContextType | undefined>(undefined);
+const CountdownTimerContext = createContext<
+    CountdownTimerContextType | undefined
+>(undefined);
 
-const TimerProvider = ({ children }: TimerProviderProps) => {
+const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     /*---------------------------------------------------------
     | Audio Elements
     |----------------------------------------------------------
@@ -85,14 +87,14 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
     const [timerPaused, setTimerPaused] = useState<boolean>(true);
 
-    const contextValue: TimerContextType = useMemo(
+    const contextValue: CountdownTimerContextType = useMemo(
         () => ({
             timerBeepSoundEffect,
             timerOffClickSoundEffect,
             timerOnClickSoundEffect,
             timerTickingSoundEffect,
             timerInterval,
-            timerEndTime: timerEndTime,
+            timerEndTime,
             pauseRemaining,
 
             startTimeInMinutes,
@@ -108,10 +110,10 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     );
 
     return (
-        <TimerContext.Provider value={contextValue}>
+        <CountdownTimerContext.Provider value={contextValue}>
             {children}
-        </TimerContext.Provider>
+        </CountdownTimerContext.Provider>
     );
 };
 
-export { TimerContext, TimerProvider };
+export { CountdownTimerContext, CountdownTimerProvider };
