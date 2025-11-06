@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "../contexts/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
 
 const useCountdownTimerChecks = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
@@ -16,10 +16,10 @@ const useCountdownTimerChecks = () => {
     |
     */
 
-    const countdownTimerIsPaused = () => timerPaused;
-    const countdownTimerIsNotPaused = () => !timerPaused;
-    const countdownTimerIsRunning = () => timerRunning;
-    const countdownTimerIsNotRunning = () => !timerRunning;
+    const countdownTimerIsPaused = (): boolean => timerPaused;
+    const countdownTimerIsNotPaused = (): boolean => !timerPaused;
+    const countdownTimerIsRunning = (): boolean => timerRunning;
+    const countdownTimerIsNotRunning = (): boolean => !timerRunning;
 
     /*----------------------------------------------
     |   Complex Checks
@@ -27,12 +27,12 @@ const useCountdownTimerChecks = () => {
     |
     */
 
-    return [
+    return {
         countdownTimerIsPaused,
         countdownTimerIsNotPaused,
         countdownTimerIsRunning,
         countdownTimerIsNotRunning,
-    ];
+    };
 };
 
 export default useCountdownTimerChecks;
