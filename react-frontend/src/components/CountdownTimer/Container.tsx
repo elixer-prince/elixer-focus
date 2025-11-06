@@ -7,7 +7,7 @@ const CountdownTimerContainer = () => {
     return (
         <CountdownTimerProvider>
             <CountdownSessionProvider>
-                <section className="flex min-h-screen flex-col items-center justify-center gap-8 p-4">
+                <section className="flex flex-col items-center justify-center gap-8 p-4">
                     {/* <CountdownTimerHeader
                 currentSessionType={currentSessionType}
                 setCurrentSessionType={setCurrentSessionType}
