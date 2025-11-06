@@ -1,13 +1,13 @@
-// function pauseTimer() {
-//     if (timerPaused) return;
-
-//     playSound(offClickSoundEffect);
-//     clearInterval(timerInterval);
-//     setTimerPaused(true);
-// }
+import useCountdownTimer from "../../../hooks/CountdownTimer/useCountdownTimer.tsx";
 
 const PauseButton = () => {
-    return <button className="btn">Pause</button>;
+    const { stopCountdown } = useCountdownTimer();
+
+    return (
+        <button className="btn" onClick={stopCountdown}>
+            Pause
+        </button>
+    );
 };
 
 export default PauseButton;
