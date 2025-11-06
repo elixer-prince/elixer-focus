@@ -1,4 +1,4 @@
-import useTimer from "../../hooks/useTimer";
+import useCountdownTimer from "../../hooks/useCountdownTimer.tsx";
 import { convertMinutesToSeconds } from "../../util/functions/conversion";
 
 const CountdownDisplay = () => {
@@ -7,7 +7,7 @@ const CountdownDisplay = () => {
         formattedTimeRemaining,
         handleTimerState,
         remainingTimeInSeconds,
-    } = useTimer();
+    } = useCountdownTimer();
 
     const totalTimeInSeconds = convertMinutesToSeconds(startTimeInMinutes);
     const progress =
