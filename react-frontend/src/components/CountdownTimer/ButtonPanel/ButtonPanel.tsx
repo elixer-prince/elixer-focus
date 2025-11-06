@@ -1,12 +1,12 @@
 import PauseButton from "./PauseButton";
-import PlayButton from "./PlayButton";
+import StartButton from "./StartButton";
 import ResetButton from "./ResetButton";
 import SkipButton from "./SkipButton";
 
 const CountdownButtonControls = () => {
     return (
         <div className="flex justify-center gap-2">
-            <PlayButton />
+            <StartButton />
             <PauseButton />
             <ResetButton />
             <SkipButton />
