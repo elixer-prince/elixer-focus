@@ -1,29 +1,43 @@
-import { playSound } from "../util/functions/sound";
-import { getCurrentTimestamp } from "../util/functions/date.ts";
-import { convertMinutesToMilliseconds, convertMinutesToSeconds } from "../util/functions/conversion.ts";
+import { playSound } from "../../util/functions/sound.ts";
+import { getCurrentTimestamp } from "../../util/functions/date.ts";
+import {
+    convertMinutesToMilliseconds,
+    convertMinutesToSeconds,
+} from "../../util/functions/conversion.ts";
 import { useContext } from "react";
-import { CountdownTimerContext } from "../contexts/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
+import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
 
 const useStartCountdown = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
 
     if (!countdownTimerContext) {
-        throw new Error();
+        throw new Error(
+            "This hook has to be used inside a CountdownTimerContext!",
+        );
     }
 
     const {
-        timerInterval,
         timerBeepSoundEffect,
+        timerInterval,
+        timerOnClickSoundEffect,
         pauseRemaining,
-        timerEndTime: endTime,
+        timerEndTime,
         startTimeInMinutes,
         setRemainingTimeInSeconds,
         setTimerRunning,
-        // timerPaused, //
-        // setTimerPaused, //
+        setTimerPaused,
     } = countdownTimerContext;
 
+    const { countdownTimerIsNotPaused } = useCountdownTimerChecks();
+
     const startCountdown = () => {
+        if (countdownTimerIsNotPaused()) return;
+
+        playSound(timerOnClickSoundEffect.current);
+        setTimerPaused(false);
+        setTimerRunning(true);
+
         const now = getCurrentTimestamp();
 
         const timeRemainingInMilliseconds =
@@ -33,14 +47,12 @@ const useStartCountdown = () => {
             ? pauseRemaining.current * 1000
             : timeRemainingInMilliseconds;
 
-        endTime.current = now + durationInMilliseconds;
-
-        // clear the pause reference so it doesn’t affect next start
+        timerEndTime.current = now + durationInMilliseconds;
         pauseRemaining.current = null;
 
         timerInterval.current = setInterval(() => {
             const now = getCurrentTimestamp();
-            const remainingMilliseconds = (endTime.current ?? now) - now;
+            const remainingMilliseconds = (timerEndTime.current ?? now) - now;
 
             if (remainingMilliseconds <= 0) {
                 playSound(timerBeepSoundEffect.current);
@@ -48,8 +60,7 @@ const useStartCountdown = () => {
                     convertMinutesToSeconds(startTimeInMinutes),
                 );
                 clearInterval(timerInterval.current!);
-                setTimerRunning(false);
-                return;
+                return setTimerRunning(false);
             }
 
             setRemainingTimeInSeconds(Math.ceil(remainingMilliseconds / 1000));
@@ -58,7 +69,7 @@ const useStartCountdown = () => {
         setTimerRunning(true);
     };
 
-    return [startCountdown];
+    return { startCountdown };
 };
 
 export default useStartCountdown;

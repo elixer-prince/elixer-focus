@@ -1,10 +1,10 @@
-import useStartTimer from "../../../hooks/useStartCountdown.tsx";
+import useCountdownTimer from "../../../hooks/CountdownTimer/useCountdownTimer.tsx";
 
 const StartButton = () => {
-    const [startCountdownTimer] = useStartTimer();
+    const { startCountdown } = useCountdownTimer();
 
     return (
-        <button className="btn" onClick={startCountdownTimer}>
+        <button className="btn" onClick={startCountdown}>
             Start
         </button>
     );
