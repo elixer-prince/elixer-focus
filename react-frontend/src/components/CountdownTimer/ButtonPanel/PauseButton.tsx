@@ -1,10 +1,10 @@
 import useCountdownTimer from "../../../hooks/CountdownTimer/useCountdownTimer.tsx";
 
 const PauseButton = () => {
-    const { stopCountdown } = useCountdownTimer();
+    const { pauseCountdown } = useCountdownTimer();
 
     return (
-        <button className="btn" onClick={stopCountdown}>
+        <button className="btn" onClick={pauseCountdown}>
             Pause
         </button>
     );
