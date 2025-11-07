@@ -5,14 +5,17 @@ import SkipButton from "./SkipButton";
 import useCountdownTimerChecks from "../../../hooks/CountdownTimer/useCountdownTimerChecks.tsx";
 
 const CountdownButtonControls = () => {
-    const { countdownTimerIsPaused, countdownTimerIsNotPaused } =
-        useCountdownTimerChecks();
+    const {
+        countdownTimerIsPaused,
+        countdownTimerIsNotPaused,
+        countdownTimerIsRunning,
+    } = useCountdownTimerChecks();
 
     return (
-        <div className="flex justify-center gap-2">
+        <div className="mb-8 flex justify-center gap-2">
             {countdownTimerIsPaused() && <StartButton />}
             {countdownTimerIsNotPaused() && <PauseButton />}
-            <ResetButton />
+            {countdownTimerIsRunning() && <ResetButton />}
             <SkipButton />
         </div>
     );
