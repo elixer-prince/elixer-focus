@@ -16,9 +16,45 @@ const ThemeSettings = () => {
                     type="radio"
                     name="theme-radios"
                     className="radio radio-sm theme-controller"
-                    value="luxury"
+                    value="cupcake"
                 />
-                Luxury
+                Cupcake
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="bumblebee"
+                />
+                Bumblebee
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="emerald"
+                />
+                Emerald
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="corporate"
+                />
+                Corporate
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="synthwave"
+                />
+                Synthwave
             </label>
             <label className="flex cursor-pointer items-center gap-2">
                 <input
@@ -52,9 +88,225 @@ const ThemeSettings = () => {
                     type="radio"
                     name="theme-radios"
                     className="radio radio-sm theme-controller"
+                    value="halloween"
+                />
+                Halloween
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="garden"
+                />
+                Garden
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="forest"
+                />
+                Forest
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
                     value="aqua"
                 />
                 Aqua
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="lofi"
+                />
+                Lofi
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="pastel"
+                />
+                Pastel
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="fantasy"
+                />
+                Fantasy
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="wireframe"
+                />
+                Wireframe
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="black"
+                />
+                Black
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="luxury"
+                />
+                Luxury
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="dracula"
+                />
+                Dracula
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="cmyk"
+                />
+                Cmyk
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="autumn"
+                />
+                Autumn
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="business"
+                />
+                Business
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="acid"
+                />
+                Acid
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="lemonade"
+                />
+                Lemonade
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="night"
+                />
+                Night
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="coffee"
+                />
+                Coffee
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="winter"
+                />
+                Winter
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="dim"
+                />
+                Dim
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="nord"
+                />
+                Nord
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="sunset"
+                />
+                Sunset
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="caramellatte"
+                />
+                Caramellatte
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="abyss"
+                />
+                Abyss
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+                <input
+                    type="radio"
+                    name="theme-radios"
+                    className="radio radio-sm theme-controller"
+                    value="silk"
+                />
+                Silk
             </label>
         </fieldset>
     );
