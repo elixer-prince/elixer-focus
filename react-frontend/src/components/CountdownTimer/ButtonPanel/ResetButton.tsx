@@ -1,21 +1,13 @@
-// function resetTimer() {
-//     if (!timerRunning) return;
-
-//     playSound(resetTimerSoundEffect);
-//     clearInterval(timerInterval);
-//     setTimerRunning(false);
-//     saveToLocalStorage("timerRunning", false);
-//     setTimerPaused(true);
-//     saveToLocalStorage("timerPaused", true);
-
-//     const newRemainingTime = convertMinutesToSeconds(startTimeInMinutes);
-
-//     setRemainingTimeInSeconds(newRemainingTime);
-//     saveToLocalStorage("remainingTimeInSeconds", newRemainingTime);
-// }
+import useCountdownTimer from "../../../hooks/CountdownTimer/useCountdownTimer.tsx";
 
 const ResetButton = () => {
-    return <button className="btn">Reset</button>;
+    const { resetCountdownWithSound } = useCountdownTimer();
+
+    return (
+        <button className="btn" onClick={resetCountdownWithSound}>
+            Reset
+        </button>
+    );
 };
 
 export default ResetButton;
