@@ -1,12 +1,12 @@
 import { playSound } from "../../util/functions/sound.ts";
+import { useContext } from "react";
+import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
+import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
 import { getCurrentTimestamp } from "../../util/functions/date.ts";
 import {
     convertMinutesToMilliseconds,
     convertMinutesToSeconds,
 } from "../../util/functions/conversion.ts";
-import { useContext } from "react";
-import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
-import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
 
 const useStartCountdown = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
@@ -21,8 +21,8 @@ const useStartCountdown = () => {
         timerBeepSoundEffect,
         timerInterval,
         timerOnClickSoundEffect,
-        pauseRemaining,
         timerEndTime,
+        timeRemainingOnPause,
         startTimeInMinutes,
         setRemainingTimeInSeconds,
         setTimerRunning,
@@ -34,42 +34,51 @@ const useStartCountdown = () => {
     const startCountdown = () => {
         if (countdownTimerIsNotPaused()) return;
 
-        playSound(timerOnClickSoundEffect.current);
         setTimerPaused(false);
         setTimerRunning(true);
 
-        const now = getCurrentTimestamp();
+        let now = getCurrentTimestamp();
 
-        const timeRemainingInMilliseconds =
-            convertMinutesToMilliseconds(startTimeInMinutes);
+        // Resume case: use paused time, otherwise use start time
+        if (timeRemainingOnPause.current) {
+            timerEndTime.current = now + timeRemainingOnPause.current * 1000;
+            timeRemainingOnPause.current = null;
+        } else {
+            timerEndTime.current =
+                now + convertMinutesToMilliseconds(startTimeInMinutes);
+        }
 
-        const durationInMilliseconds = pauseRemaining.current
-            ? pauseRemaining.current * 1000
-            : timeRemainingInMilliseconds;
-
-        timerEndTime.current = now + durationInMilliseconds;
-        pauseRemaining.current = null;
+        if (timerInterval.current) clearInterval(timerInterval.current);
 
         timerInterval.current = setInterval(() => {
-            const now = getCurrentTimestamp();
-            const remainingMilliseconds = (timerEndTime.current ?? now) - now;
+            if (!timerEndTime.current) return;
 
-            if (remainingMilliseconds <= 0) {
-                playSound(timerBeepSoundEffect.current);
+            now = getCurrentTimestamp();
+            const remainingTimeMs = timerEndTime.current - now;
+            const remainingSeconds = Math.floor(remainingTimeMs / 1000);
+            setRemainingTimeInSeconds(remainingSeconds);
+
+            if (remainingSeconds <= 0) {
                 setRemainingTimeInSeconds(
                     convertMinutesToSeconds(startTimeInMinutes),
                 );
-                clearInterval(timerInterval.current!);
-                return setTimerRunning(false);
+                playSound(timerBeepSoundEffect.current);
+                if (timerInterval.current) clearInterval(timerInterval.current);
+                setTimerRunning(false);
+                setTimerPaused(true);
+                timerEndTime.current = null;
             }
-
-            setRemainingTimeInSeconds(Math.ceil(remainingMilliseconds / 1000));
         }, 1000);
-
-        setTimerRunning(true);
     };
 
-    return { startCountdown };
+    const startCountdownWithSound = () => {
+        if (countdownTimerIsNotPaused()) return;
+
+        playSound(timerOnClickSoundEffect.current);
+        startCountdown();
+    };
+
+    return { startCountdown, startCountdownWithSound };
 };
 
 export default useStartCountdown;
