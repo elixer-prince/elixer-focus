@@ -28,8 +28,7 @@ type CountdownTimerContextType = {
     readonly resetTimerSoundEffect: RefObject<HTMLAudioElement>;
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
-    pauseRemaining: RefObject<number | null>;
-
+    timeRemainingOnPause: RefObject<number | null>;
     timerRunning: boolean;
     setTimerRunning: Dispatch<SetStateAction<boolean>>;
     timerPaused: boolean;
@@ -72,7 +71,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     );
 
     const timerEndTime = useRef<number | null>(null);
-    const pauseRemaining = useRef<number | null>(null);
+    const timeRemainingOnPause = useRef<number | null>(null);
 
     const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(() =>
         convertMinutesToSeconds(startTimeInMinutes),
@@ -99,8 +98,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             resetTimerSoundEffect,
             timerInterval,
             timerEndTime,
-            pauseRemaining,
-
+            timeRemainingOnPause,
             startTimeInMinutes,
             setStartTimeInMinutes,
             timerRunning,
