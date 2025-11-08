@@ -14,6 +14,7 @@ import beepSoundURL from "./../assets/audio/sound-effects/beep.mp3";
 import offClickSoundURL from "./../assets/audio/sound-effects/off-click.mp3";
 import onClickSoundURL from "./../assets/audio/sound-effects/on-click.mp3";
 import tickingSoundURL from "./../assets/audio/sound-effects/ticking.mp3";
+import resetTimerSoundURL from "./../assets/audio/sound-effects/reset-timer.mp3";
 
 interface CountdownTimerProviderProps {
     children: ReactNode;
@@ -24,6 +25,7 @@ type CountdownTimerContextType = {
     readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
     readonly timerTickingSoundEffect: RefObject<HTMLAudioElement>;
+    readonly resetTimerSoundEffect: RefObject<HTMLAudioElement>;
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
     pauseRemaining: RefObject<number | null>;
@@ -56,6 +58,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     const timerOffClickSoundEffect = useRef(new Audio(offClickSoundURL));
     const timerOnClickSoundEffect = useRef(new Audio(onClickSoundURL));
     const timerTickingSoundEffect = useRef(new Audio(tickingSoundURL));
+    const resetTimerSoundEffect = useRef(new Audio(resetTimerSoundURL));
 
     /**
      * The timer interval is null at component initialisation and does not
@@ -93,6 +96,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             timerOffClickSoundEffect,
             timerOnClickSoundEffect,
             timerTickingSoundEffect,
+            resetTimerSoundEffect,
             timerInterval,
             timerEndTime,
             pauseRemaining,
