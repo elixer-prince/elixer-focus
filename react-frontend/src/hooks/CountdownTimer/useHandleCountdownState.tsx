@@ -1,30 +1,15 @@
 import useStartCountdown from "./useStartCountdown.tsx";
-import useStopCountdown from "./useStopCountdown.tsx";
-import {playSound} from "../../util/functions/sound.ts";
-import {useContext} from "react";
-import {CountdownTimerContext} from "../../contexts/CountdownTimerContext.tsx";
+import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
+import usePauseCountdown from "./usePauseCountdown.tsx";
 
 const useHandleCountdownState = () => {
-    const { startCountdown } = useStartCountdown();
-    const { stopCountdown } = useStopCountdown();
-
-    const countdownTimerContext = useContext(CountdownTimerContext);
-
-    if (!countdownTimerContext) {
-        throw new Error();
-    }
-
-    const { timerRunning, timerOnClickSoundEffect, timerOffClickSoundEffect } =
-        countdownTimerContext;
+    const { startCountdownWithSound } = useStartCountdown();
+    const { pauseCountdown } = usePauseCountdown();
+    const { countdownTimerIsPaused } = useCountdownTimerChecks();
 
     const handleCountdownState = () => {
-        if (timerRunning) {
-            playSound(timerOffClickSoundEffect.current);
-            stopCountdown();
-        } else {
-            playSound(timerOnClickSoundEffect.current);
-            startCountdown();
-        }
+        if (countdownTimerIsPaused()) return startCountdownWithSound();
+        pauseCountdown();
     };
 
     return { handleCountdownState };
