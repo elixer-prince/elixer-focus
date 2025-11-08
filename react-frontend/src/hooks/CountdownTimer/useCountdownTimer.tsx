@@ -2,8 +2,9 @@ import { useContext } from "react";
 import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
 import { formatTimeInMinutesAndSeconds } from "../../util/functions/timer/formatting.ts";
 import useStartCountdown from "./useStartCountdown.tsx";
-import useStopCountdown from "./useStopCountdown.tsx";
 import useHandleCountdownState from "./useHandleCountdownState.tsx";
+import useResetCountdown from "./useResetCountdown.tsx";
+import usePauseCountdown from "./usePauseCountdown.tsx";
 
 const useCountdownTimer = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
@@ -18,7 +19,7 @@ const useCountdownTimer = () => {
         timerTickingSoundEffect,
         timerInterval,
         timerEndTime,
-        pauseRemaining,
+        timeRemainingOnPause,
         startTimeInMinutes,
         setStartTimeInMinutes,
         timerRunning,
@@ -29,9 +30,10 @@ const useCountdownTimer = () => {
         setRemainingTimeInSeconds,
     } = countdownTimerContext;
 
-    const { startCountdown } = useStartCountdown();
-    const { stopCountdown } = useStopCountdown();
+    const { startCountdown, startCountdownWithSound } = useStartCountdown();
     const { handleCountdownState } = useHandleCountdownState();
+    const { resetCountdown, resetCountdownWithSound } = useResetCountdown();
+    const { pauseCountdown } = usePauseCountdown();
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
         remainingTimeInSeconds,
@@ -44,10 +46,13 @@ const useCountdownTimer = () => {
         timerTickingSoundEffect,
         timerInterval,
         timerEndTime,
-        pauseRemaining,
+        timeRemainingOnPause,
         startCountdown,
-        stopCountdown,
+        startCountdownWithSound,
+        pauseCountdown,
         handleCountdownState,
+        resetCountdown,
+        resetCountdownWithSound,
         formattedTimeRemaining,
         startTimeInMinutes,
         setStartTimeInMinutes,
