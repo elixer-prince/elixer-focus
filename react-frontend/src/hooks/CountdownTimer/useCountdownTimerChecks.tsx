@@ -27,11 +27,23 @@ const useCountdownTimerChecks = () => {
     |
     */
 
+    const countdownTimerIsNotPausedOrIsRunning = (): boolean =>
+        countdownTimerIsNotPaused() || countdownTimerIsRunning();
+
+    const countdownTimerIsRunningOrIsPaused = (): boolean =>
+        countdownTimerIsRunning() || countdownTimerIsPaused();
+
+    const countdownTimerIsRunningAndIsPaused = (): boolean =>
+        countdownTimerIsRunning() && countdownTimerIsPaused();
+
     return {
         countdownTimerIsPaused,
         countdownTimerIsNotPaused,
         countdownTimerIsRunning,
         countdownTimerIsNotRunning,
+        countdownTimerIsRunningOrIsPaused,
+        countdownTimerIsRunningAndIsPaused,
+        countdownTimerIsNotPausedOrIsRunning,
     };
 };
 
