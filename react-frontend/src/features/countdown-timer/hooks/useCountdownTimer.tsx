@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "@features/countdown-timer/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "@features/countdown-timer/stores/TimerContext.tsx";
 import { formatTimeInMinutesAndSeconds } from "@utils/functions/timer/formatting.ts";
 import useStartCountdown from "@features/countdown-timer/hooks/useStartCountdown.tsx";
 import useHandleCountdownState from "@features/countdown-timer/hooks/useHandleCountdownState.tsx";

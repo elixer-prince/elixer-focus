@@ -1,10 +1,10 @@
 import {
     createContext,
-    useMemo,
-    useState,
     type Dispatch,
     type ReactNode,
     type SetStateAction,
+    useMemo,
+    useState,
 } from "react";
 
 interface CountdownSessionProviderProps {
@@ -30,9 +30,9 @@ type CountdownSessionContextType = {
     setTotalSessionsCompleted: Dispatch<SetStateAction<number>>;
 };
 
-const CountdownSessionContext = createContext<
-    CountdownSessionContextType | undefined
->(undefined);
+const SessionContext = createContext<CountdownSessionContextType | undefined>(
+    undefined,
+);
 
 const CountdownSessionProvider = ({
     children,
@@ -76,10 +76,10 @@ const CountdownSessionProvider = ({
     );
 
     return (
-        <CountdownSessionContext.Provider value={contextValue}>
+        <SessionContext.Provider value={contextValue}>
             {children}
-        </CountdownSessionContext.Provider>
+        </SessionContext.Provider>
     );
 };
 
-export { CountdownSessionContext, CountdownSessionProvider };
+export { SessionContext, CountdownSessionProvider };

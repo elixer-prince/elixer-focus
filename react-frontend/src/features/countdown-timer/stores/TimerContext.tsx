@@ -8,8 +8,8 @@ import {
     useRef,
     useState,
 } from "react";
-import { convertMinutesToSeconds } from "@utils/functions/conversion";
-import { getFromLocalStorage } from "@utils/functions/storage";
+import { convertMinutesToSeconds } from "@utils/functions/conversion.ts";
+import { getFromLocalStorage } from "@utils/functions/storage.ts";
 import beepSoundURL from "@features/countdown-timer/assets/beep-sound-effect.mp3";
 import offClickSoundURL from "@features/countdown-timer/assets/off-click-sound-effect.mp3";
 import onClickSoundURL from "@features/countdown-timer/assets/on-click-sound-effect.mp3";

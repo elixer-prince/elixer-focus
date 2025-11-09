@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "@features/countdown-timer/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "@features/countdown-timer/stores/TimerContext.tsx";
 import useCountdownTimerChecks from "@features/countdown-timer/hooks/useCountdownTimerChecks.tsx";
 import { playSound } from "@utils/functions/sound.ts";
 import { convertMinutesToSeconds } from "@utils/functions/conversion.ts";
