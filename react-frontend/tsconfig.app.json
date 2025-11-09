@@ -20,7 +20,7 @@
             "@stores/*": ["src/stores/*"],
             "@testing/*": ["src/testing/*"],
             "@types/*": ["src/types/*"],
-            "@util/*": ["src/util/*"]
+            "@utils/*": ["src/utils/*"]
         },
 
         /* Bundler mode */
