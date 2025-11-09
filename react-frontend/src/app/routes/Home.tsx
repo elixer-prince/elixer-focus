@@ -1,4 +1,4 @@
-import CountdownTimerContainer from "@features/countdown-timer/TimerContainer";
+import CountdownTimerContainer from "@features/countdown-timer/Index.tsx";
 import AppLayout from "@app/layouts/AppLayout";
 
 const Home = () => {

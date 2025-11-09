@@ -1,7 +1,7 @@
 import useCountdownTimer from "@features/countdown-timer/hooks/useCountdownTimer.tsx";
 import { convertMinutesToSeconds } from "@utils/functions/conversion.ts";
 
-const CountdownDisplay = () => {
+const FocusRing = () => {
     const {
         startTimeInMinutes,
         formattedTimeRemaining,
@@ -81,4 +81,4 @@ const CountdownDisplay = () => {
     );
 };
 
-export default CountdownDisplay;
+export default FocusRing;
