@@ -1,6 +1,6 @@
-@import "effects/index.css";
-@import "br/index.css";
-@import "anime/index.css";
+@import "./effects/index.css";
+@import "./br/index.css";
+@import "./anime/index.css";
 
 /*
     INFO: For the testing of themes, I can implement it allowing users
