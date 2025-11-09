@@ -1,5 +1,5 @@
-import type {ReactNode} from "react";
-import Navbar from "@features/ui/navbar/Navbar;
+import type { ReactNode } from "react";
+import Navbar from "@features/ui/navbar/Navbar";
 import Footer from "@features/ui/footer/Footer";
 
 interface AppLayoutProps {

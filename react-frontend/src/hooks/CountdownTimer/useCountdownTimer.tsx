@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "../../features/countdown-timer/CountdownTimerContext.tsx";
-import { formatTimeInMinutesAndSeconds } from "../../utils/functions/timer/formatting.ts";
-import useStartCountdown from "./useStartCountdown.tsx";
-import useHandleCountdownState from "./useHandleCountdownState.tsx";
-import useResetCountdown from "./useResetCountdown.tsx";
-import usePauseCountdown from "./usePauseCountdown.tsx";
+import { CountdownTimerContext } from "@features/countdown-timer/CountdownTimerContext";
+import { formatTimeInMinutesAndSeconds } from "@utils/functions/timer/formatting";
+import useStartCountdown from "@hooks/CountdownTimer/useStartCountdown";
+import useHandleCountdownState from "@hooks/CountdownTimer/useHandleCountdownState";
+import useResetCountdown from "@hooks/CountdownTimer/useResetCountdown";
+import usePauseCountdown from "@hooks/CountdownTimer/usePauseCountdown";
 
 const useCountdownTimer = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);

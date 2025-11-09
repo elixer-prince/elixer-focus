@@ -1,6 +1,6 @@
-import AppLayout from "../layouts/AppLayout.tsx";
+import AppLayout from "@app/layouts/AppLayout.tsx";
 
-const TasksPage = () => {
+const Tasks = () => {
     return (
         <AppLayout>
             <h1 className={"font-bold"}>Tasks Page</h1>
@@ -8,4 +8,4 @@ const TasksPage = () => {
     );
 };
 
-export default TasksPage;
+export default Tasks;

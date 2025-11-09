@@ -1,4 +1,4 @@
-import useCountdownTimer from "../../../hooks/CountdownTimer/useCountdownTimer.tsx";
+import useCountdownTimer from "@hooks/CountdownTimer/useCountdownTimer";
 
 const StartButton = () => {
     const { startCountdownWithSound } = useCountdownTimer();

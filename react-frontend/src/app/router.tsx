@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router";
-import HomePage from "@app/routes/HomePage.tsx";
-import SettingsPage from "@app/routes/SettingsPage.tsx";
+import Home from "@app/routes/Home";
+import Settings from "@app/routes/Settings";
 
 const Router = () => {
     return (
         <Routes>
-            <Route index element={<HomePage />} />
-            <Route path="settings" element={<SettingsPage />} />
+            <Route index element={<Home />} />
+            <Route path="settings" element={<Settings />} />
         </Routes>
     );
 };

@@ -1,7 +1,7 @@
 import ThemeSettings from "@features/theme-settings/ThemeSettings";
-import AppLayout from "../layouts/AppLayout.tsx";
+import AppLayout from "@app/layouts/AppLayout";
 
-const SettingsPage = () => {
+const Settings = () => {
     return (
         <AppLayout>
             <ThemeSettings />
@@ -9,4 +9,4 @@ const SettingsPage = () => {
     );
 };
 
-export default SettingsPage;
+export default Settings;
