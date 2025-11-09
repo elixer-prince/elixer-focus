@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import NavLinkContainer from "@features/ui/navbar/NavLinkContainer.tsx";
 
 const Navbar = () => {
     return (
@@ -9,16 +10,8 @@ const Navbar = () => {
                         <span className="text-xl font-bold">Elixer Focus</span>
                     </Link>
                 </div>
-                <ul>
-                    <li>
-                        <Link
-                            className={"text-primary hover:underline"}
-                            to={"/tasks"}
-                        >
-                            Tasks
-                        </Link>
-                    </li>
-                </ul>
+
+                <NavLinkContainer />
             </div>
 
             <div>
