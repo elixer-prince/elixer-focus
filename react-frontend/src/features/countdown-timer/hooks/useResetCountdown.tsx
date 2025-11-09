@@ -15,7 +15,6 @@ const UseResetCountdown = () => {
         startTimeInMinutes,
         timerInterval,
         timeRemainingOnPause,
-        remainingTimeInSeconds,
         timerEndTime,
         setTimerRunning,
         setTimerPaused,
@@ -27,10 +26,10 @@ const UseResetCountdown = () => {
         if (countdownTimerIsNotRunning()) return;
 
         if (timerInterval.current) clearInterval(timerInterval.current);
-        if (timeRemainingOnPause.current) timeRemainingOnPause.current = null;
 
-        timeRemainingOnPause.current = remainingTimeInSeconds;
+        if (timeRemainingOnPause.current) timeRemainingOnPause.current = null;
         timerEndTime.current = null;
+
         setTimerRunning(false);
         setTimerPaused(true);
 
