@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
-import { formatTimeInMinutesAndSeconds } from "../../util/functions/timer/formatting.ts";
+import { CountdownTimerContext } from "../../features/countdown-timer/CountdownTimerContext.tsx";
+import { formatTimeInMinutesAndSeconds } from "../../utils/functions/timer/formatting.ts";
 import useStartCountdown from "./useStartCountdown.tsx";
 import useHandleCountdownState from "./useHandleCountdownState.tsx";
 import useResetCountdown from "./useResetCountdown.tsx";

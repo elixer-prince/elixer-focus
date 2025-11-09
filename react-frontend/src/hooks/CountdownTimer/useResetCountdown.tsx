@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "../../features/countdown-timer/CountdownTimerContext.tsx";
 import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
-import { playSound } from "../../util/functions/sound.ts";
-import { convertMinutesToSeconds } from "../../util/functions/conversion.ts";
+import { playSound } from "../../utils/functions/sound.ts";
+import { convertMinutesToSeconds } from "../../utils/functions/conversion.ts";
 
 const UseResetCountdown = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);

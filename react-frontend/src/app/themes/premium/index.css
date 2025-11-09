@@ -1,0 +1,9 @@
+@import "effects/index.css";
+@import "br/index.css";
+@import "anime/index.css";
+
+/*
+    INFO: For the testing of themes, I can implement it allowing users
+    to switch to the desired theme in settings but it won't persist
+    unless they are on the premium plan.
+*/

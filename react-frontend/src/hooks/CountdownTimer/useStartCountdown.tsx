@@ -1,12 +1,12 @@
-import { playSound } from "../../util/functions/sound.ts";
+import { playSound } from "../../utils/functions/sound.ts";
 import { useContext } from "react";
-import { CountdownTimerContext } from "../../contexts/CountdownTimerContext.tsx";
+import { CountdownTimerContext } from "../../features/countdown-timer/CountdownTimerContext.tsx";
 import useCountdownTimerChecks from "./useCountdownTimerChecks.tsx";
-import { getCurrentTimestamp } from "../../util/functions/date.ts";
+import { getCurrentTimestamp } from "../../utils/functions/date.ts";
 import {
     convertMinutesToMilliseconds,
     convertMinutesToSeconds,
-} from "../../util/functions/conversion.ts";
+} from "../../utils/functions/conversion.ts";
 
 const useStartCountdown = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
