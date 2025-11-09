@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "./themes/index.css";
+
+@theme {
+    --font-roboto: "Roboto", sans-serif;
+}
+
+@plugin "daisyui" {
+    themes:
+        dark --default,
+        all;
+}
