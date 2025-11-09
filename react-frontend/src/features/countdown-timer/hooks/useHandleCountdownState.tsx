@@ -1,6 +1,6 @@
-import useStartCountdown from "@hooks/CountdownTimer/useStartCountdown";
-import useCountdownTimerChecks from "@hooks/CountdownTimer/useCountdownTimerChecks";
-import usePauseCountdown from "@hooks/CountdownTimer/usePauseCountdown";
+import useStartCountdown from "@features/countdown-timer/hooks/useStartCountdown.tsx";
+import useCountdownTimerChecks from "@features/countdown-timer/hooks/useCountdownTimerChecks.tsx";
+import usePauseCountdown from "@features/countdown-timer/hooks/usePauseCountdown.tsx";
 
 const useHandleCountdownState = () => {
     const { startCountdownWithSound } = useStartCountdown();

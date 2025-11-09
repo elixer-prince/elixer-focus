@@ -8,13 +8,13 @@ import {
     useRef,
     useState,
 } from "react";
-import { convertMinutesToSeconds } from "@utils/functions/conversion";
-import { getFromLocalStorage } from "@utils/functions/storage";
-import beepSoundURL from "@assets/sound-effects/beep.mp3";
-import offClickSoundURL from "@assets/sound-effects/off-click.mp3";
-import onClickSoundURL from "@assets/sound-effects/on-click.mp3";
-import tickingSoundURL from "@assets/sound-effects/ticking.mp3";
-import resetTimerSoundURL from "@assets/sound-effects/reset-timer.mp3";
+import {convertMinutesToSeconds} from "@utils/functions/conversion";
+import {getFromLocalStorage} from "@utils/functions/storage";
+import beepSoundURL from "@features/countdown-timer/assets/beep-sound-effect.mp3";
+import offClickSoundURL from "@features/countdown-timer/assets/off-click-sound-effect.mp3";
+import onClickSoundURL from "@features/countdown-timer/assets/on-click-sound-effect.mp3";
+import tickingSoundURL from "@features/countdown-timer/assets/ticking-sound-effect.mp3";
+import resetTimerSoundURL from "@features/countdown-timer/assets/reset-timer-sound-effect.mp3";
 
 interface CountdownTimerProviderProps {
     children: ReactNode;

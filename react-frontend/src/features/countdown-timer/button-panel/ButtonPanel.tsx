@@ -2,7 +2,7 @@ import PauseButton from "@features/countdown-timer/button-panel/PauseButton";
 import StartButton from "@features/countdown-timer/button-panel/StartButton";
 import ResetButton from "@features/countdown-timer/button-panel/ResetButton";
 import SkipButton from "@features/countdown-timer/button-panel/SkipButton";
-import useCountdownTimerChecks from "@hooks/CountdownTimer/useCountdownTimerChecks";
+import useCountdownTimerChecks from "@features/countdown-timer/hooks/useCountdownTimerChecks.tsx";
 
 const CountdownButtonControls = () => {
     const {

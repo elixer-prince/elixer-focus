@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import useCountdownTimerChecks from "@hooks/CountdownTimer/useCountdownTimerChecks";
-import { playSound } from "@utils/functions/sound";
-import { CountdownTimerContext } from "@features/countdown-timer/CountdownTimerContext";
+import useCountdownTimerChecks from "@features/countdown-timer/hooks/useCountdownTimerChecks.tsx";
+import { playSound } from "@utils/functions/sound.ts";
+import { CountdownTimerContext } from "@features/countdown-timer/CountdownTimerContext.tsx";
 
 const UsePauseCountdown = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);

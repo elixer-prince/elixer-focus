@@ -1,4 +1,4 @@
-import useCountdownTimer from "@hooks/CountdownTimer/useCountdownTimer.tsx";
+import useCountdownTimer from "@features/countdown-timer/hooks/useCountdownTimer.tsx";
 import { convertMinutesToSeconds } from "@utils/functions/conversion.ts";
 
 const CountdownDisplay = () => {
