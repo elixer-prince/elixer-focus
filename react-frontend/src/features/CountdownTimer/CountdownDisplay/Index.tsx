@@ -1,5 +1,5 @@
 import useCountdownTimer from "@features/CountdownTimer/hooks/useCountdownTimer.tsx";
-import CountdownMinutes from "@features/CountdownTimer/CountdownMinutes.tsx";
+import CountdownMinutesAndSeconds from "@features/CountdownTimer/CountdownMinutesAndSeconds.tsx";
 import CountdownSeconds from "@features/CountdownTimer/CountdownSeconds.tsx";
 import FocusRing from "@features/CountdownTimer/FocusRing/Index.tsx";
 
@@ -13,7 +13,7 @@ const CountdownDisplay = () => {
         >
             <CountdownSeconds />
             <FocusRing />
-            <CountdownMinutes />
+            <CountdownMinutesAndSeconds />
         </button>
     );
 };

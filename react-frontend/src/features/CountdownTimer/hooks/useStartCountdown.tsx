@@ -1,22 +1,12 @@
-import { useContext } from "react";
 import { playSound } from "@utils/sound.ts";
-import { CountdownTimerContext } from "@features/CountdownTimer/stores/TimerContext.tsx";
-import useCountdownTimerChecks from "@features/CountdownTimer/hooks/useCountdownTimerChecks.tsx";
 import { getCurrentTimestamp } from "@utils/date.ts";
 import {
     convertMinutesToMilliseconds,
     convertMinutesToSeconds,
 } from "@utils/conversion.ts";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const useStartCountdown = () => {
-    const countdownTimerContext = useContext(CountdownTimerContext);
-
-    if (!countdownTimerContext) {
-        throw new Error(
-            "This hook has to be used inside a CountdownTimerContext!",
-        );
-    }
-
     const {
         timerBeepSoundEffect,
         timerInterval,
@@ -26,21 +16,17 @@ const useStartCountdown = () => {
         startTimeInMinutes,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
+        timerRunning,
         setTimerRunning,
+        timerPaused,
         setTimerPaused,
-    } = countdownTimerContext;
-
-    const {
-        countdownTimerIsRunning,
-        countdownTimerIsNotPaused,
-        countdownTimerIsNotRunning,
-    } = useCountdownTimerChecks();
+    } = useCountdownTimerContext();
 
     const startCountdown = () => {
-        if (countdownTimerIsNotPaused()) return;
+        if (!timerPaused) return;
 
         setTimerPaused(false);
-        if (countdownTimerIsNotRunning()) setTimerRunning(true);
+        if (!timerRunning) setTimerRunning(true);
 
         let now = getCurrentTimestamp();
 
@@ -54,7 +40,7 @@ const useStartCountdown = () => {
 
         if (timerInterval.current) clearInterval(timerInterval.current);
 
-        if (countdownTimerIsRunning())
+        if (timerRunning)
             return (timeRemainingOnPause.current = remainingTimeInSeconds);
 
         timerInterval.current = setInterval(() => {
@@ -79,7 +65,7 @@ const useStartCountdown = () => {
     };
 
     const startCountdownOnPageLoad = () => {
-        if (countdownTimerIsNotRunning()) return;
+        if (!timerRunning) return;
         startCountdown();
     };
 

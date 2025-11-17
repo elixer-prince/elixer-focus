@@ -1,6 +1,6 @@
 import { CountdownTimerProvider } from "@features/CountdownTimer/stores/TimerContext.tsx";
 import CountdownControls from "@features/CountdownTimer/ButtonControls/Index.tsx";
-import CountdownDisplay from "@features/CountdownTimer/CountdownDisplay.tsx";
+import CountdownDisplay from "@features/CountdownTimer/CountdownDisplay/Index.tsx";
 import CountdownHeader from "@features/CountdownTimer/SessionDisplay/Index.tsx";
 import { CountdownSessionProvider } from "@features/CountdownTimer/SessionDisplay/stores/SessionContext.tsx";
 

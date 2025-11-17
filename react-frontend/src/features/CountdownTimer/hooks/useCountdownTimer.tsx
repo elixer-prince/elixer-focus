@@ -1,17 +1,11 @@
-import { useContext, useEffect } from "react";
-import { CountdownTimerContext } from "@features/CountdownTimer/stores/TimerContext.tsx";
+import { useEffect } from "react";
 import { formatTimeInMinutesAndSeconds } from "@utils/formatting.ts";
 import useStartCountdown from "@features/CountdownTimer/hooks/useStartCountdown.tsx";
-import useHandleCountdownState from "@features/CountdownTimer/hooks/useHandleCountdownState.tsx";
-import useResetCountdown from "@features/CountdownTimer/hooks/useResetCountdown.tsx";
 import usePauseCountdown from "@features/CountdownTimer/hooks/usePauseCountdown.tsx";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const useCountdownTimer = () => {
-    const countdownTimerContext = useContext(CountdownTimerContext);
-
-    if (!countdownTimerContext)
-        throw new Error("CountdownTimerContext must be defined!");
+    const countdownTimerContext = useCountdownTimerContext();
 
     const {
         timerBeepSoundEffect,
@@ -36,8 +30,6 @@ const useCountdownTimer = () => {
         startCountdownWithSound,
         startCountdownOnPageLoad,
     } = useStartCountdown();
-    const { handleCountdownState } = useHandleCountdownState();
-    const { resetCountdown, resetCountdownWithSound } = useResetCountdown();
     const { pauseCountdown } = usePauseCountdown();
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
@@ -47,26 +39,6 @@ const useCountdownTimer = () => {
     useEffect(() => {
         startCountdownOnPageLoad();
     }, [startCountdownOnPageLoad]);
-
-    useEffect(() => {
-        saveToLocalStorage("remainingTimeInSeconds", remainingTimeInSeconds);
-    }, [remainingTimeInSeconds]);
-
-    useEffect(() => {
-        saveToLocalStorage("timerEndTime", timerEndTime);
-    }, [timerEndTime]);
-
-    useEffect(() => {
-        saveToLocalStorage("timerRunning", timerRunning);
-    }, [timerRunning]);
-
-    useEffect(() => {
-        saveToLocalStorage("timerPaused", timerPaused);
-    }, [timerPaused]);
-
-    useEffect(() => {
-        saveToLocalStorage("timerRemainingOnPause", timeRemainingOnPause);
-    }, [timeRemainingOnPause]);
 
     return {
         timerBeepSoundEffect,
@@ -79,9 +51,6 @@ const useCountdownTimer = () => {
         startCountdown,
         startCountdownWithSound,
         pauseCountdown,
-        handleCountdownState,
-        resetCountdown,
-        resetCountdownWithSound,
         formattedTimeRemaining,
         startTimeInMinutes,
         setStartTimeInMinutes,

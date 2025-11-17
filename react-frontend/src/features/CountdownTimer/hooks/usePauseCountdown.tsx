@@ -1,26 +1,18 @@
-import { useContext } from "react";
-import useCountdownTimerChecks from "@features/CountdownTimer/hooks/useCountdownTimerChecks.tsx";
 import { playSound } from "@utils/sound.ts";
-import { CountdownTimerContext } from "@features/CountdownTimer/stores/TimerContext.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const UsePauseCountdown = () => {
-    const countdownTimerContext = useContext(CountdownTimerContext);
-
-    if (!countdownTimerContext)
-        throw new Error("This must be used inside a countdown timer context!");
-
     const {
         timerInterval,
-        setTimerPaused,
         remainingTimeInSeconds,
         timeRemainingOnPause,
         timerOffClickSoundEffect,
-    } = countdownTimerContext;
-
-    const { countdownTimerIsPaused } = useCountdownTimerChecks();
+        timerPaused,
+        setTimerPaused,
+    } = useCountdownTimerContext();
 
     const pauseCountdown = () => {
-        if (countdownTimerIsPaused()) return;
+        if (timerPaused) return;
 
         playSound(timerOffClickSoundEffect.current);
         setTimerPaused(true);
