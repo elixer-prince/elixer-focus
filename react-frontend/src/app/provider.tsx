@@ -1,13 +1,11 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "@app/index.css";
-import Router from "@app/router";
-import { BrowserRouter } from "react-router";
+import type { ReactNode } from "react";
 
-createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <BrowserRouter>
-            <Router />
-        </BrowserRouter>
-    </StrictMode>,
-);
+interface ProviderProps {
+    children: ReactNode;
+}
+
+const Provider = ({ children }: ProviderProps) => {
+    return <>{children}</>;
+};
+
+export default Provider;

@@ -1,0 +1,47 @@
+import { useContext } from "react";
+import { CountdownTimerContext } from "@features/CountdownTimer/stores/TimerContext.tsx";
+import useCountdownTimerChecks from "@features/CountdownTimer/hooks/useCountdownTimerChecks.tsx";
+import { playSound } from "@utils/sound.ts";
+import { convertMinutesToSeconds } from "@utils/conversion.ts";
+
+const UseResetCountdown = () => {
+    const countdownTimerContext = useContext(CountdownTimerContext);
+
+    if (!countdownTimerContext) throw new Error();
+
+    const {
+        resetTimerSoundEffect,
+        setRemainingTimeInSeconds,
+        startTimeInMinutes,
+        timerInterval,
+        timeRemainingOnPause,
+        timerEndTime,
+        setTimerRunning,
+        setTimerPaused,
+    } = countdownTimerContext;
+    const { countdownTimerIsNotRunning, countdownTimerIsRunning } =
+        useCountdownTimerChecks();
+
+    const resetCountdown = () => {
+        if (countdownTimerIsNotRunning()) return;
+
+        if (timerInterval.current) clearInterval(timerInterval.current);
+
+        if (timeRemainingOnPause.current) timeRemainingOnPause.current = null;
+        timerEndTime.current = null;
+
+        setTimerRunning(false);
+        setTimerPaused(true);
+
+        setRemainingTimeInSeconds(convertMinutesToSeconds(startTimeInMinutes));
+    };
+
+    const resetCountdownWithSound = () => {
+        resetCountdown();
+        if (countdownTimerIsRunning()) playSound(resetTimerSoundEffect.current);
+    };
+
+    return { resetCountdown, resetCountdownWithSound };
+};
+
+export default UseResetCountdown;

@@ -1,1 +1,5 @@
 TODO(bug): There is a flash of unstyled CSS before the page fully loads
+
+TODO: Make themes persist
+TODO: Add session types
+TODO: Add skip functionality
