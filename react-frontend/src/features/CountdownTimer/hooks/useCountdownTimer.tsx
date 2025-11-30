@@ -3,6 +3,7 @@ import { formatTimeInMinutesAndSeconds } from "@utils/formatting.ts";
 import useStartCountdown from "@features/CountdownTimer/hooks/useStartCountdown.tsx";
 import usePauseCountdown from "@features/CountdownTimer/hooks/usePauseCountdown.tsx";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useHandleCountdownState from "@features/CountdownTimer/CountdownDisplay/hooks/useHandleCountdownState.tsx";
 
 const useCountdownTimer = () => {
     const countdownTimerContext = useCountdownTimerContext();
@@ -30,6 +31,8 @@ const useCountdownTimer = () => {
         startCountdownWithSound,
         startCountdownOnPageLoad,
     } = useStartCountdown();
+
+    const { handleCountdownState } = useHandleCountdownState();
     const { pauseCountdown } = usePauseCountdown();
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
@@ -49,6 +52,7 @@ const useCountdownTimer = () => {
         timerEndTime,
         timeRemainingOnPause,
         startCountdown,
+        handleCountdownState,
         startCountdownWithSound,
         pauseCountdown,
         formattedTimeRemaining,

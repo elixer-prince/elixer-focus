@@ -1,10 +1,11 @@
-import { playSound } from "@utils/sound.ts";
-import { getCurrentTimestamp } from "@utils/date.ts";
-import {
-    convertMinutesToMilliseconds,
-    convertMinutesToSeconds,
-} from "@utils/conversion.ts";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import {
+    convertMinutesToSeconds,
+    convertSecondsToMilliseconds,
+} from "@utils/conversion.ts";
+import { getCurrentTimestamp } from "@utils/date.ts";
+import { playSound } from "@utils/sound.ts";
+import { saveToLocalStorage } from "@utils/storage.ts";
 
 const useStartCountdown = () => {
     const {
@@ -12,7 +13,7 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
-        timeRemainingOnPause,
+        // timeRemainingOnPause,
         startTimeInMinutes,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
@@ -23,55 +24,70 @@ const useStartCountdown = () => {
     } = useCountdownTimerContext();
 
     const startCountdown = () => {
-        if (!timerPaused) return;
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", false);
+            return false;
+        });
+        setTimerRunning(() => {
+            saveToLocalStorage("timerRunning", true);
+            return true;
+        });
 
-        setTimerPaused(false);
-        if (!timerRunning) setTimerRunning(true);
+        const endTime =
+            getCurrentTimestamp() +
+            convertSecondsToMilliseconds(remainingTimeInSeconds);
 
-        let now = getCurrentTimestamp();
-
-        if (timeRemainingOnPause.current) {
-            timerEndTime.current = now + timeRemainingOnPause.current * 1000;
-            timeRemainingOnPause.current = null;
-        } else {
-            timerEndTime.current =
-                now + convertMinutesToMilliseconds(startTimeInMinutes);
-        }
+        timerEndTime.current = endTime;
+        saveToLocalStorage("timerEndTime", endTime);
 
         if (timerInterval.current) clearInterval(timerInterval.current);
 
-        if (timerRunning)
-            return (timeRemainingOnPause.current = remainingTimeInSeconds);
-
         timerInterval.current = setInterval(() => {
-            if (!timerEndTime.current) return;
+            console.log("test");
+            const remainingSeconds = Math.max(
+                0,
+                Math.round((endTime - getCurrentTimestamp()) / 1000),
+            );
 
-            now = getCurrentTimestamp();
-            const remainingTimeMs = timerEndTime.current - now;
-            const remainingSeconds = Math.floor(remainingTimeMs / 1000);
-            setRemainingTimeInSeconds(remainingSeconds);
+            setRemainingTimeInSeconds(() => {
+                saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
+                return remainingSeconds;
+            });
 
             if (remainingSeconds <= 0) {
-                setRemainingTimeInSeconds(
-                    convertMinutesToSeconds(startTimeInMinutes),
-                );
                 playSound(timerBeepSoundEffect.current);
-                if (timerInterval.current) clearInterval(timerInterval.current);
-                setTimerRunning(false);
-                setTimerPaused(true);
-                timerEndTime.current = null;
+                setRemainingTimeInSeconds(() => {
+                    saveToLocalStorage(
+                        "remainingTimeInSeconds",
+                        convertMinutesToSeconds(startTimeInMinutes),
+                    );
+                    return convertMinutesToSeconds(startTimeInMinutes);
+                });
+
+                if (timerInterval.current !== null)
+                    clearInterval(timerInterval.current);
+
+                setTimerPaused(() => {
+                    saveToLocalStorage("timerPaused", true);
+                    return true;
+                });
+                setTimerRunning(() => {
+                    saveToLocalStorage("timerRunning", false);
+                    return false;
+                });
             }
         }, 1000);
     };
 
     const startCountdownOnPageLoad = () => {
-        if (!timerRunning) return;
+        if (timerPaused || !timerRunning) return;
         startCountdown();
     };
 
     const startCountdownWithSound = () => {
-        startCountdown();
+        if (!timerPaused) return;
         playSound(timerOnClickSoundEffect.current);
+        startCountdown();
     };
 
     return {
