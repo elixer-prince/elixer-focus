@@ -9,3 +9,7 @@ export function convertMinutesToMilliseconds(minutes: number): number {
 export function convertSecondsToMinutes(seconds: number): number {
     return seconds / 60;
 }
+
+export function convertSecondsToMilliseconds(seconds: number): number {
+    return seconds * 1000;
+}
