@@ -36,7 +36,7 @@ const CountdownTimerHeader = () => {
     const { currentSessionType } = useCountdownSession();
 
     return (
-        <header className="mt-8 border">
+        <header className="mt-8">
             <p className="text-4xl font-bold">{currentSessionType} Session</p>
         </header>
         // <SessionDisplay

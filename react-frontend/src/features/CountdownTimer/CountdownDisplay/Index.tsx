@@ -11,6 +11,9 @@ const CountdownDisplay = () => {
             className="hover:bg-base-200 active:bg-base-100 relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:duration-1000 active:duration-100"
             onClick={handleCountdownState}
         >
+            <div className="absolute top-12 rounded-md px-2 py-1 font-bold">
+                #{currentSessionCount}
+            </div>
             <CountdownSeconds />
             <FocusRing />
             <CountdownMinutesAndSeconds />
