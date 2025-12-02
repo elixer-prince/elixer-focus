@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { formatTimeInMinutesAndSeconds } from "@utils/formatting.ts";
 import useStartCountdown from "@features/CountdownTimer/hooks/useStartCountdown.tsx";
 import usePauseCountdown from "@features/CountdownTimer/hooks/usePauseCountdown.tsx";
+import useResetCountdown from "@features/CountdownTimer/hooks/useResetCountdown.tsx";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import useHandleCountdownState from "@features/CountdownTimer/CountdownDisplay/hooks/useHandleCountdownState.tsx";
 
@@ -32,8 +33,9 @@ const useCountdownTimer = () => {
         startCountdownOnPageLoad,
     } = useStartCountdown();
 
-    const { handleCountdownState } = useHandleCountdownState();
+        const { handleCountdownState } = useHandleCountdownState();
     const { pauseCountdown } = usePauseCountdown();
+    const { resetCountdown, resetCountdownWithSound } = useResetCountdown();
 
     const formattedTimeRemaining = formatTimeInMinutesAndSeconds(
         remainingTimeInSeconds,
@@ -43,7 +45,7 @@ const useCountdownTimer = () => {
         startCountdownOnPageLoad();
     }, [startCountdownOnPageLoad]);
 
-    return {
+        return {
         timerBeepSoundEffect,
         timerOffClickSoundEffect,
         timerOnClickSoundEffect,
@@ -55,6 +57,8 @@ const useCountdownTimer = () => {
         handleCountdownState,
         startCountdownWithSound,
         pauseCountdown,
+        resetCountdown,
+        resetCountdownWithSound,
         formattedTimeRemaining,
         startTimeInMinutes,
         setStartTimeInMinutes,

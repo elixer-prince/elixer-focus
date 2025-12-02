@@ -1,5 +1,6 @@
 import { playSound } from "@utils/sound.ts";
 import { convertMinutesToSeconds } from "@utils/conversion.ts";
+import { saveToLocalStorage } from "@utils/storage.ts";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const UseResetCountdown = () => {
@@ -15,23 +16,41 @@ const UseResetCountdown = () => {
         setTimerPaused,
     } = useCountdownTimerContext();
 
-    const resetCountdown = () => {
-        if (!timerRunning) return;
-
+        const resetCountdown = () => {
+        // Clear the interval if it's running
         if (timerInterval.current) clearInterval(timerInterval.current);
 
-        if (timeRemainingOnPause.current) timeRemainingOnPause.current = null;
+        // Clear all timer refs
+        timeRemainingOnPause.current = null;
         timerEndTime.current = null;
 
-        setTimerRunning(false);
-        setTimerPaused(true);
-
-        setRemainingTimeInSeconds(convertMinutesToSeconds(startTimeInMinutes));
+        // Reset to initial state
+        const initialTime = convertMinutesToSeconds(startTimeInMinutes);
+        
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", true);
+            return true;
+        });
+        
+        setTimerRunning(() => {
+            saveToLocalStorage("timerRunning", false);
+            return false;
+        });
+        
+        setRemainingTimeInSeconds(() => {
+            saveToLocalStorage("remainingTimeInSeconds", initialTime);
+            return initialTime;
+        });
+        
+        // Clear localStorage for refs
+        saveToLocalStorage("timerEndTime", null);
+        saveToLocalStorage("timeRemainingOnPause", null);
     };
 
-    const resetCountdownWithSound = () => {
+        const resetCountdownWithSound = () => {
+        const wasRunning = timerRunning;
         resetCountdown();
-        if (timerRunning) playSound(resetTimerSoundEffect.current);
+        if (wasRunning) playSound(resetTimerSoundEffect.current);
     };
 
     return { resetCountdown, resetCountdownWithSound };
