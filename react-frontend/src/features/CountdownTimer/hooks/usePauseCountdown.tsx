@@ -1,5 +1,6 @@
-import { playSound } from "@utils/sound.ts";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import { playSound } from "@utils/sound.ts";
+import { saveToLocalStorage } from "@utils/storage.ts";
 
 const UsePauseCountdown = () => {
     const {
@@ -15,7 +16,10 @@ const UsePauseCountdown = () => {
         if (timerPaused) return;
 
         playSound(timerOffClickSoundEffect.current);
-        setTimerPaused(true);
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", true);
+            return true;
+        });
 
         timeRemainingOnPause.current = remainingTimeInSeconds;
 
@@ -26,3 +30,4 @@ const UsePauseCountdown = () => {
 };
 
 export default UsePauseCountdown;
+

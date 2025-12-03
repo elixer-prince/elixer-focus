@@ -90,12 +90,12 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     |
     */
 
-    const [timerRunning, setTimerRunning] = useState<boolean>(
-        () => getFromLocalStorage("timerRunning") || false,
+        const [timerRunning, setTimerRunning] = useState<boolean>(
+        () => getFromLocalStorage("timerRunning") ?? false,
     );
 
-    const [timerPaused, setTimerPaused] = useState<boolean>(
-        () => getFromLocalStorage("timerPaused") || true,
+        const [timerPaused, setTimerPaused] = useState<boolean>(
+        () => getFromLocalStorage("timerPaused") ?? true,
     );
 
     const contextValue: CountdownTimerContextType = useMemo(
@@ -130,3 +130,4 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
 };
 
 export { CountdownTimerContext, CountdownTimerProvider };
+

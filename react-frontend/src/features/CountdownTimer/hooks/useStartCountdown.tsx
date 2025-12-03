@@ -71,6 +71,7 @@ const useStartCountdown = () => {
                     saveToLocalStorage("timerPaused", true);
                     return true;
                 });
+
                 setTimerRunning(() => {
                     saveToLocalStorage("timerRunning", false);
                     return false;
@@ -78,10 +79,10 @@ const useStartCountdown = () => {
             }
         }, 1000);
     };
-
+    
     const startCountdownOnPageLoad = () => {
-        if (timerPaused || !timerRunning) return;
-        startCountdown();
+        if (timerRunning && !timerPaused)
+            startCountdown();
     };
 
     const startCountdownWithSound = () => {
@@ -98,3 +99,5 @@ const useStartCountdown = () => {
 };
 
 export default useStartCountdown;
+
+
