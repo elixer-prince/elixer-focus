@@ -1,3 +1,4 @@
+import useSessionSwitch from "@features/CountdownTimer/SessionDisplay/hooks/useSessionSwitch.tsx";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import {
     convertMinutesToSeconds,
@@ -23,11 +24,14 @@ const useStartCountdown = () => {
         setTimerPaused,
     } = useCountdownTimerContext();
 
+    const { switchSessionType } = useSessionSwitch();
+
     const startCountdown = () => {
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
         });
+
         setTimerRunning(() => {
             saveToLocalStorage("timerRunning", true);
             return true;
@@ -56,6 +60,9 @@ const useStartCountdown = () => {
 
             if (remainingSeconds <= 0) {
                 playSound(timerBeepSoundEffect.current);
+
+                switchSessionType();
+
                 setRemainingTimeInSeconds(() => {
                     saveToLocalStorage(
                         "remainingTimeInSeconds",
@@ -79,10 +86,9 @@ const useStartCountdown = () => {
             }
         }, 1000);
     };
-    
+
     const startCountdownOnPageLoad = () => {
-        if (timerRunning && !timerPaused)
-            startCountdown();
+        if (timerRunning && !timerPaused) startCountdown();
     };
 
     const startCountdownWithSound = () => {
@@ -99,5 +105,3 @@ const useStartCountdown = () => {
 };
 
 export default useStartCountdown;
-
-

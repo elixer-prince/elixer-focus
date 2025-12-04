@@ -1,3 +1,10 @@
+import beepSoundURL from "@features/CountdownTimer/assets/beep-sound-effect.mp3";
+import offClickSoundURL from "@features/CountdownTimer/assets/off-click-sound-effect.mp3";
+import onClickSoundURL from "@features/CountdownTimer/assets/on-click-sound-effect.mp3";
+import resetTimerSoundURL from "@features/CountdownTimer/assets/reset-timer-sound-effect.mp3";
+import tickingSoundURL from "@features/CountdownTimer/assets/ticking-sound-effect.mp3";
+import { convertMinutesToSeconds } from "@utils/conversion.ts";
+import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
     type Dispatch,
@@ -6,15 +13,8 @@ import {
     type SetStateAction,
     useMemo,
     useRef,
-    useState
+    useState,
 } from "react";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
-import { getFromLocalStorage } from "@utils/storage.ts";
-import beepSoundURL from "@features/CountdownTimer/assets/beep-sound-effect.mp3";
-import offClickSoundURL from "@features/CountdownTimer/assets/off-click-sound-effect.mp3";
-import onClickSoundURL from "@features/CountdownTimer/assets/on-click-sound-effect.mp3";
-import tickingSoundURL from "@features/CountdownTimer/assets/ticking-sound-effect.mp3";
-import resetTimerSoundURL from "@features/CountdownTimer/assets/reset-timer-sound-effect.mp3";
 
 interface CountdownTimerProviderProps {
     children: ReactNode;
@@ -64,7 +64,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
-        getFromLocalStorage("startTimeInMinutes") || 5,
+        getFromLocalStorage("startTimeInMinutes") || 25,
     );
 
     const timerEndTime = useRef<number | null>(
@@ -90,11 +90,11 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     |
     */
 
-        const [timerRunning, setTimerRunning] = useState<boolean>(
+    const [timerRunning, setTimerRunning] = useState<boolean>(
         () => getFromLocalStorage("timerRunning") ?? false,
     );
 
-        const [timerPaused, setTimerPaused] = useState<boolean>(
+    const [timerPaused, setTimerPaused] = useState<boolean>(
         () => getFromLocalStorage("timerPaused") ?? true,
     );
 
@@ -130,4 +130,3 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
 };
 
 export { CountdownTimerContext, CountdownTimerProvider };
-
