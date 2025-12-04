@@ -1,7 +1,7 @@
-import useCountdownTimer from "@features/CountdownTimer/hooks/useCountdownTimer.tsx";
+import useResetCountdown from "@features/CountdownTimer/hooks/useResetCountdown.tsx";
 
 const ResetButton = () => {
-    const { resetCountdownWithSound } = useCountdownTimer();
+    const { resetCountdownWithSound } = useResetCountdown();
 
     return (
         <button className="btn" onClick={resetCountdownWithSound}>

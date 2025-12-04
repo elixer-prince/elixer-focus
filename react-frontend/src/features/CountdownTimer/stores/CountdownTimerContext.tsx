@@ -30,11 +30,11 @@ type CountdownTimerContextType = {
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
     timeRemainingOnPause: RefObject<number | null>;
+
     timerRunning: boolean;
     timerPaused: boolean;
     remainingTimeInSeconds: number;
     startTimeInMinutes: number;
-
     setTimerRunning: Dispatch<SetStateAction<boolean>>;
     setTimerPaused: Dispatch<SetStateAction<boolean>>;
     setRemainingTimeInSeconds: Dispatch<SetStateAction<number>>;
@@ -109,11 +109,11 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             timerInterval,
             timerEndTime,
             timeRemainingOnPause,
+
             startTimeInMinutes,
             timerRunning,
             timerPaused,
             remainingTimeInSeconds,
-
             setStartTimeInMinutes,
             setTimerRunning,
             setTimerPaused,

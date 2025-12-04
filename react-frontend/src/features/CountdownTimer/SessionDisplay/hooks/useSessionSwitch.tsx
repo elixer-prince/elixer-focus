@@ -1,5 +1,6 @@
-import UseCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import useSessionContext from "@features/CountdownTimer/SessionDisplay/hooks/useSessionContext";
+import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 
 const useSessionSwitch = () => {
@@ -8,13 +9,14 @@ const useSessionSwitch = () => {
         shortBreakDuration,
         longBreakDuration,
         currentSessionType,
-        setCurrentSessionType,
         currentSessionCount,
-        setCurrentSessionCount,
         sessionCountLimit,
+        setCurrentSessionType,
+        setCurrentSessionCount,
     } = useSessionContext();
 
-    const { setStartTimeInMinutes } = UseCountdownTimerContext();
+    const { setStartTimeInMinutes, setRemainingTimeInSeconds } =
+        useCountdownTimerContext();
 
     const switchSessionType = () => {
         switch (currentSessionType) {
@@ -31,25 +33,52 @@ const useSessionSwitch = () => {
 
     const handleFocusSwitching = () => {
         setCurrentSessionType("Focus");
+
+        const newStartTime = focusDuration;
+
         setStartTimeInMinutes(() => {
-            saveToLocalStorage("startTimeInMinutes", focusDuration);
-            return focusDuration;
+            saveToLocalStorage("startTimeInMinutes", newStartTime);
+            return newStartTime;
+        });
+        setRemainingTimeInSeconds(() => {
+            // Directly update remainingTimeInSeconds
+            const remainingSeconds = convertMinutesToSeconds(newStartTime);
+            saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
+            return remainingSeconds;
         });
     };
 
     const handleBreakSwitching = () => {
         if (currentSessionCount + 1 >= sessionCountLimit) {
             setCurrentSessionType("Long Break");
+
+            const newStartTime = longBreakDuration;
+
             setStartTimeInMinutes(() => {
-                saveToLocalStorage("startTimeInMinutes", longBreakDuration);
-                return longBreakDuration;
+                saveToLocalStorage("startTimeInMinutes", newStartTime);
+                return newStartTime;
+            });
+            setRemainingTimeInSeconds(() => {
+                // Directly update remainingTimeInSeconds
+                const remainingSeconds = convertMinutesToSeconds(newStartTime);
+                saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
+                return remainingSeconds;
             });
             setCurrentSessionCount(0);
         } else {
             setCurrentSessionType("Short Break");
+
+            const newStartTime = shortBreakDuration;
+
             setStartTimeInMinutes(() => {
-                saveToLocalStorage("startTimeInMinutes", shortBreakDuration);
-                return shortBreakDuration;
+                saveToLocalStorage("startTimeInMinutes", newStartTime);
+                return newStartTime;
+            });
+            setRemainingTimeInSeconds(() => {
+                // Directly update remainingTimeInSeconds
+                const remainingSeconds = convertMinutesToSeconds(newStartTime);
+                saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
+                return remainingSeconds;
             });
 
             setCurrentSessionCount((count) => count + 1);

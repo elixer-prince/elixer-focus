@@ -1,7 +1,7 @@
-import useCountdownTimer from "@features/CountdownTimer/hooks/useCountdownTimer.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const CountdownSeconds = () => {
-    const { remainingTimeInSeconds } = useCountdownTimer();
+    const { remainingTimeInSeconds } = useCountdownTimerContext();
 
     return (
         <span>

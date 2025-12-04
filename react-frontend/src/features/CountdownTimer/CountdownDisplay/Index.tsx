@@ -1,12 +1,12 @@
+import useHandleCountdownState from "@features/CountdownTimer/CountdownDisplay/hooks/useHandleCountdownState.tsx";
 import CountdownMinutesAndSeconds from "@features/CountdownTimer/CountdownMinutesAndSeconds.tsx";
 import CountdownSeconds from "@features/CountdownTimer/CountdownSeconds.tsx";
 import FocusRing from "@features/CountdownTimer/FocusRing/Index.tsx";
-import useCountdownTimer from "@features/CountdownTimer/hooks/useCountdownTimer.tsx";
-import useCountdownSession from "@features/CountdownTimer/SessionDisplay/hooks/useCountdownSession.tsx";
+import useSessionContext from "@features/CountdownTimer/SessionDisplay/hooks/useSessionContext.tsx";
 
 const CountdownDisplay = () => {
-    const { handleCountdownState } = useCountdownTimer();
-    const { currentSessionCount } = useCountdownSession();
+    const { handleCountdownState } = useHandleCountdownState();
+    const { currentSessionCount } = useSessionContext();
 
     return (
         <button

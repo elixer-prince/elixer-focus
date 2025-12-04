@@ -30,10 +30,10 @@
 //     saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
 // }
 
-import useCountdownSession from "@features/CountdownTimer/SessionDisplay/hooks/useCountdownSession.tsx";
+import useSessionContext from "@features/CountdownTimer/SessionDisplay/hooks/useSessionContext.tsx";
 
 const CountdownTimerHeader = () => {
-    const { currentSessionType } = useCountdownSession();
+    const { currentSessionType } = useSessionContext();
 
     return (
         <header className="mt-8">
