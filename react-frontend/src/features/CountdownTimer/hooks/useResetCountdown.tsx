@@ -16,7 +16,7 @@ const UseResetCountdown = () => {
         setTimerPaused,
     } = useCountdownTimerContext();
 
-        const resetCountdown = () => {
+    const resetCountdown = () => {
         // Clear the interval if it's running
         if (timerInterval.current) clearInterval(timerInterval.current);
 
@@ -26,28 +26,28 @@ const UseResetCountdown = () => {
 
         // Reset to initial state
         const initialTime = convertMinutesToSeconds(startTimeInMinutes);
-        
+
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", true);
             return true;
         });
-        
+
         setTimerRunning(() => {
             saveToLocalStorage("timerRunning", false);
             return false;
         });
-        
+
         setRemainingTimeInSeconds(() => {
             saveToLocalStorage("remainingTimeInSeconds", initialTime);
             return initialTime;
         });
-        
+
         // Clear localStorage for refs
         saveToLocalStorage("timerEndTime", null);
         saveToLocalStorage("timeRemainingOnPause", null);
     };
 
-        const resetCountdownWithSound = () => {
+    const resetCountdownWithSound = () => {
         const wasRunning = timerRunning;
         resetCountdown();
         if (wasRunning) playSound(resetTimerSoundEffect.current);
