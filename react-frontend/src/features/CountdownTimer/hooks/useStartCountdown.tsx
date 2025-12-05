@@ -1,5 +1,5 @@
-import useSessionSwitch from "@features/CountdownTimer/SessionDisplay/hooks/useSessionSwitch.tsx";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useSessionSwitch from "@features/CountdownTimer/SessionDisplay/hooks/useSessionSwitch.tsx";
 import {
     convertMinutesToSeconds,
     convertSecondsToMilliseconds,
@@ -14,7 +14,6 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
-        // timeRemainingOnPause,
         startTimeInMinutes,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
@@ -47,7 +46,6 @@ const useStartCountdown = () => {
         if (timerInterval.current) clearInterval(timerInterval.current);
 
         timerInterval.current = setInterval(() => {
-            console.log("test");
             const remainingSeconds = Math.max(
                 0,
                 Math.round((endTime - getCurrentTimestamp()) / 1000),
@@ -64,24 +62,32 @@ const useStartCountdown = () => {
                 switchSessionType();
 
                 setRemainingTimeInSeconds(() => {
+                    const newRemainingTime =
+                        convertMinutesToSeconds(startTimeInMinutes);
+
                     saveToLocalStorage(
                         "remainingTimeInSeconds",
-                        convertMinutesToSeconds(startTimeInMinutes),
+                        newRemainingTime,
                     );
-                    return convertMinutesToSeconds(startTimeInMinutes);
+
+                    return newRemainingTime;
                 });
 
                 if (timerInterval.current !== null)
                     clearInterval(timerInterval.current);
 
                 setTimerPaused(() => {
-                    saveToLocalStorage("timerPaused", true);
-                    return true;
+                    const newTimerPaused = true;
+
+                    saveToLocalStorage("timerPaused", newTimerPaused);
+                    return newTimerPaused;
                 });
 
                 setTimerRunning(() => {
-                    saveToLocalStorage("timerRunning", false);
-                    return false;
+                    const newTimerRunning = false;
+
+                    saveToLocalStorage("timerRunning", newTimerRunning);
+                    return newTimerRunning;
                 });
             }
         }, 1000);

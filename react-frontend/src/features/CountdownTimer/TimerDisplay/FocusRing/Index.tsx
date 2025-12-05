@@ -1,4 +1,4 @@
-import useFocusRing from "@features/CountdownTimer/FocusRing/hooks/useFocusRing.tsx";
+import useFocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/hooks/useFocusRing.tsx";
 
 const FocusRing = () => {
     const { radius, dashoffset, dotX, dotY, circumference } = useFocusRing();

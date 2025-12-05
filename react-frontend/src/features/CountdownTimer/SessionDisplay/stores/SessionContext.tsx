@@ -1,3 +1,4 @@
+import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
     type Dispatch,
@@ -37,15 +38,27 @@ const SessionContext = createContext<CountdownSessionContextType | undefined>(
 const CountdownSessionProvider = ({
     children,
 }: CountdownSessionProviderProps) => {
-    const [focusDuration, setFocusDuration] = useState<number>(25);
-    const [shortBreakDuration, setShortBreakDuration] = useState<number>(5);
-    const [longBreakDuration, setLongBreakDuration] = useState<number>(15);
-    const [sessionCountLimit, setSessionCountLimit] = useState<number>(4);
+    const [focusDuration, setFocusDuration] = useState<number>(
+        getFromLocalStorage("focusDuration") || 0.5,
+    );
+    const [shortBreakDuration, setShortBreakDuration] = useState<number>(
+        getFromLocalStorage("shortBreakDuration") || 0.1,
+    );
+    const [longBreakDuration, setLongBreakDuration] = useState<number>(
+        getFromLocalStorage("longBreakDuration") || 0.3,
+    );
+    const [sessionCountLimit, setSessionCountLimit] = useState<number>(
+        getFromLocalStorage("sessionCountLimit") || 4,
+    );
     const [currentSessionType, setCurrentSessionType] =
-        useState<CountdownSessionType>("Focus");
-    const [currentSessionCount, setCurrentSessionCount] = useState<number>(0);
+        useState<CountdownSessionType>(
+            getFromLocalStorage("currentSessionType") || "Focus",
+        );
+    const [currentSessionCount, setCurrentSessionCount] = useState<number>(
+        getFromLocalStorage("currentSessionCount") || 0,
+    );
     const [totalSessionsCompleted, setTotalSessionsCompleted] =
-        useState<number>(0);
+        useState<number>(getFromLocalStorage("totalSessionsCompleted") || 0);
 
     const contextValue: CountdownSessionContextType = useMemo(
         () => ({
@@ -82,4 +95,4 @@ const CountdownSessionProvider = ({
     );
 };
 
-export { SessionContext, CountdownSessionProvider };
+export { CountdownSessionProvider, SessionContext };
