@@ -1,9 +1,6 @@
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import useSessionSwitch from "@features/CountdownTimer/SessionDisplay/hooks/useSessionSwitch.tsx";
-import {
-    convertMinutesToSeconds,
-    convertSecondsToMilliseconds,
-} from "@utils/conversion.ts";
+import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
 import { playSound } from "@utils/sound.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
@@ -14,7 +11,6 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
-        startTimeInMinutes,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
         timerRunning,
@@ -60,18 +56,6 @@ const useStartCountdown = () => {
                 playSound(timerBeepSoundEffect.current);
 
                 switchSessionType();
-
-                setRemainingTimeInSeconds(() => {
-                    const newRemainingTime =
-                        convertMinutesToSeconds(startTimeInMinutes);
-
-                    saveToLocalStorage(
-                        "remainingTimeInSeconds",
-                        newRemainingTime,
-                    );
-
-                    return newRemainingTime;
-                });
 
                 if (timerInterval.current !== null)
                     clearInterval(timerInterval.current);

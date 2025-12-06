@@ -9,7 +9,7 @@ const CountdownDisplay = () => {
 
     return (
         <button
-            className="hover:bg-base-200 active:bg-base-100 relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:duration-1000 active:duration-100"
+            className="hover:bg-base-200 group active:bg-base-100 relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden rounded-full p-10 transition-all duration-1000 outline-none select-none hover:duration-1000 active:duration-100"
             onClick={handleCountdownState}
         >
             <SessionCount />

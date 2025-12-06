@@ -3,7 +3,7 @@ import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
-const UseResetCountdown = () => {
+const useResetCountdown = () => {
     const {
         resetTimerSoundEffect,
         setRemainingTimeInSeconds,
@@ -56,4 +56,4 @@ const UseResetCountdown = () => {
     return { resetCountdown, resetCountdownWithSound };
 };
 
-export default UseResetCountdown;
+export default useResetCountdown;

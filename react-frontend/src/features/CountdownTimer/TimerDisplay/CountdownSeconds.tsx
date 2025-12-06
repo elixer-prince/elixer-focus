@@ -6,7 +6,7 @@ const CountdownSeconds = () => {
     return (
         <span>
             {remainingTimeInSeconds}{" "}
-            <span className="text-primary text-sm font-bold">secs</span>
+            <span className="text-primary text-sm font-bold">seconds</span>
         </span>
     );
 };

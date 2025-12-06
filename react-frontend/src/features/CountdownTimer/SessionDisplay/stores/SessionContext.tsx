@@ -39,13 +39,13 @@ const CountdownSessionProvider = ({
     children,
 }: CountdownSessionProviderProps) => {
     const [focusDuration, setFocusDuration] = useState<number>(
-        getFromLocalStorage("focusDuration") || 0.5,
+        getFromLocalStorage("focusDuration") || 25,
     );
     const [shortBreakDuration, setShortBreakDuration] = useState<number>(
-        getFromLocalStorage("shortBreakDuration") || 0.1,
+        getFromLocalStorage("shortBreakDuration") || 5,
     );
     const [longBreakDuration, setLongBreakDuration] = useState<number>(
-        getFromLocalStorage("longBreakDuration") || 0.3,
+        getFromLocalStorage("longBreakDuration") || 15,
     );
     const [sessionCountLimit, setSessionCountLimit] = useState<number>(
         getFromLocalStorage("sessionCountLimit") || 4,

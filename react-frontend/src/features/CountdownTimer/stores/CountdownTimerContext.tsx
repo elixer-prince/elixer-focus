@@ -64,7 +64,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
-        getFromLocalStorage("startTimeInMinutes") || 0.1,
+        getFromLocalStorage("startTimeInMinutes") || 25,
     );
 
     const timerEndTime = useRef<number | null>(
