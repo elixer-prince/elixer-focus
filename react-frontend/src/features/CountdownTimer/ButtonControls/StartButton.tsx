@@ -4,7 +4,7 @@ const StartButton = () => {
     const { startCountdownWithSound } = useStartCountdown();
 
     return (
-        <button className="btn" onClick={startCountdownWithSound}>
+        <button className="btn btn-primary" onClick={startCountdownWithSound}>
             Start
         </button>
     );

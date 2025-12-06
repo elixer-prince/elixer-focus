@@ -4,7 +4,7 @@ const PauseButton = () => {
     const { pauseCountdown } = usePauseCountdown();
 
     return (
-        <button className="btn" onClick={pauseCountdown}>
+        <button className="btn btn-primary" onClick={pauseCountdown}>
             Pause
         </button>
     );
