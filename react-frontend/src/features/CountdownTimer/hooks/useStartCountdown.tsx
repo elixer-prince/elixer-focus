@@ -4,6 +4,7 @@ import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
 import { playSound } from "@utils/sound.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
+import { useEffect } from "react";
 
 const useStartCountdown = () => {
     const {
@@ -86,6 +87,10 @@ const useStartCountdown = () => {
         playSound(timerOnClickSoundEffect.current);
         startCountdown();
     };
+
+    useEffect(() => {
+        startCountdownOnPageLoad();
+    }, [startCountdownOnPageLoad]);
 
     return {
         startCountdown,
