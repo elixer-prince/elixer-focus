@@ -4,7 +4,7 @@ import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
 import { playSound } from "@utils/sound.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const useStartCountdown = () => {
     const {
@@ -22,7 +22,7 @@ const useStartCountdown = () => {
 
     const { switchSessionType } = useSessionSwitch();
 
-    const startCountdown = () => {
+    const startCountdown = useCallback(() => {
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
@@ -76,11 +76,20 @@ const useStartCountdown = () => {
                 });
             }
         }, 1000);
-    };
+    }, [
+        remainingTimeInSeconds,
+        setRemainingTimeInSeconds,
+        setTimerPaused,
+        setTimerRunning,
+        switchSessionType,
+        timerBeepSoundEffect,
+        timerEndTime,
+        timerInterval,
+    ]);
 
-    const startCountdownOnPageLoad = () => {
+    const startCountdownOnPageLoad = useCallback(() => {
         if (timerRunning && !timerPaused) startCountdown();
-    };
+    }, [timerRunning, timerPaused, startCountdown]);
 
     const startCountdownWithSound = () => {
         if (!timerPaused) return;
