@@ -1,5 +1,5 @@
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
-import useSessionContext from "@features/CountdownTimer/SessionDisplay/hooks/useSessionContext";
+import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
 import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 

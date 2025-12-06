@@ -30,7 +30,7 @@
 //     saveToLocalStorage("totalSessionsCompleted", nextTotalCompleted);
 // }
 
-import useSessionContext from "@features/CountdownTimer/SessionDisplay/hooks/useSessionContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
 
 const CountdownTimerHeader = () => {
     const { currentSessionType } = useSessionContext();
@@ -77,7 +77,6 @@ const CountdownTimerHeader = () => {
         //         </div>
         //     </div>
         //     <div className={"font-bold"}>
-        //         Current Session: {currentSessionCount} / {sessionCountLimit}{" "}
         //         &mdash; Total Focus Sessions: {totalSessionsCompleted}
         //     </div>
         // </SessionDisplay>

@@ -1,14 +1,13 @@
-// function skipTimer() {
-//     playSound(resetTimerSoundEffect);
-//     clearInterval(timerInterval);
-//     setTimerRunning(false);
-//     setTimerPaused(true);
-
-//     handleSessionTypeSwitch();
-// }
+import useSkipCountdown from "@features/CountdownTimer/hooks/useSkipCountdown.tsx";
 
 const SkipButton = () => {
-    return <button className="btn">Skip</button>;
+    const { skipCountdown } = useSkipCountdown();
+
+    return (
+        <button className="btn" onClick={skipCountdown}>
+            Skip
+        </button>
+    );
 };
 
 export default SkipButton;

@@ -1,5 +1,5 @@
+import { SessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
 import { useContext } from "react";
-import { SessionContext } from "@features/CountdownTimer/SessionDisplay/stores/SessionContext.tsx";
 
 const UseSessionContext = () => {
     const sessionContext = useContext(SessionContext);

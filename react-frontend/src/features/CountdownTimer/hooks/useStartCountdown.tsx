@@ -1,5 +1,5 @@
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
-import useSessionSwitch from "@features/CountdownTimer/SessionDisplay/hooks/useSessionSwitch.tsx";
+import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.tsx";
 import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
 import { playSound } from "@utils/sound.ts";
