@@ -17,14 +17,11 @@ const useResetCountdown = () => {
     } = useCountdownTimerContext();
 
     const resetCountdown = () => {
-        // Clear the interval if it's running
         if (timerInterval.current) clearInterval(timerInterval.current);
 
-        // Clear all timer refs
         timeRemainingOnPause.current = null;
         timerEndTime.current = null;
 
-        // Reset to initial state
         const initialTime = convertMinutesToSeconds(startTimeInMinutes);
 
         setTimerPaused(() => {
@@ -48,9 +45,12 @@ const useResetCountdown = () => {
     };
 
     const resetCountdownWithSound = () => {
-        const wasRunning = timerRunning;
-        resetCountdown();
-        if (wasRunning) playSound(resetTimerSoundEffect.current);
+        if (!timerRunning) return alert("The timer is not running.");
+
+        if (confirm("Are you sure you want to reset the countdown?")) {
+            resetCountdown();
+            playSound(resetTimerSoundEffect.current);
+        }
     };
 
     return { resetCountdown, resetCountdownWithSound };
