@@ -29,7 +29,6 @@ type CountdownTimerContextType = {
 
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
-    timeRemainingOnPause: RefObject<number | null>;
 
     timerRunning: boolean;
     timerPaused: boolean;
@@ -71,10 +70,6 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
         getFromLocalStorage("timerEndTime") || null,
     );
 
-    const timeRemainingOnPause = useRef<number | null>(
-        getFromLocalStorage("timeRemainingOnPause") || null,
-    );
-
     const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
         () =>
             getFromLocalStorage("remainingTimeInSeconds") ||
@@ -108,7 +103,6 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
 
             timerInterval,
             timerEndTime,
-            timeRemainingOnPause,
 
             startTimeInMinutes,
             timerRunning,
