@@ -15,8 +15,18 @@ const useSessionSwitch = () => {
         setCurrentSessionCount,
     } = useSessionContext();
 
-    const { setStartTimeInMinutes, setRemainingTimeInSeconds } =
-        useCountdownTimerContext();
+    const {
+        setStartTimeInMinutes,
+        setRemainingTimeInSeconds,
+        setTimerPaused,
+        setTimerRunning,
+        timerRunning,
+        timerInterval,
+        timerEndTime,
+    } = useCountdownTimerContext();
+
+    const confirmationMessage =
+        "Switching sessions will reset the current timer. Do you want to proceed?";
 
     const switchSessionType = () => {
         switch (currentSessionType) {
@@ -41,17 +51,7 @@ const useSessionSwitch = () => {
 
         const newStartTime = focusDuration;
 
-        setStartTimeInMinutes(() => {
-            saveToLocalStorage("startTimeInMinutes", newStartTime);
-            return newStartTime;
-        });
-
-        setRemainingTimeInSeconds(() => {
-            const remainingSeconds = convertMinutesToSeconds(newStartTime);
-
-            saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-            return remainingSeconds;
-        });
+        resetTimer(newStartTime);
     };
 
     const handleBreakSwitching = () => {
@@ -65,17 +65,7 @@ const useSessionSwitch = () => {
 
             const newStartTime = longBreakDuration;
 
-            setStartTimeInMinutes(() => {
-                saveToLocalStorage("startTimeInMinutes", newStartTime);
-                return newStartTime;
-            });
-
-            setRemainingTimeInSeconds(() => {
-                const remainingSeconds = convertMinutesToSeconds(newStartTime);
-
-                saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-                return remainingSeconds;
-            });
+            resetTimer(newStartTime);
 
             setCurrentSessionCount(() => {
                 const newSessionCount = 0;
@@ -93,17 +83,7 @@ const useSessionSwitch = () => {
 
             const newStartTime = shortBreakDuration;
 
-            setStartTimeInMinutes(() => {
-                saveToLocalStorage("startTimeInMinutes", newStartTime);
-                return newStartTime;
-            });
-
-            setRemainingTimeInSeconds(() => {
-                const remainingSeconds = convertMinutesToSeconds(newStartTime);
-
-                saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-                return remainingSeconds;
-            });
+            resetTimer(newStartTime);
 
             setCurrentSessionCount((sessionCount) => {
                 const newSessionCount = sessionCount + 1;
@@ -114,7 +94,137 @@ const useSessionSwitch = () => {
         }
     };
 
-    return { switchSessionType };
+    const switchToFocus = () => {
+        if (currentSessionType === "Focus") return;
+
+        if (timerRunning && confirm(confirmationMessage)) {
+            setCurrentSessionType(() => {
+                const newSessionType = "Focus";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = focusDuration;
+
+            resetTimer(newStartTime);
+        } else {
+            setCurrentSessionType(() => {
+                const newSessionType = "Focus";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = focusDuration;
+
+            resetTimer(newStartTime);
+        }
+
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", true);
+            return true;
+        });
+    };
+
+    const switchToShortBreak = () => {
+        if (currentSessionType === "Short Break") return;
+
+        if (timerRunning && confirm(confirmationMessage)) {
+            setCurrentSessionType(() => {
+                const newSessionType = "Short Break";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = shortBreakDuration;
+
+            resetTimer(newStartTime);
+        } else {
+            setCurrentSessionType(() => {
+                const newSessionType = "Short Break";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = shortBreakDuration;
+
+            resetTimer(newStartTime);
+        }
+
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", true);
+            return true;
+        });
+    };
+
+    const switchToLongBreak = () => {
+        if (currentSessionType === "Long Break") return;
+
+        if (timerRunning && confirm(confirmationMessage)) {
+            setCurrentSessionType(() => {
+                const newSessionType = "Long Break";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = longBreakDuration;
+
+            resetTimer(newStartTime);
+        } else {
+            setCurrentSessionType(() => {
+                const newSessionType = "Long Break";
+
+                saveToLocalStorage("currentSessionType", newSessionType);
+                return newSessionType;
+            });
+
+            const newStartTime = longBreakDuration;
+
+            resetTimer(newStartTime);
+        }
+    };
+
+    const resetTimer = (newStartTime: number) => {
+        if (timerInterval.current) {
+            clearInterval(timerInterval.current);
+            timerInterval.current = null;
+        }
+
+        setTimerRunning(() => {
+            saveToLocalStorage("timerRunning", false);
+            return false;
+        });
+
+        setTimerPaused(() => {
+            saveToLocalStorage("timerPaused", true);
+            return true;
+        });
+
+        timerEndTime.current = null;
+        saveToLocalStorage("timerEndTime", null);
+
+        setStartTimeInMinutes(() => {
+            saveToLocalStorage("startTimeInMinutes", newStartTime);
+            return newStartTime;
+        });
+
+        setRemainingTimeInSeconds(() => {
+            const remainingSeconds = convertMinutesToSeconds(newStartTime);
+            saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
+            return remainingSeconds;
+        });
+    };
+
+    return {
+        switchSessionType,
+        switchToFocus,
+        switchToShortBreak,
+        switchToLongBreak,
+    };
 };
 
 export default useSessionSwitch;
