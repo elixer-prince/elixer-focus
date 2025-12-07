@@ -9,7 +9,6 @@ const useResetCountdown = () => {
         setRemainingTimeInSeconds,
         startTimeInMinutes,
         timerInterval,
-        timeRemainingOnPause,
         timerEndTime,
         timerRunning,
         setTimerRunning,
@@ -19,7 +18,6 @@ const useResetCountdown = () => {
     const resetCountdown = () => {
         if (timerInterval.current) clearInterval(timerInterval.current);
 
-        timeRemainingOnPause.current = null;
         timerEndTime.current = null;
 
         const initialTime = convertMinutesToSeconds(startTimeInMinutes);

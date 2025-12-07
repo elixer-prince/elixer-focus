@@ -5,8 +5,6 @@ import { saveToLocalStorage } from "@utils/storage.ts";
 const UsePauseCountdown = () => {
     const {
         timerInterval,
-        remainingTimeInSeconds,
-        timeRemainingOnPause,
         timerOffClickSoundEffect,
         timerPaused,
         setTimerPaused,
@@ -21,8 +19,6 @@ const UsePauseCountdown = () => {
             return true;
         });
 
-        timeRemainingOnPause.current = remainingTimeInSeconds;
-
         if (timerInterval.current) clearInterval(timerInterval.current);
     };
 
@@ -30,4 +26,3 @@ const UsePauseCountdown = () => {
 };
 
 export default UsePauseCountdown;
-
