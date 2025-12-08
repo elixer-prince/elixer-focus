@@ -8,7 +8,7 @@ const CountdownTimerContainer = () => {
     return (
         <CountdownTimerProvider>
             <CountdownSessionProvider>
-                <section className="flex flex-col items-center justify-center gap-8 border-red-500 p-4">
+                <section className="flex flex-col items-center justify-center gap-8 p-4">
                     <CountdownHeader />
 
                     <CountdownDisplay />
