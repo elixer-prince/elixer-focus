@@ -31,9 +31,9 @@ type CountdownSessionContextType = {
     setTotalSessionsCompleted: Dispatch<SetStateAction<number>>;
 };
 
-const SessionContext = createContext<CountdownSessionContextType | undefined>(
-    undefined,
-);
+const CountdownSessionContext = createContext<
+    CountdownSessionContextType | undefined
+>(undefined);
 
 const CountdownSessionProvider = ({
     children,
@@ -89,10 +89,10 @@ const CountdownSessionProvider = ({
     );
 
     return (
-        <SessionContext.Provider value={contextValue}>
+        <CountdownSessionContext.Provider value={contextValue}>
             {children}
-        </SessionContext.Provider>
+        </CountdownSessionContext.Provider>
     );
 };
 
-export { CountdownSessionProvider, SessionContext };
+export { CountdownSessionProvider, CountdownSessionContext };

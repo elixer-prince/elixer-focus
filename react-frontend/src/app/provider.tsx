@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@stores/ThemeContext.tsx";
 import type { ReactNode } from "react";
 
 interface ProviderProps {
@@ -5,7 +6,7 @@ interface ProviderProps {
 }
 
 const Provider = ({ children }: ProviderProps) => {
-    return <>{children}</>;
+    return <ThemeProvider>{children}</ThemeProvider>;
 };
 
 export default Provider;

@@ -3,7 +3,7 @@ import ThemeLabel from "@features/ThemeSettings/ThemeLabel.tsx";
 const ThemeSettings = () => {
     return (
         <fieldset className="fieldset px-8">
-            <ThemeLabel value="default">Default</ThemeLabel>
+            <ThemeLabel value="dark">Default</ThemeLabel>
             <ThemeLabel value="cupcake">Cupcake</ThemeLabel>
             <ThemeLabel value="emerald">Emerald</ThemeLabel>
             <ThemeLabel value="corporate">Corporate</ThemeLabel>
