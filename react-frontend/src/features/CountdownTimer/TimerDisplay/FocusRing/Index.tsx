@@ -8,28 +8,36 @@ const FocusRing = () => {
             className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
             viewBox="0 0 344 344"
         >
+            {/* Background track */}
             <circle
-                className="fill-none stroke-neutral-600 stroke-8"
+                className="stroke-primary-content/25 fill-none stroke-8"
                 cx="172"
                 cy="172"
                 r={radius}
             />
+
+            {/* Active / coloured arc */}
             <circle
-                className="stroke-primary fill-none stroke-8"
+                className="stroke-primary text-primary fill-none stroke-8"
                 cx="172"
                 cy="172"
                 r={radius}
                 strokeDasharray={circumference}
                 strokeDashoffset={dashoffset}
-                style={{ transition: "stroke-dashoffset 1s linear" }}
+                strokeLinecap="round"
+                style={{
+                    transition: "stroke-dashoffset 1s linear",
+                    filter: "drop-shadow(0 0 4px currentColor)",
+                }}
             />
+
+            {/* Dot */}
             <circle
                 className="fill-primary text-primary transition-all duration-1000 ease-linear"
                 cx={dotX}
                 cy={dotY}
                 r={12}
-                // Glow color = currentColor
-                style={{ filter: "drop-shadow(0 0 8px currentColor)" }}
+                style={{ filter: "drop-shadow(0 0 6px currentColor)" }}
             />
         </svg>
     );
