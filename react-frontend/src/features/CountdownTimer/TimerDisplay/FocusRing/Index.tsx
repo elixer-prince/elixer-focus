@@ -41,7 +41,7 @@ const FocusRing = () => {
                 style={{ transition: "stroke-dashoffset 1s linear" }}
             />
             <circle
-                className="fill-primary"
+                className="fill-primary transition-all duration-1000 ease-linear"
                 cx={dotX}
                 cy={dotY}
                 r={12}
