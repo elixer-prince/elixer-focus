@@ -21,7 +21,12 @@ const useFocusRing = () => {
     // Ring EMPTIES as time passes (start full → end empty)
     const dashoffset = circumference * progress;
 
-    // Dot moves COUNTERCLOCKWISE with the emptying ring
+    /*-------------------------------------------------------
+    |   Dot Position Calculation
+    |---------------------------------------------------------
+    |
+    */
+
     const angle = -2 * Math.PI * progress;
     const dotX = 172 + radius * Math.cos(angle);
     const dotY = 172 + radius * Math.sin(angle);
