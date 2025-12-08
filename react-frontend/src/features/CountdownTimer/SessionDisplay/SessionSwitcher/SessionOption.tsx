@@ -2,14 +2,14 @@ import type { ReactNode } from "react";
 
 interface SessionOptionProps {
     value: string;
-    onClick: () => void;
+    onChange: () => void;
     checked: boolean;
     children: ReactNode;
 }
 
 const SessionOption = ({
     value,
-    onClick,
+    onChange,
     checked,
     children,
 }: SessionOptionProps) => {
@@ -20,7 +20,7 @@ const SessionOption = ({
                 type="radio"
                 className="accent-primary"
                 value={value}
-                onClick={onClick}
+                onChange={onChange}
                 checked={checked}
             />
             {children}

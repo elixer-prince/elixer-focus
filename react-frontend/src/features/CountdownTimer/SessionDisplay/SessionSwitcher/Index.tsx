@@ -20,7 +20,7 @@ const SessionSwitcher = () => {
                 <li>
                     <SessionOption
                         value="Focus"
-                        onClick={switchToFocus}
+                        onChange={switchToFocus}
                         checked={currentSessionType === "Focus"}
                     >
                         Focus
@@ -29,7 +29,7 @@ const SessionSwitcher = () => {
                 <li>
                     <SessionOption
                         value="Short Break"
-                        onClick={switchToShortBreak}
+                        onChange={switchToShortBreak}
                         checked={currentSessionType === "Short Break"}
                     >
                         Short Break
@@ -38,7 +38,7 @@ const SessionSwitcher = () => {
                 <li>
                     <SessionOption
                         value="Long Break"
-                        onClick={switchToLongBreak}
+                        onChange={switchToLongBreak}
                         checked={currentSessionType === "Long Break"}
                     >
                         Long Break
