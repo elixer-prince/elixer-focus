@@ -29,6 +29,7 @@ type CountdownTimerContextType = {
 
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
+    hasPlayedEndBeep: RefObject<boolean>;
 
     timerRunning: boolean;
     timerPaused: boolean;
@@ -76,6 +77,8 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             convertMinutesToSeconds(startTimeInMinutes),
     );
 
+    const hasPlayedEndBeep = useRef<boolean>(false);
+
     /*---------------------------------------------------------
     | Timer Status
     |----------------------------------------------------------
@@ -103,6 +106,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
 
             timerInterval,
             timerEndTime,
+            hasPlayedEndBeep,
 
             startTimeInMinutes,
             timerRunning,

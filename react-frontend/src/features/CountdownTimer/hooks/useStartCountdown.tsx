@@ -12,6 +12,7 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
+        hasPlayedEndBeep,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
         timerRunning,
@@ -50,9 +51,10 @@ const useStartCountdown = () => {
                         timerInterval.current = null;
                     }
 
-                    // Optional: you *can* try to play a sound here,
-                    // but browsers often block autoplay without user gesture
-                    playSound(timerBeepSoundEffect.current);
+                    if (!hasPlayedEndBeep.current) {
+                        hasPlayedEndBeep.current = true;
+                        playSound(timerBeepSoundEffect.current);
+                    }
 
                     switchSessionType();
 
@@ -84,6 +86,8 @@ const useStartCountdown = () => {
     );
 
     const startCountdown = useCallback(() => {
+        hasPlayedEndBeep.current = false;
+
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
@@ -110,7 +114,7 @@ const useStartCountdown = () => {
         timerEndTime,
     ]);
 
-    // 🧠 New logic: resume based on stored endTime
+    // Resume based on stored endTime
     const startCountdownOnPageLoad = useCallback(() => {
         // Only resume if it *should* be running
         if (!timerRunning || timerPaused) return;
@@ -184,7 +188,15 @@ const useStartCountdown = () => {
 
     useEffect(() => {
         startCountdownOnPageLoad();
-    }, [startCountdownOnPageLoad]);
+
+        return () => {
+            // Cleanup on unmount
+            if (timerInterval.current) {
+                clearInterval(timerInterval.current);
+                timerInterval.current = null;
+            }
+        };
+    }, [startCountdownOnPageLoad, timerInterval]);
 
     return {
         startCountdown,
