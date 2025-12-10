@@ -10,7 +10,7 @@ const SessionSwitcher = () => {
 
     return (
         <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn m-1">
+            <div tabIndex={0} role="button" className="btn btn-soft m-1">
                 Switch Session
             </div>
             <ul
