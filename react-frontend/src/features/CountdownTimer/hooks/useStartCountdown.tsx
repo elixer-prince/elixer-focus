@@ -1,4 +1,5 @@
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
 import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.tsx";
 import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
@@ -20,27 +21,34 @@ const useStartCountdown = () => {
         setTimerRunning,
         timerPaused,
         setTimerPaused,
+        isEndTicking
     } = useCountdownTimerContext();
 
     const { switchSessionType } = useSessionSwitch();
+    const { currentSessionType } = useSessionContext();
 
     const startEndTicking = useCallback(() => {
         const audio = timerTickingSoundEffect.current;
         if (!audio) return;
 
-        if (!audio.loop) {
-            audio.loop = true;
-            playSound(audio);
-        }
-    }, [timerTickingSoundEffect]);
+        if (isEndTicking.current) return; // already ticking, do nothing
+
+        isEndTicking.current = true;
+        audio.loop = true;
+        playSound(audio); // your util: pause + reset + play
+    }, [timerTickingSoundEffect, isEndTicking]);
 
     const stopEndTicking = useCallback(() => {
         const audio = timerTickingSoundEffect.current;
         if (!audio) return;
 
-        audio.loop = false;     // Don't loop next time
-        stopSound(audio);
-    }, [timerTickingSoundEffect]);
+        if (!isEndTicking.current) return; // nothing to stop
+
+        isEndTicking.current = false;
+        audio.loop = false;
+        stopSound(audio); // your util: pause + reset
+    }, [timerTickingSoundEffect, isEndTicking]);
+
 
    const runInterval = useCallback(
         (endTime: number) => {
@@ -55,7 +63,7 @@ const useStartCountdown = () => {
                     Math.round((endTime - now) / 1000),
                 );
 
-                // 🔊 Start ticking exactly when we hit 10 seconds left
+                // Start ticking exactly when we hit 10 seconds left
                 if (remainingSeconds === 10) {
                     startEndTicking();
                 }
@@ -75,13 +83,14 @@ const useStartCountdown = () => {
                         timerInterval.current = null;
                     }
 
-                    // 🛑 Stop ticking the moment we reach 0
+                    // Stop ticking the moment we reach 0
                     stopEndTicking();
 
-                    if (!hasPlayedEndBeep.current) {
-                        hasPlayedEndBeep.current = true;
-                        playSound(timerBeepSoundEffect.current);
-                    }
+                    // Play end beep immediately
+                    playSound(timerBeepSoundEffect.current);
+
+                    // Capture the session that just ended
+                    const endedSessionType = currentSessionType;
 
                     switchSessionType();
 
@@ -100,6 +109,11 @@ const useStartCountdown = () => {
                     // Clear stored end time
                     timerEndTime.current = null;
                     saveToLocalStorage("timerEndTime", null);
+
+                    // Show alert slightly *after* beep starts (non-blocking timing)
+                    setTimeout(() => {
+                        alert(`Your ${endedSessionType} session has ended!`);
+                    }, 1000);
                 }
             }, 1000);
         },

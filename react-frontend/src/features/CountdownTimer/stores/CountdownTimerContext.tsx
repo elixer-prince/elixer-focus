@@ -30,6 +30,7 @@ type CountdownTimerContextType = {
     timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
     timerEndTime: RefObject<number | null>;
     hasPlayedEndBeep: RefObject<boolean>;
+    isEndTicking: RefObject<boolean>;
 
     timerRunning: boolean;
     timerPaused: boolean;
@@ -78,6 +79,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     );
 
     const hasPlayedEndBeep = useRef<boolean>(false);
+    const isEndTicking = useRef<boolean>(false);
 
     /*---------------------------------------------------------
     | Timer Status
@@ -107,6 +109,7 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             timerInterval,
             timerEndTime,
             hasPlayedEndBeep,
+            isEndTicking,
 
             startTimeInMinutes,
             timerRunning,
