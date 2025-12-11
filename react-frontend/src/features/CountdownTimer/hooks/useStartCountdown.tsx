@@ -2,7 +2,7 @@ import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdow
 import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.tsx";
 import { convertSecondsToMilliseconds } from "@utils/conversion.ts";
 import { getCurrentTimestamp } from "@utils/date.ts";
-import { playSound } from "@utils/sound.ts";
+import { playSound, stopSound } from "@utils/sound.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 import { useCallback, useEffect } from "react";
 
@@ -12,6 +12,7 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
+        timerTickingSoundEffect,
         hasPlayedEndBeep,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
@@ -23,7 +24,25 @@ const useStartCountdown = () => {
 
     const { switchSessionType } = useSessionSwitch();
 
-    const runInterval = useCallback(
+    const startEndTicking = useCallback(() => {
+        const audio = timerTickingSoundEffect.current;
+        if (!audio) return;
+
+        if (!audio.loop) {
+            audio.loop = true;
+            playSound(audio);
+        }
+    }, [timerTickingSoundEffect]);
+
+    const stopEndTicking = useCallback(() => {
+        const audio = timerTickingSoundEffect.current;
+        if (!audio) return;
+
+        audio.loop = false;     // Don't loop next time
+        stopSound(audio);
+    }, [timerTickingSoundEffect]);
+
+   const runInterval = useCallback(
         (endTime: number) => {
             // Clear existing interval just in case
             if (timerInterval.current) clearInterval(timerInterval.current);
@@ -35,6 +54,11 @@ const useStartCountdown = () => {
                     0,
                     Math.round((endTime - now) / 1000),
                 );
+
+                // 🔊 Start ticking exactly when we hit 10 seconds left
+                if (remainingSeconds === 10) {
+                    startEndTicking();
+                }
 
                 setRemainingTimeInSeconds(() => {
                     saveToLocalStorage(
@@ -50,6 +74,9 @@ const useStartCountdown = () => {
                         clearInterval(timerInterval.current);
                         timerInterval.current = null;
                     }
+
+                    // 🛑 Stop ticking the moment we reach 0
+                    stopEndTicking();
 
                     if (!hasPlayedEndBeep.current) {
                         hasPlayedEndBeep.current = true;
@@ -82,11 +109,15 @@ const useStartCountdown = () => {
             timerBeepSoundEffect,
             timerEndTime,
             timerInterval,
+            hasPlayedEndBeep,
+            startEndTicking,
+            stopEndTicking,
         ],
     );
 
     const startCountdown = useCallback(() => {
         hasPlayedEndBeep.current = false;
+        stopEndTicking();
 
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
@@ -112,6 +143,8 @@ const useStartCountdown = () => {
         setTimerPaused,
         setTimerRunning,
         timerEndTime,
+        stopEndTicking,
+        hasPlayedEndBeep,
     ]);
 
     // Resume based on stored endTime
@@ -132,8 +165,15 @@ const useStartCountdown = () => {
             Math.round((endTime - now) / 1000),
         );
 
+        // If we re-open the page and we're already in the last 10s, start ticking
+        if (remainingSeconds > 0 && remainingSeconds <= 10) {
+            startEndTicking();
+        }
+
         if (remainingSeconds <= 0) {
             // Timer actually finished while we were away
+            stopEndTicking(); // if it was ticking in the background
+
             setRemainingTimeInSeconds(() => {
                 saveToLocalStorage("remainingTimeInSeconds", 0);
                 return 0;
@@ -172,6 +212,8 @@ const useStartCountdown = () => {
         timerRunning,
         timerPaused,
         timerEndTime,
+        startEndTicking,
+        stopEndTicking,
         setRemainingTimeInSeconds,
         setTimerPaused,
         setTimerRunning,
@@ -195,8 +237,9 @@ const useStartCountdown = () => {
                 clearInterval(timerInterval.current);
                 timerInterval.current = null;
             }
+            stopEndTicking(); // In case ticking was happening
         };
-    }, [startCountdownOnPageLoad, timerInterval]);
+    }, [startCountdownOnPageLoad, stopEndTicking, timerInterval]);
 
     return {
         startCountdown,
