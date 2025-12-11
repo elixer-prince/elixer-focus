@@ -1,7 +1,9 @@
 import useFocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/hooks/useFocusRing.tsx";
 
+const CENTER = 172;
+
 const FocusRing = () => {
-    const { radius, dashoffset, dotX, dotY, circumference } = useFocusRing();
+    const { radius, dashoffset, circumference, angleDeg } = useFocusRing();
 
     return (
         <svg
@@ -10,34 +12,38 @@ const FocusRing = () => {
         >
             {/* Background track */}
             <circle
-                className="stroke-primary-content/25 fill-none stroke-8"
-                cx="172"
-                cy="172"
+                className="fill-none stroke-neutral-600 stroke-8"
+                cx={CENTER}
+                cy={CENTER}
                 r={radius}
             />
 
             {/* Active / coloured arc */}
             <circle
                 className="stroke-primary text-primary fill-none stroke-8"
-                cx="172"
-                cy="172"
+                cx={CENTER}
+                cy={CENTER}
                 r={radius}
                 strokeDasharray={circumference}
                 strokeDashoffset={dashoffset}
                 strokeLinecap="round"
                 style={{
                     transition: "stroke-dashoffset 1s linear",
-                    filter: "drop-shadow(0 0 4px currentColor)",
+                    filter: "drop-shadow(0 0 8px currentColor)",
                 }}
             />
 
-            {/* Dot */}
-            <circle
-                className="fill-primary text-primary transition-all duration-1000 ease-linear"
-                cx={dotX}
-                cy={dotY}
+            {/* Dot – sits at top of circle, then rotates around the center */}
+           <circle
+                className="fill-primary text-primary transition-transform duration-1000 ease-linear"
+                cx={CENTER + radius} // 3 o'clock before svg rotation
+                cy={CENTER}
                 r={12}
-                style={{ filter: "drop-shadow(0 0 6px currentColor)" }}
+                style={{
+                    transformOrigin: `${CENTER}px ${CENTER}px`,
+                    transform: `rotate(${angleDeg}deg)`,
+                    filter: "drop-shadow(0 0 6px currentColor)",
+                }}
             />
         </svg>
     );

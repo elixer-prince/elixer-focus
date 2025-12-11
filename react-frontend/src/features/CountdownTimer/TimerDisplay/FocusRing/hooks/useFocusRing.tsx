@@ -1,5 +1,5 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import { convertMinutesToSeconds } from "@utils/conversion.ts";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const useFocusRing = () => {
     const { startTimeInMinutes, remainingTimeInSeconds } =
@@ -12,26 +12,18 @@ const useFocusRing = () => {
     const rawProgress =
         totalTimeInSeconds > 0 ? elapsed / totalTimeInSeconds : 0;
 
-    // Clamp just in case (0 → 1)
-    const progress = Math.min(Math.max(rawProgress, 0), 1);
+    const progress = Math.min(Math.max(rawProgress, 0), 1); // 0 → 1
 
     const radius = 150;
     const circumference = 2 * Math.PI * radius;
 
-    // Ring EMPTIES as time passes (start full → end empty)
+    // Ring empties as time passes
     const dashoffset = circumference * progress;
 
-    /*-------------------------------------------------------
-    |   Dot Position Calculation
-    |---------------------------------------------------------
-    |
-    */
+    // Angle in degrees, negative for counterclockwise (since you rotated the SVG -90deg)
+    const angleDeg = -360 * progress;
 
-    const angle = -2 * Math.PI * progress;
-    const dotX = 172 + radius * Math.cos(angle);
-    const dotY = 172 + radius * Math.sin(angle);
-
-    return { radius, dotX, dotY, dashoffset, circumference };
+    return { radius, dashoffset, circumference, angleDeg };
 };
 
 export default useFocusRing;
