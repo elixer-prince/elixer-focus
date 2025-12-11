@@ -3,12 +3,19 @@ import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdow
 const CountdownSeconds = () => {
     const { remainingTimeInSeconds } = useCountdownTimerContext();
 
+    const isEndingSoon = remainingTimeInSeconds <= 10;
+
     return (
-        <span>
+        <span className={isEndingSoon ? "text-error" : ""}>
             {remainingTimeInSeconds}{" "}
-            <span className="text-primary text-sm font-bold">seconds</span>
+            <span
+                className="text-primary"
+            >
+                seconds
+            </span>
         </span>
     );
 };
 
 export default CountdownSeconds;
+
