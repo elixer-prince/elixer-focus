@@ -1,5 +1,6 @@
 import useThemeContext from "@hooks/useThemeContext.tsx";
 import type { ReactNode } from "react";
+import ThemePreview from "@features/ThemeSettings/ThemePreview";
 
 interface ThemeLabelProps {
     value: string;
@@ -8,22 +9,29 @@ interface ThemeLabelProps {
 
 const ThemeLabel = ({ value, children }: ThemeLabelProps) => {
     const { currentTheme, setCurrentTheme } = useThemeContext();
-
-    const handleChange = () => {
-        setCurrentTheme(value);
-    };
+    const selected = currentTheme === value;
 
     return (
-        <label className="flex cursor-pointer items-center gap-2 rounded-md p-2">
+        <label className="cursor-pointer">
+            {/* Hide the radio, keep accessibility */}
             <input
                 type="radio"
                 name="theme-radios"
-                className="radio accent-primary radio-sm theme-controller"
+                className="sr-only"
                 value={value}
-                checked={currentTheme === value}
-                onChange={handleChange}
+                checked={selected}
+                onChange={() => setCurrentTheme(value)}
             />
-            {children}
+
+            {/* The visible clickable square */}
+            <div className="flex flex-col items-start gap-2">
+                <ThemePreview theme={value} selected={selected} />
+                <span
+                    className={`text-sm font-semibold ${selected ? "text-primary" : ""}`}
+                >
+                    {children}
+                </span>
+            </div>
         </label>
     );
 };

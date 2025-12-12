@@ -1,11 +1,11 @@
-import ThemeSettings from "@features/ThemeSettings/ThemeSettings";
-import AppLayout from "@app/layouts/AppLayout";
+import SettingsLayout from "@app/layouts/SettingsLayout.tsx";
+import ThemeSettings from "@features/ThemeSettings/Index.tsx";
 
 const Settings = () => {
     return (
-        <AppLayout>
+        <SettingsLayout>
             <ThemeSettings />
-        </AppLayout>
+        </SettingsLayout>
     );
 };
 
