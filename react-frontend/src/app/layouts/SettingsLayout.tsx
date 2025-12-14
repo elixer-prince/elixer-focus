@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import Navbar from "@features/ui/Navbar/Index.tsx";
 import Footer from "@features/ui/Footer/Index.tsx";
+import Sidebar from "@features/ui/Sidebar/Index.tsx";
 
 interface SettingsLayoutProps {
     children: ReactNode;
@@ -9,7 +9,7 @@ interface SettingsLayoutProps {
 const SettingsLayout = ({ children }: SettingsLayoutProps) => {
     return (
         <>
-            <Navbar />
+            <Sidebar />
 
             <main>{children}</main>
 

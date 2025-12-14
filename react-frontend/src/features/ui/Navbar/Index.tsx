@@ -1,4 +1,4 @@
-import {Link} from "react-router";
+import { Link } from "react-router";
 import NavLinkContainer from "@features/ui/Navbar/NavLinkContainer.tsx";
 import NavbarLogo from "@features/ui/Navbar/NavbarLogo.tsx";
 
