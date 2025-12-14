@@ -11,7 +11,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         <>
             <Navbar />
 
-            <main>{children}</main>
+            <main className="mt-(--navbar-height)">{children}</main>
 
             <Footer />
         </>

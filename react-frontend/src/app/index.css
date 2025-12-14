@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./themes/index.css";
 
+:root {
+    --navbar-height: 4.5rem;
+}
+
 @theme {
     --font-roboto: "Roboto", sans-serif;
 }
