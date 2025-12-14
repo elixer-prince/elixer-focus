@@ -10,7 +10,7 @@ const Navbar = () => {
                 <NavLinkContainer />
             </div>
 
-            <Link className={"btn btn-soft btn-primary"} to={"/settings"}>
+            <Link className="btn btn-soft btn-primary" to="/settings/themes">
                 Settings
             </Link>
         </nav>

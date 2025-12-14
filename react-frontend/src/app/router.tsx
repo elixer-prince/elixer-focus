@@ -7,8 +7,8 @@ const Router = () => {
     return (
         <Routes>
             <Route index element={<Home />} />
-            <Route path="tasks" element={<Tasks />} />
-            <Route path="settings" element={<Settings />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/settings/themes" element={<Settings />} />
         </Routes>
     );
 };
