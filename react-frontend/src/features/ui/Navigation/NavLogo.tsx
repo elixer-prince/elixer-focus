@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const NavbarLogo = () => {
+const NavLogo = () => {
     return (
         <Link to="/">
             <span className="text-xl font-bold">Elixer Focus</span>
@@ -8,4 +8,4 @@ const NavbarLogo = () => {
     );
 };
 
-export default NavbarLogo;
+export default NavLogo;

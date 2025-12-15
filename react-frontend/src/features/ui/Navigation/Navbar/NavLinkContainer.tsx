@@ -1,4 +1,4 @@
-import NavLink from "@features/ui/Navbar/NavLink.tsx";
+import NavLink from "@features/ui/Navigation/Navbar/NavLink.tsx";
 
 const NavLinkContainer = () => {
     return (
