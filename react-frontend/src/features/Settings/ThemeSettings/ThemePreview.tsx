@@ -7,7 +7,7 @@ const ThemePreview = ({ theme, selected }: ThemePreviewProps) => {
     return (
         <div
             data-theme={theme}
-            className={`relative size-14 overflow-hidden rounded-xl border transition-all duration-300 ${
+            className={`relative size-14 overflow-hidden rounded-xl transition-all duration-300 ${
                 selected
                     ? "border-primary ring-primary/40 ring-2"
                     : "border-base-300 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_0_12px_rgba(var(--color-primary),0.25)]"

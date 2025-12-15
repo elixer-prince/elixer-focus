@@ -31,17 +31,17 @@ const useSessionSwitch = () => {
     const switchSessionType = () => {
         switch (currentSessionType) {
             case "Short Break":
-                handleFocusSwitching();
+                updateFocusDurationAndReset();
                 break;
             case "Long Break":
-                handleFocusSwitching();
+                updateFocusDurationAndReset();
                 break;
             default:
                 handleBreakSwitching();
         }
     };
 
-    const handleFocusSwitching = () => {
+    const updateFocusDurationAndReset = () => {
         setCurrentSessionType(() => {
             const newSessionType = "Focus";
 
@@ -49,41 +49,44 @@ const useSessionSwitch = () => {
             return newSessionType;
         });
 
-        const newStartTime = focusDuration;
+        resetTimer(focusDuration);
+    };
 
-        resetTimer(newStartTime);
+    const updateShortBreakDurationAndReset = () => {
+        setCurrentSessionType(() => {
+            const newSessionType = "Short Break";
+
+            saveToLocalStorage("currentSessionType", newSessionType);
+            return newSessionType;
+        });
+
+        resetTimer(shortBreakDuration);
+    };
+
+    const updateLongBreakDurationAndReset = () => {
+        setCurrentSessionType(() => {
+            const newSessionType = "Long Break";
+
+            saveToLocalStorage("currentSessionType", newSessionType);
+            return newSessionType;
+        });
+
+        resetTimer(longBreakDuration);
+    };
+
+    const updateSessionCount = (newSessionCount: number) => {
+        setCurrentSessionCount(() => {
+            saveToLocalStorage("currentSessionCount", newSessionCount);
+            return newSessionCount;
+        });
     };
 
     const handleBreakSwitching = () => {
         if (currentSessionCount + 1 >= sessionCountLimit) {
-            setCurrentSessionType(() => {
-                const newSessionType = "Long Break";
-
-                saveToLocalStorage("currentSessionType", newSessionType);
-                return newSessionType;
-            });
-
-            const newStartTime = longBreakDuration;
-
-            resetTimer(newStartTime);
-
-            setCurrentSessionCount(() => {
-                const newSessionCount = 0;
-
-                saveToLocalStorage("currentSessionCount", newSessionCount);
-                return newSessionCount;
-            });
+            updateLongBreakDurationAndReset();
+            updateSessionCount(0);
         } else {
-            setCurrentSessionType(() => {
-                const newSessionType = "Short Break";
-
-                saveToLocalStorage("currentSessionType", newSessionType);
-                return newSessionType;
-            });
-
-            const newStartTime = shortBreakDuration;
-
-            resetTimer(newStartTime);
+            updateShortBreakDurationAndReset();
 
             setCurrentSessionCount((sessionCount) => {
                 const newSessionCount = sessionCount + 1;
@@ -99,28 +102,10 @@ const useSessionSwitch = () => {
 
         if (timerRunning) {
             if (confirm(confirmationMessage)) {
-                setCurrentSessionType(() => {
-                    const newSessionType = "Focus";
-
-                    saveToLocalStorage("currentSessionType", newSessionType);
-                    return newSessionType;
-                });
-
-                const newStartTime = focusDuration;
-
-                resetTimer(newStartTime);
+                updateFocusDurationAndReset();
             }
         } else {
-            setCurrentSessionType(() => {
-                const newSessionType = "Focus";
-
-                saveToLocalStorage("currentSessionType", newSessionType);
-                return newSessionType;
-            });
-
-            const newStartTime = focusDuration;
-
-            resetTimer(newStartTime);
+            updateFocusDurationAndReset();
         }
     };
 
@@ -129,28 +114,10 @@ const useSessionSwitch = () => {
 
         if (timerRunning) {
             if (confirm(confirmationMessage)) {
-                setCurrentSessionType(() => {
-                    const newSessionType = "Short Break";
-
-                    saveToLocalStorage("currentSessionType", newSessionType);
-                    return newSessionType;
-                });
-
-                const newStartTime = shortBreakDuration;
-
-                resetTimer(newStartTime);
+                updateShortBreakDurationAndReset();
             }
         } else {
-            setCurrentSessionType(() => {
-                const newSessionType = "Short Break";
-
-                saveToLocalStorage("currentSessionType", newSessionType);
-                return newSessionType;
-            });
-
-            const newStartTime = shortBreakDuration;
-
-            resetTimer(newStartTime);
+            updateShortBreakDurationAndReset();
         }
     };
 
@@ -159,28 +126,10 @@ const useSessionSwitch = () => {
 
         if (timerRunning) {
             if (confirm(confirmationMessage)) {
-                setCurrentSessionType(() => {
-                    const newSessionType = "Long Break";
-
-                    saveToLocalStorage("currentSessionType", newSessionType);
-                    return newSessionType;
-                });
-
-                const newStartTime = longBreakDuration;
-
-                resetTimer(newStartTime);
+                updateLongBreakDurationAndReset();
             }
         } else {
-            setCurrentSessionType(() => {
-                const newSessionType = "Long Break";
-
-                saveToLocalStorage("currentSessionType", newSessionType);
-                return newSessionType;
-            });
-
-            const newStartTime = longBreakDuration;
-
-            resetTimer(newStartTime);
+            updateLongBreakDurationAndReset();
         }
     };
 
@@ -217,6 +166,7 @@ const useSessionSwitch = () => {
 
     return {
         switchSessionType,
+
         switchToFocus,
         switchToShortBreak,
         switchToLongBreak,

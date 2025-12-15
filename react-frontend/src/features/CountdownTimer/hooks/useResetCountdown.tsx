@@ -2,6 +2,7 @@ import { playSound } from "@utils/sound.ts";
 import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx"; // ADD THIS
 
 const useResetCountdown = () => {
     const {
@@ -13,14 +14,41 @@ const useResetCountdown = () => {
         timerRunning,
         setTimerRunning,
         setTimerPaused,
+        setStartTimeInMinutes, // ADD THIS
     } = useCountdownTimerContext();
+
+    const {
+        currentSessionType,
+        focusDuration,
+        shortBreakDuration,
+        longBreakDuration,
+    } = useSessionContext(); // ADD THIS
 
     const resetCountdown = () => {
         if (timerInterval.current) clearInterval(timerInterval.current);
 
         timerEndTime.current = null;
 
-        const initialTime = convertMinutesToSeconds(startTimeInMinutes);
+        // GET THE CORRECT DURATION FOR CURRENT SESSION
+        let currentDuration = startTimeInMinutes; // fallback to existing
+
+        switch (currentSessionType) {
+            case "Focus":
+                currentDuration = focusDuration;
+                break;
+            case "Short Break":
+                currentDuration = shortBreakDuration;
+                break;
+            case "Long Break":
+                currentDuration = longBreakDuration;
+                break;
+        }
+
+        // ALSO UPDATE startTimeInMinutes to stay in sync
+        setStartTimeInMinutes(currentDuration);
+        saveToLocalStorage("startTimeInMinutes", currentDuration);
+
+        const initialTime = convertMinutesToSeconds(currentDuration); // Use currentDuration
 
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", true);

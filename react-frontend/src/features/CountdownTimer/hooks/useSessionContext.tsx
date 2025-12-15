@@ -1,7 +1,7 @@
 import { CountdownSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
 import { useContext } from "react";
 
-const UseSessionContext = () => {
+const useSessionContext = () => {
     const sessionContext = useContext(CountdownSessionContext);
 
     if (!sessionContext) throw new Error("Session Context is undefined!");
@@ -9,4 +9,4 @@ const UseSessionContext = () => {
     return sessionContext;
 };
 
-export default UseSessionContext;
+export default useSessionContext;

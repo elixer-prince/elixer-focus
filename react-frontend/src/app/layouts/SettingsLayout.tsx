@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Footer from "@features/ui/Footer/Index.tsx";
-import Sidebar from "@features/ui/Sidebar/Index.tsx";
+import Sidebar from "@features/ui/Navigation/Sidebar/Index.tsx";
 
 interface SettingsLayoutProps {
     children: ReactNode;
@@ -11,7 +11,7 @@ const SettingsLayout = ({ children }: SettingsLayoutProps) => {
         <>
             <Sidebar />
 
-            <main>{children}</main>
+            <main className="ml-(--sidebar-width)">{children}</main>
 
             <Footer />
         </>

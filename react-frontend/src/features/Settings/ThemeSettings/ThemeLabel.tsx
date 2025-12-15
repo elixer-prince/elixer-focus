@@ -24,7 +24,7 @@ const ThemeLabel = ({ value, children }: ThemeLabelProps) => {
             />
 
             {/* The visible clickable square */}
-            <div className="flex flex-col items-start gap-2">
+            <div className="flex flex-col items-center gap-2">
                 <ThemePreview theme={value} selected={selected} />
                 <span
                     className={`text-sm font-semibold ${selected ? "text-primary" : ""}`}
