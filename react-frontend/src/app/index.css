@@ -3,6 +3,7 @@
 
 :root {
     --navbar-height: 4.5rem;
+    --sidebar-width: 14rem;
 }
 
 @theme {
