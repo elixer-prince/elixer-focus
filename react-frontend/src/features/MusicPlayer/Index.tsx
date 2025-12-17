@@ -140,3 +140,13 @@
 // };
 //
 // export default MusicPlayer;
+
+const MusicPlayer = () => {
+    return (
+        <div className="border-primary fixed bottom-8 left-8 rounded-md border px-4 py-2">
+            [[MusicPlayer]]
+        </div>
+    );
+};
+
+export default MusicPlayer;
