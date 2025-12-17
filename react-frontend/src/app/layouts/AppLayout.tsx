@@ -11,7 +11,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         <>
             <Navbar />
 
-            <main className="mt-(--navbar-height)">{children}</main>
+            <main className="bg-base-300 mt-(--navbar-height)">{children}</main>
 
             <Footer />
         </>
