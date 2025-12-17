@@ -1,11 +1,11 @@
+import SimpleLayout from "@app/layouts/SimpleLayout.tsx";
 import CountdownTimerContainer from "@features/CountdownTimer/Index.tsx";
-import AppLayout from "@app/layouts/AppLayout";
 
 const Home = () => {
     return (
-        <AppLayout>
+        <SimpleLayout>
             <CountdownTimerContainer />
-        </AppLayout>
+        </SimpleLayout>
     );
 };
 

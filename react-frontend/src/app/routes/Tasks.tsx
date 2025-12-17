@@ -1,10 +1,10 @@
-import AppLayout from "@app/layouts/AppLayout.tsx";
+import SimpleLayout from "@app/layouts/SimpleLayout.tsx";
 
 const Tasks = () => {
     return (
-        <AppLayout>
+        <SimpleLayout>
             <h1 className={"font-bold"}>Tasks Page</h1>
-        </AppLayout>
+        </SimpleLayout>
     );
 };
 
