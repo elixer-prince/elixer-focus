@@ -15,12 +15,14 @@ const Navbar = () => {
 
             {/* Right Container */}
             <div className="flex items-center gap-4">
+                <Link to="/bin">(bin)</Link>
                 <Link
                     className="btn btn-soft btn-primary"
                     to="/settings/themes"
                 >
                     Settings
                 </Link>
+                <Link to="/login">Login</Link>
                 <ProfileAvatar />
             </div>
         </nav>
