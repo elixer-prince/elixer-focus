@@ -6,7 +6,7 @@ interface AppLayoutProps {
     children: ReactNode;
 }
 
-const AppLayout = ({ children }: AppLayoutProps) => {
+const SimpleLayout = ({ children }: AppLayoutProps) => {
     return (
         <>
             <Navbar />
@@ -18,4 +18,4 @@ const AppLayout = ({ children }: AppLayoutProps) => {
     );
 };
 
-export default AppLayout;
+export default SimpleLayout;
