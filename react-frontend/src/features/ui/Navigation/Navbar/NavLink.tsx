@@ -8,6 +8,7 @@ interface NavLinkProps {
 
 const NavLink = ({ to, children }: NavLinkProps) => {
     return (
+        // Navbar Link
         <Link className="text-primary hover:underline" to={to}>
             {children}
         </Link>
