@@ -1,28 +1,30 @@
-import NavLinkContainer from "@features/ui/Navigation/Navbar/NavLinkContainer.tsx";
 import ProfileAvatar from "@features/ui/Navigation/Navbar/ProfileAvatar.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
-import { Link } from "react-router";
+import NavLinkContainer from "@features/ui/Navigation/Navbar/NavLinkContainer.tsx";
+import HamburgerMenu from "@features/ui/Navigation/Navbar/HamburgerMenu.tsx";
+import BrainDumpIcon from "@features/ui/Navigation/Navbar/BrainDumpIcon.tsx";
+import SettingsIcon from "@features/ui/Navigation/Navbar/SettingsIcon.tsx";
+import LoginLink from "@features/ui/Navigation/Navbar/LoginLink.tsx";
 
 const Navbar = () => {
     return (
         // Main Navbar
-        <nav className="fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between p-4 pl-8 backdrop-blur-xs transition-colors duration-1000">
+        <nav className="fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between border-b px-8 py-4 backdrop-blur-xs transition-colors duration-1000">
             {/* Left Container */}
-            <div className="flex items-baseline gap-8">
-                <NavLogo />
-                <NavLinkContainer />
+            <div className="flex items-center gap-4">
+                <HamburgerMenu />
+
+                <div className="flex items-center gap-8">
+                    <NavLogo />
+                    <NavLinkContainer />
+                </div>
             </div>
 
             {/* Right Container */}
             <div className="flex items-center gap-4">
-                <Link to="/bin">(bin)</Link>
-                <Link
-                    className="btn btn-soft btn-primary"
-                    to="/settings/themes"
-                >
-                    Settings
-                </Link>
-                <Link to="/login">Login</Link>
+                <BrainDumpIcon />
+                <SettingsIcon />
+                <LoginLink />
                 <ProfileAvatar />
             </div>
         </nav>
