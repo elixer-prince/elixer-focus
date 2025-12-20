@@ -2,7 +2,7 @@
 @import "./themes/index.css";
 
 :root {
-    --navbar-height: 4.5rem;
+    --navbar-height: 5rem;
     --sidebar-width: 14rem;
 }
 
