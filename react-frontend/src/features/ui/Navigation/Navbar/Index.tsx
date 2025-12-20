@@ -5,11 +5,18 @@ import HamburgerMenu from "@features/ui/Navigation/Navbar/HamburgerMenu.tsx";
 import BrainDumpIcon from "@features/ui/Navigation/Navbar/BrainDumpIcon.tsx";
 import SettingsIcon from "@features/ui/Navigation/Navbar/SettingsIcon.tsx";
 import LoginLink from "@features/ui/Navigation/Navbar/LoginLink.tsx";
+import { NavbarProvider } from "@features/ui/Navigation/Navbar/stores/NavbarContext.tsx";
+import useNavbarContext from "@features/ui/Navigation/Navbar/hooks/useNavbarContext.tsx";
 
-const Navbar = () => {
+const NavbarContent = () => {
+    const { isOpen } = useNavbarContext();
+
     return (
-        // Main Navbar
-        <nav className="fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between border-b px-8 py-4 backdrop-blur-xs transition-colors duration-1000">
+        // Navbar Content
+        <nav
+            className={`${isOpen ? "bg-red-500" : ""} fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between border-b px-8 py-4 backdrop-blur-xs transition-colors duration-1000`.trim()}
+        >
+            <div>State: {String(isOpen)}</div>
             {/* Left Container */}
             <div className="flex items-center gap-4">
                 <HamburgerMenu />
@@ -28,6 +35,15 @@ const Navbar = () => {
                 <ProfileAvatar />
             </div>
         </nav>
+    );
+};
+
+const Navbar = () => {
+    return (
+        // Navbar Wrapper
+        <NavbarProvider>
+            <NavbarContent />
+        </NavbarProvider>
     );
 };
 
