@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+    themes: all;
+}
 @import "./themes/index.css";
 
 :root {
@@ -8,8 +11,4 @@
 
 @theme {
     --font-roboto: "Roboto", sans-serif;
-}
-
-@plugin "daisyui" {
-    themes: all;
 }

@@ -14,15 +14,15 @@ const NavbarContent = () => {
     return (
         // Navbar Content
         <nav
-            className={`${isOpen ? "bg-base-300 h-screen" : ""} bg-base-100/50 border-b-base-content/25 fixed top-0 right-0 left-0 z-20 h-(--navbar-height) border-b p-4 backdrop-blur-xs transition-all duration-1000`}
+            className={`${isOpen ? "bg-base-300 h-screen" : ""} bg-base-100/50 border-b-base-content/50 fixed top-0 right-0 left-0 z-20 h-(--navbar-height) border-b p-4 backdrop-blur-xs transition-all duration-1000`}
         >
             {/* Inner Navbar Container */}
-            <div className="flex items-center justify-between">
+            <div className="flex h-[42px] w-full items-center justify-between">
                 {/* Left Container */}
                 <div className="flex items-center gap-4">
                     <HamburgerMenu />
 
-                    <div className="flex items-center gap-8">
+                    <div className="flex items-baseline gap-8">
                         <NavLogo />
                         <NavLinkContainer />
                     </div>
