@@ -7,6 +7,7 @@ import Tasks from "@app/routes/Tasks.tsx";
 import { Route, Routes } from "react-router";
 import Calendar from "@app/routes/Calendar.tsx";
 import Timer from "@app/routes/Timer.tsx";
+import Bin from "@app/routes/Bin.tsx";
 
 const Router = () => {
     return (
@@ -15,6 +16,7 @@ const Router = () => {
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/timer" element={<Timer />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="bin" element={<Bin />} />
 
             {/* Settings Routes */}
             <Route path="/settings/timer" element={<TimerSettings />} />
