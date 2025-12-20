@@ -1,5 +1,4 @@
-import { NavbarProvider } from "@features/ui/Navigation/Navbar/stores/NavbarContext.tsx";
-import useNavbarContext from "@features/ui/Navigation/Navbar/hooks/useNavbarContext.tsx";
+import useNavbarContext from "@hooks/useNavbarContext.tsx";
 import HamburgerMenu from "@features/ui/Navigation/Navbar/HamburgerMenu.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
 import NavLinkContainer from "@features/ui/Navigation/Navbar/NavLinkContainer.tsx";
@@ -8,7 +7,7 @@ import SettingsIcon from "@features/ui/Navigation/Navbar/SettingsIcon.tsx";
 import LoginLink from "@features/ui/Navigation/Navbar/LoginLink.tsx";
 import ProfileAvatar from "@features/ui/Navigation/Navbar/ProfileAvatar.tsx";
 
-const NavbarContent = () => {
+const Navbar = () => {
     const { isOpen } = useNavbarContext();
 
     return (
@@ -37,15 +36,6 @@ const NavbarContent = () => {
                 </div>
             </div>
         </nav>
-    );
-};
-
-const Navbar = () => {
-    return (
-        // Navbar Wrapper
-        <NavbarProvider>
-            <NavbarContent />
-        </NavbarProvider>
     );
 };
 
