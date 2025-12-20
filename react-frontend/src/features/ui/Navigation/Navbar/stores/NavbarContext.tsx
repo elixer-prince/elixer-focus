@@ -1,12 +1,4 @@
-import {
-    createContext,
-    type Dispatch,
-    type ReactNode,
-    type SetStateAction,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import { createContext, type Dispatch, type ReactNode, type SetStateAction, useEffect, useMemo, useState } from "react";
 
 interface NavbarContextProps {
     children: ReactNode;
@@ -24,7 +16,10 @@ const NavbarProvider = ({ children }: NavbarContextProps) => {
 
     useEffect(() => {
         if (isOpen) {
-            document.body.classList.add("overflow-hidden");
+            setTimeout(
+                () => document.body.classList.add("overflow-hidden"),
+                750,
+            );
         } else {
             document.body.classList.remove("overflow-hidden");
         }

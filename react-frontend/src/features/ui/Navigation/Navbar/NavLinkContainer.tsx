@@ -3,7 +3,7 @@ import NavLink from "@features/ui/Navigation/Navbar/NavLink.tsx";
 const NavLinkContainer = () => {
     return (
         // Navbar Link Container
-        <ul className="hidden gap-4 sm:flex">
+        <ul className="hidden gap-4 md:flex">
             <li>
                 <NavLink to="/calendar">Calendar</NavLink>
             </li>

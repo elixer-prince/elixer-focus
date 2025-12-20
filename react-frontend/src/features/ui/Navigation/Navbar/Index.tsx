@@ -14,7 +14,7 @@ const NavbarContent = () => {
     return (
         // Navbar Content
         <nav
-            className={`${isOpen ? "max-sm:bg-base-300 max-sm:h-screen" : ""} bg-base-100/50 border-b-base-content/50 fixed top-0 right-0 left-0 z-20 h-(--navbar-height) border-b p-4 backdrop-blur-xs transition-all duration-1000`}
+            className={`${isOpen ? "max-md:bg-base-300 max-md:h-screen" : ""} bg-base-100/50 border-b-base-content/50 fixed top-0 right-0 left-0 z-20 h-(--navbar-height) border-b p-4 backdrop-blur-xs transition-all duration-1000 md:px-8`}
         >
             {/* Inner Navbar Container */}
             <div className="flex h-[42px] w-full items-center justify-between">
