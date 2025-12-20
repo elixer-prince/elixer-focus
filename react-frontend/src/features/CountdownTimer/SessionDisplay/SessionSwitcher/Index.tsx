@@ -10,7 +10,7 @@ const SessionSwitcher = () => {
     const { currentSessionType } = useSessionContext();
 
     return (
-        <div className="dropdown">
+        <div className="dropdown dropdown-center">
             <div tabIndex={0} role="button" className="btn btn-soft btn-ghost">
                 Switch Session
                 <FiChevronDown size={20} />
