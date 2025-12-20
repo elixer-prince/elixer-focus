@@ -1,6 +1,7 @@
 import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
 import SessionOption from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/SessionOption.tsx";
 import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.tsx";
+import { FiChevronDown } from "react-icons/fi";
 
 const SessionSwitcher = () => {
     const { switchToFocus, switchToShortBreak, switchToLongBreak } =
@@ -10,9 +11,12 @@ const SessionSwitcher = () => {
 
     return (
         <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn m-1">
+            <div tabIndex={0} role="button" className="btn btn-soft btn-ghost">
                 Switch Session
+                <FiChevronDown size={20} />
             </div>
+
+            {/* Dropdown Options */}
             <ul
                 tabIndex={-1}
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
