@@ -1,5 +1,5 @@
 import { FiMenu } from "react-icons/fi";
-import useNavbarContext from "@hooks/useNavbarContext.tsx";
+import useNavbarContext from "@features/ui/Navigation/Navbar/hooks/useNavbarContext.tsx";
 
 const HamburgerMenu = () => {
     const { isOpen, setIsOpen } = useNavbarContext();

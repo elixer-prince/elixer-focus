@@ -34,7 +34,7 @@ const useTimerSettings = () => {
         longBreakDuration.toString(),
     );
 
-    // Initialize drafts when context loads
+    // Initialize drafts when stores loads
     useEffect(() => {
         setDraftFocus(focusDuration.toString());
     }, [focusDuration]);
@@ -125,7 +125,7 @@ const useTimerSettings = () => {
 
         if (hasError) return;
 
-        // All valid - update session context
+        // All valid - update session stores
         setFocusDuration(focusNum!);
         setShortBreakDuration(shortBreakNum!);
         setLongBreakDuration(longBreakNum!);
@@ -146,7 +146,7 @@ const useTimerSettings = () => {
             if (currentSessionType === "Long Break")
                 newDuration = longBreakNum!;
 
-            // Update timer context
+            // Update timer stores
             setStartTimeInMinutes(newDuration);
             setRemainingTimeInSeconds(convertMinutesToSeconds(newDuration));
 

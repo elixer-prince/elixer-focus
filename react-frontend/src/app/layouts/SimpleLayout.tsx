@@ -1,7 +1,7 @@
 import MusicPlayer from "@features/MusicPlayer/Index.tsx";
 import Footer from "@features/ui/Footer/Index.tsx";
 import Navbar from "@features/ui/Navigation/Navbar/Index.tsx";
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 interface AppLayoutProps {
     children: ReactNode;

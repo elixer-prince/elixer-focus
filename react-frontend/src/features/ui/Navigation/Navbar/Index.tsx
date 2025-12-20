@@ -1,4 +1,4 @@
-import useNavbarContext from "@hooks/useNavbarContext.tsx";
+import useNavbarContext from "@features/ui/Navigation/Navbar/hooks/useNavbarContext.tsx";
 import HamburgerMenu from "@features/ui/Navigation/Navbar/HamburgerMenu.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
 import NavLinkContainer from "@features/ui/Navigation/Navbar/NavLinkContainer.tsx";
@@ -6,8 +6,9 @@ import BrainDumpIcon from "@features/ui/Navigation/Navbar/BrainDumpIcon.tsx";
 import SettingsIcon from "@features/ui/Navigation/Navbar/SettingsIcon.tsx";
 import LoginLink from "@features/ui/Navigation/Navbar/LoginLink.tsx";
 import ProfileAvatar from "@features/ui/Navigation/Navbar/ProfileAvatar.tsx";
+import { NavbarProvider } from "@features/ui/Navigation/Navbar/stores/NavbarContext.tsx";
 
-const Navbar = () => {
+const NavbarContent = () => {
     const { isOpen } = useNavbarContext();
 
     return (
@@ -36,6 +37,14 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
+    );
+};
+
+const Navbar = () => {
+    return (
+        <NavbarProvider>
+            <NavbarContent />
+        </NavbarProvider>
     );
 };
 
