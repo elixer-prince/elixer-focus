@@ -5,6 +5,7 @@ const PauseButton = () => {
     const { pauseCountdown } = usePauseCountdown();
 
     return (
+        // Pause Button
         <button className="btn btn-primary" onClick={pauseCountdown}>
             Pause
             <FaPause size={12} />

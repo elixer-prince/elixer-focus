@@ -5,6 +5,7 @@ const ResetButton = () => {
     const { resetCountdownWithSound } = useResetCountdown();
 
     return (
+        // Reset Button
         <button
             className="btn btn-error btn-soft"
             onClick={resetCountdownWithSound}
