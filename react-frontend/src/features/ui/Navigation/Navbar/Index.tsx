@@ -14,7 +14,7 @@ const NavbarContent = () => {
     return (
         // Navbar Content
         <nav
-            className={`${isOpen ? "bg-red-500" : ""} fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between border-b px-8 py-4 backdrop-blur-xs transition-colors duration-1000`.trim()}
+            className={`${isOpen ? "" : ""} bg-base-100/50 border-b-base-content/25 fixed top-0 right-0 left-0 z-20 flex h-(--navbar-height) items-center justify-between border-b p-4 backdrop-blur-xs transition-colors duration-1000`.trim()}
         >
             {/* Left Container */}
             <div className="flex items-center gap-4">

@@ -5,12 +5,11 @@ const HamburgerMenu = () => {
     const { isOpen, setIsOpen } = useNavbarContext();
 
     // Hamburger Menu
+
     return (
-        <FiMenu
-            size={24}
-            className="cursor-pointer"
-            onClick={() => setIsOpen(!isOpen)}
-        />
+        <div className="hover:bg-base-content/5 cursor-pointer rounded-md p-2 transition-colors md:hidden">
+            <FiMenu size={24} onClick={() => setIsOpen(!isOpen)} />
+        </div>
     );
 };
 
