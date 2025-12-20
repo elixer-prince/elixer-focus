@@ -1,11 +1,11 @@
 import SimpleLayout from "@app/layouts/SimpleLayout.tsx";
 
-const Tasks = () => {
+const Calendar = () => {
     return (
         <SimpleLayout>
-            <p>Tasks Page...</p>
+            <p>Calendar Page...</p>
         </SimpleLayout>
     );
 };
 
-export default Tasks;
+export default Calendar;
