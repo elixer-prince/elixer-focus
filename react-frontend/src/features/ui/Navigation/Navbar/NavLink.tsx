@@ -9,7 +9,10 @@ interface NavLinkProps {
 const NavLink = ({ to, children }: NavLinkProps) => {
     return (
         // Navbar Link
-        <Link className="text-primary hover:underline" to={to}>
+        <Link
+            className="text-base-content/75 hover:text-base-content transition-colors"
+            to={to}
+        >
             {children}
         </Link>
     );

@@ -1,4 +1,12 @@
-import { createContext, type Dispatch, type ReactNode, type SetStateAction, useEffect, useMemo, useState } from "react";
+import {
+    createContext,
+    type Dispatch,
+    type ReactNode,
+    type SetStateAction,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 interface NavbarContextProps {
     children: ReactNode;
