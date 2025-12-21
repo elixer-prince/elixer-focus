@@ -143,7 +143,7 @@
 
 const MusicPlayer = () => {
     return (
-        <div className="border-primary fixed bottom-8 left-8 rounded-md border px-4 py-2">
+        <div className="border-t-base-content bg-base-100 fixed right-0 bottom-0 left-0 h-(--music-player-height) border-t p-4">
             [[MusicPlayer]]
         </div>
     );

@@ -10,13 +10,18 @@ interface AppLayoutProps {
 const SimpleLayout = ({ children }: AppLayoutProps) => {
     return (
         <>
-            <Navbar />
+            {/* Main App Wrapper */}
+            <div className="mb-(--music-player-height)">
+                <Navbar />
 
-            <main className="bg-base-300 mt-(--navbar-height)">{children}</main>
+                <main className="bg-base-300 mt-(--navbar-height)">
+                    {children}
+                </main>
+
+                <Footer />
+            </div>
 
             <MusicPlayer />
-
-            <Footer />
         </>
     );
 };

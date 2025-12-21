@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import type { ReactNode } from "react";
 
 interface NavLinkProps {
@@ -7,10 +7,12 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ to, children }: NavLinkProps) => {
+    const location = useLocation();
+
     return (
         // Navbar Link
         <Link
-            className="text-base-content/75 hover:text-base-content transition-colors"
+            className={`text-base-content/75 transition-colors ${location.pathname === to ? "text-primary font-bold" : "hover:text-base-content"}`}
             to={to}
         >
             {children}

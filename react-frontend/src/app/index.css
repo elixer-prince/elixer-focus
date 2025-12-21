@@ -5,8 +5,9 @@
 @import "./themes/index.css";
 
 :root {
-    --navbar-height: 5rem;
+    --navbar-height: 4rem;
     --sidebar-width: 14rem;
+    --music-player-height: 4rem;
 }
 
 @theme {
