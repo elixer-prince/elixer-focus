@@ -1,11 +1,13 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { FiInbox } from "react-icons/fi";
 
 const BrainDumpIcon = () => {
+    const location = useLocation();
+
     return (
         <Link
             to="/bin"
-            className="hover:text-primary transition-colors duration-300"
+            className={`${location.pathname === "/bin" ? "text-primary" : ""} hover:text-primary transition-colors duration-300`.trim()}
         >
             <FiInbox size={24} />
         </Link>
