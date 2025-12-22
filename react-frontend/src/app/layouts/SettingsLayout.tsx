@@ -11,9 +11,9 @@ const SettingsLayout = ({ children }: SettingsLayoutProps) => {
         <>
             <Sidebar />
 
-            <main className="ml-(--sidebar-width)">{children}</main>
+            <main className="ml-(--sidebar-width) p-8">{children}</main>
 
-            <Footer />
+            <Footer className="ml-(--sidebar-width)" />
         </>
     );
 };

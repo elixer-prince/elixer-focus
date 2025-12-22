@@ -6,7 +6,7 @@ const FocusContainer = () => {
     const { draftFocus, setDraftFocus } = useTimerSettingsContext();
 
     return (
-        <div className="mb-4">
+        <div>
             <label className="mb-2 block text-sm font-medium">
                 Focus Duration (minutes)
             </label>

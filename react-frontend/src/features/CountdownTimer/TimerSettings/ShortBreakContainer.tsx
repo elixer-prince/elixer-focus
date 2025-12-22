@@ -6,7 +6,7 @@ const ShortBreakContainer = () => {
     const { draftShortBreak, setDraftShortBreak } = useTimerSettingsContext();
 
     return (
-        <div className="mb-4">
+        <div>
             <label className="mb-2 block text-sm font-medium">
                 Short Break (minutes)
             </label>

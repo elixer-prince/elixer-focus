@@ -1,7 +1,15 @@
-const Footer = () => {
+interface FooterProps {
+    className?: string;
+}
+
+const Footer = ({ className }: FooterProps) => {
+    const classes = "px-8 py-4";
+
+    const combinedClasses = `${classes} ${className}`.trim();
+
     return (
         // Footer
-        <footer className="px-8 py-4">
+        <footer className={combinedClasses}>
             {/* Copyright Info */}
             <p className="text-center">Elixer Focus &copy; 2025</p>
         </footer>

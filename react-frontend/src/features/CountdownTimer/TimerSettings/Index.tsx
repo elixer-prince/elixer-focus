@@ -11,10 +11,18 @@ const TimerSettingsContent = () => {
     const { handleSave } = useHandleSave();
 
     return (
-        <div className="size-full h-full">
-            <FocusContainer />
-            <ShortBreakContainer />
-            <LongBreakContainer />
+        <section className="size-full h-full">
+            <header>
+                <h1 className="text-primary mb-4 text-lg font-bold">
+                    Countdown Timer Settings
+                </h1>
+            </header>
+
+            <div className="mb-8 flex flex-col gap-4">
+                <FocusContainer />
+                <ShortBreakContainer />
+                <LongBreakContainer />
+            </div>
 
             <button
                 type="button"
@@ -35,7 +43,7 @@ const TimerSettingsContent = () => {
                 Note: Timer will automatically update to new durations when it's
                 not running.
             </p>
-        </div>
+        </section>
     );
 };
 
