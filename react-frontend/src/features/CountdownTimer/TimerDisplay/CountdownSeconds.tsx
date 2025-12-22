@@ -1,21 +1,18 @@
+import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState.tsx";
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 
 const CountdownSeconds = () => {
     const { remainingTimeInSeconds } = useCountdownTimerContext();
-
-    const isEndingSoon = remainingTimeInSeconds <= 10;
+    const { isEndingSoon } = useHandleCountdownState();
 
     return (
-        <span className={isEndingSoon ? "text-error" : ""}>
+        <span
+            className={`pointer-events-none z-10 ${isEndingSoon ? "text-error" : ""}`.trim()}
+        >
             {remainingTimeInSeconds}{" "}
-            <span
-                className="text-primary"
-            >
-                seconds
-            </span>
+            <span className="text-primary">seconds</span>
         </span>
     );
 };
 
 export default CountdownSeconds;
-

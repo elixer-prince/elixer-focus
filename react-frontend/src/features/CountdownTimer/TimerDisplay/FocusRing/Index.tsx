@@ -7,7 +7,7 @@ const FocusRing = () => {
 
     return (
         <svg
-            className="absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
+            className="pointer-events-none absolute inset-0 size-full rotate-270 overflow-hidden rounded-full"
             viewBox="0 0 344 344"
         >
             {/* Background track */}
@@ -34,7 +34,7 @@ const FocusRing = () => {
             />
 
             {/* Dot – sits at top of circle, then rotates around the center */}
-           <circle
+            <circle
                 className="fill-primary text-primary transition-transform duration-1000 ease-linear"
                 cx={CENTER + radius} // 3 o'clock before svg rotation
                 cy={CENTER}

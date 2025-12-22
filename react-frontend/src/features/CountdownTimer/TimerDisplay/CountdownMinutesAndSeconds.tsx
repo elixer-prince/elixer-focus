@@ -1,14 +1,14 @@
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
 import { formatTimeInMinutesAndSeconds } from "@utils/formatting.ts";
+import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState.tsx";
 
 const CountdownMinutesAndSeconds = () => {
     const { remainingTimeInSeconds } = useCountdownTimerContext();
-
-    const isEndingSoon = remainingTimeInSeconds <= 10;
+    const { isEndingSoon } = useHandleCountdownState();
 
     return (
         <div
-            className={`text-7xl transition-colors duration-500 ${
+            className={`pointer-events-none z-10 text-7xl transition-colors duration-500 ${
                 isEndingSoon ? "text-error" : ""
             }`}
         >
