@@ -1,22 +1,21 @@
 // @features/CountdownTimer/TimerSettings/TimerSettings.tsx
-import useTimerSettings from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettings.tsx";
-import useAutoSyncTimer from "@features/CountdownTimer/hooks/useAutoSyncTimer.tsx";
+import { TimerSettingsProvider } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext.tsx";
+import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
+import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation.tsx";
+import useHandleSave from "@features/CountdownTimer/TimerSettings/hooks/useHandleSave.tsx";
 
-const TimerSettings = () => {
-    // Enable auto-sync between timer and session durations
-    useAutoSyncTimer();
+const TimerSettingsContent = () => {
+    const { validateAndSet, hasUnsavedChanges } = useValidation();
+    const { handleSave } = useHandleSave();
 
     const {
         draftFocus,
         draftShortBreak,
-        validateAndSet,
         draftLongBreak,
-        hasUnsavedChanges,
-        handleSave,
         setDraftFocus,
         setDraftShortBreak,
         setDraftLongBreak,
-    } = useTimerSettings();
+    } = useTimerSettingsContext();
 
     return (
         <div className="size-full h-full">
@@ -103,6 +102,14 @@ const TimerSettings = () => {
                 not running.
             </p>
         </div>
+    );
+};
+
+const TimerSettings = () => {
+    return (
+        <TimerSettingsProvider>
+            <TimerSettingsContent />
+        </TimerSettingsProvider>
     );
 };
 
