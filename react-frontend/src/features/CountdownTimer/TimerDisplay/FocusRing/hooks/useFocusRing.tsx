@@ -5,10 +5,10 @@ const useFocusRing = () => {
     const { startTimeInMinutes, remainingTimeInSeconds } =
         useCountdownTimerContext();
 
+    const CENTER = 172;
+
     const totalTimeInSeconds = convertMinutesToSeconds(startTimeInMinutes);
-
     const elapsed = Math.max(0, totalTimeInSeconds - remainingTimeInSeconds);
-
     const rawProgress =
         totalTimeInSeconds > 0 ? elapsed / totalTimeInSeconds : 0;
 
@@ -23,7 +23,7 @@ const useFocusRing = () => {
     // Angle in degrees, negative for counterclockwise (since you rotated the SVG -90deg)
     const angleDeg = -360 * progress;
 
-    return { radius, dashoffset, circumference, angleDeg };
+    return { radius, dashoffset, circumference, angleDeg, CENTER };
 };
 
 export default useFocusRing;
