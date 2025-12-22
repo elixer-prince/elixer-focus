@@ -13,7 +13,7 @@ import {
     type SetStateAction,
     useMemo,
     useRef,
-    useState
+    useState,
 } from "react";
 
 interface CountdownTimerProviderProps {
