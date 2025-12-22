@@ -7,8 +7,8 @@ const SkipButton = () => {
     return (
         // Skip Button
         <button className="btn btn-soft btn-warning" onClick={skipCountdown}>
-            Skip
             <IoIosSkipForward size={18} />
+            Skip
         </button>
     );
 };

@@ -7,8 +7,8 @@ const StartButton = () => {
     return (
         // Start Button
         <button className="btn btn-primary" onClick={startCountdownWithSound}>
-            Start
             <FaPlay size={12} />
+            Start
         </button>
     );
 };
