@@ -1,0 +1,32 @@
+import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation.tsx";
+import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
+
+const LongBreakContainer = () => {
+    const { validateAndSet } = useValidation();
+    const { draftLongBreak, setDraftLongBreak } = useTimerSettingsContext();
+
+    return (
+        <div className="mb-4">
+            <label className="mb-2 block text-sm font-medium">
+                Long Break (minutes)
+            </label>
+            <input
+                type="number"
+                value={draftLongBreak}
+                onChange={(e) => {
+                    validateAndSet(e.target.value, setDraftLongBreak, 5);
+                }}
+                className="input input-primary"
+                min={5}
+                placeholder="15"
+            />
+            {draftLongBreak && Number(draftLongBreak) < 5 && (
+                <p className="mt-1 text-sm text-red-500">
+                    Must be at least 5 minutes
+                </p>
+            )}
+        </div>
+    );
+};
+
+export default LongBreakContainer;

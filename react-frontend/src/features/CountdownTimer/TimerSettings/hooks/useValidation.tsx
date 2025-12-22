@@ -5,11 +5,10 @@ import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hook
 const useValidation = () => {
     const { focusDuration, shortBreakDuration, longBreakDuration } =
         useSessionContext();
-
     const { draftFocus, draftShortBreak, draftLongBreak } =
         useTimerSettingsContext();
 
-    const hasUnsavedChanges =
+    const hasUnsavedChanges: boolean =
         draftFocus !== focusDuration.toString() ||
         draftShortBreak !== shortBreakDuration.toString() ||
         draftLongBreak !== longBreakDuration.toString();
@@ -21,11 +20,7 @@ const useValidation = () => {
             setDraft: (value: string) => void,
             minValue: number = 1,
         ): number | null => {
-            // Allow empty string for better UX
-            if (value === "") {
-                setDraft("");
-                return null;
-            }
+            emptyInputIfNoValue(value, setDraft);
 
             const numValue = Number(value);
 
@@ -47,6 +42,16 @@ const useValidation = () => {
         },
         [],
     );
+
+    const emptyInputIfNoValue = (
+        value: string,
+        setDraft: (value: string) => void,
+    ) => {
+        if (value === "") {
+            setDraft("");
+            return null;
+        }
+    };
 
     return { hasUnsavedChanges, validateAndSet };
 };
