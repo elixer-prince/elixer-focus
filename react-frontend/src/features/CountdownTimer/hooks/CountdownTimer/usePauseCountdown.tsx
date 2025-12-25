@@ -1,4 +1,4 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
 import { playSound } from "@utils/sound.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
 

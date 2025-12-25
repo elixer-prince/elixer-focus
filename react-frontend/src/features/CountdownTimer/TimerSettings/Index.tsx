@@ -1,4 +1,3 @@
-// @features/CountdownTimer/TimerSettings/TimerSettings.tsx
 import { TimerSettingsProvider } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext.tsx";
 import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation.tsx";
 import useHandleSave from "@features/CountdownTimer/TimerSettings/hooks/useHandleSave.tsx";

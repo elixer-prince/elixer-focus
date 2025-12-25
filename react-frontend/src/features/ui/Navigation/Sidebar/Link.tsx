@@ -8,7 +8,7 @@ interface SidebarLinkProps {
 
 const SidebarLink = ({ to, children }: SidebarLinkProps) => {
     return (
-        <Link to={to} className="btn btn-primary btn-soft">
+        <Link to={to} className="menu menu-primary">
             {children}
         </Link>
     );

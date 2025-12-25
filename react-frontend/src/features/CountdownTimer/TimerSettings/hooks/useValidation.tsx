@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
 import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
+import { useCallback } from "react";
 
 const useValidation = () => {
     const { focusDuration, shortBreakDuration, longBreakDuration } =

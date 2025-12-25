@@ -6,7 +6,7 @@ import {
     useMemo,
     useState,
 } from "react";
-import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
 
 interface TimerSettingsProps {
     children: ReactNode;

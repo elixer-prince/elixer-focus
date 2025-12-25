@@ -1,4 +1,4 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/useCountdownTimerContext.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
 import { formatTimeInMinutesAndSeconds } from "@utils/formatting.ts";
 import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState.tsx";
 

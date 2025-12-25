@@ -1,4 +1,4 @@
-import useSessionContext from "@features/CountdownTimer/hooks/useSessionContext.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
 import { useEffect } from "react";
 import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
 

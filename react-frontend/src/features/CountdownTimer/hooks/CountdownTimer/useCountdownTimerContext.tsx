@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
 
-const UseCountdownTimerContext = () => {
+const useCountdownTimerContext = () => {
     const countdownTimerContext = useContext(CountdownTimerContext);
 
     if (!countdownTimerContext)
@@ -10,4 +10,4 @@ const UseCountdownTimerContext = () => {
     return countdownTimerContext;
 };
 
-export default UseCountdownTimerContext;
+export default useCountdownTimerContext;
