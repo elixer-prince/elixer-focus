@@ -2,8 +2,8 @@
 import { useEffect } from "react";
 import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { saveToLocalStorage } from "@utils/storage.ts";
-import useSessionContext from "@/";
-import useCountdownTimerContext from "@/";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
 
 /**
  * Automatically syncs the timer duration with current session settings
