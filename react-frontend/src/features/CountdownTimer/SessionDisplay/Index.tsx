@@ -1,5 +1,5 @@
-import SessionSwitcher from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/Index.tsx";
-import CurrentSessionType from "@features/CountdownTimer/SessionDisplay/CurrentSessionType.tsx";
+import CurrentSessionType from "@features/CountdownTimer/SessionDisplay/CurrentSessionType";
+import SessionSwitcher from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/Index";
 
 const CountdownTimerHeader = () => {
     return (

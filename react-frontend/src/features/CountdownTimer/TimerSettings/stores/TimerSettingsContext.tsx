@@ -1,3 +1,4 @@
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
 import {
     createContext,
     type Dispatch,
@@ -6,7 +7,6 @@ import {
     useMemo,
     useState,
 } from "react";
-import useSessionContext from "@/";
 
 interface TimerSettingsProps {
     children: ReactNode;
@@ -63,4 +63,4 @@ const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
     );
 };
 
-export { TimerSettingsProvider, TimerSettingsContext };
+export { TimerSettingsContext, TimerSettingsProvider };

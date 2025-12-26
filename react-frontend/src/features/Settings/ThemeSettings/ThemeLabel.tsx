@@ -1,6 +1,6 @@
-import useThemeContext from "@/";
+import ThemePreview from "@features/Settings/ThemeSettings/ThemePreview";
+import useThemeContext from "@hooks/useThemeContext";
 import type { ReactNode } from "react";
-import ThemePreview from "@features/Settings/ThemeSettings/ThemePreview.tsx";
 
 interface ThemeLabelProps {
     value: string;

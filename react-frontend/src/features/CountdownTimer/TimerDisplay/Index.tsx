@@ -1,9 +1,9 @@
-import ClickableArea from "@features/CountdownTimer/TimerDisplay/ClickableArea.tsx";
-import CountdownMinutesAndSeconds from "@features/CountdownTimer/TimerDisplay/CountdownMinutesAndSeconds.tsx";
-import CountdownSeconds from "@features/CountdownTimer/TimerDisplay/CountdownSeconds.tsx";
-import FocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/Index.tsx";
-import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState.tsx";
-import SessionCount from "@features/CountdownTimer/TimerDisplay/SessionCount.tsx";
+import ClickableArea from "@features/CountdownTimer/TimerDisplay/ClickableArea";
+import CountdownMinutesAndSeconds from "@features/CountdownTimer/TimerDisplay/CountdownMinutesAndSeconds";
+import CountdownSeconds from "@features/CountdownTimer/TimerDisplay/CountdownSeconds";
+import FocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/Index";
+import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState";
+import SessionCount from "@features/CountdownTimer/TimerDisplay/SessionCount";
 
 const CountdownDisplay = () => {
     const { isEndingSoon } = useHandleCountdownState();

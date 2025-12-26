@@ -1,5 +1,5 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import { convertMinutesToSeconds } from "@utils/conversion";
 
 const useFocusRing = () => {
     const { startTimeInMinutes, remainingTimeInSeconds } =

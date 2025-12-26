@@ -1,5 +1,5 @@
-import useInputInitialisation from "@/";
-import useAutoSyncTimer from "@features/CountdownTimer/hooks/CountdownTimer/useAutoSyncTimer.tsx";
+import useInputInitialisation from "@features/CountdownTimer/TimerSettings/hooks/useInputInitialisation";
+import useAutoSyncTimer from "@features/CountdownTimer/hooks/CountdownTimer/useAutoSyncTimer";
 
 const useTimerSettings = () => {
     useInputInitialisation();

@@ -1,5 +1,5 @@
-import OptionsContainer from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/OptionsContainer.tsx";
-import DropdownButton from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/DropdownButton.tsx";
+import OptionsContainer from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/OptionsContainer";
+import DropdownButton from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/DropdownButton";
 
 const SessionSwitcher = () => {
     return (

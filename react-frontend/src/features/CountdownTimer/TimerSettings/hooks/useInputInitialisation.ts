@@ -1,6 +1,6 @@
-import useSessionContext from "@/";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
+import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
 import { useEffect } from "react";
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
 
 const useInputInitialisation = () => {
     const { focusDuration, shortBreakDuration, longBreakDuration } =
