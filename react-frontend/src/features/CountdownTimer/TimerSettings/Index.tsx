@@ -1,6 +1,6 @@
 import { TimerSettingsProvider } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext.tsx";
-import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation.tsx";
-import useHandleSave from "@features/CountdownTimer/TimerSettings/hooks/useHandleSave.tsx";
+import useValidation from "@/";
+import useHandleSave from "@/";
 import FocusContainer from "@features/CountdownTimer/TimerSettings/FocusContainer.tsx";
 import ShortBreakContainer from "@features/CountdownTimer/TimerSettings/ShortBreakContainer.tsx";
 import LongBreakContainer from "@features/CountdownTimer/TimerSettings/LongBreakContainer.tsx";

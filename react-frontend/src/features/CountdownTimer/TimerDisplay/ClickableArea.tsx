@@ -1,4 +1,4 @@
-import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState.tsx";
+import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState";
 
 const ClickableArea = () => {
     const { handleCountdownState } = useHandleCountdownState();

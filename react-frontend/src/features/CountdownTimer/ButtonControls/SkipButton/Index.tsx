@@ -1,4 +1,4 @@
-import useSkipCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useSkipCountdown.tsx";
+import useSkipCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useSkipCountdown";
 import { IoIosSkipForward } from "react-icons/io";
 
 const SkipButton = () => {

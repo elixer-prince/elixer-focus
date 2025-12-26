@@ -1,4 +1,4 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
+import useSessionContext from "@/";
 
 const CurrentSessionType = () => {
     const { currentSessionType } = useSessionContext();

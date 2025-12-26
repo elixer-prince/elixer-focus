@@ -1,4 +1,4 @@
-import useStartCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useStartCountdown.tsx";
+import useStartCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useStartCountdown";
 import { FaPlay } from "react-icons/fa";
 
 const StartButton = () => {

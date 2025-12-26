@@ -1,4 +1,4 @@
-import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation.tsx";
+import useValidation from "@/";
 import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
 
 const LongBreakContainer = () => {

@@ -1,4 +1,4 @@
-import usePauseCountdown from "@features/CountdownTimer/hooks/CountdownTimer/usePauseCountdown.tsx";
+import usePauseCountdown from "@features/CountdownTimer/hooks/CountdownTimer/usePauseCountdown";
 import { FaPause } from "react-icons/fa";
 
 const PauseButton = () => {

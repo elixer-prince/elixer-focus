@@ -1,4 +1,4 @@
-import useThemeContext from "@hooks/useThemeContext.tsx";
+import useThemeContext from "@/";
 import type { ReactNode } from "react";
 import ThemePreview from "@features/Settings/ThemeSettings/ThemePreview.tsx";
 

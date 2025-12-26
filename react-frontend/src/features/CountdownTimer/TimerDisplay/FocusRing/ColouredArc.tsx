@@ -1,4 +1,4 @@
-import useFocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/hooks/useFocusRing.tsx";
+import useFocusRing from "@features/CountdownTimer/TimerDisplay/FocusRing/hooks/useFocusRing";
 
 const ColouredArc = () => {
     const { radius, dashoffset, circumference, CENTER } = useFocusRing();

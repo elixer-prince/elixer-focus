@@ -1,16 +1,16 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
-import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch.tsx";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
-import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking.tsx";
-import { calculateRemainingSeconds } from "@features/CountdownTimer/utils/timerCalculations.tsx";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
+import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
+import { calculateRemainingSeconds } from "@features/CountdownTimer/utils/timerCalculations";
 import {
     timerHasEnded,
     timerIsAboutToEnd,
-} from "@features/CountdownTimer/utils/timerChecks.ts";
-import { getCurrentTimestamp } from "@utils/date.ts";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
-import { useCallback } from "react";
+} from "@features/CountdownTimer/utils/timerChecks";
+import { getCurrentTimestamp } from "@utils/date";
+import { playSound } from "@utils/sound";
+import { saveToLocalStorage } from "@utils/storage";
+import { useCallback, useRef } from "react";
 
 const useRunInterval = () => {
     const { timerBeepSoundEffect, timerInterval, setRemainingTimeInSeconds } =
@@ -18,6 +18,9 @@ const useRunInterval = () => {
     const { currentSessionType } = useSessionContext();
     const { switchSessionType } = useSessionSwitch();
     const { startEndTicking, stopEndTicking } = useEndTicking();
+
+    // Track when we enter the "ending soon" state
+    const previousSeconds = useRef<number | null>(null);
 
     /*-----------------------------------------------------
     | Helper Functions
@@ -51,11 +54,23 @@ const useRunInterval = () => {
                     endTime,
                 );
 
-                // Start ticking at 10 seconds
-                if (timerIsAboutToEnd(remainingSeconds)) {
-                    console.log({ remainingSeconds });
+                // Start ticking at 10 seconds (only when entering the state)
+                const wasNotAboutToEnd =
+                    previousSeconds.current === null ||
+                    previousSeconds.current > 10;
+                const isNowAboutToEnd = timerIsAboutToEnd(remainingSeconds);
+
+                console.log(
+                    `Seconds: ${remainingSeconds}, Previous: ${previousSeconds.current}, wasNotAboutToEnd: ${wasNotAboutToEnd}, isNowAboutToEnd: ${isNowAboutToEnd}`,
+                );
+
+                if (wasNotAboutToEnd && isNowAboutToEnd) {
+                    console.log("TRIGGERING startEndTicking");
                     startEndTicking();
                 }
+
+                // Update previous seconds for next iteration
+                previousSeconds.current = remainingSeconds;
 
                 setRemainingTimeInSeconds(() => {
                     saveToLocalStorage(
@@ -66,13 +81,11 @@ const useRunInterval = () => {
                 });
 
                 if (timerHasEnded(remainingSeconds)) {
+                    console.log("Timer ended - stopping interval");
                     clearIntervalIfItExists();
-
                     stopEndTicking();
                     playSound(timerBeepSoundEffect.current);
-
                     alertUserOfTimerEnd();
-
                     switchSessionType();
                 }
             }, 1000);
@@ -99,9 +112,12 @@ const useRunInterval = () => {
 
     const runInterval = useCallback(
         (endTime: number) => {
+            console.log("runInterval called, clearing existing");
             clearIntervalIfItExists();
 
-            timerInterval.current = createNewInterval(endTime);
+            const newInterval = createNewInterval(endTime);
+            timerInterval.current = newInterval;
+            console.log(`Created new interval: ${newInterval}`);
         },
         [timerInterval, clearIntervalIfItExists, createNewInterval],
     );

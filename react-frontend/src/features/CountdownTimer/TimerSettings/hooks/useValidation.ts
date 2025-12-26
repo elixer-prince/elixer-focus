@@ -1,4 +1,4 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
+import useSessionContext from "@/";
 import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext.tsx";
 import { useCallback } from "react";
 

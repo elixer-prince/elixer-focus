@@ -1,4 +1,4 @@
-import NotFound from "@app/routes/404.tsx";
+import NotFound from "@app/routes/404";
 import Login from "@app/routes/Auth/Login.tsx";
 import SignUp from "@app/routes/Auth/SignUp.tsx";
 import Bin from "@app/routes/Bin.tsx";

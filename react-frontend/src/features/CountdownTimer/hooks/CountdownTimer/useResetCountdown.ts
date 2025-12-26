@@ -1,8 +1,8 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext.tsx";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import { convertMinutesToSeconds } from "@utils/conversion";
+import { playSound } from "@utils/sound";
+import { saveToLocalStorage } from "@utils/storage";
 
 const useResetCountdown = () => {
     const {

@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@stores/ThemeContext.tsx";
+import { ThemeProvider } from "@stores/ThemeContext";
 import type { ReactNode } from "react";
 
 interface ProviderProps {

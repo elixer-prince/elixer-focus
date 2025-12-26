@@ -1,11 +1,11 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch.tsx";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext.tsx";
-import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking.tsx";
-import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval.tsx";
-import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations.tsx";
-import { getCurrentTimestamp } from "@utils/date.ts";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
+import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
+import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval";
+import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations";
+import { getCurrentTimestamp } from "@utils/date";
+import { playSound } from "@utils/sound";
+import { saveToLocalStorage } from "@utils/storage";
 import { useCallback, useEffect } from "react";
 
 const useStartCountdown = () => {
@@ -13,7 +13,7 @@ const useStartCountdown = () => {
         timerInterval,
         timerOnClickSoundEffect,
         timerEndTime,
-        hasPlayedEndBeep,
+        isEndTicking,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
         timerRunning,
@@ -50,8 +50,6 @@ const useStartCountdown = () => {
      */
 
     const startCountdown = useCallback(() => {
-        hasPlayedEndBeep.current = false;
-
         stopEndTicking();
         startTimerState();
 
@@ -67,13 +65,19 @@ const useStartCountdown = () => {
         timerEndTime,
         startTimerState,
         stopEndTicking,
-        hasPlayedEndBeep,
     ]);
 
     // Resume based on stored endTime
     const startCountdownOnPageLoad = useCallback(() => {
         // Only resume if it *should* be running
         if (!timerRunning || timerPaused) return;
+
+        // Clear any existing interval before creating a new one
+        if (timerInterval.current) {
+            clearInterval(timerInterval.current);
+            timerInterval.current = null;
+        }
+
         if (!timerEndTime.current) {
             // Fallback if for some reason endTime wasn't stored
             startCountdown();
@@ -89,7 +93,11 @@ const useStartCountdown = () => {
         );
 
         // If we re-open the page and we're already in the last 10s, start ticking
-        if (remainingSeconds > 0 && remainingSeconds <= 10) {
+        if (
+            remainingSeconds > 0 &&
+            remainingSeconds <= 10 &&
+            !isEndTicking.current
+        ) {
             startEndTicking();
         }
 
