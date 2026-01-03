@@ -8,50 +8,65 @@ import ThemeSettings from "@app/routes/Settings/Theme.tsx";
 import TimerSettings from "@app/routes/Settings/Timer.tsx";
 import Tasks from "@app/routes/Tasks.tsx";
 import Timer from "@app/routes/Timer.tsx";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter } from "react-router";
+import AuthLayout from "./layouts/AuthLayout";
+import DefaultLayout from "./layouts/DefaultLayout";
+import SettingsLayout from "./layouts/SettingsLayout";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,
+        element: <DefaultLayout />,
         errorElement: <NotFound />,
+        children: [
+            {
+                path: "/",
+                element: <Home />,
+            },
+            {
+                path: "/tasks",
+                element: <Tasks />,
+            },
+            {
+                path: "/timer",
+                element: <Timer />,
+            },
+            {
+                path: "/calendar",
+                element: <Calendar />,
+            },
+            {
+                path: "/bin",
+                element: <Bin />,
+            },
+        ],
     },
     {
-        path: "/tasks",
-        element: <Tasks />,
+        path: "/settings",
+        element: <SettingsLayout />,
+        children: [
+            {
+                path: "timer",
+                element: <TimerSettings />,
+            },
+            {
+                path: "themes",
+                element: <ThemeSettings />,
+            },
+        ],
     },
     {
-        path: "/timer",
-        element: <Timer />,
-    },
-    {
-        path: "/calendar",
-        element: <Calendar />,
-    },
-    {
-        path: "/bin",
-        element: <Bin />,
-    },
-    {
-        path: "/settings/timer",
-        element: <TimerSettings />,
-    },
-    {
-        path: "/settings/themes",
-        element: <ThemeSettings />,
-    },
-    {
-        path: "/login",
-        element: <Login />,
-    },
-    {
-        path: "/signup",
-        element: <SignUp />,
+        path: "/",
+        element: <AuthLayout />,
+        children: [
+            {
+                path: "/login",
+                element: <Login />,
+            },
+            {
+                path: "/signup",
+                element: <SignUp />,
+            },
+        ],
     },
 ]);
-
-const Router = () => {
-    return <RouterProvider router={router} />;
-};
-
-export default Router;

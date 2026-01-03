@@ -1,13 +1,9 @@
 import MusicPlayer from "@features/MusicPlayer/Index.tsx";
 import Footer from "@features/ui/Footer/Index.tsx";
 import Navbar from "@features/ui/Navigation/Navbar/Index.tsx";
-import { type ReactNode } from "react";
+import { Outlet } from "react-router";
 
-interface AppLayoutProps {
-    children: ReactNode;
-}
-
-const SimpleLayout = ({ children }: AppLayoutProps) => {
+const SimpleLayout = () => {
     return (
         <>
             {/* Main App Wrapper */}
@@ -15,7 +11,7 @@ const SimpleLayout = ({ children }: AppLayoutProps) => {
                 <Navbar />
 
                 <main className="bg-base-300 mt-(--navbar-height)">
-                    {children}
+                    <Outlet />
                 </main>
 
                 <Footer />

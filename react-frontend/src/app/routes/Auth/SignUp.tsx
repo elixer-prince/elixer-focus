@@ -1,13 +1,12 @@
-import AuthLayout from "@app/layouts/AuthLayout.tsx";
 import { Link } from "react-router";
 
 const SignUp = () => {
     return (
-        <AuthLayout>
+        <>
             <p>SignUp Page</p>
 
             <Link to="/">Back to home</Link>
-        </AuthLayout>
+        </>
     );
 };
 

@@ -1,10 +1,8 @@
-import SimpleLayout from "@app/layouts/SimpleLayout.tsx";
-
 const Tasks = () => {
     return (
-        <SimpleLayout>
+        <>
             <p>Tasks Page...</p>
-        </SimpleLayout>
+        </>
     );
 };
 

@@ -1,13 +1,11 @@
-import type { ReactNode } from "react";
+import { Outlet } from "react-router";
 
-interface AuthLayoutProps {
-    children: ReactNode;
-}
-
-const AuthLayout = ({ children }: AuthLayoutProps) => {
+const AuthLayout = () => {
     return (
         <>
-            <main>{children}</main>
+            <main>
+                <Outlet />
+            </main>
         </>
     );
 };

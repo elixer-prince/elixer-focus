@@ -31,7 +31,7 @@ const useStartCountdown = () => {
      |
      */
 
-    const startTimerState = useCallback(() => {
+    const resetToStartingTimerState = useCallback(() => {
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
@@ -50,8 +50,10 @@ const useStartCountdown = () => {
      */
 
     const startCountdown = useCallback(() => {
+        console.log("Start function called");
+
         stopEndTicking();
-        startTimerState();
+        resetToStartingTimerState();
 
         const endTime = calculateEndTime(remainingTimeInSeconds);
 
@@ -63,7 +65,7 @@ const useStartCountdown = () => {
         remainingTimeInSeconds,
         runInterval,
         timerEndTime,
-        startTimerState,
+        resetToStartingTimerState,
         stopEndTicking,
     ]);
 
@@ -155,6 +157,7 @@ const useStartCountdown = () => {
 
     const startCountdownWithSound = () => {
         if (!timerPaused) return;
+
         playSound(timerOnClickSoundEffect.current);
         startCountdown();
     };

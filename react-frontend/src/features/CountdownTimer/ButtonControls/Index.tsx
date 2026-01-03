@@ -9,7 +9,7 @@ const CountdownButtonControls = () => {
 
     return (
         // Countdown Timer Button Controls
-        <div className="mb-8 flex justify-center gap-2">
+        <div className="mb-8 flex justify-center gap-2 border border-red-500">
             {timerPaused && <StartButton />}
             {!timerPaused && <PauseButton />}
             {timerRunning && <ResetButton />}

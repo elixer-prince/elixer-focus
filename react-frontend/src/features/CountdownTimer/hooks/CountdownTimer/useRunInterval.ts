@@ -3,10 +3,7 @@ import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/us
 import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
 import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
 import { calculateRemainingSeconds } from "@features/CountdownTimer/utils/timerCalculations";
-import {
-    timerHasEnded,
-    timerIsAboutToEnd,
-} from "@features/CountdownTimer/utils/timerChecks";
+import { timerHasEnded, timerIsAboutToEnd } from "@features/CountdownTimer/utils/timerChecks";
 import { getCurrentTimestamp } from "@utils/date";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
@@ -39,7 +36,11 @@ const useRunInterval = () => {
     // Timer Interval
 
     const clearIntervalIfItExists = useCallback(() => {
+        console.log("Testing for timer interval...");
+        console.log(timerInterval.current);
+
         if (timerInterval.current) {
+            console.log("The interval was cleared!");
             clearInterval(timerInterval.current);
             timerInterval.current = null;
         }
@@ -60,10 +61,6 @@ const useRunInterval = () => {
                     previousSeconds.current > 10;
                 const isNowAboutToEnd = timerIsAboutToEnd(remainingSeconds);
 
-                console.log(
-                    `Seconds: ${remainingSeconds}, Previous: ${previousSeconds.current}, wasNotAboutToEnd: ${wasNotAboutToEnd}, isNowAboutToEnd: ${isNowAboutToEnd}`,
-                );
-
                 if (wasNotAboutToEnd && isNowAboutToEnd) {
                     console.log("TRIGGERING startEndTicking");
                     startEndTicking();
@@ -81,7 +78,6 @@ const useRunInterval = () => {
                 });
 
                 if (timerHasEnded(remainingSeconds)) {
-                    console.log("Timer ended - stopping interval");
                     clearIntervalIfItExists();
                     stopEndTicking();
                     playSound(timerBeepSoundEffect.current);
@@ -112,14 +108,11 @@ const useRunInterval = () => {
 
     const runInterval = useCallback(
         (endTime: number) => {
-            console.log("runInterval called, clearing existing");
-            clearIntervalIfItExists();
-
-            const newInterval = createNewInterval(endTime);
-            timerInterval.current = newInterval;
-            console.log(`Created new interval: ${newInterval}`);
+            console.log("Run interval was called once!");
+            // clearIntervalIfItExists();
+            timerInterval.current = createNewInterval(endTime);
         },
-        [timerInterval, clearIntervalIfItExists, createNewInterval],
+        [timerInterval, createNewInterval],
     );
 
     return { runInterval };

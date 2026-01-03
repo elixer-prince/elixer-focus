@@ -3,7 +3,6 @@ import offClickSoundURL from "@features/CountdownTimer/assets/sound-effects/off-
 import onClickSoundURL from "@features/CountdownTimer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@features/CountdownTimer/assets/sound-effects/reset-timer.mp3";
 import tickingSoundURL from "@features/CountdownTimer/assets/sound-effects/ticking.mp3";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
@@ -15,23 +14,13 @@ import {
     useRef,
     useState,
 } from "react";
+import { convertMinutesToSeconds } from "@utils/conversion.ts";
 
 interface CountdownTimerProviderProps {
     children: ReactNode;
 }
 
 type CountdownTimerContextType = {
-    readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerTickingSoundEffect: RefObject<HTMLAudioElement>;
-    readonly resetTimerSoundEffect: RefObject<HTMLAudioElement>;
-
-    timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
-    timerEndTime: RefObject<number | null>;
-    hasPlayedEndBeep: RefObject<boolean>;
-    isEndTicking: RefObject<boolean>;
-
     timerRunning: boolean;
     timerPaused: boolean;
     remainingTimeInSeconds: number;
@@ -40,6 +29,17 @@ type CountdownTimerContextType = {
     setTimerPaused: Dispatch<SetStateAction<boolean>>;
     setRemainingTimeInSeconds: Dispatch<SetStateAction<number>>;
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
+
+    timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
+    timerEndTime: RefObject<number | null>;
+    hasPlayedEndBeep: RefObject<boolean>;
+    isEndTicking: RefObject<boolean>;
+
+    readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerTickingSoundEffect: RefObject<HTMLAudioElement>;
+    readonly resetTimerSoundEffect: RefObject<HTMLAudioElement>;
 };
 
 const CountdownTimerContext = createContext<
@@ -47,14 +47,27 @@ const CountdownTimerContext = createContext<
 >(undefined);
 
 const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
-    /*---------------------------------------------------------
-    | Audio Elements
-    |----------------------------------------------------------
-    |
-    | These are only initialised once when the component
-    | loads and persist/are reused.
-    |
-    */
+    const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
+        getFromLocalStorage("startTimeInMinutes") || 25,
+    );
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
+        () =>
+            getFromLocalStorage("remainingTimeInSeconds") ||
+            convertMinutesToSeconds(startTimeInMinutes),
+    );
+    const [timerRunning, setTimerRunning] = useState<boolean>(
+        () => getFromLocalStorage("timerRunning") ?? false,
+    );
+    const [timerPaused, setTimerPaused] = useState<boolean>(
+        () => getFromLocalStorage("timerPaused") ?? true,
+    );
+
+    const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const timerEndTime = useRef<number | null>(
+        getFromLocalStorage("timerEndTime") || null,
+    );
+    const hasPlayedEndBeep = useRef<boolean>(false);
+    const isEndTicking = useRef<boolean>(false);
 
     const timerBeepSoundEffect = useRef(new Audio(beepSoundURL));
     const timerOffClickSoundEffect = useRef(new Audio(offClickSoundURL));
@@ -62,55 +75,8 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     const timerTickingSoundEffect = useRef(new Audio(tickingSoundURL));
     const resetTimerSoundEffect = useRef(new Audio(resetTimerSoundURL));
 
-    const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-
-    const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
-        getFromLocalStorage("startTimeInMinutes") || 25,
-    );
-
-    const timerEndTime = useRef<number | null>(
-        getFromLocalStorage("timerEndTime") || null,
-    );
-
-    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(
-        () =>
-            getFromLocalStorage("remainingTimeInSeconds") ||
-            convertMinutesToSeconds(startTimeInMinutes),
-    );
-
-    const hasPlayedEndBeep = useRef<boolean>(false);
-    const isEndTicking = useRef<boolean>(false);
-
-    /*---------------------------------------------------------
-    | Timer Status
-    |----------------------------------------------------------
-    |
-    | These control whether the timer should start or not by
-    | allowing checks.
-    |
-    */
-
-    const [timerRunning, setTimerRunning] = useState<boolean>(
-        () => getFromLocalStorage("timerRunning") ?? false,
-    );
-
-    const [timerPaused, setTimerPaused] = useState<boolean>(
-        () => getFromLocalStorage("timerPaused") ?? true,
-    );
-
     const contextValue: CountdownTimerContextType = useMemo(
         () => ({
-            timerBeepSoundEffect,
-            timerOffClickSoundEffect,
-            timerOnClickSoundEffect,
-            timerTickingSoundEffect,
-            resetTimerSoundEffect,
-
-            timerInterval,
-            timerEndTime,
-            hasPlayedEndBeep,
-            isEndTicking,
-
             startTimeInMinutes,
             timerRunning,
             timerPaused,
@@ -119,6 +85,17 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
             setTimerRunning,
             setTimerPaused,
             setRemainingTimeInSeconds,
+
+            timerInterval,
+            timerEndTime,
+            hasPlayedEndBeep,
+            isEndTicking,
+
+            timerBeepSoundEffect,
+            timerOffClickSoundEffect,
+            timerOnClickSoundEffect,
+            timerTickingSoundEffect,
+            resetTimerSoundEffect,
         }),
         [startTimeInMinutes, timerRunning, timerPaused, remainingTimeInSeconds],
     );

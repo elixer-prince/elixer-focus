@@ -27,6 +27,8 @@ const useEndTicking = () => {
     }, [timerTickingSoundEffect, isEndTicking]);
 
     const stopEndTicking = useCallback(() => {
+        console.log('Stop end ticking called...');
+
         // If there is a timer tickingSoundEffect
         if (timerTickingSoundEffect.current) {
             // Capture it as a local variable
