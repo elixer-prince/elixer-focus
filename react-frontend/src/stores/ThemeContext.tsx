@@ -1,4 +1,3 @@
-import { saveToLocalStorage } from "@utils/storage";
 import {
     createContext,
     useContext,
@@ -23,9 +22,9 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         if (currentTheme) {
             document.documentElement.setAttribute("data-theme", currentTheme);
-            saveToLocalStorage("currentTheme", currentTheme);
+            localStorage.setItem("currentTheme", currentTheme);
         }
-    }, []);
+    }, [currentTheme]);
 
     const contextValue: ThemeContextType = useMemo(
         () => ({

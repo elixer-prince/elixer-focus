@@ -1,7 +1,7 @@
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
 import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
 import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations";
 import { getCurrentTimestamp } from "@utils/date";
 import { playSound } from "@utils/sound";

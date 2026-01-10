@@ -1,5 +1,5 @@
 import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation";
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
+import { useTimerSettingsContext } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext";
 
 const LongBreakContainer = () => {
     const { validateAndSet } = useValidation();

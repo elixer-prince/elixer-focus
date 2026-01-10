@@ -3,6 +3,7 @@ import offClickSoundURL from "@features/CountdownTimer/assets/sound-effects/off-
 import onClickSoundURL from "@features/CountdownTimer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@features/CountdownTimer/assets/sound-effects/reset-timer.mp3";
 import tickingSoundURL from "@features/CountdownTimer/assets/sound-effects/ticking.mp3";
+import { convertMinutesToSeconds } from "@utils/conversion.ts";
 import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
@@ -10,11 +11,11 @@ import {
     type ReactNode,
     type RefObject,
     type SetStateAction,
+    useContext,
     useMemo,
     useRef,
     useState,
 } from "react";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
 
 interface CountdownTimerProviderProps {
     children: ReactNode;
@@ -46,7 +47,9 @@ const CountdownTimerContext = createContext<
     CountdownTimerContextType | undefined
 >(undefined);
 
-const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
+export const CountdownTimerProvider = ({
+    children,
+}: CountdownTimerProviderProps) => {
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
         getFromLocalStorage("startTimeInMinutes") || 25,
     );
@@ -107,4 +110,11 @@ const CountdownTimerProvider = ({ children }: CountdownTimerProviderProps) => {
     );
 };
 
-export { CountdownTimerContext, CountdownTimerProvider };
+export const useCountdownTimerContext = () => {
+    const countdownTimerContext = useContext(CountdownTimerContext);
+
+    if (!countdownTimerContext)
+        throw new Error("CountdownTimerContext must be defined!");
+
+    return countdownTimerContext;
+};

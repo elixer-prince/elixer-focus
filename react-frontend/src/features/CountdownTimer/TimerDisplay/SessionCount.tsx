@@ -1,4 +1,4 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 
 const SessionCount = () => {
     const { currentSessionCount, sessionCountLimit } = useSessionContext();

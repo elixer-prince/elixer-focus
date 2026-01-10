@@ -1,6 +1,6 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
-import { formatTimeInMinutesAndSeconds } from "@utils/formatting";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState";
+import { formatTimeInMinutesAndSeconds } from "@utils/formatting";
 
 const CountdownMinutesAndSeconds = () => {
     const { remainingTimeInSeconds } = useCountdownTimerContext();

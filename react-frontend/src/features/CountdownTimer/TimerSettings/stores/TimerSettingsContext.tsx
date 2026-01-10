@@ -1,9 +1,10 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 import {
     createContext,
     type Dispatch,
     type ReactNode,
     type SetStateAction,
+    useContext,
     useMemo,
     useState,
 } from "react";
@@ -23,7 +24,7 @@ type TimerSettingsType = {
 
 const TimerSettingsContext = createContext<TimerSettingsType | null>(null);
 
-const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
+export const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
     const { focusDuration, shortBreakDuration, longBreakDuration } =
         useSessionContext();
 
@@ -63,4 +64,14 @@ const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
     );
 };
 
-export { TimerSettingsContext, TimerSettingsProvider };
+export const useTimerSettingsContext = () => {
+    const timerSettingsContext = useContext(TimerSettingsContext);
+
+    if (!timerSettingsContext) {
+        throw new Error(
+            "useTimerSettingContext must be used within a TimerSettingsProvider!",
+        );
+    }
+
+    return timerSettingsContext;
+};

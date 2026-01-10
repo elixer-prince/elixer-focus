@@ -1,4 +1,4 @@
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
+import { useTimerSettingsContext } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext";
 import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation";
 
 const FocusContainer = () => {

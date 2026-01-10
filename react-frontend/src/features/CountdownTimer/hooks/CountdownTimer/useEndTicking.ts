@@ -1,4 +1,4 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { playSound, stopSound } from "@utils/sound";
 import { useCallback } from "react";
 

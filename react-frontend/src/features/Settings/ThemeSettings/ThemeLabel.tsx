@@ -1,11 +1,10 @@
 import ThemePreview from "@features/Settings/ThemeSettings/ThemePreview";
-import useThemeContext from "@hooks/useThemeContext";
-import type { ReactNode } from "react";
+import { useThemeContext } from "@stores/ThemeContext";
+import type { PropsWithChildren } from "react";
 
-interface ThemeLabelProps {
+type ThemeLabelProps = PropsWithChildren<{
     value: string;
-    children: ReactNode;
-}
+}>;
 
 const ThemeLabel = ({ value, children }: ThemeLabelProps) => {
     const { currentTheme, setCurrentTheme } = useThemeContext();

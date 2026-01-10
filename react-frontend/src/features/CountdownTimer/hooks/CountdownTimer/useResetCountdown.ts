@@ -1,5 +1,5 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 import { convertMinutesToSeconds } from "@utils/conversion";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";

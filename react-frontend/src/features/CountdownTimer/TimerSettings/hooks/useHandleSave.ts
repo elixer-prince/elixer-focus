@@ -1,7 +1,7 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation";
+import { useTimerSettingsContext } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext";
 import { convertMinutesToSeconds } from "@utils/conversion";
 import { saveToLocalStorage } from "@utils/storage";
 import { useCallback } from "react";

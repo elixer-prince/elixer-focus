@@ -4,6 +4,7 @@ import {
     type Dispatch,
     type ReactNode,
     type SetStateAction,
+    useContext,
     useMemo,
     useState,
 } from "react";
@@ -35,7 +36,7 @@ const CountdownSessionContext = createContext<
     CountdownSessionContextType | undefined
 >(undefined);
 
-const CountdownSessionProvider = ({
+export const CountdownSessionProvider = ({
     children,
 }: CountdownSessionProviderProps) => {
     const [focusDuration, setFocusDuration] = useState<number>(
@@ -95,4 +96,10 @@ const CountdownSessionProvider = ({
     );
 };
 
-export { CountdownSessionProvider, CountdownSessionContext };
+export const useSessionContext = () => {
+    const sessionContext = useContext(CountdownSessionContext);
+
+    if (!sessionContext) throw new Error("Session Context is undefined!");
+
+    return sessionContext;
+};

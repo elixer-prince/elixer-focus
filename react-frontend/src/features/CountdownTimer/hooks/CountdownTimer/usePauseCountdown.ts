@@ -1,4 +1,4 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
 

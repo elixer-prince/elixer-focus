@@ -1,6 +1,6 @@
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
 import usePauseCountdown from "@features/CountdownTimer/hooks/CountdownTimer/usePauseCountdown";
 import useStartCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useStartCountdown";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 
 const useHandleCountdownState = () => {
     const { timerPaused, remainingTimeInSeconds } = useCountdownTimerContext();

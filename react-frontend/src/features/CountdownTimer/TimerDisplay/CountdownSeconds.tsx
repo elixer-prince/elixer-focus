@@ -1,5 +1,5 @@
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import useHandleCountdownState from "@features/CountdownTimer/TimerDisplay/hooks/useHandleCountdownState";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
 
 const CountdownSeconds = () => {
     const { remainingTimeInSeconds } = useCountdownTimerContext();

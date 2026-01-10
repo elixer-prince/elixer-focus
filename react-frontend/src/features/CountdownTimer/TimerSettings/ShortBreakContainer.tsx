@@ -1,5 +1,5 @@
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
 import useValidation from "@features/CountdownTimer/TimerSettings/hooks/useValidation";
+import { useTimerSettingsContext } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext";
 
 const ShortBreakContainer = () => {
     const { validateAndSet } = useValidation();

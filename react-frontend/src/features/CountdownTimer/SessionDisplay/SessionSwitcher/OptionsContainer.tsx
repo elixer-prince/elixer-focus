@@ -1,6 +1,6 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
 import SessionOption from "@features/CountdownTimer/SessionDisplay/SessionSwitcher/SessionOption";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 
 const OptionsContainer = () => {
     const { switchToFocus, switchToShortBreak, switchToLongBreak } =

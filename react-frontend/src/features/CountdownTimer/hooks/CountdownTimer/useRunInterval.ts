@@ -1,9 +1,12 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
-import useCountdownTimerContext from "@features/CountdownTimer/hooks/CountdownTimer/useCountdownTimerContext";
 import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
 import { calculateRemainingSeconds } from "@features/CountdownTimer/utils/timerCalculations";
-import { timerHasEnded, timerIsAboutToEnd } from "@features/CountdownTimer/utils/timerChecks";
+import {
+    timerHasEnded,
+    timerIsAboutToEnd,
+} from "@features/CountdownTimer/utils/timerChecks";
 import { getCurrentTimestamp } from "@utils/date";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
