@@ -1,4 +1,6 @@
 @plugin "daisyui/theme" {
     name: "dark";
-    /* The rest of the customisation... */
+
+    /* Colours */
+    --color-base-300: hsl(204, 20%, 6%);
 }

@@ -1,10 +1,12 @@
-import useStartCountdown from "@features/CountdownTimer/hooks/useStartCountdown.tsx";
+import useStartCountdown from "@features/CountdownTimer/hooks/CountdownTimer/useStartCountdown";
+import { FaPlay } from "react-icons/fa";
 
 const StartButton = () => {
     const { startCountdownWithSound } = useStartCountdown();
 
     return (
-        <button className="btn btn-primary" onClick={startCountdownWithSound}>
+        <button className={"btn btn-primary"} onClick={startCountdownWithSound}>
+            <FaPlay size={12} />
             Start
         </button>
     );

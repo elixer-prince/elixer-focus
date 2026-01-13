@@ -1,11 +1,8 @@
-import CountdownTimerContainer from "@features/CountdownTimer/Index.tsx";
-import AppLayout from "@app/layouts/AppLayout";
-
 const Home = () => {
     return (
-        <AppLayout>
-            <CountdownTimerContainer />
-        </AppLayout>
+        <>
+            <p>Intro page will go here...</p>
+        </>
     );
 };
 

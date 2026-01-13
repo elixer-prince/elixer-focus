@@ -1,28 +1,23 @@
 import {
     createContext,
+    useContext,
     useEffect,
     useMemo,
     useState,
-    type Dispatch,
-    type ReactNode,
-    type SetStateAction,
+    type PropsWithChildren,
 } from "react";
-
-interface ThemeContextProps {
-    children: ReactNode;
-}
 
 type ThemeContextType = {
     currentTheme: string;
-    setCurrentTheme: Dispatch<SetStateAction<string>>;
+    setCurrentTheme: (theme: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const ThemeProvider = ({ children }: ThemeContextProps) => {
-    const [currentTheme, setCurrentTheme] = useState(() => {
-        return localStorage.getItem("currentTheme") || "dark";
-    });
+export const ThemeProvider = ({ children }: PropsWithChildren) => {
+    const [currentTheme, setCurrentTheme] = useState(
+        localStorage.getItem("currentTheme") || "dark",
+    );
 
     useEffect(() => {
         if (currentTheme) {
@@ -46,4 +41,12 @@ const ThemeProvider = ({ children }: ThemeContextProps) => {
     );
 };
 
-export { ThemeProvider, ThemeContext };
+export const useThemeContext = () => {
+    const themeContext = useContext(ThemeContext);
+
+    if (!themeContext) {
+        throw new Error("useThemeContext must be used within a ThemeProvider!");
+    }
+
+    return themeContext;
+};

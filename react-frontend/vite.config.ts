@@ -19,7 +19,7 @@ export default defineConfig({
             "@hooks": resolvePath("./src/hooks"),
             "@lib": resolvePath("./src/lib"),
             "@stores": resolvePath("./src/stores"),
-            "@testing": resolvePath("./src/testing"),
+            "@tests": resolvePath("./src/tests"),
             "@types": resolvePath("./src/types"),
             "@utils": resolvePath("./src/utils"),
         },
