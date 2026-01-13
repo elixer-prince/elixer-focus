@@ -2,16 +2,12 @@ import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
     type Dispatch,
-    type ReactNode,
+    type PropsWithChildren,
     type SetStateAction,
     useContext,
     useMemo,
     useState,
 } from "react";
-
-interface CountdownSessionProviderProps {
-    children: ReactNode;
-}
 
 type CountdownSessionType = "Focus" | "Short Break" | "Long Break";
 
@@ -36,9 +32,7 @@ const CountdownSessionContext = createContext<
     CountdownSessionContextType | undefined
 >(undefined);
 
-export const CountdownSessionProvider = ({
-    children,
-}: CountdownSessionProviderProps) => {
+export const CountdownSessionProvider = ({ children }: PropsWithChildren) => {
     const [focusDuration, setFocusDuration] = useState<number>(
         getFromLocalStorage("focusDuration") || 25,
     );

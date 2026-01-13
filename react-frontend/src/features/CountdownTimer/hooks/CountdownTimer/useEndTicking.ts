@@ -6,19 +6,19 @@ const useEndTicking = (): {
     startEndTicking: () => void;
     stopEndTicking: () => void;
 } => {
-    const { timerTickingSoundEffect, isEndTicking } =
+    const { timerTickingSoundEffectRef, isEndTickingRef } =
         useCountdownTimerContext();
 
     const startEndTicking = useCallback(() => {
         // Don't start if already ticking
-        if (isEndTicking.current) {
+        if (isEndTickingRef.current) {
             console.log("Already ticking, skipping");
             return;
         }
 
-        isEndTicking.current = true;
+        isEndTickingRef.current = true;
 
-        const audio = timerTickingSoundEffect.current;
+        const audio = timerTickingSoundEffectRef.current;
 
         if (!audio) return;
 
@@ -27,13 +27,13 @@ const useEndTicking = (): {
 
         console.log("Starting end ticking");
         playSound(audio);
-    }, [timerTickingSoundEffect, isEndTicking]);
+    }, [timerTickingSoundEffectRef, isEndTickingRef]);
 
     const stopEndTicking = () => {
-        if (!isEndTicking.current) return;
+        if (!isEndTickingRef.current) return;
 
-        isEndTicking.current = false;
-        stopSound(timerTickingSoundEffect.current);
+        isEndTickingRef.current = false;
+        stopSound(timerTickingSoundEffectRef.current);
     };
 
     return { startEndTicking, stopEndTicking };

@@ -9,11 +9,11 @@ const useResetCountdown = (): {
     resetCountdownWithSound: () => void;
 } => {
     const {
-        resetTimerSoundEffect,
+        resetTimerSoundEffectRef,
         setRemainingTimeInSeconds,
         startTimeInMinutes,
-        timerInterval,
-        timerEndTime,
+        timerIntervalRef,
+        timerEndTimeRef,
         timerRunning,
         setTimerRunning,
         setTimerPaused,
@@ -28,9 +28,9 @@ const useResetCountdown = (): {
     } = useSessionContext(); // ADD THIS
 
     const resetCountdown = () => {
-        if (timerInterval.current) clearInterval(timerInterval.current);
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
 
-        timerEndTime.current = null;
+        timerEndTimeRef.current = null;
 
         // GET THE CORRECT DURATION FOR CURRENT SESSION
         let currentDuration = startTimeInMinutes; // fallback to existing
@@ -78,7 +78,7 @@ const useResetCountdown = (): {
 
         if (confirm("Are you sure you want to reset the countdown?")) {
             resetCountdown();
-            playSound(resetTimerSoundEffect.current);
+            playSound(resetTimerSoundEffectRef.current);
         }
     };
 

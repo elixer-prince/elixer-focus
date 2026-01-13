@@ -6,8 +6,8 @@ const usePauseCountdown = (): {
     pauseCountdown: () => void;
 } => {
     const {
-        timerInterval,
-        timerOffClickSoundEffect,
+        timerIntervalRef,
+        timerOffClickSoundEffectRef,
         timerPaused,
         setTimerPaused,
     } = useCountdownTimerContext();
@@ -15,13 +15,13 @@ const usePauseCountdown = (): {
     const pauseCountdown = () => {
         if (timerPaused) return;
 
-        playSound(timerOffClickSoundEffect.current);
+        playSound(timerOffClickSoundEffectRef.current);
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", true);
             return true;
         });
 
-        if (timerInterval.current) clearInterval(timerInterval.current);
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
 
     return { pauseCountdown };

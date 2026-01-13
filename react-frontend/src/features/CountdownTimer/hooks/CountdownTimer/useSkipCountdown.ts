@@ -6,11 +6,11 @@ const useSkipCountdown = (): {
     skipCountdown: () => void;
 } => {
     const { switchSessionType } = useSessionSwitch();
-    const { resetTimerSoundEffect } = useCountdownTimerContext();
+    const { resetTimerSoundEffectRef } = useCountdownTimerContext();
 
     const skipCountdown = () => {
         if (confirm("Are you sure you want to skip the countdown?")) {
-            playSound(resetTimerSoundEffect.current);
+            playSound(resetTimerSoundEffectRef.current);
             switchSessionType();
         }
     };

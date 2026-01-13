@@ -21,8 +21,8 @@ const useSessionSwitch = () => {
         setTimerPaused,
         setTimerRunning,
         timerRunning,
-        timerInterval,
-        timerEndTime,
+        timerIntervalRef,
+        timerEndTimeRef,
     } = useCountdownTimerContext();
 
     const confirmationMessage =
@@ -134,9 +134,9 @@ const useSessionSwitch = () => {
     };
 
     const resetTimer = (newStartTime: number) => {
-        if (timerInterval.current) {
-            clearInterval(timerInterval.current);
-            timerInterval.current = null;
+        if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
         }
 
         setTimerRunning(() => {
@@ -149,7 +149,7 @@ const useSessionSwitch = () => {
             return true;
         });
 
-        timerEndTime.current = null;
+        timerEndTimeRef.current = null;
         saveToLocalStorage("timerEndTime", null);
 
         setStartTimeInMinutes(() => {

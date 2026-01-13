@@ -14,10 +14,10 @@ const useStartCountdown = (): {
     startCountdownOnPageLoad: () => void;
 } => {
     const {
-        timerInterval,
-        timerOnClickSoundEffect,
-        timerEndTime,
-        isEndTicking,
+        timerIntervalRef,
+        timerOnClickSoundEffectRef,
+        timerEndTimeRef,
+        isEndTickingRef,
         remainingTimeInSeconds,
         setRemainingTimeInSeconds,
         timerRunning,
@@ -53,14 +53,14 @@ const useStartCountdown = (): {
 
         const endTime = calculateEndTime(remainingTimeInSeconds);
 
-        timerEndTime.current = endTime;
+        timerEndTimeRef.current = endTime;
         saveToLocalStorage("timerEndTime", endTime);
 
         runInterval(endTime);
     }, [
         remainingTimeInSeconds,
         runInterval,
-        timerEndTime,
+        timerEndTimeRef,
         updateStartingTimerState,
         stopEndTicking,
     ]);
@@ -71,19 +71,19 @@ const useStartCountdown = (): {
         if (!timerRunning || timerPaused) return;
 
         // Clear any existing interval before creating a new one
-        if (timerInterval.current) {
-            clearInterval(timerInterval.current);
-            timerInterval.current = null;
+        if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
         }
 
-        if (!timerEndTime.current) {
+        if (!timerEndTimeRef.current) {
             // Fallback if for some reason endTime wasn't stored
             startCountdown();
             return;
         }
 
         const now = getCurrentTimestamp();
-        const endTime = timerEndTime.current;
+        const endTime = timerEndTimeRef.current;
 
         const remainingSeconds = Math.max(
             0,
@@ -94,7 +94,7 @@ const useStartCountdown = (): {
         if (
             remainingSeconds > 0 &&
             remainingSeconds <= 10 &&
-            !isEndTicking.current
+            !isEndTickingRef.current
         ) {
             startEndTicking();
         }
@@ -123,7 +123,7 @@ const useStartCountdown = (): {
                 return newTimerRunning;
             });
 
-            timerEndTime.current = null;
+            timerEndTimeRef.current = null;
             saveToLocalStorage("timerEndTime", null);
 
             return;
@@ -140,7 +140,7 @@ const useStartCountdown = (): {
     }, [
         timerRunning,
         timerPaused,
-        timerEndTime,
+        timerEndTimeRef,
         startEndTicking,
         stopEndTicking,
         setRemainingTimeInSeconds,
@@ -154,7 +154,7 @@ const useStartCountdown = (): {
     const startCountdownWithSound = () => {
         if (!timerPaused) return;
 
-        playSound(timerOnClickSoundEffect.current);
+        playSound(timerOnClickSoundEffectRef.current);
         startCountdown();
     };
 
@@ -163,13 +163,13 @@ const useStartCountdown = (): {
 
         return () => {
             // Cleanup on unmount
-            if (timerInterval.current) {
-                clearInterval(timerInterval.current);
-                timerInterval.current = null;
+            if (timerIntervalRef.current) {
+                clearInterval(timerIntervalRef.current);
+                timerIntervalRef.current = null;
             }
             stopEndTicking(); // In case ticking was happening
         };
-    }, [startCountdownOnPageLoad, stopEndTicking, timerInterval]);
+    }, [startCountdownOnPageLoad, stopEndTicking, timerIntervalRef]);
 
     return {
         startCountdown,

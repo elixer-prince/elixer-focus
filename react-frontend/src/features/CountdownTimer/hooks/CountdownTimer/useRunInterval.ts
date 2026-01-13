@@ -15,8 +15,11 @@ import { useCallback } from "react";
 const useRunInterval = (): {
     runInterval: (endTime: number) => void;
 } => {
-    const { timerBeepSoundEffect, timerInterval, setRemainingTimeInSeconds } =
-        useCountdownTimerContext();
+    const {
+        timerBeepSoundEffectRef,
+        timerIntervalRef,
+        setRemainingTimeInSeconds,
+    } = useCountdownTimerContext();
     const { currentSessionType } = useSessionContext();
     const { switchSessionType } = useSessionSwitch();
     const { startEndTicking, stopEndTicking } = useEndTicking();
@@ -28,11 +31,11 @@ const useRunInterval = (): {
     };
 
     const clearIntervalIfItExists = useCallback(() => {
-        if (timerInterval.current) {
-            clearInterval(timerInterval.current);
-            timerInterval.current = null;
+        if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
         }
-    }, [timerInterval]);
+    }, [timerIntervalRef]);
 
     const createNewInterval = useCallback(
         (endTime: number) => {
@@ -56,14 +59,14 @@ const useRunInterval = (): {
                 if (timerHasEnded(remainingSeconds)) {
                     clearIntervalIfItExists();
                     stopEndTicking();
-                    playSound(timerBeepSoundEffect.current);
+                    playSound(timerBeepSoundEffectRef.current);
                     alertUserOfTimerEnd();
                     switchSessionType();
                 }
             }, 1000);
         },
         [
-            timerBeepSoundEffect,
+            timerBeepSoundEffectRef,
             switchSessionType,
             setRemainingTimeInSeconds,
             startEndTicking,
@@ -76,9 +79,9 @@ const useRunInterval = (): {
     const runInterval = useCallback(
         (endTime: number) => {
             clearIntervalIfItExists();
-            timerInterval.current = createNewInterval(endTime);
+            timerIntervalRef.current = createNewInterval(endTime);
         },
-        [timerInterval, createNewInterval],
+        [timerIntervalRef, createNewInterval],
     );
 
     return { runInterval };

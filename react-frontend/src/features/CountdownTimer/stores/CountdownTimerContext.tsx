@@ -8,7 +8,7 @@ import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
     type Dispatch,
-    type ReactNode,
+    type PropsWithChildren,
     type RefObject,
     type SetStateAction,
     useContext,
@@ -16,10 +16,6 @@ import {
     useRef,
     useState,
 } from "react";
-
-interface CountdownTimerProviderProps {
-    children: ReactNode;
-}
 
 type CountdownTimerContextType = {
     timerRunning: boolean;
@@ -31,25 +27,23 @@ type CountdownTimerContextType = {
     setRemainingTimeInSeconds: Dispatch<SetStateAction<number>>;
     setStartTimeInMinutes: Dispatch<SetStateAction<number>>;
 
-    timerInterval: RefObject<ReturnType<typeof setInterval> | null>;
-    timerEndTime: RefObject<number | null>;
-    hasPlayedEndBeep: RefObject<boolean>;
-    isEndTicking: RefObject<boolean>;
+    timerIntervalRef: RefObject<ReturnType<typeof setInterval> | null>;
+    timerEndTimeRef: RefObject<number | null>;
+    hasPlayedEndBeepRef: RefObject<boolean>;
+    isEndTickingRef: RefObject<boolean>;
 
-    readonly timerBeepSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerOffClickSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerOnClickSoundEffect: RefObject<HTMLAudioElement>;
-    readonly timerTickingSoundEffect: RefObject<HTMLAudioElement>;
-    readonly resetTimerSoundEffect: RefObject<HTMLAudioElement>;
+    readonly timerBeepSoundEffectRef: RefObject<HTMLAudioElement>;
+    readonly timerOffClickSoundEffectRef: RefObject<HTMLAudioElement>;
+    readonly timerOnClickSoundEffectRef: RefObject<HTMLAudioElement>;
+    readonly timerTickingSoundEffectRef: RefObject<HTMLAudioElement>;
+    readonly resetTimerSoundEffectRef: RefObject<HTMLAudioElement>;
 };
 
 const CountdownTimerContext = createContext<
     CountdownTimerContextType | undefined
 >(undefined);
 
-export const CountdownTimerProvider = ({
-    children,
-}: CountdownTimerProviderProps) => {
+export const CountdownTimerProvider = ({ children }: PropsWithChildren) => {
     const [startTimeInMinutes, setStartTimeInMinutes] = useState<number>(
         getFromLocalStorage("startTimeInMinutes") || 25,
     );
@@ -65,18 +59,20 @@ export const CountdownTimerProvider = ({
         () => getFromLocalStorage("timerPaused") ?? true,
     );
 
-    const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-    const timerEndTime = useRef<number | null>(
+    const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+        null,
+    );
+    const timerEndTimeRef = useRef<number | null>(
         getFromLocalStorage("timerEndTime") || null,
     );
-    const hasPlayedEndBeep = useRef<boolean>(false);
-    const isEndTicking = useRef<boolean>(false);
+    const hasPlayedEndBeepRef = useRef<boolean>(false);
+    const isEndTickingRef = useRef<boolean>(false);
 
-    const timerBeepSoundEffect = useRef(new Audio(beepSoundURL));
-    const timerOffClickSoundEffect = useRef(new Audio(offClickSoundURL));
-    const timerOnClickSoundEffect = useRef(new Audio(onClickSoundURL));
-    const timerTickingSoundEffect = useRef(new Audio(tickingSoundURL));
-    const resetTimerSoundEffect = useRef(new Audio(resetTimerSoundURL));
+    const timerBeepSoundEffectRef = useRef(new Audio(beepSoundURL));
+    const timerOffClickSoundEffectRef = useRef(new Audio(offClickSoundURL));
+    const timerOnClickSoundEffectRef = useRef(new Audio(onClickSoundURL));
+    const timerTickingSoundEffectRef = useRef(new Audio(tickingSoundURL));
+    const resetTimerSoundEffectRef = useRef(new Audio(resetTimerSoundURL));
 
     const contextValue: CountdownTimerContextType = useMemo(
         () => ({
@@ -89,16 +85,16 @@ export const CountdownTimerProvider = ({
             setTimerPaused,
             setRemainingTimeInSeconds,
 
-            timerInterval,
-            timerEndTime,
-            hasPlayedEndBeep,
-            isEndTicking,
+            timerIntervalRef,
+            timerEndTimeRef,
+            hasPlayedEndBeepRef,
+            isEndTickingRef,
 
-            timerBeepSoundEffect,
-            timerOffClickSoundEffect,
-            timerOnClickSoundEffect,
-            timerTickingSoundEffect,
-            resetTimerSoundEffect,
+            timerBeepSoundEffectRef,
+            timerOffClickSoundEffectRef,
+            timerOnClickSoundEffectRef,
+            timerTickingSoundEffectRef,
+            resetTimerSoundEffectRef,
         }),
         [startTimeInMinutes, timerRunning, timerPaused, remainingTimeInSeconds],
     );
