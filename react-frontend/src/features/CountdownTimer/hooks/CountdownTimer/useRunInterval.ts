@@ -10,7 +10,7 @@ import {
 import { getCurrentTimestamp } from "@utils/date";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 const useRunInterval = () => {
     const { timerBeepSoundEffect, timerInterval, setRemainingTimeInSeconds } =
@@ -19,31 +19,14 @@ const useRunInterval = () => {
     const { switchSessionType } = useSessionSwitch();
     const { startEndTicking, stopEndTicking } = useEndTicking();
 
-    // Track when we enter the "ending soon" state
-    const previousSeconds = useRef<number | null>(null);
-
-    /*-----------------------------------------------------
-    | Helper Functions
-    |------------------------------------------------------
-    |
-    */
-
-    // Timer Alerts
-
-    const alertUserOfTimerEnd = useCallback(() => {
+    const alertUserOfTimerEnd = () => {
         setTimeout(() => {
             alert(`Your ${currentSessionType} session has ended!`);
         }, 1000);
-    }, [currentSessionType]);
-
-    // Timer Interval
+    };
 
     const clearIntervalIfItExists = useCallback(() => {
-        console.log("Testing for timer interval...");
-        console.log(timerInterval.current);
-
         if (timerInterval.current) {
-            console.log("The interval was cleared!");
             clearInterval(timerInterval.current);
             timerInterval.current = null;
         }
@@ -58,19 +41,7 @@ const useRunInterval = () => {
                     endTime,
                 );
 
-                // Start ticking at 10 seconds (only when entering the state)
-                const wasNotAboutToEnd =
-                    previousSeconds.current === null ||
-                    previousSeconds.current > 10;
-                const isNowAboutToEnd = timerIsAboutToEnd(remainingSeconds);
-
-                if (wasNotAboutToEnd && isNowAboutToEnd) {
-                    console.log("TRIGGERING startEndTicking");
-                    startEndTicking();
-                }
-
-                // Update previous seconds for next iteration
-                previousSeconds.current = remainingSeconds;
+                if (timerIsAboutToEnd(remainingSeconds)) startEndTicking();
 
                 setRemainingTimeInSeconds(() => {
                     saveToLocalStorage(
@@ -100,19 +71,9 @@ const useRunInterval = () => {
         ],
     );
 
-    /*-----------------------------------------------------
-    | ⌛ Main Run Interval Function ⌛
-    |------------------------------------------------------
-    |
-    | This function is used to run the interval that
-    | updates the remaining time in seconds every second.
-    |
-    */
-
     const runInterval = useCallback(
         (endTime: number) => {
-            console.log("Run interval was called once!");
-            // clearIntervalIfItExists();
+            clearIntervalIfItExists();
             timerInterval.current = createNewInterval(endTime);
         },
         [timerInterval, createNewInterval],
