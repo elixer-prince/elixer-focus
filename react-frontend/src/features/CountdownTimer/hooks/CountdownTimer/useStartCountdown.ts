@@ -1,5 +1,6 @@
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
-import useCountdownTimer from "@features/CountdownTimer/hooks/CountdownTimer/Index";
+import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
+import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval";
 import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations";
 import { getCurrentTimestamp } from "@utils/date";
@@ -24,8 +25,8 @@ const useStartCountdown = (): {
         timerPaused,
         setTimerPaused,
     } = useCountdownTimerContext();
-    const { startEndTicking, stopEndTicking, runInterval } =
-        useCountdownTimer();
+    const { startEndTicking, stopEndTicking } = useEndTicking();
+    const { runInterval } = useRunInterval();
     const { switchSessionType } = useSessionSwitch();
 
     const updateStartingTimerState = useCallback(() => {
