@@ -1,5 +1,5 @@
-import useSessionContext from "@features/CountdownTimer/hooks/CountdownSession/useSessionContext";
-import useTimerSettingsContext from "@features/CountdownTimer/TimerSettings/hooks/useTimerSettingsContext";
+import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext";
+import { useTimerSettingsContext } from "@features/CountdownTimer/TimerSettings/stores/TimerSettingsContext";
 import { useEffect } from "react";
 
 const useInputInitialisation = () => {
