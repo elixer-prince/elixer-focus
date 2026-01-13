@@ -1,5 +1,4 @@
 import MusicPlayer from "@features/MusicPlayer/Index.tsx";
-import Footer from "@features/ui/Footer/Index.tsx";
 import Navbar from "@features/ui/Navigation/Navbar/Index.tsx";
 import { Outlet } from "react-router";
 
@@ -13,8 +12,6 @@ const SimpleLayout = () => {
                 <main className="bg-base-300 mt-(--navbar-height)">
                     <Outlet />
                 </main>
-
-                <Footer />
             </div>
 
             <MusicPlayer />
