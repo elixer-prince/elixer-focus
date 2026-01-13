@@ -4,7 +4,10 @@ import { convertMinutesToSeconds } from "@utils/conversion";
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
 
-const useResetCountdown = () => {
+const useResetCountdown = (): {
+    resetCountdown: () => void;
+    resetCountdownWithSound: () => void;
+} => {
     const {
         resetTimerSoundEffect,
         setRemainingTimeInSeconds,

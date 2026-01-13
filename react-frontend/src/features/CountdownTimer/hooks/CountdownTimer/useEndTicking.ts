@@ -2,7 +2,10 @@ import { useCountdownTimerContext } from "@features/CountdownTimer/stores/Countd
 import { playSound, stopSound } from "@utils/sound";
 import { useCallback } from "react";
 
-const useEndTicking = () => {
+const useEndTicking = (): {
+    startEndTicking: () => void;
+    stopEndTicking: () => void;
+} => {
     const { timerTickingSoundEffect, isEndTicking } =
         useCountdownTimerContext();
 
@@ -26,21 +29,12 @@ const useEndTicking = () => {
         playSound(audio);
     }, [timerTickingSoundEffect, isEndTicking]);
 
-    const stopEndTicking = useCallback(() => {
-        console.log('Stop end ticking called...');
+    const stopEndTicking = () => {
+        if (!isEndTicking.current) return;
 
-        // If there is a timer tickingSoundEffect
-        if (timerTickingSoundEffect.current) {
-            // Capture it as a local variable
-            const audio = timerTickingSoundEffect.current;
-
-            if (isEndTicking.current) {
-                console.log("Stopping end ticking");
-                isEndTicking.current = false;
-                stopSound(audio);
-            }
-        }
-    }, [timerTickingSoundEffect, isEndTicking]);
+        isEndTicking.current = false;
+        stopSound(timerTickingSoundEffect.current);
+    };
 
     return { startEndTicking, stopEndTicking };
 };

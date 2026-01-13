@@ -12,7 +12,9 @@ import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
 import { useCallback } from "react";
 
-const useRunInterval = () => {
+const useRunInterval = (): {
+    runInterval: (endTime: number) => void;
+} => {
     const { timerBeepSoundEffect, timerInterval, setRemainingTimeInSeconds } =
         useCountdownTimerContext();
     const { currentSessionType } = useSessionContext();

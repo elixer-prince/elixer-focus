@@ -4,11 +4,6 @@ import { convertMinutesToSeconds } from "@utils/conversion";
 import { saveToLocalStorage } from "@utils/storage";
 import { useEffect } from "react";
 
-/**
- * Automatically syncs the timer duration with current session settings
- * when the timer is not running. This ensures the timer always shows
- * the correct duration for the current session type.
- */
 const useAutoSyncTimer = () => {
     const {
         currentSessionType,

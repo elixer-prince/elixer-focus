@@ -1,6 +1,5 @@
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
-import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
-import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval";
+import useCountdownTimer from "@features/CountdownTimer/hooks/CountdownTimer/Index";
 import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations";
 import { getCurrentTimestamp } from "@utils/date";
@@ -8,7 +7,11 @@ import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
 import { useCallback, useEffect } from "react";
 
-const useStartCountdown = () => {
+const useStartCountdown = (): {
+    startCountdown: () => void;
+    startCountdownWithSound: () => void;
+    startCountdownOnPageLoad: () => void;
+} => {
     const {
         timerInterval,
         timerOnClickSoundEffect,
@@ -21,9 +24,9 @@ const useStartCountdown = () => {
         timerPaused,
         setTimerPaused,
     } = useCountdownTimerContext();
-    const { startEndTicking, stopEndTicking } = useEndTicking();
+    const { startEndTicking, stopEndTicking, runInterval } =
+        useCountdownTimer();
     const { switchSessionType } = useSessionSwitch();
-    const { runInterval } = useRunInterval();
 
     const updateStartingTimerState = useCallback(() => {
         setTimerPaused(() => {

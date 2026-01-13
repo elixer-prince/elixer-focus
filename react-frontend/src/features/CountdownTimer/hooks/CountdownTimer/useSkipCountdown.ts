@@ -2,7 +2,9 @@ import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/us
 import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
 import { playSound } from "@utils/sound";
 
-const useSkipCountdown = () => {
+const useSkipCountdown = (): {
+    skipCountdown: () => void;
+} => {
     const { switchSessionType } = useSessionSwitch();
     const { resetTimerSoundEffect } = useCountdownTimerContext();
 

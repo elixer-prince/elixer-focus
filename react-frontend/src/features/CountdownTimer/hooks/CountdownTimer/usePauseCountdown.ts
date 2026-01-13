@@ -2,7 +2,9 @@ import { useCountdownTimerContext } from "@features/CountdownTimer/stores/Countd
 import { playSound } from "@utils/sound";
 import { saveToLocalStorage } from "@utils/storage";
 
-const UsePauseCountdown = () => {
+const usePauseCountdown = (): {
+    pauseCountdown: () => void;
+} => {
     const {
         timerInterval,
         timerOffClickSoundEffect,
@@ -25,4 +27,4 @@ const UsePauseCountdown = () => {
     return { pauseCountdown };
 };
 
-export default UsePauseCountdown;
+export default usePauseCountdown;
