@@ -9,14 +9,13 @@ const CountdownDisplay = () => {
     const { isEndingSoon } = useHandleCountdownState();
 
     return (
-        // Countdown Timer Clickable Area
         <div
-            className={`relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden border border-red-500 p-10 outline-none select-none ${isEndingSoon ? "animate-pulse" : ""}`.trim()}
+            className={`relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden p-10 outline-none select-none ${isEndingSoon ? "animate-pulse" : ""}`.trim()}
         >
             <ClickableArea />
+            <FocusRing />
             <SessionCount />
             <CountdownSeconds />
-            <FocusRing />
             <CountdownMinutesAndSeconds />
         </div>
     );
