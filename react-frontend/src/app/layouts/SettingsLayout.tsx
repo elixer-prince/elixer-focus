@@ -7,11 +7,11 @@ const SettingsLayout = () => {
         <>
             <Sidebar />
 
-            <main className="ml-(--sidebar-width) p-8">
+            <main className={"ml-(--sidebar-width) p-8"}>
                 <Outlet />
             </main>
 
-            <Footer className="ml-(--sidebar-width)" />
+            <Footer className={"ml-(--sidebar-width)"} />
         </>
     );
 };

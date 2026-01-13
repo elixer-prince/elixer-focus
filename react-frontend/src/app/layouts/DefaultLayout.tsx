@@ -6,10 +6,10 @@ const SimpleLayout = () => {
     return (
         <>
             {/* Main App Wrapper */}
-            <div className="mb-(--music-player-height)">
+            <div className={"mb-(--music-player-height)"}>
                 <Navbar />
 
-                <main className="bg-base-300 mt-(--navbar-height)">
+                <main className={"bg-base-300 mt-(--navbar-height)"}>
                     <Outlet />
                 </main>
             </div>
