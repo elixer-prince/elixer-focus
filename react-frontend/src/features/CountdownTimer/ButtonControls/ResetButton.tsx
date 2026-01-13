@@ -5,9 +5,8 @@ const ResetButton = () => {
     const { resetCountdownWithSound } = useResetCountdown();
 
     return (
-        // Reset Button
         <button
-            className="btn btn-error btn-soft"
+            className={"btn btn-error btn-soft"}
             onClick={resetCountdownWithSound}
         >
             <VscDebugRestart size={20} />
