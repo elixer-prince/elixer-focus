@@ -25,13 +25,7 @@ const useStartCountdown = () => {
     const { switchSessionType } = useSessionSwitch();
     const { runInterval } = useRunInterval();
 
-    /*------------------------------------------------------------
-     |  Helper Functions
-     |------------------------------------------------------------
-     |
-     */
-
-    const resetToStartingTimerState = useCallback(() => {
+    const updateStartingTimerState = useCallback(() => {
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
@@ -50,10 +44,8 @@ const useStartCountdown = () => {
      */
 
     const startCountdown = useCallback(() => {
-        console.log("Start function called");
-
         stopEndTicking();
-        resetToStartingTimerState();
+        updateStartingTimerState();
 
         const endTime = calculateEndTime(remainingTimeInSeconds);
 
@@ -65,7 +57,7 @@ const useStartCountdown = () => {
         remainingTimeInSeconds,
         runInterval,
         timerEndTime,
-        resetToStartingTimerState,
+        updateStartingTimerState,
         stopEndTicking,
     ]);
 
