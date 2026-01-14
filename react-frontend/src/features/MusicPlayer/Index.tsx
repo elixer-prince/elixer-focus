@@ -20,28 +20,27 @@ const MusicPlayerContent = () => {
                 <div
                     className={"cursor-pointer"}
                     onClick={() => {
-                        playVideo(playerInstanceRef.current);
+                        pauseVideo(playerInstanceRef.current);
                         setPlaybackPaused(false);
                     }}
                 >
-                    play
+                    pause
                 </div>
             ) : (
                 <div
                     className={"cursor-pointer"}
                     onClick={() => {
-                        pauseVideo(playerInstanceRef.current);
+                        playVideo(playerInstanceRef.current);
                         setPlaybackPaused(true);
                     }}
                 >
-                    pause
+                    play
                 </div>
             )}
 
             <div>player track</div>
             <div>volume slider</div>
             <div>song list</div>
-            <div>close</div>
         </div>
     );
 };
