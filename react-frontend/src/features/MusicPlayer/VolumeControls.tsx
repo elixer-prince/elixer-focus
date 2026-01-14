@@ -12,7 +12,7 @@ const VolumeControls = () => {
     };
 
     return (
-        <div>
+        <div className="flex items-center gap-4">
             <button onClick={() => setShowSlider(!showSlider)}>
                 <FaVolumeUp size={20} className={"cursor-pointer"} />
             </button>
