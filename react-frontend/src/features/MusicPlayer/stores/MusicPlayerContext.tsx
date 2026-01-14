@@ -56,6 +56,7 @@ type MusicPlayerContextType = {
     playbackPaused: boolean;
     songs: SongType[];
     volume: number;
+    showSlider: boolean;
 
     playerRef: RefObject<HTMLDivElement | null>;
     playerInstanceRef: RefObject<any>;
@@ -64,6 +65,7 @@ type MusicPlayerContextType = {
     setPlaybackPaused: (value: boolean) => void;
     setSongs: Dispatch<SetStateAction<SongType[]>>;
     setVolume: (value: number) => void;
+    setShowSlider: (value: boolean) => void;
 };
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | null>(null);
@@ -77,6 +79,7 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
     );
     const [songs, setSongs] = useState<SongType[]>(defaultSongs);
     const [volume, setVolume] = useState(50);
+    const [showSlider, setShowSlider] = useState(false);
 
     const playerRef = useRef<HTMLDivElement | null>(null);
     const playerInstanceRef = useRef<any>(null);
@@ -119,22 +122,26 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
             playbackPaused,
             songs,
             volume,
+            showSlider,
             playerRef,
             playerInstanceRef,
             setChosenSongId,
             setPlaybackPaused,
             setSongs,
             setVolume,
+            setShowSlider,
         }),
         [
             chosenSongId,
             playbackPaused,
             songs,
             volume,
+            showSlider,
             setChosenSongId,
             setPlaybackPaused,
             setSongs,
             setVolume,
+            setShowSlider,
         ],
     );
 

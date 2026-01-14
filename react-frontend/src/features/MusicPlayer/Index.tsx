@@ -4,12 +4,27 @@ import {
     useMusicPlayerContext,
 } from "@features/MusicPlayer/stores/MusicPlayerContext";
 import { pauseVideo, playVideo } from "@features/MusicPlayer/utils/controls";
+import type { ChangeEvent } from "react";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
 const MusicPlayerContent = () => {
-    const { playerInstanceRef, playerRef, playbackPaused, setPlaybackPaused } =
-        useMusicPlayerContext();
+    const {
+        playerInstanceRef,
+        playerRef,
+        playbackPaused,
+        volume,
+        setVolume,
+        setPlaybackPaused,
+        showSlider,
+        setShowSlider,
+    } = useMusicPlayerContext();
+
+    const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newVolume = Number(event.target.value);
+        setVolume(newVolume);
+        playerInstanceRef.current?.setVolume(newVolume);
+    };
 
     return (
         <div
@@ -47,9 +62,20 @@ const MusicPlayerContent = () => {
 
             <div>player track</div>
 
-            <div>
+            <button onClick={() => setShowSlider(!showSlider)}>
                 <FaVolumeUp size={20} className={"cursor-pointer"} />
-            </div>
+            </button>
+
+            {showSlider && (
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    className="range range-xs range-primary rounded-full"
+                />
+            )}
 
             <MusicSwitcher />
         </div>
