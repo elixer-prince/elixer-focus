@@ -55,6 +55,7 @@ type MusicPlayerContextType = {
     chosenSongId: number;
     playbackPaused: boolean;
     songs: SongType[];
+    volume: number;
 
     playerRef: RefObject<HTMLDivElement | null>;
     playerInstanceRef: RefObject<any>;
@@ -62,6 +63,7 @@ type MusicPlayerContextType = {
     setChosenSongId: (value: number) => void;
     setPlaybackPaused: (value: boolean) => void;
     setSongs: Dispatch<SetStateAction<SongType[]>>;
+    setVolume: (value: number) => void;
 };
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | null>(null);
@@ -74,6 +76,7 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
         getFromLocalStorage("playbackPaused") && true,
     );
     const [songs, setSongs] = useState<SongType[]>(defaultSongs);
+    const [volume, setVolume] = useState(50);
 
     const playerRef = useRef<HTMLDivElement | null>(null);
     const playerInstanceRef = useRef<any>(null);
@@ -115,19 +118,23 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
             chosenSongId,
             playbackPaused,
             songs,
+            volume,
             playerRef,
             playerInstanceRef,
             setChosenSongId,
             setPlaybackPaused,
             setSongs,
+            setVolume,
         }),
         [
             chosenSongId,
             playbackPaused,
             songs,
+            volume,
             setChosenSongId,
             setPlaybackPaused,
             setSongs,
+            setVolume,
         ],
     );
 

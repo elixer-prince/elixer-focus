@@ -1,20 +1,15 @@
+import MusicSwitcher from "@features/MusicPlayer/MusicSwitcher";
 import {
     MusicPlayerProvider,
     useMusicPlayerContext,
 } from "@features/MusicPlayer/stores/MusicPlayerContext";
 import { pauseVideo, playVideo } from "@features/MusicPlayer/utils/controls";
+import { FaVolumeUp } from "react-icons/fa";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
 const MusicPlayerContent = () => {
-    const {
-        playerInstanceRef,
-        playerRef,
-        playbackPaused,
-        chosenSongId,
-        songs,
-        setChosenSongId,
-        setPlaybackPaused,
-    } = useMusicPlayerContext();
+    const { playerInstanceRef, playerRef, playbackPaused, setPlaybackPaused } =
+        useMusicPlayerContext();
 
     return (
         <div
@@ -51,35 +46,12 @@ const MusicPlayerContent = () => {
             )}
 
             <div>player track</div>
-            <div>volume slider</div>
 
-            <div className="dropdown dropdown-top dropdown-center">
-                <div
-                    tabIndex={0}
-                    role="button"
-                    className="btn btn-soft btn-ghost"
-                >
-                    Switch Song
-                </div>
-
-                <ul
-                    tabIndex={-1}
-                    className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-                >
-                    {songs.map(({ id, title }) => (
-                        <label key={id}>
-                            <input
-                                name="session-type"
-                                type="radio"
-                                className="accent-primary"
-                                onChange={() => setChosenSongId(id)}
-                                checked={chosenSongId === id}
-                            />
-                            {title}
-                        </label>
-                    ))}
-                </ul>
+            <div>
+                <FaVolumeUp size={20} className={"cursor-pointer"} />
             </div>
+
+            <MusicSwitcher />
         </div>
     );
 };
