@@ -1,7 +1,13 @@
+import {
+    onPlayerReady,
+    onPlayerStateChange,
+} from "@features/MusicPlayer/utils/controls";
+import { getVideoId } from "@features/MusicPlayer/utils/conversion";
 import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
     useContext,
+    useEffect,
     useMemo,
     useRef,
     useState,
@@ -51,6 +57,7 @@ type MusicPlayerContextType = {
     songs: SongType[];
 
     playerRef: RefObject<HTMLDivElement | null>;
+    playerInstanceRef: RefObject<any>;
 
     setChosenSongIndex: (value: number) => void;
     setPlaybackPaused: (value: boolean) => void;
@@ -64,22 +71,34 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
         getFromLocalStorage("chosenSongIndex") || 0,
     );
     const [playbackPaused, setPlaybackPaused] = useState(
-        getFromLocalStorage("playbackPaused") && false,
+        getFromLocalStorage("playbackPaused") && true,
     );
     const [songs, setSongs] = useState<SongType[]>(defaultSongs);
 
     const playerRef = useRef<HTMLDivElement | null>(null);
+    const playerInstanceRef = useRef<any>(null);
 
-    // useEffect(() => {
-    //     if (player) {
-    //         const videoId = extractVideoId(playlist[value].src);
-    //         player.loadVideoById(videoId);
-    //     }
+    useEffect(() => {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
 
-    //     if (youtubeAPIAlreadyLoaded()) return createPlayer();
-
-    //     window._createPlayerAfterAPI();
-    // }, []);
+        window.onYouTubeIframeAPIReady = () => {
+            if (playerRef.current) {
+                playerInstanceRef.current = new window.YT.Player(
+                    playerRef.current,
+                    {
+                        videoId: getVideoId(songs[chosenSongIndex].src),
+                        playerVars: { playsinline: 1 },
+                        events: {
+                            onReady: onPlayerReady,
+                            onStateChange: onPlayerStateChange,
+                        },
+                    },
+                );
+            }
+        };
+    }, []);
 
     const contextValue: MusicPlayerContextType = useMemo(
         () => ({
@@ -87,6 +106,7 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
             playbackPaused,
             songs,
             playerRef,
+            playerInstanceRef,
             setChosenSongIndex,
             setPlaybackPaused,
             setSongs,
