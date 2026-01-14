@@ -1,7 +1,3 @@
-import {
-    onPlayerReady,
-    onPlayerStateChange,
-} from "@features/MusicPlayer/utils/controls";
 import { getVideoId } from "@features/MusicPlayer/utils/conversion";
 import { getFromLocalStorage } from "@utils/storage.ts";
 import {
@@ -96,11 +92,11 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
                     {
                         videoId: getVideoId(songs[chosenSongId].src),
                         playerVars: { autoplay: 0, playsinline: 1 },
-                        events: {
-                            onReady: (event: any) =>
-                                onPlayerReady(event, playbackPaused),
-                            onStateChange: onPlayerStateChange,
-                        },
+                        // events: {
+                        //     onReady: (event: any) =>
+                        //         onPlayerReady(event, playbackPaused),
+                        //     onStateChange: onPlayerStateChange,
+                        // },
                     },
                 );
             }
