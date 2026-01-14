@@ -1,5 +1,9 @@
-export const onPlayerReady = (event: any) => {
-    event.target.playVideo();
+export const onPlayerReady = (event: any, playbackPaused: boolean) => {
+    if (playbackPaused) {
+        event.target.pauseVideo();
+    } else {
+        event.target.playVideo();
+    }
 };
 
 export const onPlayerStateChange = (event: any) => {

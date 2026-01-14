@@ -89,8 +89,10 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
                     playerRef.current,
                     {
                         videoId: getVideoId(songs[chosenSongId].src),
+                        playerVars: { autoplay: 0, playsinline: 1 },
                         events: {
-                            onReady: onPlayerReady,
+                            onReady: (event: any) =>
+                                onPlayerReady(event, playbackPaused),
                             onStateChange: onPlayerStateChange,
                         },
                     },
