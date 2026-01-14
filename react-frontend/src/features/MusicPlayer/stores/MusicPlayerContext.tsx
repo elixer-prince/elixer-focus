@@ -32,7 +32,7 @@ const defaultSongs = [
     },
     {
         id: 3,
-        title: "90s Chill Lofi Playlist",
+        title: "90's Chill Lofi Playlist",
         src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
         isRecommended: false,
     },
@@ -52,14 +52,14 @@ type SongType = {
 };
 
 type MusicPlayerContextType = {
-    chosenSongIndex: number;
+    chosenSongId: number;
     playbackPaused: boolean;
     songs: SongType[];
 
     playerRef: RefObject<HTMLDivElement | null>;
     playerInstanceRef: RefObject<any>;
 
-    setChosenSongIndex: (value: number) => void;
+    setChosenSongId: (value: number) => void;
     setPlaybackPaused: (value: boolean) => void;
     setSongs: Dispatch<SetStateAction<SongType[]>>;
 };
@@ -67,8 +67,8 @@ type MusicPlayerContextType = {
 const MusicPlayerContext = createContext<MusicPlayerContextType | null>(null);
 
 export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
-    const [chosenSongIndex, setChosenSongIndex] = useState(
-        getFromLocalStorage("chosenSongIndex") || 0,
+    const [chosenSongId, setChosenSongId] = useState(
+        getFromLocalStorage("chosenSongId") ?? defaultSongs[0].id,
     );
     const [playbackPaused, setPlaybackPaused] = useState(
         getFromLocalStorage("playbackPaused") && true,
@@ -88,8 +88,7 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
                 playerInstanceRef.current = new window.YT.Player(
                     playerRef.current,
                     {
-                        videoId: getVideoId(songs[chosenSongIndex].src),
-                        playerVars: { playsinline: 1 },
+                        videoId: getVideoId(songs[chosenSongId].src),
                         events: {
                             onReady: onPlayerReady,
                             onStateChange: onPlayerStateChange,
@@ -102,27 +101,29 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
 
     useEffect(() => {
         if (playerInstanceRef.current) {
-            const nextId = getVideoId(songs[chosenSongIndex].src);
-            playerInstanceRef.current.loadVideoById(nextId);
+            const song = songs.find((s) => s.id === chosenSongId);
+            if (song) {
+                playerInstanceRef.current.loadVideoById(getVideoId(song.src));
+            }
         }
-    }, [chosenSongIndex, songs]);
+    }, [chosenSongId, songs]);
 
     const contextValue: MusicPlayerContextType = useMemo(
         () => ({
-            chosenSongIndex,
+            chosenSongId,
             playbackPaused,
             songs,
             playerRef,
             playerInstanceRef,
-            setChosenSongIndex,
+            setChosenSongId,
             setPlaybackPaused,
             setSongs,
         }),
         [
-            chosenSongIndex,
+            chosenSongId,
             playbackPaused,
             songs,
-            setChosenSongIndex,
+            setChosenSongId,
             setPlaybackPaused,
             setSongs,
         ],
