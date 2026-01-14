@@ -1,5 +1,5 @@
-import LinkContainer from "@features/ui/Navigation/Sidebar/LinkContainer.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
+import LinkContainer from "@features/ui/Navigation/Sidebar/LinkContainer.tsx";
 
 const Sidebar = () => {
     return (
