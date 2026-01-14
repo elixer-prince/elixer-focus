@@ -5,8 +5,14 @@ import {
 import { pauseVideo, playVideo } from "@features/MusicPlayer/utils/controls";
 
 const MusicPlayerContent = () => {
-    const { playerInstanceRef, playerRef, playbackPaused, setPlaybackPaused } =
-        useMusicPlayerContext();
+    const {
+        playerInstanceRef,
+        playerRef,
+        playbackPaused,
+        songs,
+        setChosenSongIndex,
+        setPlaybackPaused,
+    } = useMusicPlayerContext();
 
     return (
         <div
@@ -40,7 +46,20 @@ const MusicPlayerContent = () => {
 
             <div>player track</div>
             <div>volume slider</div>
-            <div>song list</div>
+
+            <div>
+                {songs.map(({ id, title }) => (
+                    <div
+                        key={id}
+                        onClick={() => {
+                            setChosenSongIndex(id);
+                            console.log(id);
+                        }}
+                    >
+                        {title}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

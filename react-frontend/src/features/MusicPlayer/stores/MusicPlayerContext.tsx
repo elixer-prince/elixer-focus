@@ -100,6 +100,13 @@ export const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (playerInstanceRef.current) {
+            const nextId = getVideoId(songs[chosenSongIndex].src);
+            playerInstanceRef.current.loadVideoById(nextId);
+        }
+    }, [chosenSongIndex, songs]);
+
     const contextValue: MusicPlayerContextType = useMemo(
         () => ({
             chosenSongIndex,
