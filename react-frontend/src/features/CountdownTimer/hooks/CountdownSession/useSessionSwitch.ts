@@ -84,27 +84,25 @@ const useSessionSwitch = () => {
     const handleBreakSwitching = () => {
         if (currentSessionCount + 1 >= sessionCountLimit) {
             updateLongBreakDurationAndReset();
-            updateSessionCount(0);
-        } else {
-            updateShortBreakDurationAndReset();
-
-            setCurrentSessionCount((sessionCount) => {
-                const newSessionCount = sessionCount + 1;
-
-                saveToLocalStorage("currentSessionCount", newSessionCount);
-                return newSessionCount;
-            });
+            return updateSessionCount(0);
         }
+
+        updateShortBreakDurationAndReset();
+
+        setCurrentSessionCount((sessionCount) => {
+            const newSessionCount = sessionCount + 1;
+
+            saveToLocalStorage("currentSessionCount", newSessionCount);
+            return newSessionCount;
+        });
     };
 
     const switchToFocus = () => {
         if (currentSessionType === "Focus") return;
 
-        if (timerRunning) {
-            if (confirm(confirmationMessage)) {
-                updateFocusDurationAndReset();
-            }
-        } else {
+        if (!timerRunning) return updateFocusDurationAndReset();
+
+        if (confirm(confirmationMessage)) {
             updateFocusDurationAndReset();
         }
     };
@@ -112,11 +110,9 @@ const useSessionSwitch = () => {
     const switchToShortBreak = () => {
         if (currentSessionType === "Short Break") return;
 
-        if (timerRunning) {
-            if (confirm(confirmationMessage)) {
-                updateShortBreakDurationAndReset();
-            }
-        } else {
+        if (!timerRunning) return updateShortBreakDurationAndReset();
+
+        if (confirm(confirmationMessage)) {
             updateShortBreakDurationAndReset();
         }
     };
@@ -124,11 +120,9 @@ const useSessionSwitch = () => {
     const switchToLongBreak = () => {
         if (currentSessionType === "Long Break") return;
 
-        if (timerRunning) {
-            if (confirm(confirmationMessage)) {
-                updateLongBreakDurationAndReset();
-            }
-        } else {
+        if (!timerRunning) return updateLongBreakDurationAndReset();
+
+        if (confirm(confirmationMessage)) {
             updateLongBreakDurationAndReset();
         }
     };
