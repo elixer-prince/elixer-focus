@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 interface SessionOptionProps {
     value: string;
     onChange: () => void;
     checked: boolean;
-    children: ReactNode;
 }
 
 const SessionOption = ({
@@ -12,7 +11,7 @@ const SessionOption = ({
     onChange,
     checked,
     children,
-}: SessionOptionProps) => {
+}: PropsWithChildren<SessionOptionProps>) => {
     return (
         <label>
             <input
