@@ -2,8 +2,7 @@ import SidebarLink from "@features/ui/Navigation/Sidebar/Link.tsx";
 
 const LinkContainer = () => {
     return (
-        // Sidebar Link Container
-        <ul>
+        <ul className={"max-sm:hidden"}>
             <li>
                 <SidebarLink to="/settings/themes">Themes</SidebarLink>
             </li>

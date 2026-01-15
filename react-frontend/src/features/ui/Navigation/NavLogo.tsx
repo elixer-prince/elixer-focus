@@ -1,10 +1,9 @@
 import { Link } from "react-router";
 
-const NavLogo = () => {
+const NavLogo = ({ className }: { className?: string }) => {
     return (
-        // Navbar Logo
-        <Link to="/" className="hidden select-none sm:block">
-            <span className="text-xl font-bold">Elixer Focus</span>
+        <Link to="/" className={`${className} select-none`.trim()}>
+            <span className={"text-xl font-bold"}>Elixer Focus</span>
         </Link>
     );
 };

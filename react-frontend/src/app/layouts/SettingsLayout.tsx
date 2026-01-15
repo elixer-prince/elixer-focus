@@ -6,7 +6,11 @@ const SettingsLayout = () => {
         <>
             <Sidebar />
 
-            <main className={"ml-(--sidebar-width) p-8"}>
+            <main
+                className={
+                    "p-8 max-sm:mt-(--navbar-height) sm:ml-(--sidebar-width)"
+                }
+            >
                 <Outlet />
             </main>
         </>
