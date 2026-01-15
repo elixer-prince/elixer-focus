@@ -8,7 +8,6 @@ const OptionsContainer = () => {
     const { currentSessionType } = useSessionContext();
 
     return (
-        // Dropdown Options
         <ul
             tabIndex={-1}
             className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
