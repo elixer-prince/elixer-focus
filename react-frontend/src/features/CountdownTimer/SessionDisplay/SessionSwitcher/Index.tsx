@@ -3,7 +3,7 @@ import DropdownButton from "@features/CountdownTimer/SessionDisplay/SessionSwitc
 
 const SessionSwitcher = () => {
     return (
-        <div className="dropdown dropdown-center">
+        <div className={"dropdown dropdown-center"}>
             <DropdownButton />
             <OptionsContainer />
         </div>

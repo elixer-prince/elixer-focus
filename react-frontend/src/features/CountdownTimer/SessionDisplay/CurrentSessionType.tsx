@@ -5,7 +5,7 @@ const CurrentSessionType = () => {
 
     return (
         // Current Session Type
-        <p className="text-center text-4xl font-bold">
+        <p className={"text-center text-4xl font-bold"}>
             {currentSessionType} Session
         </p>
     );

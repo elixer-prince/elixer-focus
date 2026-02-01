@@ -9,7 +9,11 @@ const CountdownTimerContainer = () => {
         <CountdownTimerProvider>
             <CountdownSessionProvider>
                 {/* Countdown Timer Section */}
-                <section className="flex flex-col items-center justify-center gap-8 p-4">
+                <section
+                    className={
+                        "flex flex-col items-center justify-center gap-8 p-4"
+                    }
+                >
                     <CountdownHeader />
                     <CountdownDisplay />
                     <CountdownControls />

@@ -7,21 +7,21 @@ const LongBreakContainer = () => {
 
     return (
         <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label className={"mb-2 block text-sm font-medium"}>
                 Long Break (minutes)
             </label>
             <input
-                type="number"
+                type={"number"}
                 value={draftLongBreak}
                 onChange={(e) => {
                     validateAndSet(e.target.value, setDraftLongBreak, 5);
                 }}
-                className="input input-primary"
+                className={"input input-primary"}
                 min={5}
-                placeholder="15"
+                placeholder={"15"}
             />
             {draftLongBreak && Number(draftLongBreak) < 5 && (
-                <p className="mt-1 text-sm text-red-500">
+                <p className={"mt-1 text-sm text-red-500"}>
                     Must be at least 5 minutes
                 </p>
             )}

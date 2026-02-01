@@ -1,10 +1,5 @@
-import BrainDumpIcon from "@features/ui/Navigation/Navbar/BrainDumpIcon.tsx";
 import HamburgerMenu from "@features/ui/Navigation/Navbar/HamburgerMenu.tsx";
 import useNavbarContext from "@features/ui/Navigation/Navbar/hooks/useNavbarContext.tsx";
-import LoginLink from "@features/ui/Navigation/Navbar/LoginLink.tsx";
-import NavLinkContainer from "@features/ui/Navigation/Navbar/NavLinkContainer.tsx";
-import ProfileAvatar from "@features/ui/Navigation/Navbar/ProfileAvatar.tsx";
-import SettingsIcon from "@features/ui/Navigation/Navbar/SettingsIcon.tsx";
 import { NavbarProvider } from "@features/ui/Navigation/Navbar/stores/NavbarContext.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
 
@@ -24,17 +19,17 @@ const NavbarContent = () => {
 
                     <div className={"flex items-baseline gap-8"}>
                         <NavLogo />
-                        <NavLinkContainer />
+                        {/*<NavLinkContainer />*/}
                     </div>
                 </div>
 
                 {/* Right Container */}
-                <div className={"flex items-center gap-4"}>
-                    <BrainDumpIcon />
-                    <SettingsIcon />
-                    <LoginLink />
-                    <ProfileAvatar />
-                </div>
+                {/*<div className={"flex items-center gap-4"}>*/}
+                {/*    <BrainDumpIcon />*/}
+                {/*    <SettingsIcon />*/}
+                {/*    <LoginLink />*/}
+                {/*    <ProfileAvatar />*/}
+                {/*</div>*/}
             </div>
         </nav>
     );

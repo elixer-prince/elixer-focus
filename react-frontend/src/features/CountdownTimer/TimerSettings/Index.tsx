@@ -10,22 +10,22 @@ const TimerSettingsContent = () => {
     const { handleSave } = useHandleSave();
 
     return (
-        <section className="size-full h-full">
+        <section className={"size-full h-full"}>
             <header>
-                <h1 className="text-primary mb-4 text-lg font-bold">
+                <h1 className={"text-primary mb-4 text-lg font-bold"}>
                     Countdown Timer Settings
                 </h1>
             </header>
 
-            <div className="mb-8 flex flex-col gap-4">
+            <div className={"mb-8 flex flex-col gap-4"}>
                 <FocusContainer />
                 <ShortBreakContainer />
                 <LongBreakContainer />
             </div>
 
             <button
-                type="button"
-                className="btn btn-primary"
+                type={"button"}
+                className={"btn btn-primary"}
                 onClick={handleSave}
                 disabled={!hasUnsavedChanges}
             >
@@ -33,12 +33,12 @@ const TimerSettingsContent = () => {
             </button>
 
             {hasUnsavedChanges && (
-                <p className="mt-2 text-sm text-yellow-600">
+                <p className={"mt-2 text-sm text-yellow-600"}>
                     ⚠️ You have unsaved changes
                 </p>
             )}
 
-            <p className="mt-4 text-xs text-gray-500">
+            <p className={"mt-4 text-xs text-gray-500"}>
                 Note: Timer will automatically update to new durations when it's
                 not running.
             </p>

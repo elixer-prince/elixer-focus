@@ -10,11 +10,13 @@ const OptionsContainer = () => {
     return (
         <ul
             tabIndex={-1}
-            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+            className={
+                "dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+            }
         >
             <li>
                 <SessionOption
-                    value="Focus"
+                    value={"Focus"}
                     onChange={switchToFocus}
                     checked={currentSessionType === "Focus"}
                 >
@@ -23,7 +25,7 @@ const OptionsContainer = () => {
             </li>
             <li>
                 <SessionOption
-                    value="Short Break"
+                    value={"Short Break"}
                     onChange={switchToShortBreak}
                     checked={currentSessionType === "Short Break"}
                 >
@@ -32,7 +34,7 @@ const OptionsContainer = () => {
             </li>
             <li>
                 <SessionOption
-                    value="Long Break"
+                    value={"Long Break"}
                     onChange={switchToLongBreak}
                     checked={currentSessionType === "Long Break"}
                 >
