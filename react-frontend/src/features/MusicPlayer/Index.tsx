@@ -1,6 +1,9 @@
 import PauseButton from "@features/MusicPlayer/PauseButton";
 import PlayButton from "@features/MusicPlayer/PlayButton";
-import { MusicPlayerProvider, useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext";
+import {
+    MusicPlayerProvider,
+    useMusicPlayerContext,
+} from "@features/MusicPlayer/stores/MusicPlayerContext";
 import VolumeControls from "@features/MusicPlayer/VolumeControls";
 
 const MusicPlayerContent = () => {
