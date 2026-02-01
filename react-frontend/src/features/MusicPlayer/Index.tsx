@@ -1,10 +1,6 @@
-import MusicSwitcher from "@features/MusicPlayer/MusicSwitcher";
 import PauseButton from "@features/MusicPlayer/PauseButton";
 import PlayButton from "@features/MusicPlayer/PlayButton";
-import {
-    MusicPlayerProvider,
-    useMusicPlayerContext,
-} from "@features/MusicPlayer/stores/MusicPlayerContext";
+import { MusicPlayerProvider, useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext";
 import VolumeControls from "@features/MusicPlayer/VolumeControls";
 
 const MusicPlayerContent = () => {
@@ -20,11 +16,9 @@ const MusicPlayerContent = () => {
 
             {playbackPaused ? <PlayButton /> : <PauseButton />}
 
-            <div>player track</div>
-
             <VolumeControls />
 
-            <MusicSwitcher />
+            {/*<MusicSwitcher />*/}
         </article>
     );
 };
