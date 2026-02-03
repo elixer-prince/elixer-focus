@@ -2,8 +2,7 @@ import { Outlet } from "react-router";
 
 const Onboarding = () => {
     return (
-        <main>
-            Onboarding Flow
+        <main className={"flex min-h-screen items-center justify-center"}>
             <Outlet />
         </main>
     );

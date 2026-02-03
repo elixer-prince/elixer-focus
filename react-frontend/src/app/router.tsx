@@ -6,6 +6,10 @@ import { createBrowserRouter } from "react-router";
 import DefaultLayout from "./layouts/Default.tsx";
 import Settings from "./layouts/Settings.tsx";
 import Step1 from "@app/routes/Onboarding/Step1.tsx";
+import Step2 from "@app/routes/Onboarding/Step2.tsx";
+import Step3 from "@app/routes/Onboarding/Step3.tsx";
+import Step4 from "@app/routes/Onboarding/Step4.tsx";
+import Onboarding from "@app/layouts/Onboarding.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -65,6 +69,7 @@ export const router = createBrowserRouter([
     // },
     {
         path: "/onboarding",
+        element: <Onboarding />,
         children: [
             {
                 path: "step1",
@@ -72,12 +77,15 @@ export const router = createBrowserRouter([
             },
             {
                 path: "step2",
+                element: <Step2 />,
             },
             {
                 path: "step3",
+                element: <Step3 />,
             },
             {
                 path: "step4",
+                element: <Step4 />,
             },
         ],
     },
