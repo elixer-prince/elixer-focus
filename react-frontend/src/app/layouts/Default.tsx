@@ -5,14 +5,11 @@ import { Outlet } from "react-router";
 const DefaultLayout = () => {
     return (
         <>
-            {/* Main App Wrapper */}
-            <div className={"mb-(--music-player-height)"}>
-                <Navbar />
+            <Navbar />
 
-                <main className={"bg-base-300 mt-(--navbar-height)"}>
-                    <Outlet />
-                </main>
-            </div>
+            <main className={"bg-base-300 mt-(--navbar-height)"}>
+                <Outlet />
+            </main>
 
             <MusicPlayer />
         </>
