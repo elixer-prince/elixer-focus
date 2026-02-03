@@ -2,7 +2,7 @@ import MusicPlayer from "@features/MusicPlayer/Index.tsx";
 import Navbar from "@features/ui/Navigation/Navbar/Index.tsx";
 import { Outlet } from "react-router";
 
-const SimpleLayout = () => {
+const DefaultLayout = () => {
     return (
         <>
             {/* Main App Wrapper */}
@@ -19,4 +19,4 @@ const SimpleLayout = () => {
     );
 };
 
-export default SimpleLayout;
+export default DefaultLayout;

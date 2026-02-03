@@ -1,11 +1,7 @@
 import { ThemeProvider } from "@stores/ThemeContext";
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
-interface ProviderProps {
-    children: ReactNode;
-}
-
-const Provider = ({ children }: ProviderProps) => {
+const Provider = ({ children }: PropsWithChildren) => {
     return <ThemeProvider>{children}</ThemeProvider>;
 };
 

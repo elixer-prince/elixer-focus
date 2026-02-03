@@ -1,7 +1,7 @@
 import Sidebar from "@features/ui/Navigation/Sidebar/Index.tsx";
 import { Outlet } from "react-router";
 
-const SettingsLayout = () => {
+const Settings = () => {
     return (
         <>
             <Sidebar />
@@ -17,4 +17,4 @@ const SettingsLayout = () => {
     );
 };
 
-export default SettingsLayout;
+export default Settings;
