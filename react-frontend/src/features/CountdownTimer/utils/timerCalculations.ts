@@ -19,7 +19,7 @@ export const calculateEndTime = (remainingTimeInSeconds: number): number => {
  *
  * @param {number} now - The current timestamp in milliseconds.
  * @param {number} endTime - The end time in milliseconds.
- * @returns {number} The remaining time in seconds.
+ * @returns {number} The remaining time in seconds, clamped to a minimum of 0.
  * */
 export const calculateRemainingSeconds = (
     now: number,
