@@ -2,16 +2,17 @@ import { getVideoId } from "@features/MusicPlayer/utils/conversion";
 import { getFromLocalStorage } from "@utils/storage.ts";
 import {
     createContext,
+    type PropsWithChildren,
     useContext,
     useEffect,
     useMemo,
     useRef,
     useState,
-    type Dispatch,
-    type PropsWithChildren,
-    type RefObject,
-    type SetStateAction,
 } from "react";
+import type {
+    MusicPlayerContextType,
+    SongType,
+} from "@features/MusicPlayer/types";
 
 const defaultSongs = [
     {
@@ -39,30 +40,6 @@ const defaultSongs = [
         isRecommended: false,
     },
 ];
-
-type SongType = {
-    id: number;
-    title: string;
-    src: string;
-    isRecommended: boolean;
-};
-
-type MusicPlayerContextType = {
-    chosenSongId: number;
-    playbackPaused: boolean;
-    songs: SongType[];
-    volume: number;
-    showSlider: boolean;
-
-    playerRef: RefObject<HTMLDivElement | null>;
-    playerInstanceRef: RefObject<any>;
-
-    setChosenSongId: (value: number) => void;
-    setPlaybackPaused: (value: boolean) => void;
-    setSongs: Dispatch<SetStateAction<SongType[]>>;
-    setVolume: (value: number) => void;
-    setShowSlider: (value: boolean) => void;
-};
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | null>(null);
 
