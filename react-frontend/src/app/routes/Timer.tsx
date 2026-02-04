@@ -1,8 +1,9 @@
-import CountdownTimerContainer from "@features/CountdownTimer/Index.tsx";
+import CountdownTimerContainer from "@features/CountdownTimer/components/Index.tsx";
 
 const Timer = () => {
     return (
         <>
+            Timer
             <CountdownTimerContainer />
         </>
     );

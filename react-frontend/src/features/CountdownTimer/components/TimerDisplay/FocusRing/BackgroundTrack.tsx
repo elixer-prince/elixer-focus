@@ -1,0 +1,17 @@
+import useFocusRing from "@features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
+
+const BackgroundTrack = () => {
+    const { radius, CENTER } = useFocusRing();
+
+    return (
+        // Background track
+        <circle
+            className="fill-none stroke-neutral-600 stroke-8"
+            cx={CENTER}
+            cy={CENTER}
+            r={radius}
+        />
+    );
+};
+
+export default BackgroundTrack;
