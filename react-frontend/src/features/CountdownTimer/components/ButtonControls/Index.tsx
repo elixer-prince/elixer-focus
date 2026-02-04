@@ -4,7 +4,7 @@ import SkipButton from "@features/CountdownTimer/components/ButtonControls/SkipB
 import StartButton from "@features/CountdownTimer/components/ButtonControls/StartButton.tsx";
 import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
 
-const CountdownButtonControls = () => {
+const ButtonControls = () => {
     const { timerPaused, timerRunning } = useCountdownTimerContext();
 
     return (
@@ -17,4 +17,4 @@ const CountdownButtonControls = () => {
     );
 };
 
-export default CountdownButtonControls;
+export default ButtonControls;
