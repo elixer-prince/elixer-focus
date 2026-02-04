@@ -1,4 +1,4 @@
-import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext";
+import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext.tsx";
 
 const MusicSwitcher = () => {
     const { songs, chosenSongId, setChosenSongId } = useMusicPlayerContext();

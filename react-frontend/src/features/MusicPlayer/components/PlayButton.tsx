@@ -1,15 +1,14 @@
-import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext";
-import { playVideo } from "@features/MusicPlayer/utils/controls";
+import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import { playVideo } from "@features/MusicPlayer/utils/controls.ts";
 import { FaPlay } from "react-icons/fa6";
+import { playerButtonStyles } from "@features/MusicPlayer/components/styles.ts";
 
-const PauseButton = () => {
+const PlayButton = () => {
     const { playerInstanceRef, setPlaybackPaused } = useMusicPlayerContext();
 
     return (
         <div
-            className={
-                "flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
-            }
+            className={playerButtonStyles}
             onClick={() => {
                 playVideo(playerInstanceRef.current);
                 setPlaybackPaused(true);
@@ -20,4 +19,4 @@ const PauseButton = () => {
     );
 };
 
-export default PauseButton;
+export default PlayButton;

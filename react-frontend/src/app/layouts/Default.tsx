@@ -1,4 +1,4 @@
-import MusicPlayer from "@features/MusicPlayer/Index.tsx";
+import MusicPlayer from "@features/MusicPlayer/components/Index.tsx";
 import Navbar from "@components/Navbar/Index.tsx";
 import { Outlet } from "react-router";
 import Sidebar from "@components/Sidebar/Index.tsx";
