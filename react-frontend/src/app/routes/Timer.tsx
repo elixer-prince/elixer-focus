@@ -3,7 +3,6 @@ import CountdownTimerContainer from "@features/CountdownTimer/components/Index.t
 const Timer = () => {
     return (
         <>
-            Timer
             <CountdownTimerContainer />
         </>
     );

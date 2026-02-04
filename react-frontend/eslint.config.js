@@ -19,5 +19,29 @@ export default defineConfig([
             ecmaVersion: 2020,
             globals: globals.browser,
         },
+        rules: {
+            "import/no-restricted-paths": [
+                "error",
+                {
+                    zones: [
+                        {
+                            target: "./src/features/CountdownTimer",
+                            from: "./src/features",
+                            except: ["./CountdownTimer"],
+                        },
+                        {
+                            target: "./src/features/MusicPlayer",
+                            from: "./src/features",
+                            except: ["./MusicPlayer"],
+                        },
+                        {
+                            target: "./src/features/Settings",
+                            from: "./src/features",
+                            except: ["./Settings"],
+                        },
+                    ],
+                },
+            ],
+        },
     },
 ]);

@@ -11,7 +11,7 @@ const CountdownTimerContainer = () => {
                 {/* Countdown Timer Section */}
                 <section
                     className={
-                        "ml-70 flex flex-col items-center justify-center gap-8 border p-4"
+                        "ml-(--sidebar-width) flex flex-col items-center justify-center gap-8 p-4"
                     }
                 >
                     <CountdownHeader />

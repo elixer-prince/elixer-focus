@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { NavbarContext } from "@features/ui/Navigation/Navbar/stores/NavbarContext.tsx";
+import { NavbarContext } from "@components/Navbar/stores/NavbarContext.tsx";
 
 const useNavbarContext = () => {
     const navbarContext = useContext(NavbarContext);

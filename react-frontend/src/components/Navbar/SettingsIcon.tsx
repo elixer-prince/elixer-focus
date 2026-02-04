@@ -1,4 +1,4 @@
-import NavLink from "@features/ui/Navigation/Navbar/NavLink.tsx";
+import NavLink from "@components/Navbar/NavLink.tsx";
 
 const SettingsIcon = () => {
     return (
