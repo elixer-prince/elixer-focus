@@ -1,6 +1,6 @@
 import PauseButton from "@features/CountdownTimer/components/ButtonControls/PauseButton.tsx";
 import ResetButton from "@features/CountdownTimer/components/ButtonControls/ResetButton.tsx";
-import SkipButton from "@features/CountdownTimer/components/ButtonControls/SkipButton/Index.tsx";
+import SkipButton from "@features/CountdownTimer/components/ButtonControls/SkipButton.tsx";
 import StartButton from "@features/CountdownTimer/components/ButtonControls/StartButton.tsx";
 import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
 
