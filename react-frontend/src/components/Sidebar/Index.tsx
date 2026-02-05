@@ -1,5 +1,10 @@
 import SidebarLink from "@components/Sidebar/SidebarLink.tsx";
-import { MdAccountCircle, MdHomeFilled, MdLibraryBooks, MdTaskAlt } from "react-icons/md";
+import {
+    MdAccountCircle,
+    MdHomeFilled,
+    MdLibraryBooks,
+    MdTaskAlt,
+} from "react-icons/md";
 
 const Sidebar = () => {
     return (
