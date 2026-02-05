@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router";
 import { FiInbox } from "react-icons/fi";
+import { Link, useLocation } from "react-router";
 
 const BrainDumpIcon = () => {
     const location = useLocation();

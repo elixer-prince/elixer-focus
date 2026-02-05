@@ -1,10 +1,10 @@
-import NotFound from "@app/routes/404";
-import Home from "@app/routes/(ROOT)/Home.tsx";
-import { createBrowserRouter } from "react-router";
 import DefaultLayout from "@app/layouts/Default.tsx";
+import Home from "@app/routes/(ROOT)/Home.tsx";
 import Journal from "@app/routes/(ROOT)/Journal.tsx";
-import Tasks from "@app/routes/(ROOT)/Tasks.tsx";
 import Profile from "@app/routes/(ROOT)/Profile.tsx";
+import Tasks from "@app/routes/(ROOT)/Tasks.tsx";
+import NotFound from "@app/routes/404";
+import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
     {

@@ -1,5 +1,5 @@
-import { NavLink } from "react-router";
 import type { PropsWithChildren } from "react";
+import { NavLink } from "react-router";
 
 interface LinkProps {
     to: string;
