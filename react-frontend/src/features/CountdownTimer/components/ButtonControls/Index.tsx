@@ -8,7 +8,7 @@ const ButtonControls = () => {
     const { timerPaused, timerRunning } = useCountdownTimerContext();
 
     return (
-        <div className={"mb-8 flex justify-center gap-2"}>
+        <div className={"mb-8 flex justify-center gap-4"}>
             {timerPaused && <StartButton />}
             {!timerPaused && <PauseButton />}
             {timerRunning && <ResetButton />}

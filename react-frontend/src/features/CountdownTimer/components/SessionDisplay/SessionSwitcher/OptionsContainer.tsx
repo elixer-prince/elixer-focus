@@ -1,6 +1,7 @@
 import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch.ts";
 import SessionOption from "@features/CountdownTimer/components/SessionDisplay/SessionSwitcher/SessionOption.tsx";
 import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
+import { optionsContainerStyles } from "@features/CountdownTimer/components/SessionDisplay/styles.ts";
 
 const OptionsContainer = () => {
     const { switchToFocus, switchToShortBreak, switchToLongBreak } =
@@ -8,12 +9,7 @@ const OptionsContainer = () => {
     const { currentSessionType } = useSessionContext();
 
     return (
-        <ul
-            tabIndex={-1}
-            className={
-                "dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-            }
-        >
+        <ul tabIndex={-1} className={optionsContainerStyles}>
             <li>
                 <SessionOption
                     value={"Focus"}
