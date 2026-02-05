@@ -1,5 +1,5 @@
 import SidebarLink from "@components/Sidebar/SidebarLink.tsx";
-import { MdHomeFilled, MdLibraryBooks, MdTaskAlt } from "react-icons/md";
+import { MdAccountCircle, MdHomeFilled, MdLibraryBooks, MdTaskAlt } from "react-icons/md";
 
 const Sidebar = () => {
     return (
@@ -13,6 +13,12 @@ const Sidebar = () => {
                     <SidebarLink to={"/"}>
                         <MdHomeFilled size={20} />
                         Home
+                    </SidebarLink>
+                </li>
+                <li>
+                    <SidebarLink to={"/profile"}>
+                        <MdAccountCircle size={20} />
+                        Profile
                     </SidebarLink>
                 </li>
                 <li>

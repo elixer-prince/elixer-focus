@@ -3,7 +3,7 @@ import {
     NavbarProvider,
     useNavbarContext,
 } from "@components/Navbar/stores/NavbarContext.tsx";
-import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
+import NavLogo from "@components/NavLogo.tsx";
 
 const NavbarContent = () => {
     const { isOpen } = useNavbarContext();
