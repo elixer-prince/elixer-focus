@@ -10,7 +10,7 @@ const Sidebar = () => {
     return (
         <nav
             className={
-                "border-base-content/50 fixed top-(--navbar-height) bottom-0 flex w-(--sidebar-width) flex-col border-r"
+                "border-base-content/50 fixed top-(--navbar-height) bottom-0 flex w-(--sidebar-width) flex-col border-r select-none"
             }
         >
             <ul className={"overflow-y-scroll pt-6 pl-2"}>
