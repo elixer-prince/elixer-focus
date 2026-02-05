@@ -6,7 +6,7 @@ const Sidebar = () => {
         <nav className={sidebarStyles}>
             <ul className={"space-y-2 overflow-y-scroll p-4"}>
                 <li>
-                    <Link to="/about">Link 1</Link>
+                    <Link to="/journal">Journal</Link>
                 </li>
                 <li>
                     <Link to={"/"}>Link 2</Link>

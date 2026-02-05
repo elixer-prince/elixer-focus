@@ -2,12 +2,7 @@ import NotFound from "@app/routes/404";
 import Timer from "@app/routes/(ROOT)/Timer.tsx";
 import { createBrowserRouter } from "react-router";
 import DefaultLayout from "@app/layouts/Default.tsx";
-import Settings from "@app/layouts/Settings.tsx";
-import Step1 from "@app/routes/Onboarding/Step1.tsx";
-import Step2 from "@app/routes/Onboarding/Step2.tsx";
-import Step3 from "@app/routes/Onboarding/Step3.tsx";
-import Step4 from "@app/routes/Onboarding/Step4.tsx";
-import Onboarding from "@app/layouts/Onboarding.tsx";
+import Journal from "@app/routes/(ROOT)/Journal.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -18,6 +13,10 @@ export const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Timer />,
+            },
+            {
+                path: "/journal",
+                element: <Journal />,
             },
             // {
             //     path: "/tasks",
