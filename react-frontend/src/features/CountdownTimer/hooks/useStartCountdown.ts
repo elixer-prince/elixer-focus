@@ -1,11 +1,11 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch";
-import useEndTicking from "@features/CountdownTimer/hooks/CountdownTimer/useEndTicking";
-import useRunInterval from "@features/CountdownTimer/hooks/CountdownTimer/useRunInterval";
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
-import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations";
-import { getCurrentTimestamp } from "@utils/date";
-import { playSound } from "@utils/sound";
-import { saveToLocalStorage } from "@utils/storage";
+import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.ts";
+import useEndTicking from "@features/CountdownTimer/hooks/useEndTicking.ts";
+import useRunInterval from "@features/CountdownTimer/hooks/useRunInterval.ts";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations.ts";
+import { getCurrentTimestamp } from "@utils/date.ts";
+import { playSound } from "@utils/sound.ts";
+import { saveToLocalStorage } from "@utils/storage.ts";
 import { useCallback, useEffect } from "react";
 
 const useStartCountdown = (): {

@@ -1,4 +1,4 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/CountdownSession/useSessionSwitch.ts";
+import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.ts";
 import SessionOption from "@features/CountdownTimer/components/SessionDisplay/SessionSwitcher/SessionOption.tsx";
 import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
 import { optionsContainerStyles } from "@features/CountdownTimer/components/SessionDisplay/styles.ts";

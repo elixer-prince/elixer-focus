@@ -1,5 +1,5 @@
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext";
-import { playSound, stopSound } from "@utils/sound";
+import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { playSound, stopSound } from "@utils/sound.ts";
 import { useCallback } from "react";
 
 const useEndTicking = (): {
