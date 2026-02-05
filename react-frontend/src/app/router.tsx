@@ -1,7 +1,5 @@
 import NotFound from "@app/routes/404";
-import ThemeSettings from "@app/routes/Settings/Theme.tsx";
-import TimerSettings from "@app/routes/Settings/Timer.tsx";
-import Timer from "@app/routes/Timer.tsx";
+import Timer from "@app/routes/(ROOT)/Timer.tsx";
 import { createBrowserRouter } from "react-router";
 import DefaultLayout from "@app/layouts/Default.tsx";
 import Settings from "@app/layouts/Settings.tsx";
@@ -39,20 +37,20 @@ export const router = createBrowserRouter([
             // },
         ],
     },
-    {
-        path: "/settings",
-        element: <Settings />,
-        children: [
-            {
-                path: "timer",
-                element: <TimerSettings />,
-            },
-            {
-                path: "themes",
-                element: <ThemeSettings />,
-            },
-        ],
-    },
+    // {
+    //     path: "/settings",
+    //     element: <Settings />,
+    //     children: [
+    //         {
+    //             path: "timer",
+    //             element: <TimerSettings />,
+    //         },
+    //         {
+    //             path: "themes",
+    //             element: <ThemeSettings />,
+    //         },
+    //     ],
+    // },
     // {
     //     path: "/",
     //     element: <AuthLayout />,
@@ -67,26 +65,26 @@ export const router = createBrowserRouter([
     //         },
     //     ],
     // },
-    {
-        path: "/onboarding",
-        element: <Onboarding />,
-        children: [
-            {
-                path: "step1",
-                element: <Step1 />,
-            },
-            {
-                path: "step2",
-                element: <Step2 />,
-            },
-            {
-                path: "step3",
-                element: <Step3 />,
-            },
-            {
-                path: "step4",
-                element: <Step4 />,
-            },
-        ],
-    },
+    // {
+    //     path: "/onboarding",
+    //     element: <Onboarding />,
+    //     children: [
+    //         {
+    //             path: "step1",
+    //             element: <Step1 />,
+    //         },
+    //         {
+    //             path: "step2",
+    //             element: <Step2 />,
+    //         },
+    //         {
+    //             path: "step3",
+    //             element: <Step3 />,
+    //         },
+    //         {
+    //             path: "step4",
+    //             element: <Step4 />,
+    //         },
+    //     ],
+    // },
 ]);
