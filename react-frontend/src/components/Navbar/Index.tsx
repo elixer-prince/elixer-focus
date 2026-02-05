@@ -1,6 +1,5 @@
 import HamburgerMenu from "@components/Navbar/HamburgerMenu.tsx";
-import useNavbarContext from "@components/Navbar/hooks/useNavbarContext.tsx";
-import { NavbarProvider } from "@components/Navbar/stores/NavbarContext.tsx";
+import { NavbarProvider, useNavbarContext } from "@components/Navbar/stores/NavbarContext.tsx";
 import NavLogo from "@features/ui/Navigation/NavLogo.tsx";
 import { navbarOpenStyles, navbarStyles } from "@components/Navbar/styles.ts";
 

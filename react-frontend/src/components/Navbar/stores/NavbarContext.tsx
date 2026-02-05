@@ -3,6 +3,7 @@ import {
     type Dispatch,
     type ReactNode,
     type SetStateAction,
+    useContext,
     useEffect,
     useMemo,
     useState,
@@ -19,7 +20,7 @@ type NavbarContextType = {
 
 const NavbarContext = createContext<NavbarContextType | null>(null);
 
-const NavbarProvider = ({ children }: NavbarContextProps) => {
+export const NavbarProvider = ({ children }: NavbarContextProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -45,4 +46,12 @@ const NavbarProvider = ({ children }: NavbarContextProps) => {
     );
 };
 
-export { NavbarProvider, NavbarContext };
+export const useNavbarContext = () => {
+    const navbarContext = useContext(NavbarContext);
+
+    if (!navbarContext) {
+        throw new Error("useNavbarContext must be used with a NavbarProvider!");
+    }
+
+    return navbarContext;
+};
