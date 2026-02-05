@@ -1,10 +1,8 @@
 import { FiMenu } from "react-icons/fi";
-import useNavbarContext from "@components/Navbar/hooks/useNavbarContext.tsx";
+import { useNavbarContext } from "@components/Navbar/stores/NavbarContext.tsx";
 
 const HamburgerMenu = () => {
     const { isOpen, setIsOpen } = useNavbarContext();
-
-    // Hamburger Menu
 
     return (
         <div className="hover:bg-base-content/5 outline-primary cursor-pointer rounded-md p-2 transition-colors active:outline md:hidden">
