@@ -1,11 +1,4 @@
-import {
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-    type PropsWithChildren,
-} from "react";
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeContextType = {
     currentTheme: string;
