@@ -3,7 +3,7 @@ import CountdownTimerContainer from "@features/CountdownTimer/components/Index.t
 
 const Home = () => {
     return (
-        <div className={"flex justify-center gap-8 p-8"}>
+        <div className={"flex justify-center gap-8"}>
             <CountdownTimerContainer />
             {/* <Tasks /> */}
         </div>
