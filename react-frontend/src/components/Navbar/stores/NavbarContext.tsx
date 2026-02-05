@@ -1,17 +1,13 @@
 import {
     createContext,
     type Dispatch,
-    type ReactNode,
+    type PropsWithChildren,
     type SetStateAction,
     useContext,
     useEffect,
     useMemo,
     useState,
 } from "react";
-
-interface NavbarContextProps {
-    children: ReactNode;
-}
 
 type NavbarContextType = {
     isOpen: boolean;
@@ -20,7 +16,7 @@ type NavbarContextType = {
 
 const NavbarContext = createContext<NavbarContextType | null>(null);
 
-export const NavbarProvider = ({ children }: NavbarContextProps) => {
+export const NavbarProvider = ({ children }: PropsWithChildren) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -50,7 +46,9 @@ export const useNavbarContext = () => {
     const navbarContext = useContext(NavbarContext);
 
     if (!navbarContext) {
-        throw new Error("useNavbarContext must be used with a NavbarProvider!");
+        throw new Error(
+            "useNavbarContext must be used inside a NavbarProvider!",
+        );
     }
 
     return navbarContext;

@@ -10,9 +10,9 @@ const SidebarLink = ({ to, children }: PropsWithChildren<LinkProps>) => {
         <NavLink
             className={({ isActive }) => {
                 const classes =
-                    "hover:bg-primary-content/10 flex items-center gap-1 rounded-md border-2 p-2 font-bold transition-colors";
+                    "hover:bg-primary-content/10 flex items-center gap-1 rounded-md p-2 transition-colors duration-500";
 
-                return `${classes} ${isActive ? "text-primary pointer-events-none" : "border-primary-content/50 hover:border-primary-content/75"}`.trim();
+                return `${classes} ${isActive ? "text-primary pointer-events-none font-bold" : "border-primary-content/50 hover:border-primary-content/75"}`.trim();
             }}
             to={to}
         >

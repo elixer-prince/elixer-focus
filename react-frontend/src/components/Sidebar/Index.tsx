@@ -1,25 +1,23 @@
 import SidebarLink from "@components/Sidebar/SidebarLink.tsx";
-import { FaHome } from "react-icons/fa";
-import { FaBook } from "react-icons/fa6";
-import { MdTaskAlt } from "react-icons/md";
+import { MdHomeFilled, MdLibraryBooks, MdTaskAlt } from "react-icons/md";
 
 const Sidebar = () => {
     return (
         <nav
             className={
-                "border-base-content/50 fixed top-(--navbar-height) bottom-0 flex w-(--sidebar-width) flex-col border-r-2"
+                "border-base-content/50 fixed top-(--navbar-height) bottom-0 flex w-(--sidebar-width) flex-col border-r"
             }
         >
-            <ul className={"space-y-4 overflow-y-scroll p-4 pt-6 pr-1"}>
+            <ul className={"overflow-y-scroll pt-6 pl-2"}>
                 <li>
                     <SidebarLink to={"/"}>
-                        <FaHome size={20} />
+                        <MdHomeFilled size={20} />
                         Home
                     </SidebarLink>
                 </li>
                 <li>
                     <SidebarLink to="/journal">
-                        <FaBook />
+                        <MdLibraryBooks size={20} />
                         Journal
                     </SidebarLink>
                 </li>
