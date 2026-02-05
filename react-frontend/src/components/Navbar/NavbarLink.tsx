@@ -1,12 +1,11 @@
 import { Link, useLocation } from "react-router";
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 
 interface NavLinkProps {
     to: string;
-    children: ReactNode;
 }
 
-const NavLink = ({ to, children }: NavLinkProps) => {
+const NavbarLink = ({ to, children }: PropsWithChildren<NavLinkProps>) => {
     const location = useLocation();
 
     return (
@@ -20,4 +19,4 @@ const NavLink = ({ to, children }: NavLinkProps) => {
     );
 };
 
-export default NavLink;
+export default NavbarLink;

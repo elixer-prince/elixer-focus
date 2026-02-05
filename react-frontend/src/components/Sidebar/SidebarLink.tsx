@@ -1,6 +1,5 @@
 import { NavLink } from "react-router";
 import type { PropsWithChildren } from "react";
-import { navLinkStyles } from "@components/Sidebar/styles.ts";
 
 interface LinkProps {
     to: string;
@@ -8,7 +7,12 @@ interface LinkProps {
 
 const SidebarLink = ({ to, children }: PropsWithChildren<LinkProps>) => {
     return (
-        <NavLink className={navLinkStyles} to={to}>
+        <NavLink
+            className={
+                "hover:bg-base-content/25 block rounded-md border p-2 transition-colors"
+            }
+            to={to}
+        >
             {children}
         </NavLink>
     );

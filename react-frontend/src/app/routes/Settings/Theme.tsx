@@ -1,4 +1,4 @@
-import ThemeSettings from "@features/Settings/ThemeSettings/Index.tsx";
+import ThemeSettings from "@features/Settings/components/ThemeSettings/Index.tsx";
 
 const Theme = () => {
     return (

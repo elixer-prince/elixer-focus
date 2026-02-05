@@ -1,12 +1,11 @@
 import useFocusRing from "@features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
-import { colouredArcStyles } from "@features/CountdownTimer/components/TimerDisplay/styles.ts";
 
 const ColouredArc = () => {
     const { radius, dashoffset, circumference, CENTER } = useFocusRing();
 
     return (
         <circle
-            className={colouredArcStyles}
+            className={"stroke-primary text-primary fill-none stroke-8"}
             cx={CENTER}
             cy={CENTER}
             r={radius}

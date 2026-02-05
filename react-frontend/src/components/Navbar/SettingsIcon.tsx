@@ -1,4 +1,4 @@
-import NavLink from "@components/Navbar/NavLink.tsx";
+import NavbarLink from "@components/Navbar/NavbarLink.tsx";
 
 const SettingsIcon = () => {
     return (
@@ -6,7 +6,7 @@ const SettingsIcon = () => {
         //     {/*<FiSettings size={24} />*/}
         // </Link>
 
-        <NavLink to="/settings/timer">Settings</NavLink>
+        <NavbarLink to="/settings/timer">Settings</NavbarLink>
     );
 };
 

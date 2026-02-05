@@ -1,10 +1,11 @@
 import CurrentSessionType from "@features/CountdownTimer/components/SessionDisplay/CurrentSessionType.tsx";
 import SessionSwitcher from "@features/CountdownTimer/components/SessionDisplay/SessionSwitcher/Index.tsx";
-import { timerHeaderStyles } from "@features/CountdownTimer/components/SessionDisplay/styles.ts";
 
 const CountdownTimerHeader = () => {
     return (
-        <header className={timerHeaderStyles}>
+        <header
+            className={"mt-8 flex flex-col items-center justify-center gap-4"}
+        >
             <CurrentSessionType />
             <SessionSwitcher />
         </header>

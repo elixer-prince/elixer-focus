@@ -1,12 +1,13 @@
 import useFocusRing from "@features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
-import { endDotStyles } from "@features/CountdownTimer/components/TimerDisplay/styles.ts";
 
 const EndDot = () => {
     const { radius, angleDeg, CENTER } = useFocusRing();
 
     return (
         <circle
-            className={endDotStyles}
+            className={
+                "fill-primary text-primary transition-transform duration-1000 ease-linear"
+            }
             cx={CENTER + radius}
             cy={CENTER}
             r={12}
