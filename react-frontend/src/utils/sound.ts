@@ -1,3 +1,9 @@
+/**
+ * Plays a sound effect.
+ *
+ * @param {HTMLAudioElement} audio
+ * @returns {void}
+ */
 export const playSound = async (audio?: HTMLAudioElement | null) => {
     if (!audio) return;
 
@@ -9,14 +15,17 @@ export const playSound = async (audio?: HTMLAudioElement | null) => {
         audio.currentTime = 0;
         await audio.play();
     } catch (error) {
-        // Ignore AbortError (happens when play is interrupted)
-        if (error instanceof Error && error.name !== "AbortError") {
-            console.warn("Sound play error:", error);
-        }
+        console.error(error);
     }
 };
 
-export function stopSound(effect: HTMLAudioElement): void {
-    effect.pause();
-    effect.currentTime = 0;
+/**
+ * Pauses a sound effect.
+ *
+ * @param {HTMLAudioElement} audio
+ * @returns {void}
+ */
+export function stopSound(audio: HTMLAudioElement): void {
+    audio.pause();
+    audio.currentTime = 0;
 }
