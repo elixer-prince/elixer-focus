@@ -6,7 +6,7 @@ interface LinkProps {
     to: string;
 }
 
-const Link = ({ to, children }: PropsWithChildren<LinkProps>) => {
+const SidebarLink = ({ to, children }: PropsWithChildren<LinkProps>) => {
     return (
         <NavLink className={navLinkStyles} to={to}>
             {children}
@@ -14,4 +14,4 @@ const Link = ({ to, children }: PropsWithChildren<LinkProps>) => {
     );
 };
 
-export default Link;
+export default SidebarLink;

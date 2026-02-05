@@ -1,15 +1,15 @@
 import { sidebarStyles } from "@components/Sidebar/styles.ts";
-import Link from "@components/Sidebar/NavLink.tsx";
+import SidebarLink from "@components/Sidebar/SidebarLink.tsx";
 
 const Sidebar = () => {
     return (
         <nav className={sidebarStyles}>
             <ul className={"space-y-2 overflow-y-scroll p-4"}>
                 <li>
-                    <Link to="/journal">Journal</Link>
+                    <SidebarLink to={"/"}>Home</SidebarLink>
                 </li>
                 <li>
-                    <Link to={"/"}>Link 2</Link>
+                    <SidebarLink to="/journal">Journal</SidebarLink>
                 </li>
             </ul>
 
