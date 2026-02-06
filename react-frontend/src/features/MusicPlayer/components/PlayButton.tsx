@@ -1,5 +1,5 @@
-import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext.tsx";
-import { playVideo } from "@features/MusicPlayer/utils/playback.ts";
+import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import { playVideo } from "@/features/MusicPlayer/utils/playback.ts";
 import { FaPlay } from "react-icons/fa6";
 
 const PlayButton = () => {

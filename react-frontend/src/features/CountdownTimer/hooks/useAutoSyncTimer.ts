@@ -1,7 +1,7 @@
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import { convertMinutesToSeconds } from "@/utils/conversion.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 import { useEffect } from "react";
 
 const useAutoSyncTimer = () => {

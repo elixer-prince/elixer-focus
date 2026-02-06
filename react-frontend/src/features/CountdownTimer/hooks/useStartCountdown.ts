@@ -1,11 +1,11 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.ts";
-import useEndTicking from "@features/CountdownTimer/hooks/useEndTicking.ts";
-import useRunInterval from "@features/CountdownTimer/hooks/useRunInterval.ts";
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { calculateEndTime } from "@features/CountdownTimer/utils/timerCalculations.ts";
-import { getCurrentTimestamp } from "@utils/date.ts";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import useEndTicking from "@/features/CountdownTimer/hooks/useEndTicking.ts";
+import useRunInterval from "@/features/CountdownTimer/hooks/useRunInterval.ts";
+import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch.ts";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { calculateEndTime } from "@/features/CountdownTimer/utils/timerCalculations.ts";
+import { getCurrentTimestamp } from "@/utils/date.ts";
+import { playSound } from "@/utils/sound.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 import { useCallback, useEffect } from "react";
 
 const useStartCountdown = (): {
@@ -29,7 +29,7 @@ const useStartCountdown = (): {
     const { runInterval } = useRunInterval();
     const { switchSessionType } = useSessionSwitch();
 
-    const updateStartingTimerState = useCallback(() => {
+    const resetStartingTimerState = useCallback(() => {
         setTimerPaused(() => {
             saveToLocalStorage("timerPaused", false);
             return false;
@@ -49,10 +49,11 @@ const useStartCountdown = (): {
 
     const startCountdown = useCallback(() => {
         stopEndTicking();
-        updateStartingTimerState();
+        resetStartingTimerState();
 
         const endTime = calculateEndTime(remainingTimeInSeconds);
 
+        // Save the end time to local storage and as a reference
         timerEndTimeRef.current = endTime;
         saveToLocalStorage("timerEndTime", endTime);
 
@@ -61,7 +62,7 @@ const useStartCountdown = (): {
         remainingTimeInSeconds,
         runInterval,
         timerEndTimeRef,
-        updateStartingTimerState,
+        resetStartingTimerState,
         stopEndTicking,
     ]);
 

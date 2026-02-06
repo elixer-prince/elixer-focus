@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@stores/ThemeContext";
+import { ThemeProvider } from "@/stores/ThemeContext";
 import type { PropsWithChildren } from "react";
 
 const Provider = ({ children }: PropsWithChildren) => {

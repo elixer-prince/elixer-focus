@@ -10,18 +10,7 @@ export default defineConfig({
     plugins: [tailwindcss(), react()],
     resolve: {
         alias: {
-            src: resolvePath("./src"),
-            "@app": resolvePath("./src/app"),
-            "@assets": resolvePath("./src/assets"),
-            "@components": resolvePath("./src/components"),
-            "@config": resolvePath("./src/config"),
-            "@features": resolvePath("./src/features"),
-            "@hooks": resolvePath("./src/hooks"),
-            "@lib": resolvePath("./src/lib"),
-            "@stores": resolvePath("./src/stores"),
-            "@tests": resolvePath("./src/tests"),
-            "@types": resolvePath("./src/types"),
-            "@utils": resolvePath("./src/utils"),
+            "@": resolvePath("./src"),
         },
     },
 });

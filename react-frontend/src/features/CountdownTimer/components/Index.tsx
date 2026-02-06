@@ -1,8 +1,8 @@
-import ButtonControls from "@features/CountdownTimer/components/ButtonControls/Index.tsx";
-import CountdownHeader from "@features/CountdownTimer/components/SessionDisplay/Index.tsx";
-import CountdownDisplay from "@features/CountdownTimer/components/TimerDisplay/Index.tsx";
-import { CountdownTimerProvider } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { CountdownSessionProvider } from "@features/CountdownTimer/stores/SessionContext.tsx";
+import ButtonControls from "@/features/CountdownTimer/components/ButtonControls/Index.tsx";
+import CountdownHeader from "@/features/CountdownTimer/components/SessionDisplay/Index.tsx";
+import CountdownDisplay from "@/features/CountdownTimer/components/TimerDisplay/Index.tsx";
+import { CountdownTimerProvider } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { CountdownSessionProvider } from "@/features/CountdownTimer/stores/SessionContext.tsx";
 
 const CountdownTimerContainer = () => {
     return (

@@ -1,5 +1,5 @@
-import ThemePreview from "@features/Settings/components/ThemeSettings/ThemePreview.tsx";
-import { useThemeContext } from "@stores/ThemeContext.tsx";
+import ThemePreview from "@/features/Settings/components/ThemeSettings/ThemePreview.tsx";
+import { useThemeContext } from "@/stores/ThemeContext.tsx";
 import type { PropsWithChildren } from "react";
 
 type ThemeLabelProps = PropsWithChildren<{

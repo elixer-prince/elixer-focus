@@ -1,5 +1,5 @@
-import { useTimerSettingsContext } from "@features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
-import useValidation from "@features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
+import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
+import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
 
 const FocusContainer = () => {
     const { validateAndSet } = useValidation();

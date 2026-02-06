@@ -1,8 +1,7 @@
 /**
- * Plays a sound effect.
+ * Plays a sound effect by first pausing and restarting it from the start.
  *
  * @param {HTMLAudioElement} audio
- * @returns {void}
  */
 export const playSound = async (audio?: HTMLAudioElement | null) => {
     if (!audio) return;
@@ -26,6 +25,7 @@ export const playSound = async (audio?: HTMLAudioElement | null) => {
  * @returns {void}
  */
 export function stopSound(audio: HTMLAudioElement): void {
+    if (!audio) return;
     audio.pause();
     audio.currentTime = 0;
 }

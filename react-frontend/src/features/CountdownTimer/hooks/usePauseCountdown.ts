@@ -1,6 +1,6 @@
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { playSound } from "@/utils/sound.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 
 const usePauseCountdown = (): {
     pauseCountdown: () => void;

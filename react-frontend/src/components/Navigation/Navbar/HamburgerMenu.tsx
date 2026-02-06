@@ -1,4 +1,4 @@
-import { useNavbarContext } from "@components/Navbar/stores/NavbarContext.tsx";
+import { useNavbarContext } from "@/components/Navbar/stores/NavbarContext";
 import { FiMenu } from "react-icons/fi";
 
 const HamburgerMenu = () => {

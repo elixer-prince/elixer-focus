@@ -1,4 +1,4 @@
-import SidebarLink from "@features/ui/Sidebar/Link.tsx";
+import SidebarLink from "@/features/ui/Sidebar/Link.tsx";
 
 const LinkContainer = () => {
     return (

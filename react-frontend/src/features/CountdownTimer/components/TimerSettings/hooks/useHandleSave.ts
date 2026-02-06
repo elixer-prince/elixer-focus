@@ -1,9 +1,9 @@
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
-import useValidation from "@features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
-import { useTimerSettingsContext } from "@features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
-import { convertMinutesToSeconds } from "@utils/conversion.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
+import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import { convertMinutesToSeconds } from "@/utils/conversion.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 import { useCallback } from "react";
 
 const UseHandleSave = () => {

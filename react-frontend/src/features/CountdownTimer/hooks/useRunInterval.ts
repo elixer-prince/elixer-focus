@@ -1,15 +1,15 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.ts";
-import useEndTicking from "@features/CountdownTimer/hooks/useEndTicking.ts";
-import { useCountdownTimerContext } from "@features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
-import { calculateRemainingSeconds } from "@features/CountdownTimer/utils/timerCalculations.ts";
+import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch.ts";
+import useEndTicking from "@/features/CountdownTimer/hooks/useEndTicking.ts";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import { calculateRemainingSeconds } from "@/features/CountdownTimer/utils/timerCalculations.ts";
 import {
     timerHasEnded,
     timerIsAboutToEnd,
-} from "@features/CountdownTimer/utils/timerChecks.ts";
-import { getCurrentTimestamp } from "@utils/date.ts";
-import { playSound } from "@utils/sound.ts";
-import { saveToLocalStorage } from "@utils/storage.ts";
+} from "@/features/CountdownTimer/utils/timerChecks.ts";
+import { getCurrentTimestamp } from "@/utils/date.ts";
+import { playSound } from "@/utils/sound.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 import { useCallback } from "react";
 
 const useRunInterval = (): {

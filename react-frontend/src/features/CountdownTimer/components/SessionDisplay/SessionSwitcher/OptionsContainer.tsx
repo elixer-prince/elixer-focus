@@ -1,6 +1,6 @@
-import useSessionSwitch from "@features/CountdownTimer/hooks/useSessionSwitch.ts";
-import SessionOption from "@features/CountdownTimer/components/SessionDisplay/SessionSwitcher/SessionOption.tsx";
-import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
+import SessionOption from "@/features/CountdownTimer/components/SessionDisplay/SessionSwitcher/SessionOption.tsx";
+import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch.ts";
+import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
 
 const OptionsContainer = () => {
     const { switchToFocus, switchToShortBreak, switchToLongBreak } =

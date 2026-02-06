@@ -1,9 +1,9 @@
-import FocusContainer from "@features/CountdownTimer/components/TimerSettings/FocusContainer.tsx";
-import useHandleSave from "@features/CountdownTimer/components/TimerSettings/hooks/useHandleSave.ts";
-import useValidation from "@features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
-import LongBreakContainer from "@features/CountdownTimer/components/TimerSettings/LongBreakContainer.tsx";
-import ShortBreakContainer from "@features/CountdownTimer/components/TimerSettings/ShortBreakContainer.tsx";
-import { TimerSettingsProvider } from "@features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
+import FocusContainer from "@/features/CountdownTimer/components/TimerSettings/FocusContainer.tsx";
+import useHandleSave from "@/features/CountdownTimer/components/TimerSettings/hooks/useHandleSave.ts";
+import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
+import LongBreakContainer from "@/features/CountdownTimer/components/TimerSettings/LongBreakContainer.tsx";
+import ShortBreakContainer from "@/features/CountdownTimer/components/TimerSettings/ShortBreakContainer.tsx";
+import { TimerSettingsProvider } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
 
 const TimerSettingsContent = () => {
     const { hasUnsavedChanges } = useValidation();

@@ -1,4 +1,4 @@
-import useFocusRing from "@features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
+import useFocusRing from "@/features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
 
 const BackgroundTrack = () => {
     const { radius, CENTER } = useFocusRing();

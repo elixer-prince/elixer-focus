@@ -1,9 +1,9 @@
-import HamburgerMenu from "@components/Navbar/HamburgerMenu.tsx";
+import HamburgerMenu from "@/components/Navbar/HamburgerMenu";
 import {
     NavbarProvider,
     useNavbarContext,
-} from "@components/Navbar/stores/NavbarContext.tsx";
-import NavLogo from "@components/NavLogo.tsx";
+} from "@/components/Navbar/stores/NavbarContext";
+import NavLogo from "@/components/Navigation/NavLogo";
 
 const NavbarContent = () => {
     const { isOpen } = useNavbarContext();

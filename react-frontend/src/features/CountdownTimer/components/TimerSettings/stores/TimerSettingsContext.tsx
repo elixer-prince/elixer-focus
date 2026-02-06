@@ -1,4 +1,4 @@
-import { useSessionContext } from "@features/CountdownTimer/stores/SessionContext.tsx";
+import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
 import {
     createContext,
     type Dispatch,

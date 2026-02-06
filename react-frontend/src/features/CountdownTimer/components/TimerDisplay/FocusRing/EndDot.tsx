@@ -1,4 +1,4 @@
-import useFocusRing from "@features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
+import useFocusRing from "@/features/CountdownTimer/components/TimerDisplay/FocusRing/hooks/useFocusRing.ts";
 
 const EndDot = () => {
     const { radius, angleDeg, CENTER } = useFocusRing();

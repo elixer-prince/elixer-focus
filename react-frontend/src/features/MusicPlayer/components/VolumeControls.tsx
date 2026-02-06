@@ -1,4 +1,4 @@
-import { useMusicPlayerContext } from "@features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
 import { FaVolumeUp } from "react-icons/fa";
 
 const VolumeControls = () => {

@@ -1,5 +1,9 @@
-import { getVideoId } from "@features/MusicPlayer/utils/conversion";
-import { getFromLocalStorage } from "@utils/storage.ts";
+import type {
+    MusicPlayerContextType,
+    SongType,
+} from "@/features/MusicPlayer/types";
+import { getVideoId } from "@/features/MusicPlayer/utils/conversion";
+import { getFromLocalStorage } from "@/utils/storage.ts";
 import {
     createContext,
     type PropsWithChildren,
@@ -9,10 +13,6 @@ import {
     useRef,
     useState,
 } from "react";
-import type {
-    MusicPlayerContextType,
-    SongType,
-} from "@features/MusicPlayer/types";
 
 const defaultSongs = [
     {
