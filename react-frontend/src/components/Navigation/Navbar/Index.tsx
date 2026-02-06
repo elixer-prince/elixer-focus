@@ -1,8 +1,8 @@
-import HamburgerMenu from "@/components/Navbar/HamburgerMenu";
+import HamburgerMenu from "@/components/Navigation/Navbar/HamburgerMenu";
 import {
     NavbarProvider,
     useNavbarContext,
-} from "@/components/Navbar/stores/NavbarContext";
+} from "@/components/Navigation/Navbar/stores/NavbarContext";
 import NavLogo from "@/components/Navigation/NavLogo";
 
 const NavbarContent = () => {
