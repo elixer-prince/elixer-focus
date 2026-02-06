@@ -12,7 +12,7 @@ const DefaultLayout = () => {
 
             <main
                 className={
-                    "bg-base-300 mt-(--navbar-height) sm:ml-(--sidebar-width)"
+                    "bg-base-300 mt-(--navbar-height) md:ml-(--sidebar-width)"
                 }
             >
                 <Outlet />
