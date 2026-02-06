@@ -71,6 +71,8 @@ const useResetCountdown = (): {
         // Clear localStorage for refs
         saveToLocalStorage("timerEndTime", null);
         saveToLocalStorage("timeRemainingOnPause", null);
+
+        document.title = "Elixer Focus";
     };
 
     const resetCountdownWithSound = () => {
