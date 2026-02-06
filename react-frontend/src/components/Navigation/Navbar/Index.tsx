@@ -16,7 +16,7 @@ const NavbarContent = () => {
             {/* Inner Navbar Container */}
             <div className={"flex h-10 w-full items-center justify-between"}>
                 {/* Left Container */}
-                <div className={"flex items-center gap-4"}>
+                <div className={"flex items-center gap-2"}>
                     <HamburgerMenu />
 
                     <div className={"flex items-baseline gap-8"}>
