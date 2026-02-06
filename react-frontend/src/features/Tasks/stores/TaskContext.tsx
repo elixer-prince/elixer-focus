@@ -18,13 +18,10 @@ const TasksContext = createContext<TasksType | undefined>(undefined);
 export const TasksProvider = ({ children }: PropsWithChildren) => {
     const [tasks, setTasks] = useState<string[]>([]);
 
-    const contextValue: TasksType = useMemo({ tasks, setTasks }, [
-        tasks,
-        setTasks,
-    ]);
-
-    // To temporarily silence errors
-    return null;
+    const contextValue: TasksType = useMemo(
+        () => ({ tasks, setTasks }),
+        [tasks, setTasks],
+    );
 
     return (
         <TasksContext.Provider value={contextValue}>
