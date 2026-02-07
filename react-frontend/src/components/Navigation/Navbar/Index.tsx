@@ -1,5 +1,4 @@
 import HamburgerMenu from "@/components/Navigation/Navbar/HamburgerMenu";
-import LoginLink from "@/components/Navigation/Navbar/LoginLink";
 import { useNavbarStore } from "@/components/Navigation/Navbar/stores/NavbarStore";
 import NavLogo from "@/components/Navigation/NavLogo";
 
@@ -22,9 +21,7 @@ const Navbar = () => {
         </div>
 
         {/* Inner Right Container */}
-        <div className={"flex items-center gap-4"}>
-          <LoginLink />
-        </div>
+        <div className={"flex items-center gap-4"}>{/* <LoginLink /> */}</div>
       </div>
     </nav>
   );
