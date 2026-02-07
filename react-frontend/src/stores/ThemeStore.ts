@@ -7,12 +7,15 @@ import { create } from "zustand";
 //   }
 // }, [currentTheme]);
 
-type ThemeStore = {
+type ThemeState = {
   currentTheme: string;
+};
+
+type ThemeActions = {
   setCurrentTheme: (theme: string) => void;
 };
 
-const useThemeStore = create<ThemeStore>((set) => ({
+const useThemeStore = create<ThemeState & ThemeActions>((set) => ({
   currentTheme: "dark",
   setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
 }));

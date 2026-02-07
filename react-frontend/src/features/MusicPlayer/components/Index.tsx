@@ -1,13 +1,15 @@
-import PauseButton from "@/features/MusicPlayer/components/PauseButton.tsx";
-import PlayButton from "@/features/MusicPlayer/components/PlayButton.tsx";
-import VolumeControls from "@/features/MusicPlayer/components/VolumeControls.tsx";
+import PauseButton from "@/features/MusicPlayer/components/PauseButton";
+import PlayButton from "@/features/MusicPlayer/components/PlayButton";
+import VolumeControls from "@/features/MusicPlayer/components/VolumeControls";
 import {
   MusicPlayerProvider,
   useMusicPlayerContext,
 } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import { usePlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 
 const MusicPlayerContent = () => {
-  const { playerRef, playbackPaused } = useMusicPlayerContext();
+  const { playerRef } = useMusicPlayerContext();
+  const playbackPaused = usePlaybackPaused();
 
   return (
     <article
