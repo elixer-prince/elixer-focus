@@ -12,5 +12,6 @@ const useNavbarStore = create<NavbarStore>((set) => ({
 
 export const useNavbarIsOpen = () =>
   useNavbarStore((state) => state.navbarIsOpen);
+
 export const useToggleNavbar = () =>
   useNavbarStore((state) => state.toggleNavbar);

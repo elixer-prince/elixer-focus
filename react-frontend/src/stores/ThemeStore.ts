@@ -19,5 +19,6 @@ const useThemeStore = create<ThemeStore>((set) => ({
 
 export const useCurrentTheme = () =>
   useThemeStore((state) => state.currentTheme);
+
 export const useSetCurrentTheme = () =>
   useThemeStore((state) => state.setCurrentTheme);

@@ -1,4 +1,4 @@
-import Sidebar from "@/features/ui/Sidebar/Index.tsx";
+import Sidebar from "@/features/ui/Sidebar/Index";
 import { Outlet } from "react-router";
 
 const Settings = () => {
