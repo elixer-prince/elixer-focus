@@ -1,8 +1,8 @@
-import { useNavbarContext } from "@/components/Navigation/Navbar/stores/NavbarContext";
 import { MdMenu } from "react-icons/md";
+import { useNavbarStore } from "./stores/NavbarStore";
 
 const HamburgerMenu = () => {
-  const { isOpen, setIsOpen } = useNavbarContext();
+  const toggleNavbar = useNavbarStore((state) => state.toggleNavbar);
 
   return (
     <div
@@ -10,7 +10,7 @@ const HamburgerMenu = () => {
         "hover:bg-base-content/5 outline-primary cursor-pointer rounded-md p-2 transition-colors active:outline md:hidden"
       }
     >
-      <MdMenu size={24} onClick={() => setIsOpen(!isOpen)} />
+      <MdMenu size={24} onClick={toggleNavbar} />
     </div>
   );
 };
