@@ -1,15 +1,19 @@
 import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
 import {
+  useSetShowSlider,
   useSetVolume,
+  useShowSlider,
   useVolume,
 } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 import { FaVolumeUp } from "react-icons/fa";
 
 const VolumeControls = () => {
-  const { showSlider, setShowSlider, playerInstanceRef } =
-    useMusicPlayerContext();
   const volume = useVolume();
   const setVolume = useSetVolume();
+  const showSlider = useShowSlider();
+  const setShowSlider = useSetShowSlider();
+
+  const { playerInstanceRef } = useMusicPlayerContext();
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number(event.target.value);
@@ -18,19 +22,19 @@ const VolumeControls = () => {
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className={"flex items-center gap-4"}>
       <button onClick={() => setShowSlider(!showSlider)}>
         <FaVolumeUp size={20} className={"cursor-pointer"} />
       </button>
 
       {showSlider && (
         <input
-          type="range"
-          min="0"
-          max="100"
+          type={"range"}
+          min={"0"}
+          max={"100"}
           value={volume}
           onChange={handleVolumeChange}
-          className="range range-xs range-primary rounded-full"
+          className={"range range-xs range-primary rounded-full"}
         />
       )}
     </div>
