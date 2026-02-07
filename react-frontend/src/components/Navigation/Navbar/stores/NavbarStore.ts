@@ -5,7 +5,12 @@ type NavbarStore = {
   toggleNavbar: () => void;
 };
 
-export const useNavbarStore = create<NavbarStore>((set) => ({
+const useNavbarStore = create<NavbarStore>((set) => ({
   navbarIsOpen: false,
   toggleNavbar: () => set((state) => ({ navbarIsOpen: !state.navbarIsOpen })),
 }));
+
+export const useNavbarIsOpen = () =>
+  useNavbarStore((state) => state.navbarIsOpen);
+export const useToggleNavbar = () =>
+  useNavbarStore((state) => state.toggleNavbar);

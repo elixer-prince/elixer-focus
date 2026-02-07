@@ -1,9 +1,9 @@
 import HamburgerMenu from "@/components/Navigation/Navbar/HamburgerMenu";
-import { useNavbarStore } from "@/components/Navigation/Navbar/stores/NavbarStore";
+import { useNavbarIsOpen } from "@/components/Navigation/Navbar/stores/NavbarStore";
 import NavLogo from "@/components/Navigation/NavLogo";
 
 const Navbar = () => {
-  const navbarIsOpen = useNavbarStore((state) => state.navbarIsOpen);
+  const navbarIsOpen = useNavbarIsOpen();
 
   return (
     <nav

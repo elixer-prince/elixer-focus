@@ -1,8 +1,8 @@
 import { MdMenu } from "react-icons/md";
-import { useNavbarStore } from "./stores/NavbarStore";
+import { useToggleNavbar } from "./stores/NavbarStore";
 
 const HamburgerMenu = () => {
-  const toggleNavbar = useNavbarStore((state) => state.toggleNavbar);
+  const toggleNavbar = useToggleNavbar();
 
   return (
     <div
