@@ -4,7 +4,7 @@ import VolumeControls from "@/features/MusicPlayer/components/VolumeControls";
 import {
   MusicPlayerProvider,
   useMusicPlayerContext,
-} from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
+} from "@/features/MusicPlayer/stores/MusicPlayerContext";
 import { usePlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 
 const MusicPlayerContent = () => {
