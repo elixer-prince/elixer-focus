@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navigation/Navbar/Index";
 import Sidebar from "@/components/Navigation/Sidebar/Index";
-import MusicPlayer from "@/features/MusicPlayer/components/Index";
+// import MusicPlayer from "@/features/MusicPlayer/components/Index";
 import { Outlet } from "react-router";
 
 const DefaultLayout = () => {
@@ -18,7 +18,7 @@ const DefaultLayout = () => {
         <Outlet />
       </main>
 
-      <MusicPlayer />
+      {/* <MusicPlayer /> */}
     </>
   );
 };
