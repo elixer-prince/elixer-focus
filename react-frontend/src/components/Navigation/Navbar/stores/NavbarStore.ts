@@ -1,11 +1,14 @@
 import { create } from "zustand";
 
-type NavbarStore = {
+type NavbarState = {
   navbarIsOpen: boolean;
+};
+
+type NavbarActions = {
   toggleNavbar: () => void;
 };
 
-const useNavbarStore = create<NavbarStore>((set) => ({
+const useNavbarStore = create<NavbarState & NavbarActions>((set) => ({
   navbarIsOpen: false,
   toggleNavbar: () => set((state) => ({ navbarIsOpen: !state.navbarIsOpen })),
 }));
