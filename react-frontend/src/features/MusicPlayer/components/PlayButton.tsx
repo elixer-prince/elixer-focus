@@ -1,9 +1,11 @@
 import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import { useSetPlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 import { playVideo } from "@/features/MusicPlayer/utils/playback.ts";
 import { FaPlay } from "react-icons/fa6";
 
 const PlayButton = () => {
-  const { playerInstanceRef, setPlaybackPaused } = useMusicPlayerContext();
+  const { playerInstanceRef } = useMusicPlayerContext();
+  const setPlaybackPaused = useSetPlaybackPaused();
 
   return (
     <div

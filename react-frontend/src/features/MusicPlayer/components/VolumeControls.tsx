@@ -1,9 +1,15 @@
 import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
+import {
+  useSetVolume,
+  useVolume,
+} from "@/features/MusicPlayer/stores/MusicPlayerStore";
 import { FaVolumeUp } from "react-icons/fa";
 
 const VolumeControls = () => {
-  const { volume, showSlider, setVolume, setShowSlider, playerInstanceRef } =
+  const { showSlider, setShowSlider, playerInstanceRef } =
     useMusicPlayerContext();
+  const volume = useVolume();
+  const setVolume = useSetVolume();
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number(event.target.value);
