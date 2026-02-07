@@ -4,9 +4,9 @@ const CurrentSessionType = () => {
   const { currentSessionType } = useSessionContext();
 
   return (
-    <p className={"text-center text-4xl font-bold"}>
-      {currentSessionType} Session
-    </p>
+    <h2 className={"text-center text-4xl font-bold"}>
+      {currentSessionType} <span className={"max-sm:hidden"}>Session</span>
+    </h2>
   );
 };
 
