@@ -1,10 +1,16 @@
-import { FiChevronDown } from "react-icons/fi";
+import { MdChevronRight } from "react-icons/md";
 
 const DropdownButton = () => {
   return (
-    <div tabIndex={0} role={"button"} className={"btn btn-soft btn-ghost"}>
+    <div
+      tabIndex={0}
+      role={"button"}
+      className={
+        "btn btn-soft from-primary/10 btn-ghost border-b-primary/40 border-b bg-linear-to-t"
+      }
+    >
       Switch Session
-      <FiChevronDown size={20} />
+      <MdChevronRight className={"rotate-90"} size={24} />
     </div>
   );
 };
