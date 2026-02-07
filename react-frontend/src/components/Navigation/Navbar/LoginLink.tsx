@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 const LoginLink = () => {
   return (
-    <Link to="/auth/login" className="btn">
+    <NavLink to="/auth/login" className="btn">
       Login
-    </Link>
+    </NavLink>
   );
 };
 
