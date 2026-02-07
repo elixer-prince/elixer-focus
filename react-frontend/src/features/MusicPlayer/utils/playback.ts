@@ -5,8 +5,8 @@
  * @returns {void}
  */
 export const playVideo = (player: any): void => {
-    if (!player) return;
-    player.playVideo();
+  if (!player) return;
+  player.playVideo();
 };
 
 /**
@@ -16,6 +16,6 @@ export const playVideo = (player: any): void => {
  * @returns {void}
  */
 export const pauseVideo = (player: any): void => {
-    if (!player) return;
-    player.pauseVideo();
+  if (!player) return;
+  player.pauseVideo();
 };

@@ -2,10 +2,10 @@ import useInputInitialisation from "@/features/CountdownTimer/components/TimerSe
 import useAutoSyncTimer from "@/features/CountdownTimer/hooks/useAutoSyncTimer.ts";
 
 const useTimerSettings = () => {
-    useInputInitialisation();
-    useAutoSyncTimer();
+  useInputInitialisation();
+  useAutoSyncTimer();
 
-    return;
+  return;
 };
 
 export default useTimerSettings;

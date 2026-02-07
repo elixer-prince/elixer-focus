@@ -3,28 +3,28 @@ import { playSound } from "@/utils/sound.ts";
 import { saveToLocalStorage } from "@/utils/storage.ts";
 
 const usePauseCountdown = (): {
-    pauseCountdown: () => void;
+  pauseCountdown: () => void;
 } => {
-    const {
-        timerIntervalRef,
-        timerOffClickSoundEffectRef,
-        timerPaused,
-        setTimerPaused,
-    } = useCountdownTimerContext();
+  const {
+    timerIntervalRef,
+    timerOffClickSoundEffectRef,
+    timerPaused,
+    setTimerPaused,
+  } = useCountdownTimerContext();
 
-    const pauseCountdown = () => {
-        if (timerPaused) return;
+  const pauseCountdown = () => {
+    if (timerPaused) return;
 
-        playSound(timerOffClickSoundEffectRef.current);
-        setTimerPaused(() => {
-            saveToLocalStorage("timerPaused", true);
-            return true;
-        });
+    playSound(timerOffClickSoundEffectRef.current);
+    setTimerPaused(() => {
+      saveToLocalStorage("timerPaused", true);
+      return true;
+    });
 
-        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-    };
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+  };
 
-    return { pauseCountdown };
+  return { pauseCountdown };
 };
 
 export default usePauseCountdown;

@@ -6,19 +6,19 @@ import useHandleCountdownState from "@/features/CountdownTimer/components/TimerD
 import SessionCount from "@/features/CountdownTimer/components/TimerDisplay/SessionCount.tsx";
 
 const CountdownDisplay = () => {
-    const { isEndingSoon } = useHandleCountdownState();
+  const { isEndingSoon } = useHandleCountdownState();
 
-    return (
-        <div
-            className={`${"relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden p-10 outline-none select-none"} ${isEndingSoon ? "animate-pulse" : ""}`.trim()}
-        >
-            <ClickableArea />
-            <FocusRing />
-            <SessionCount />
-            <CountdownSeconds />
-            <CountdownMinutesAndSeconds />
-        </div>
-    );
+  return (
+    <div
+      className={`${"relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden p-10 outline-none select-none"} ${isEndingSoon ? "animate-pulse" : ""}`.trim()}
+    >
+      <ClickableArea />
+      <FocusRing />
+      <SessionCount />
+      <CountdownSeconds />
+      <CountdownMinutesAndSeconds />
+    </div>
+  );
 };
 
 export default CountdownDisplay;

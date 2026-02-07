@@ -3,18 +3,18 @@ import useStartCountdown from "@/features/CountdownTimer/hooks/useStartCountdown
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
 
 const useHandleCountdownState = () => {
-    const { timerPaused, remainingTimeInSeconds } = useCountdownTimerContext();
-    const { startCountdownWithSound } = useStartCountdown();
-    const { pauseCountdown } = usePauseCountdown();
+  const { timerPaused, remainingTimeInSeconds } = useCountdownTimerContext();
+  const { startCountdownWithSound } = useStartCountdown();
+  const { pauseCountdown } = usePauseCountdown();
 
-    const isEndingSoon = remainingTimeInSeconds <= 10;
+  const isEndingSoon = remainingTimeInSeconds <= 10;
 
-    const handleCountdownState = () => {
-        if (timerPaused) return startCountdownWithSound();
-        pauseCountdown();
-    };
+  const handleCountdownState = () => {
+    if (timerPaused) return startCountdownWithSound();
+    pauseCountdown();
+  };
 
-    return { handleCountdownState, isEndingSoon };
+  return { handleCountdownState, isEndingSoon };
 };
 
 export default useHandleCountdownState;

@@ -2,12 +2,12 @@ import CountdownTimerContainer from "@/features/CountdownTimer/components/Index.
 // import Tasks from "@/features/Tasks/components/Index.tsx";
 
 const Home = () => {
-    return (
-        <div className={"flex justify-center gap-8"}>
-            <CountdownTimerContainer />
-            {/* <Tasks /> */}
-        </div>
-    );
+  return (
+    <div className={"flex justify-center gap-8"}>
+      <CountdownTimerContainer />
+      {/* <Tasks /> */}
+    </div>
+  );
 };
 
 export default Home;

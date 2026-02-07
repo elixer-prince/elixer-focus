@@ -2,14 +2,14 @@ import useSkipCountdown from "@/features/CountdownTimer/hooks/useSkipCountdown.t
 import { IoIosSkipForward } from "react-icons/io";
 
 const SkipButton = () => {
-    const { skipCountdown } = useSkipCountdown();
+  const { skipCountdown } = useSkipCountdown();
 
-    return (
-        <button className={"btn btn-soft btn-warning"} onClick={skipCountdown}>
-            <IoIosSkipForward size={18} />
-            Skip
-        </button>
-    );
+  return (
+    <button className={"btn btn-soft btn-warning"} onClick={skipCountdown}>
+      <IoIosSkipForward size={18} />
+      Skip
+    </button>
+  );
 };
 
 export default SkipButton;

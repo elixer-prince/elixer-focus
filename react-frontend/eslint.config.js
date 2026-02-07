@@ -6,42 +6,42 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            js.configs.recommended,
-            tseslint.configs.recommended,
-            reactHooks.configs["recommended-latest"],
-            reactRefresh.configs.vite,
-        ],
-        languageOptions: {
-            ecmaVersion: 2020,
-            globals: globals.browser,
-        },
-        rules: {
-            "import/no-restricted-paths": [
-                "error",
-                {
-                    zones: [
-                        {
-                            target: "./src/features/CountdownTimer",
-                            from: "./src/features",
-                            except: ["./CountdownTimer"],
-                        },
-                        {
-                            target: "./src/features/MusicPlayer",
-                            from: "./src/features",
-                            except: ["./MusicPlayer"],
-                        },
-                        {
-                            target: "./src/features/Settings",
-                            from: "./src/features",
-                            except: ["./Settings"],
-                        },
-                    ],
-                },
-            ],
-        },
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs["recommended-latest"],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
     },
+    rules: {
+      "import/no-restricted-paths": [
+        "error",
+        {
+          zones: [
+            {
+              target: "./src/features/CountdownTimer",
+              from: "./src/features",
+              except: ["./CountdownTimer"],
+            },
+            {
+              target: "./src/features/MusicPlayer",
+              from: "./src/features",
+              except: ["./MusicPlayer"],
+            },
+            {
+              target: "./src/features/Settings",
+              from: "./src/features",
+              except: ["./Settings"],
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]);

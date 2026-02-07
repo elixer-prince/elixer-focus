@@ -7,10 +7,10 @@ const resolvePath = (str: string) => path.resolve(__dirname, str);
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [tailwindcss(), react()],
-    resolve: {
-        alias: {
-            "@": resolvePath("./src"),
-        },
+  plugins: [tailwindcss(), react()],
+  resolve: {
+    alias: {
+      "@": resolvePath("./src"),
     },
+  },
 });

@@ -3,18 +3,18 @@ import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/Count
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting.ts";
 
 const CountdownMinutesAndSeconds = () => {
-    const { remainingTimeInSeconds } = useCountdownTimerContext();
-    const { isEndingSoon } = useHandleCountdownState();
+  const { remainingTimeInSeconds } = useCountdownTimerContext();
+  const { isEndingSoon } = useHandleCountdownState();
 
-    return (
-        <div
-            className={`pointer-events-none z-10 text-7xl transition-colors duration-500 ${
-                isEndingSoon ? "text-error" : ""
-            }`}
-        >
-            {formatTimeInMinutesAndSeconds(remainingTimeInSeconds)}
-        </div>
-    );
+  return (
+    <div
+      className={`pointer-events-none z-10 text-7xl transition-colors duration-500 ${
+        isEndingSoon ? "text-error" : ""
+      }`}
+    >
+      {formatTimeInMinutesAndSeconds(remainingTimeInSeconds)}
+    </div>
+  );
 };
 
 export default CountdownMinutesAndSeconds;

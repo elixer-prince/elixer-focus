@@ -3,13 +3,13 @@ import { CountdownTimerProvider } from "@/features/CountdownTimer/stores/Countdo
 import { CountdownSessionProvider } from "@/features/CountdownTimer/stores/SessionContext.tsx";
 
 const Timer = () => {
-    return (
-        <CountdownSessionProvider>
-            <CountdownTimerProvider>
-                <TimerSettings />
-            </CountdownTimerProvider>
-        </CountdownSessionProvider>
-    );
+  return (
+    <CountdownSessionProvider>
+      <CountdownTimerProvider>
+        <TimerSettings />
+      </CountdownTimerProvider>
+    </CountdownSessionProvider>
+  );
 };
 
 export default Timer;

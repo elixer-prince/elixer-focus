@@ -7,11 +7,11 @@
  * @returns {void}
  */
 export const onPlayerReady = (event: any, playbackPaused: boolean): void => {
-    if (playbackPaused) {
-        event.target.pauseVideo();
-    } else {
-        event.target.playVideo();
-    }
+  if (playbackPaused) {
+    event.target.pauseVideo();
+  } else {
+    event.target.playVideo();
+  }
 };
 
 // export const onPlayerStateChange = (event: any) => {

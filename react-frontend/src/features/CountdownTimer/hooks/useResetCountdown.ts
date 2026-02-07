@@ -5,86 +5,86 @@ import { playSound } from "@/utils/sound.ts";
 import { saveToLocalStorage } from "@/utils/storage.ts";
 
 const useResetCountdown = (): {
-    resetCountdown: () => void;
-    resetCountdownWithSound: () => void;
+  resetCountdown: () => void;
+  resetCountdownWithSound: () => void;
 } => {
-    const {
-        resetTimerSoundEffectRef,
-        setRemainingTimeInSeconds,
-        startTimeInMinutes,
-        timerIntervalRef,
-        timerEndTimeRef,
-        timerRunning,
-        setTimerRunning,
-        setTimerPaused,
-        setStartTimeInMinutes, // ADD THIS
-    } = useCountdownTimerContext();
+  const {
+    resetTimerSoundEffectRef,
+    setRemainingTimeInSeconds,
+    startTimeInMinutes,
+    timerIntervalRef,
+    timerEndTimeRef,
+    timerRunning,
+    setTimerRunning,
+    setTimerPaused,
+    setStartTimeInMinutes, // ADD THIS
+  } = useCountdownTimerContext();
 
-    const {
-        currentSessionType,
-        focusDuration,
-        shortBreakDuration,
-        longBreakDuration,
-    } = useSessionContext(); // ADD THIS
+  const {
+    currentSessionType,
+    focusDuration,
+    shortBreakDuration,
+    longBreakDuration,
+  } = useSessionContext(); // ADD THIS
 
-    const resetCountdown = () => {
-        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+  const resetCountdown = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
 
-        timerEndTimeRef.current = null;
+    timerEndTimeRef.current = null;
 
-        // GET THE CORRECT DURATION FOR CURRENT SESSION
-        let currentDuration = startTimeInMinutes; // fallback to existing
+    // GET THE CORRECT DURATION FOR CURRENT SESSION
+    let currentDuration = startTimeInMinutes; // fallback to existing
 
-        switch (currentSessionType) {
-            case "Focus":
-                currentDuration = focusDuration;
-                break;
-            case "Short Break":
-                currentDuration = shortBreakDuration;
-                break;
-            case "Long Break":
-                currentDuration = longBreakDuration;
-                break;
-        }
+    switch (currentSessionType) {
+      case "Focus":
+        currentDuration = focusDuration;
+        break;
+      case "Short Break":
+        currentDuration = shortBreakDuration;
+        break;
+      case "Long Break":
+        currentDuration = longBreakDuration;
+        break;
+    }
 
-        // ALSO UPDATE startTimeInMinutes to stay in sync
-        setStartTimeInMinutes(currentDuration);
-        saveToLocalStorage("startTimeInMinutes", currentDuration);
+    // ALSO UPDATE startTimeInMinutes to stay in sync
+    setStartTimeInMinutes(currentDuration);
+    saveToLocalStorage("startTimeInMinutes", currentDuration);
 
-        const initialTime = convertMinutesToSeconds(currentDuration); // Use currentDuration
+    const initialTime = convertMinutesToSeconds(currentDuration); // Use currentDuration
 
-        setTimerPaused(() => {
-            saveToLocalStorage("timerPaused", true);
-            return true;
-        });
+    setTimerPaused(() => {
+      saveToLocalStorage("timerPaused", true);
+      return true;
+    });
 
-        setTimerRunning(() => {
-            saveToLocalStorage("timerRunning", false);
-            return false;
-        });
+    setTimerRunning(() => {
+      saveToLocalStorage("timerRunning", false);
+      return false;
+    });
 
-        setRemainingTimeInSeconds(() => {
-            saveToLocalStorage("remainingTimeInSeconds", initialTime);
-            return initialTime;
-        });
+    setRemainingTimeInSeconds(() => {
+      saveToLocalStorage("remainingTimeInSeconds", initialTime);
+      return initialTime;
+    });
 
-        // Clear localStorage for refs
-        saveToLocalStorage("timerEndTime", null);
-        saveToLocalStorage("timeRemainingOnPause", null);
+    // Clear localStorage for refs
+    saveToLocalStorage("timerEndTime", null);
+    saveToLocalStorage("timeRemainingOnPause", null);
 
-        document.title = "Elixer Focus";
-    };
+    document.title = "Elixer Focus";
+  };
 
-    const resetCountdownWithSound = () => {
-        if (!timerRunning) return alert("The timer is not running.");
+  const resetCountdownWithSound = () => {
+    if (!timerRunning) return alert("The timer is not running.");
 
-        if (confirm("Are you sure you want to reset the countdown?")) {
-            resetCountdown();
-            playSound(resetTimerSoundEffectRef.current);
-        }
-    };
+    if (confirm("Are you sure you want to reset the countdown?")) {
+      resetCountdown();
+      playSound(resetTimerSoundEffectRef.current);
+    }
+  };
 
-    return { resetCountdown, resetCountdownWithSound };
+  return { resetCountdown, resetCountdownWithSound };
 };
 
 export default useResetCountdown;

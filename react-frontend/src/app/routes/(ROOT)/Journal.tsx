@@ -1,5 +1,5 @@
 const Journal = () => {
-    return <>{/*<p>My Journal</p>*/}</>;
+  return <>{/*<p>My Journal</p>*/}</>;
 };
 
 export default Journal;

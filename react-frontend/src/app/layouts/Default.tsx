@@ -4,23 +4,21 @@ import MusicPlayer from "@/features/MusicPlayer/components/Index.tsx";
 import { Outlet } from "react-router";
 
 const DefaultLayout = () => {
-    return (
-        <>
-            <Navbar />
+  return (
+    <>
+      <Navbar />
 
-            <Sidebar />
+      <Sidebar />
 
-            <main
-                className={
-                    "bg-base-300 mt-(--navbar-height) md:ml-(--sidebar-width)"
-                }
-            >
-                <Outlet />
-            </main>
+      <main
+        className={"bg-base-300 mt-(--navbar-height) md:ml-(--sidebar-width)"}
+      >
+        <Outlet />
+      </main>
 
-            <MusicPlayer />
-        </>
-    );
+      <MusicPlayer />
+    </>
+  );
 };
 
 export default DefaultLayout;

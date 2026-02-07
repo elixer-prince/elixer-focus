@@ -5,9 +5,9 @@
  * @returns {any} The value of the stored item from local storage.
  */
 export function getFromLocalStorage(key: string): any {
-    const storedItem = localStorage.getItem(key);
-    if (!storedItem) return;
-    return JSON.parse(storedItem);
+  const storedItem = localStorage.getItem(key);
+  if (!storedItem) return;
+  return JSON.parse(storedItem);
 }
 
 /**
@@ -18,5 +18,5 @@ export function getFromLocalStorage(key: string): any {
  * @returns {void}
  */
 export function saveToLocalStorage<Type>(key: string, value: Type): void {
-    localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(key, JSON.stringify(value));
 }

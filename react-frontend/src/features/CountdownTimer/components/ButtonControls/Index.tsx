@@ -5,16 +5,16 @@ import StartButton from "@/features/CountdownTimer/components/ButtonControls/Sta
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
 
 const ButtonControls = () => {
-    const { timerPaused, timerRunning } = useCountdownTimerContext();
+  const { timerPaused, timerRunning } = useCountdownTimerContext();
 
-    return (
-        <div className={"mb-8 flex justify-center gap-4"}>
-            {timerPaused && <StartButton />}
-            {!timerPaused && <PauseButton />}
-            {timerRunning && <ResetButton />}
-            <SkipButton />
-        </div>
-    );
+  return (
+    <div className={"mb-8 flex justify-center gap-4"}>
+      {timerPaused && <StartButton />}
+      {!timerPaused && <PauseButton />}
+      {timerRunning && <ResetButton />}
+      <SkipButton />
+    </div>
+  );
 };
 
 export default ButtonControls;

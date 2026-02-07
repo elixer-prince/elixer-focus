@@ -8,10 +8,9 @@ import { getCurrentTimestamp } from "@/utils/date.ts";
  * @returns {number} The current remaining time in milliseconds added to the current timestamp.
  * */
 export const calculateEndTime = (remainingTimeInSeconds: number): number => {
-    return (
-        getCurrentTimestamp() +
-        convertSecondsToMilliseconds(remainingTimeInSeconds)
-    );
+  return (
+    getCurrentTimestamp() + convertSecondsToMilliseconds(remainingTimeInSeconds)
+  );
 };
 
 /**
@@ -22,10 +21,10 @@ export const calculateEndTime = (remainingTimeInSeconds: number): number => {
  * @returns {number} The remaining time in seconds, clamped to a minimum of 0.
  * */
 export const calculateRemainingSeconds = (
-    now: number,
-    endTime: number,
+  now: number,
+  endTime: number,
 ): number => {
-    // Math.max() is used here to ensure the remaining seconds is never less
-    // than zero.
-    return Math.max(0, Math.round((endTime - now) / 1000));
+  // Math.max() is used here to ensure the remaining seconds is never less
+  // than zero.
+  return Math.max(0, Math.round((endTime - now) / 1000));
 };

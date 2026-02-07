@@ -2,17 +2,17 @@ import useResetCountdown from "@/features/CountdownTimer/hooks/useResetCountdown
 import { VscDebugRestart } from "react-icons/vsc";
 
 const ResetButton = () => {
-    const { resetCountdownWithSound } = useResetCountdown();
+  const { resetCountdownWithSound } = useResetCountdown();
 
-    return (
-        <button
-            className={"btn btn-error btn-soft"}
-            onClick={resetCountdownWithSound}
-        >
-            <VscDebugRestart size={20} />
-            Reset
-        </button>
-    );
+  return (
+    <button
+      className={"btn btn-error btn-soft"}
+      onClick={resetCountdownWithSound}
+    >
+      <VscDebugRestart size={20} />
+      Reset
+    </button>
+  );
 };
 
 export default ResetButton;

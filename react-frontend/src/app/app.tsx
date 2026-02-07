@@ -11,10 +11,10 @@ import { RouterProvider } from "react-router";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <Provider>
-            <RouterProvider router={router} />
-            <Analytics />
-        </Provider>
-    </StrictMode>,
+  <StrictMode>
+    <Provider>
+      <RouterProvider router={router} />
+      <Analytics />
+    </Provider>
+  </StrictMode>,
 );

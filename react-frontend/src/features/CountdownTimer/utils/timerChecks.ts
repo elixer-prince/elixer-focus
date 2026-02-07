@@ -6,7 +6,7 @@
  * @returns {boolean} If the timer is about to end or not.
  */
 export const timerIsAboutToEnd = (remainingSeconds: number): boolean => {
-    return remainingSeconds <= 10;
+  return remainingSeconds <= 10;
 };
 
 /**
@@ -17,5 +17,5 @@ export const timerIsAboutToEnd = (remainingSeconds: number): boolean => {
  * @returns {boolean} If the timer is about to end or not.
  */
 export const timerHasEnded = (remainingSeconds: number): boolean => {
-    return remainingSeconds <= 0;
+  return remainingSeconds <= 0;
 };
