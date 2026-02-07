@@ -1,4 +1,4 @@
-import type { MusicPlayerContextType } from "@/features/MusicPlayer/types";
+import type { MusicPlayerContextType } from "@/features/MusicPlayer/types/musicPlayer";
 import {
   createContext,
   type PropsWithChildren,
