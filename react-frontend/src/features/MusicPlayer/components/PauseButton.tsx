@@ -1,10 +1,8 @@
-import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
 import { useSetPlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
-import { pauseVideo } from "@/features/MusicPlayer/utils/playback.ts";
+import { pauseVideo } from "@/features/MusicPlayer/utils/playback";
 import { FaPause } from "react-icons/fa";
 
-const PauseButton = () => {
-  const { playerInstanceRef } = useMusicPlayerContext();
+const PauseButton = ({ playerInstanceRef }: { playerInstanceRef: any }) => {
   const setPlaybackPaused = useSetPlaybackPaused();
 
   return (

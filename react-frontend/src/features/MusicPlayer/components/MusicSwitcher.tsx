@@ -1,5 +1,3 @@
-// import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext.tsx";
-
 const MusicSwitcher = () => {
   return (
     <div className="dropdown dropdown-top dropdown-center">

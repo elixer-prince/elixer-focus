@@ -1,4 +1,3 @@
-import { useMusicPlayerContext } from "@/features/MusicPlayer/stores/MusicPlayerContext";
 import {
   useSetShowSlider,
   useSetVolume,
@@ -7,13 +6,11 @@ import {
 } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 import { FaVolumeUp } from "react-icons/fa";
 
-const VolumeControls = () => {
+const VolumeControls = ({ playerInstanceRef }: { playerInstanceRef: any }) => {
   const volume = useVolume();
-  const setVolume = useSetVolume();
   const showSlider = useShowSlider();
+  const setVolume = useSetVolume();
   const setShowSlider = useSetShowSlider();
-
-  const { playerInstanceRef } = useMusicPlayerContext();
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number(event.target.value);
