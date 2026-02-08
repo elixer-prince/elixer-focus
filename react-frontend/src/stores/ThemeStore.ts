@@ -1,13 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// useEffect(() => {
-//   if (currentTheme) {
-//     document.documentElement.setAttribute("data-theme", currentTheme);
-//     localStorage.setItem("currentTheme", currentTheme);
-//   }
-// }, [currentTheme]);
-
 type ThemeState = {
   currentTheme: string;
 };
