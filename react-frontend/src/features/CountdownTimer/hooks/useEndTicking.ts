@@ -12,7 +12,7 @@ const useEndTicking = (): {
   /**
    * Start the timer ticking sound effect if it is not already ticking.
    *
-   * @/returns {void}
+   * @returns {void}
    */
   const startEndTicking = useCallback((): void => {
     if (isEndTickingRef.current) return;
@@ -33,7 +33,7 @@ const useEndTicking = (): {
   /**
    * Stop the timer ticking sound effect if it hasn't started yet.
    *
-   * @/returns {void}
+   * @returns {void}
    */
   const stopEndTicking = (): void => {
     if (!isEndTickingRef.current) return;
