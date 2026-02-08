@@ -1,21 +1,30 @@
-import { useEffect } from "react";
-import { useMusicPlayerContext } from "../stores/MusicPlayerContext";
-import { getVideoId } from "../utils/conversion";
-import { useChosenSongId, useSongs } from "../stores/MusicPlayerStore";
+import {
+  useChosenSongId,
+  useSongs,
+} from "@/features/MusicPlayer/stores/MusicPlayerStore";
+import { getVideoId } from "@/features/MusicPlayer/utils/conversion";
+import { useEffect, type RefObject } from "react";
 
-const useMusicPlayer = () => {
-  const { playerInstanceRef, playerRef } = useMusicPlayerContext();
+interface MusicPlayerContextType {
+  playerRef: RefObject<HTMLDivElement | null>;
+  playerInstanceRef: RefObject<any>;
+}
+
+const useMusicPlayer = ({
+  playerRef,
+  playerInstanceRef,
+}: MusicPlayerContextType) => {
   const songs = useSongs();
   const chosenSongId = useChosenSongId();
 
   // useEffect(() => {
-    //   if (playerInstanceRef.current) {
-    //     const song = songs.find((s) => s.id === chosenSongId);
-    //     if (song) {
-    //       playerInstanceRef.current.loadVideoById(getVideoId(song.src));
-    //     }
-    //   }
-    // }, [chosenSongId, songs]);
+  //   if (playerInstanceRef.current) {
+  //     const song = songs.find((s) => s.id === chosenSongId);
+  //     if (song) {
+  //       playerInstanceRef.current.loadVideoById(getVideoId(song.src));
+  //     }
+  //   }
+  // }, [chosenSongId, songs]);
 
   useEffect(() => {
     const tag = document.createElement("script");
@@ -36,7 +45,6 @@ const useMusicPlayer = () => {
       }
     };
   }, []);
-
-  return <div>useMusicPlayer</div>;
 };
+
 export default useMusicPlayer;

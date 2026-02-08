@@ -1,6 +1,7 @@
 import PauseButton from "@/features/MusicPlayer/components/PauseButton";
 import PlayButton from "@/features/MusicPlayer/components/PlayButton";
 import VolumeControls from "@/features/MusicPlayer/components/VolumeControls";
+import useMusicPlayer from "@/features/MusicPlayer/hooks/useMusicPlayer";
 import { usePlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
 import { useRef } from "react";
 
@@ -9,6 +10,8 @@ const MusicPlayer = () => {
 
   const playerRef = useRef<HTMLDivElement | null>(null);
   const playerInstanceRef = useRef<any>(null);
+
+  useMusicPlayer({ playerRef, playerInstanceRef });
 
   return (
     <article
