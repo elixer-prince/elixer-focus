@@ -3,14 +3,14 @@ import { useRemainingTimeInSeconds } from "@/features/CountdownTimer/stores/Coun
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const CountdownMinutesAndSeconds = () => {
-  const { isEndingSoon } = useHandleCountdownState();
   const remainingTimeInSeconds = useRemainingTimeInSeconds();
+  const { isEndingSoon } = useHandleCountdownState();
 
   return (
     <div
-      className={`pointer-events-none z-10 text-7xl transition-colors duration-500 ${
-        isEndingSoon ? "text-error" : ""
-      }`}
+      className={`${
+        isEndingSoon ? "text-error animate-pulse" : ""
+      } pointer-events-none z-10 text-7xl transition-colors duration-500`.trim()}
     >
       {formatTimeInMinutesAndSeconds(remainingTimeInSeconds)}
     </div>

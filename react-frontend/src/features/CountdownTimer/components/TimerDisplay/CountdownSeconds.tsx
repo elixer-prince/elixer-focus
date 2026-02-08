@@ -2,14 +2,17 @@ import useHandleCountdownState from "@/features/CountdownTimer/components/TimerD
 import { useRemainingTimeInSeconds } from "@/features/CountdownTimer/stores/CountdownTimerStore";
 
 const CountdownSeconds = () => {
-  const { isEndingSoon } = useHandleCountdownState();
   const remainingTimeInSeconds = useRemainingTimeInSeconds();
+  const { isEndingSoon } = useHandleCountdownState();
 
   return (
     <span
-      className={`pointer-events-none z-10 ${isEndingSoon ? "text-error" : ""}`.trim()}
+      className={`${isEndingSoon ? "text-error" : ""} pointer-events-none z-10`.trim()}
     >
-      {remainingTimeInSeconds} <span className="text-primary">seconds</span>
+      <span className={`${isEndingSoon ? "animate-pulse" : ""}`}>
+        {remainingTimeInSeconds}
+      </span>{" "}
+      <span className="text-primary">seconds</span>
     </span>
   );
 };
