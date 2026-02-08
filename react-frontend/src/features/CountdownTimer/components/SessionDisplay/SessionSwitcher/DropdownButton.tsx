@@ -6,7 +6,7 @@ const DropdownButton = () => {
       tabIndex={0}
       role={"button"}
       className={
-        "btn btn-soft from-primary/10 btn-ghost border-b-primary/40 border-b bg-linear-to-t"
+        "btn btn-soft from-primary/10 btn-ghost border-b-primary/50 border-b bg-linear-to-t"
       }
     >
       Switch Session
