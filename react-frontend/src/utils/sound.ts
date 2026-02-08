@@ -1,31 +1,33 @@
 /**
  * Plays a sound effect by first pausing and restarting it from the start.
  *
- * @param {HTMLAudioElement} audio
+ * @param {HTMLAudioElement} sound
+ * @returns {void}
  */
-export const playSound = async (audio?: HTMLAudioElement | null) => {
-  if (!audio) return;
+export function playSound(sound: HTMLAudioElement): void {
+  if (!sound) return;
 
   try {
-    // Only pause if the audio is actually playing
-    if (!audio.paused) {
-      audio.pause();
-    }
-    audio.currentTime = 0;
-    await audio.play();
+    stopSound(sound);
+    sound.play();
   } catch (error) {
     console.error(error);
   }
-};
+}
 
 /**
  * Pauses a sound effect.
  *
- * @param {HTMLAudioElement} audio
+ * @param {HTMLAudioElement} sound
  * @returns {void}
  */
-export function stopSound(audio: HTMLAudioElement): void {
-  if (!audio) return;
-  audio.pause();
-  audio.currentTime = 0;
+export function stopSound(sound: HTMLAudioElement): void {
+  if (!sound) return;
+
+  try {
+    sound.pause();
+    sound.currentTime = 0;
+  } catch (error) {
+    console.error(error);
+  }
 }
