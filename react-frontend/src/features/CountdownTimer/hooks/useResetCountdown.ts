@@ -1,5 +1,10 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext";
+import {
+  useCurrentSessionType,
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";
@@ -20,12 +25,10 @@ const useResetCountdown = (): {
     setStartTimeInMinutes, // ADD THIS
   } = useCountdownTimerContext();
 
-  const {
-    currentSessionType,
-    focusDuration,
-    shortBreakDuration,
-    longBreakDuration,
-  } = useSessionContext(); // ADD THIS
+  const focusDuration = useFocusDuration();
+  const shortBreakDuration = useShortBreakDuration();
+  const longBreakDuration = useLongBreakDuration();
+  const currentSessionType = useCurrentSessionType();
 
   const resetCountdown = () => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);

@@ -1,7 +1,11 @@
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext";
+import {
+  useCurrentSessionCount,
+  useSessionCountLimit,
+} from "@/features/CountdownTimer/stores/SessionStore";
 
 const SessionCount = () => {
-  const { currentSessionCount, sessionCountLimit } = useSessionContext();
+  const currentSessionCount = useCurrentSessionCount();
+  const sessionCountLimit = useSessionCountLimit();
 
   return (
     <div

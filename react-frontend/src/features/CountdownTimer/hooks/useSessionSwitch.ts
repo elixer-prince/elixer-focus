@@ -1,19 +1,26 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext";
+import {
+  useCurrentSessionCount,
+  useCurrentSessionType,
+  useFocusDuration,
+  useLongBreakDuration,
+  useSessionCountLimit,
+  useSetCurrentSessionCount,
+  useSetCurrentSessionType,
+  useShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 
 const useSessionSwitch = () => {
-  const {
-    focusDuration,
-    shortBreakDuration,
-    longBreakDuration,
-    currentSessionType,
-    currentSessionCount,
-    sessionCountLimit,
-    setCurrentSessionType,
-    setCurrentSessionCount,
-  } = useSessionContext();
+  const focusDuration = useFocusDuration();
+  const shortBreakDuration = useShortBreakDuration();
+  const longBreakDuration = useLongBreakDuration();
+  const currentSessionType = useCurrentSessionType();
+  const currentSessionCount = useCurrentSessionCount();
+  const sessionCountLimit = useSessionCountLimit();
+  const setCurrentSessionType = useSetCurrentSessionType();
+  const setCurrentSessionCount = useSetCurrentSessionCount();
 
   const {
     setStartTimeInMinutes,
@@ -42,43 +49,22 @@ const useSessionSwitch = () => {
   };
 
   const updateFocusDurationAndReset = () => {
-    setCurrentSessionType(() => {
-      const newSessionType = "Focus";
-
-      saveToLocalStorage("currentSessionType", newSessionType);
-      return newSessionType;
-    });
-
+    setCurrentSessionType("Focus");
     resetTimer(focusDuration);
   };
 
   const updateShortBreakDurationAndReset = () => {
-    setCurrentSessionType(() => {
-      const newSessionType = "Short Break";
-
-      saveToLocalStorage("currentSessionType", newSessionType);
-      return newSessionType;
-    });
-
+    setCurrentSessionType("Short Break");
     resetTimer(shortBreakDuration);
   };
 
   const updateLongBreakDurationAndReset = () => {
-    setCurrentSessionType(() => {
-      const newSessionType = "Long Break";
-
-      saveToLocalStorage("currentSessionType", newSessionType);
-      return newSessionType;
-    });
-
+    setCurrentSessionType("Long Break");
     resetTimer(longBreakDuration);
   };
 
   const updateSessionCount = (newSessionCount: number) => {
-    setCurrentSessionCount(() => {
-      saveToLocalStorage("currentSessionCount", newSessionCount);
-      return newSessionCount;
-    });
+    setCurrentSessionCount(newSessionCount);
   };
 
   const handleBreakSwitching = () => {
@@ -88,13 +74,7 @@ const useSessionSwitch = () => {
     }
 
     updateShortBreakDurationAndReset();
-
-    setCurrentSessionCount((sessionCount) => {
-      const newSessionCount = sessionCount + 1;
-
-      saveToLocalStorage("currentSessionCount", newSessionCount);
-      return newSessionCount;
-    });
+    setCurrentSessionCount(currentSessionCount + 1);
   };
 
   const switchToFocus = () => {

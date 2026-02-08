@@ -1,7 +1,7 @@
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import { useCurrentSessionType } from "@/features/CountdownTimer/stores/SessionStore";
 
 const CurrentSessionType = () => {
-  const { currentSessionType } = useSessionContext();
+  const currentSessionType = useCurrentSessionType();
 
   return (
     <h2 className={"text-center text-4xl font-bold"}>

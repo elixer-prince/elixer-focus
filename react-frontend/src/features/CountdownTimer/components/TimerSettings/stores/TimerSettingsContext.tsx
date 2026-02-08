@@ -1,4 +1,8 @@
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import {
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
 import {
   createContext,
   type Dispatch,
@@ -25,8 +29,9 @@ type TimerSettingsType = {
 const TimerSettingsContext = createContext<TimerSettingsType | null>(null);
 
 export const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
-  const { focusDuration, shortBreakDuration, longBreakDuration } =
-    useSessionContext();
+  const focusDuration = useFocusDuration();
+  const shortBreakDuration = useShortBreakDuration();
+  const longBreakDuration = useLongBreakDuration();
 
   const [draftFocus, setDraftFocus] = useState<string>(
     focusDuration.toString(),

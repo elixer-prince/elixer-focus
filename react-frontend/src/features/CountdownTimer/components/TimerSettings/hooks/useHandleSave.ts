@@ -1,12 +1,22 @@
-import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation.ts";
-import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
-import { convertMinutesToSeconds } from "@/utils/conversion.ts";
-import { saveToLocalStorage } from "@/utils/storage.ts";
+import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation";
+import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import {
+  useCurrentSessionType,
+  useSetFocusDuration,
+  useSetLongBreakDuration,
+  useSetShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
+import { convertMinutesToSeconds } from "@/utils/conversion";
+import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
 
-const UseHandleSave = () => {
+const useHandleSave = () => {
+  const currentSessionType = useCurrentSessionType();
+  const setFocusDuration = useSetFocusDuration();
+  const setShortBreakDuration = useSetShortBreakDuration();
+  const setLongBreakDuration = useSetLongBreakDuration();
+
   const {
     draftFocus,
     draftShortBreak,
@@ -22,13 +32,6 @@ const UseHandleSave = () => {
     setStartTimeInMinutes,
     setRemainingTimeInSeconds,
   } = useCountdownTimerContext();
-
-  const {
-    setFocusDuration,
-    setShortBreakDuration,
-    setLongBreakDuration,
-    currentSessionType,
-  } = useSessionContext();
 
   const { validateAndSet } = useValidation();
 
@@ -101,16 +104,12 @@ const UseHandleSave = () => {
     draftFocus,
     draftShortBreak,
     draftLongBreak,
-    setFocusDuration,
-    setShortBreakDuration,
-    setLongBreakDuration,
     validateAndSet,
     setDraftFocus,
     setDraftShortBreak,
     setDraftLongBreak,
     timerRunning,
     timerPaused,
-    currentSessionType,
     setStartTimeInMinutes,
     setRemainingTimeInSeconds,
   ]);
@@ -118,4 +117,4 @@ const UseHandleSave = () => {
   return { handleSave };
 };
 
-export default UseHandleSave;
+export default useHandleSave;

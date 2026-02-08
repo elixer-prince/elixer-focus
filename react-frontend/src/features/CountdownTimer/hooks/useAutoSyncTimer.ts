@@ -1,16 +1,19 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext";
+import {
+  useCurrentSessionType,
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useEffect } from "react";
 
 const useAutoSyncTimer = () => {
-  const {
-    currentSessionType,
-    focusDuration,
-    shortBreakDuration,
-    longBreakDuration,
-  } = useSessionContext();
+  const focusDuration = useFocusDuration();
+  const shortBreakDuration = useShortBreakDuration();
+  const longBreakDuration = useLongBreakDuration();
+  const currentSessionType = useCurrentSessionType();
 
   const {
     timerRunning,

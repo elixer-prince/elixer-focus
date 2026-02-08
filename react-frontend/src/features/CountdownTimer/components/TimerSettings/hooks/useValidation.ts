@@ -1,10 +1,16 @@
-import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext.tsx";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext.tsx";
+import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext";
+import {
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/features/CountdownTimer/stores/SessionStore";
 import { useCallback } from "react";
 
 const useValidation = () => {
-  const { focusDuration, shortBreakDuration, longBreakDuration } =
-    useSessionContext();
+  const focusDuration = useFocusDuration();
+  const shortBreakDuration = useShortBreakDuration();
+  const longBreakDuration = useLongBreakDuration();
+
   const { draftFocus, draftShortBreak, draftLongBreak } =
     useTimerSettingsContext();
 

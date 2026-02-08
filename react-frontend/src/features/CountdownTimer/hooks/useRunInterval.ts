@@ -1,7 +1,7 @@
 import useEndTicking from "@/features/CountdownTimer/hooks/useEndTicking";
 import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch";
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
-import { useSessionContext } from "@/features/CountdownTimer/stores/SessionContext";
+import { useCurrentSessionType } from "@/features/CountdownTimer/stores/SessionStore";
 import { calculateRemainingSeconds } from "@/features/CountdownTimer/utils/timerCalculations";
 import {
   timerHasEnded,
@@ -21,9 +21,9 @@ const useRunInterval = (): {
     timerIntervalRef,
     setRemainingTimeInSeconds,
   } = useCountdownTimerContext();
-  const { currentSessionType } = useSessionContext();
   const { switchSessionType } = useSessionSwitch();
   const { startEndTicking, stopEndTicking } = useEndTicking();
+  const currentSessionType = useCurrentSessionType();
 
   const alertUserOfTimerEnd = () => {
     setTimeout(() => {
