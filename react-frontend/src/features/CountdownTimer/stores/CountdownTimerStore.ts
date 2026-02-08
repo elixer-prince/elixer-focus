@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type CountdownTimerState = {
   timerRunning: boolean;
@@ -16,22 +17,27 @@ type CountdownTimerActions = {
 
 type CountdownTimerStore = CountdownTimerState & CountdownTimerActions;
 
-const useCountdownTimerContext = create<CountdownTimerStore>((set) => ({
-  timerRunning: false,
-  timerPaused: true,
-  remainingTimeInSeconds: 0,
-  startTimeInMinutes: 0,
+const useCountdownTimerStore = create<CountdownTimerStore>()(
+  persist(
+    (set) => ({
+      timerRunning: false,
+      timerPaused: true,
+      remainingTimeInSeconds: 0,
+      startTimeInMinutes: 25,
 
-  setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
+      setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
 
-  setTimerPaused: (timerPaused: boolean) => set({ timerPaused }),
+      setTimerPaused: (timerPaused: boolean) => set({ timerPaused }),
 
-  setRemainingTimeInSeconds: (remainingSeconds: number) =>
-    set({ remainingTimeInSeconds: remainingSeconds }),
+      setRemainingTimeInSeconds: (remainingSeconds: number) =>
+        set({ remainingTimeInSeconds: remainingSeconds }),
 
-  setStartTimeInMinutes: (startTimeInMinutes: number) =>
-    set({ startTimeInMinutes }),
-}));
+      setStartTimeInMinutes: (startTimeInMinutes: number) =>
+        set({ startTimeInMinutes }),
+    }),
+    { name: "countdown-timer-storage" },
+  ),
+);
 
 /*-------------------------------------
 | COUNTDOWN TIMER - STORE EXPORTS
@@ -42,27 +48,27 @@ const useCountdownTimerContext = create<CountdownTimerStore>((set) => ({
 // STATES
 
 export const useTimerRunning = () =>
-  useCountdownTimerContext((state) => state.timerRunning);
+  useCountdownTimerStore((state) => state.timerRunning);
 
 export const useTimerPaused = () =>
-  useCountdownTimerContext((state) => state.timerPaused);
+  useCountdownTimerStore((state) => state.timerPaused);
 
 export const useRemainingTimeInSeconds = () =>
-  useCountdownTimerContext((state) => state.remainingTimeInSeconds);
+  useCountdownTimerStore((state) => state.remainingTimeInSeconds);
 
 export const useStartTimeInMinutes = () =>
-  useCountdownTimerContext((state) => state.startTimeInMinutes);
+  useCountdownTimerStore((state) => state.startTimeInMinutes);
 
 // ACTIONS
 
 export const useSetTimerRunning = () =>
-  useCountdownTimerContext((state) => state.setTimerRunning);
+  useCountdownTimerStore((state) => state.setTimerRunning);
 
 export const useSetTimerPaused = () =>
-  useCountdownTimerContext((state) => state.setTimerPaused);
+  useCountdownTimerStore((state) => state.setTimerPaused);
 
 export const useSetRemainingTimeInSeconds = () =>
-  useCountdownTimerContext((state) => state.setRemainingTimeInSeconds);
+  useCountdownTimerStore((state) => state.setRemainingTimeInSeconds);
 
 export const useSetStartTimeInMinutes = () =>
-  useCountdownTimerContext((state) => state.setStartTimeInMinutes);
+  useCountdownTimerStore((state) => state.setStartTimeInMinutes);

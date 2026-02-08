@@ -22,7 +22,7 @@ const useThemeStore = create<ThemeState & ThemeActions>()(
       currentTheme: "dark",
       setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
     }),
-    { name: "theme-store" },
+    { name: "theme-storage" },
   ),
 );
 

@@ -17,7 +17,7 @@ const useNavbarStore = create<NavbarState & NavbarActions>()(
         set((state) => ({ navbarIsOpen: !state.navbarIsOpen })),
     }),
     {
-      name: "navbar-store",
+      name: "navbar-storage",
     },
   ),
 );
