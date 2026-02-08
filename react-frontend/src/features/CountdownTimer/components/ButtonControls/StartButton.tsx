@@ -5,9 +5,12 @@ const StartButton = () => {
   const { startCountdownWithSound } = useStartCountdown();
 
   return (
-    <button className={"btn btn-primary"} onClick={startCountdownWithSound}>
+    <button
+      className={"btn btn-primary"}
+      onClick={startCountdownWithSound}
+    >
       <FaPlay size={12} />
-      Start
+      <span className={"max-sm:hidden"}>Start</span>
     </button>
   );
 };

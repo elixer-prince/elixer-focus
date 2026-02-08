@@ -7,7 +7,7 @@ const PauseButton = () => {
   return (
     <button className={"btn btn-primary"} onClick={pauseCountdown}>
       <FaPause size={12} />
-      Pause
+      <span className={"max-sm:hidden"}>Pause</span>
     </button>
   );
 };
