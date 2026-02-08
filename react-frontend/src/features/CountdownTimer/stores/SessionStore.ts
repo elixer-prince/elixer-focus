@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type CountdownSessionType = "Focus" | "Short Break" | "Long Break";
 
@@ -24,29 +25,36 @@ type SessionActions = {
 
 type SessionStore = SessionState & SessionActions;
 
-const useSessionStore = create<SessionStore>((set) => ({
-  focusDuration: 25,
-  shortBreakDuration: 5,
-  longBreakDuration: 15,
-  sessionCountLimit: 4,
-  currentSessionType: "Focus",
-  currentSessionCount: 0,
-  totalSessionsCompleted: 0,
+const useSessionStore = create<SessionStore>()(
+  persist(
+    (set) => ({
+      focusDuration: 25,
+      shortBreakDuration: 5,
+      longBreakDuration: 15,
+      sessionCountLimit: 4,
+      currentSessionType: "Focus",
+      currentSessionCount: 0,
+      totalSessionsCompleted: 0,
 
-  setFocusDuration: (duration) => set({ focusDuration: duration }),
+      setFocusDuration: (duration) => set({ focusDuration: duration }),
 
-  setShortBreakDuration: (duration) => set({ shortBreakDuration: duration }),
+      setShortBreakDuration: (duration) =>
+        set({ shortBreakDuration: duration }),
 
-  setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
+      setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
 
-  setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
+      setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
 
-  setCurrentSessionType: (type) => set({ currentSessionType: type }),
+      setCurrentSessionType: (type) => set({ currentSessionType: type }),
 
-  setCurrentSessionCount: (count) => set({ currentSessionCount: count }),
+      setCurrentSessionCount: (count) => set({ currentSessionCount: count }),
 
-  setTotalSessionsCompleted: (count) => set({ totalSessionsCompleted: count }),
-}));
+      setTotalSessionsCompleted: (count) =>
+        set({ totalSessionsCompleted: count }),
+    }),
+    { name: "session-storage" },
+  ),
+);
 
 /*-------------------------------------
 | SESSION STORE EXPORTS
