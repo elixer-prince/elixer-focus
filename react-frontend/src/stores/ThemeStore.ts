@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 // useEffect(() => {
 //   if (currentTheme) {
@@ -15,10 +16,15 @@ type ThemeActions = {
   setCurrentTheme: (theme: string) => void;
 };
 
-const useThemeStore = create<ThemeState & ThemeActions>((set) => ({
-  currentTheme: "dark",
-  setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
-}));
+const useThemeStore = create<ThemeState & ThemeActions>()(
+  persist(
+    (set) => ({
+      currentTheme: "dark",
+      setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
+    }),
+    { name: "theme-store" },
+  ),
+);
 
 export const useCurrentTheme = () =>
   useThemeStore((state) => state.currentTheme);
