@@ -11,7 +11,7 @@ export function playSound(sound: HTMLAudioElement): void {
     stopSound(sound);
     sound.play();
   } catch (error) {
-    console.error(error);
+    console.error(`Error playing sound: ${sound.src}`, error);
   }
 }
 
@@ -28,6 +28,6 @@ export function stopSound(sound: HTMLAudioElement): void {
     sound.pause();
     sound.currentTime = 0;
   } catch (error) {
-    console.error(error);
+    console.error(`Error pausing sound: ${sound.src}`, error);
   }
 }
