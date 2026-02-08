@@ -2,6 +2,14 @@ import useEndTicking from "@/features/CountdownTimer/hooks/useEndTicking";
 import useRunInterval from "@/features/CountdownTimer/hooks/useRunInterval";
 import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch";
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import {
+  useRemainingTimeInSeconds,
+  useSetRemainingTimeInSeconds,
+  useSetTimerPaused,
+  useSetTimerRunning,
+  useTimerPaused,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
 import { calculateEndTime } from "@/features/CountdownTimer/utils/timerCalculations";
 import { getCurrentTimestamp } from "@/utils/date";
 import { playSound } from "@/utils/sound";
@@ -18,38 +26,29 @@ const useStartCountdown = (): {
     timerOnClickSoundEffectRef,
     timerEndTimeRef,
     isEndTickingRef,
-    remainingTimeInSeconds,
-    setRemainingTimeInSeconds,
-    timerRunning,
-    setTimerRunning,
-    timerPaused,
-    setTimerPaused,
   } = useCountdownTimerContext();
+
+  const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
+  const remainingTimeInSeconds = useRemainingTimeInSeconds();
+  const setTimerRunning = useSetTimerRunning();
+  const setTimerPaused = useSetTimerPaused();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
+
   const { startEndTicking, stopEndTicking } = useEndTicking();
   const { runInterval } = useRunInterval();
   const { switchSessionType } = useSessionSwitch();
 
-  const resetStartingTimerState = useCallback(() => {
-    setTimerPaused(() => {
-      saveToLocalStorage("timerPaused", false);
-      return false;
-    });
-
-    setTimerRunning(() => {
-      saveToLocalStorage("timerRunning", true);
-      return true;
-    });
-  }, [setTimerPaused, setTimerRunning]);
-
   /*------------------------------------------------------------
-     |  Main Timer Start Functions
-     |------------------------------------------------------------
-     |
-     */
+  |  Main Timer Start Functions
+  |------------------------------------------------------------
+  |
+  */
 
   const startCountdown = useCallback(() => {
     stopEndTicking();
-    resetStartingTimerState();
+    setTimerPaused(false);
+    setTimerRunning(true);
 
     const endTime = calculateEndTime(remainingTimeInSeconds);
 
@@ -58,13 +57,7 @@ const useStartCountdown = (): {
     saveToLocalStorage("timerEndTime", endTime);
 
     runInterval(endTime);
-  }, [
-    remainingTimeInSeconds,
-    runInterval,
-    timerEndTimeRef,
-    resetStartingTimerState,
-    stopEndTicking,
-  ]);
+  }, [runInterval, timerEndTimeRef, stopEndTicking]);
 
   // Resume based on stored endTime
   const startCountdownOnPageLoad = useCallback(() => {
@@ -101,25 +94,13 @@ const useStartCountdown = (): {
       // Timer actually finished while we were away
       stopEndTicking(); // if it was ticking in the background
 
-      setRemainingTimeInSeconds(() => {
-        saveToLocalStorage("remainingTimeInSeconds", 0);
-        return 0;
-      });
+      setRemainingTimeInSeconds(0);
 
       // Handle completion just like in the interval finish case
       switchSessionType();
 
-      setTimerPaused(() => {
-        const newTimerPaused = true;
-        saveToLocalStorage("timerPaused", newTimerPaused);
-        return newTimerPaused;
-      });
-
-      setTimerRunning(() => {
-        const newTimerRunning = false;
-        saveToLocalStorage("timerRunning", newTimerRunning);
-        return newTimerRunning;
-      });
+      setTimerPaused(true);
+      setTimerRunning(false);
 
       timerEndTimeRef.current = null;
       saveToLocalStorage("timerEndTime", null);
@@ -128,22 +109,14 @@ const useStartCountdown = (): {
     }
 
     // Update remaining time to reflect time elapsed while away
-    setRemainingTimeInSeconds(() => {
-      saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-      return remainingSeconds;
-    });
+    setRemainingTimeInSeconds(remainingSeconds);
 
     // Resume ticking from the original endTime
     runInterval(endTime);
   }, [
-    timerRunning,
-    timerPaused,
     timerEndTimeRef,
     startEndTicking,
     stopEndTicking,
-    setRemainingTimeInSeconds,
-    setTimerPaused,
-    setTimerRunning,
     switchSessionType,
     startCountdown,
     runInterval,

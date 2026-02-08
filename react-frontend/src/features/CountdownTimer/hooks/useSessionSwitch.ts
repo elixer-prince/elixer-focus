@@ -1,5 +1,12 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
 import {
+  useSetRemainingTimeInSeconds,
+  useSetStartTimeInMinutes,
+  useSetTimerPaused,
+  useSetTimerRunning,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
+import {
   useCurrentSessionCount,
   useCurrentSessionType,
   useFocusDuration,
@@ -13,6 +20,8 @@ import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 
 const useSessionSwitch = () => {
+  const { timerIntervalRef, timerEndTimeRef } = useCountdownTimerContext();
+
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
@@ -22,15 +31,11 @@ const useSessionSwitch = () => {
   const setCurrentSessionType = useSetCurrentSessionType();
   const setCurrentSessionCount = useSetCurrentSessionCount();
 
-  const {
-    setStartTimeInMinutes,
-    setRemainingTimeInSeconds,
-    setTimerPaused,
-    setTimerRunning,
-    timerRunning,
-    timerIntervalRef,
-    timerEndTimeRef,
-  } = useCountdownTimerContext();
+  const timerRunning = useTimerRunning();
+  const setTimerRunning = useSetTimerRunning();
+  const setTimerPaused = useSetTimerPaused();
+  const setStartTimeInMinutes = useSetStartTimeInMinutes();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   const confirmationMessage =
     "Switching sessions will reset the current timer. Do you want to proceed?";
@@ -113,29 +118,14 @@ const useSessionSwitch = () => {
       timerIntervalRef.current = null;
     }
 
-    setTimerRunning(() => {
-      saveToLocalStorage("timerRunning", false);
-      return false;
-    });
-
-    setTimerPaused(() => {
-      saveToLocalStorage("timerPaused", true);
-      return true;
-    });
+    setTimerRunning(false);
+    setTimerPaused(true);
 
     timerEndTimeRef.current = null;
     saveToLocalStorage("timerEndTime", null);
 
-    setStartTimeInMinutes(() => {
-      saveToLocalStorage("startTimeInMinutes", newStartTime);
-      return newStartTime;
-    });
-
-    setRemainingTimeInSeconds(() => {
-      const remainingSeconds = convertMinutesToSeconds(newStartTime);
-      saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-      return remainingSeconds;
-    });
+    setStartTimeInMinutes(newStartTime);
+    setRemainingTimeInSeconds(convertMinutesToSeconds(newStartTime));
   };
 
   return {

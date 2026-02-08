@@ -10,20 +10,20 @@ import {
 import { getCurrentTimestamp } from "@/utils/date";
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 import { playSound } from "@/utils/sound";
-import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
+import { useSetRemainingTimeInSeconds } from "./../stores/CountdownTimerStore";
 
 const useRunInterval = (): {
   runInterval: (endTime: number) => void;
 } => {
-  const {
-    timerBeepSoundEffectRef,
-    timerIntervalRef,
-    setRemainingTimeInSeconds,
-  } = useCountdownTimerContext();
+  const { timerBeepSoundEffectRef, timerIntervalRef } =
+    useCountdownTimerContext();
+
+  const currentSessionType = useCurrentSessionType();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
+
   const { switchSessionType } = useSessionSwitch();
   const { startEndTicking, stopEndTicking } = useEndTicking();
-  const currentSessionType = useCurrentSessionType();
 
   const alertUserOfTimerEnd = () => {
     setTimeout(() => {
@@ -61,10 +61,7 @@ const useRunInterval = (): {
 
         if (timerIsAboutToEnd(remainingSeconds)) startEndTicking();
 
-        setRemainingTimeInSeconds(() => {
-          saveToLocalStorage("remainingTimeInSeconds", remainingSeconds);
-          return remainingSeconds;
-        });
+        setRemainingTimeInSeconds(remainingSeconds);
 
         if (timerHasEnded(remainingSeconds)) {
           clearIntervalIfItExists();
@@ -79,7 +76,6 @@ const useRunInterval = (): {
     [
       timerBeepSoundEffectRef,
       switchSessionType,
-      setRemainingTimeInSeconds,
       startEndTicking,
       stopEndTicking,
       alertUserOfTimerEnd,

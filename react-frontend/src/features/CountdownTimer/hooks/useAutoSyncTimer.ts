@@ -1,4 +1,10 @@
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import {
+  useSetRemainingTimeInSeconds,
+  useSetStartTimeInMinutes,
+  useStartTimeInMinutes,
+  useTimerPaused,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
 import {
   useCurrentSessionType,
   useFocusDuration,
@@ -15,13 +21,11 @@ const useAutoSyncTimer = () => {
   const longBreakDuration = useLongBreakDuration();
   const currentSessionType = useCurrentSessionType();
 
-  const {
-    timerRunning,
-    timerPaused,
-    startTimeInMinutes,
-    setStartTimeInMinutes,
-    setRemainingTimeInSeconds,
-  } = useCountdownTimerContext();
+  const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
+  const startTimeInMinutes = useStartTimeInMinutes();
+  const setStartTimeInMinutes = useSetStartTimeInMinutes();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   useEffect(() => {
     // Only sync if timer is NOT actively running

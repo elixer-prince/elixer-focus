@@ -1,5 +1,13 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
 import {
+  useSetRemainingTimeInSeconds,
+  useSetStartTimeInMinutes,
+  useSetTimerPaused,
+  useSetTimerRunning,
+  useStartTimeInMinutes,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
+import {
   useCurrentSessionType,
   useFocusDuration,
   useLongBreakDuration,
@@ -13,17 +21,15 @@ const useResetCountdown = (): {
   resetCountdown: () => void;
   resetCountdownWithSound: () => void;
 } => {
-  const {
-    resetTimerSoundEffectRef,
-    setRemainingTimeInSeconds,
-    startTimeInMinutes,
-    timerIntervalRef,
-    timerEndTimeRef,
-    timerRunning,
-    setTimerRunning,
-    setTimerPaused,
-    setStartTimeInMinutes, // ADD THIS
-  } = useCountdownTimerContext();
+  const { resetTimerSoundEffectRef, timerIntervalRef, timerEndTimeRef } =
+    useCountdownTimerContext();
+
+  const timerRunning = useTimerRunning();
+  const startTimeInMinutes = useStartTimeInMinutes();
+  const setTimerRunning = useSetTimerRunning();
+  const setTimerPaused = useSetTimerPaused();
+  const setStartTimeInMinutes = useSetStartTimeInMinutes();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
@@ -56,20 +62,9 @@ const useResetCountdown = (): {
 
     const initialTime = convertMinutesToSeconds(currentDuration); // Use currentDuration
 
-    setTimerPaused(() => {
-      saveToLocalStorage("timerPaused", true);
-      return true;
-    });
-
-    setTimerRunning(() => {
-      saveToLocalStorage("timerRunning", false);
-      return false;
-    });
-
-    setRemainingTimeInSeconds(() => {
-      saveToLocalStorage("remainingTimeInSeconds", initialTime);
-      return initialTime;
-    });
+    setTimerPaused(true);
+    setTimerRunning(false);
+    setRemainingTimeInSeconds(initialTime);
 
     // Clear localStorage for refs
     saveToLocalStorage("timerEndTime", null);

@@ -1,10 +1,10 @@
 import useHandleCountdownState from "@/features/CountdownTimer/components/TimerDisplay/hooks/useHandleCountdownState";
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import { useRemainingTimeInSeconds } from "@/features/CountdownTimer/stores/CountdownTimerStore";
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const CountdownMinutesAndSeconds = () => {
-  const { remainingTimeInSeconds } = useCountdownTimerContext();
   const { isEndingSoon } = useHandleCountdownState();
+  const remainingTimeInSeconds = useRemainingTimeInSeconds();
 
   return (
     <div

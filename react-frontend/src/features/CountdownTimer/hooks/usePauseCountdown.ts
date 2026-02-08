@@ -1,25 +1,24 @@
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import {
+  useSetTimerPaused,
+  useTimerPaused,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
 import { playSound } from "@/utils/sound";
-import { saveToLocalStorage } from "@/utils/storage";
 
 const usePauseCountdown = (): {
   pauseCountdown: () => void;
 } => {
-  const {
-    timerIntervalRef,
-    timerOffClickSoundEffectRef,
-    timerPaused,
-    setTimerPaused,
-  } = useCountdownTimerContext();
+  const { timerIntervalRef, timerOffClickSoundEffectRef } =
+    useCountdownTimerContext();
+
+  const timerPaused = useTimerPaused();
+  const setTimerPaused = useSetTimerPaused();
 
   const pauseCountdown = () => {
     if (timerPaused) return;
 
     playSound(timerOffClickSoundEffectRef.current);
-    setTimerPaused(() => {
-      saveToLocalStorage("timerPaused", true);
-      return true;
-    });
+    setTimerPaused(true);
 
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
   };

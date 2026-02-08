@@ -1,11 +1,15 @@
-import PauseButton from "@/features/CountdownTimer/components/ButtonControls/PauseButton.tsx";
-import ResetButton from "@/features/CountdownTimer/components/ButtonControls/ResetButton.tsx";
-import SkipButton from "@/features/CountdownTimer/components/ButtonControls/SkipButton.tsx";
-import StartButton from "@/features/CountdownTimer/components/ButtonControls/StartButton.tsx";
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
+import PauseButton from "@/features/CountdownTimer/components/ButtonControls/PauseButton";
+import ResetButton from "@/features/CountdownTimer/components/ButtonControls/ResetButton";
+import SkipButton from "@/features/CountdownTimer/components/ButtonControls/SkipButton";
+import StartButton from "@/features/CountdownTimer/components/ButtonControls/StartButton";
+import {
+  useTimerPaused,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
 
 const ButtonControls = () => {
-  const { timerPaused, timerRunning } = useCountdownTimerContext();
+  const timerPaused = useTimerPaused();
+  const timerRunning = useTimerRunning();
 
   return (
     <div className={"mb-8 flex justify-center gap-4"}>

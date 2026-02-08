@@ -1,6 +1,10 @@
 import useValidation from "@/features/CountdownTimer/components/TimerSettings/hooks/useValidation";
 import { useTimerSettingsContext } from "@/features/CountdownTimer/components/TimerSettings/stores/TimerSettingsContext";
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import {
+  useSetStartTimeInMinutes,
+  useTimerPaused,
+  useTimerRunning,
+} from "@/features/CountdownTimer/stores/CountdownTimerStore";
 import {
   useCurrentSessionType,
   useSetFocusDuration,
@@ -10,12 +14,18 @@ import {
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
+import { useSetRemainingTimeInSeconds } from "./../../../stores/CountdownTimerStore";
 
 const useHandleSave = () => {
   const currentSessionType = useCurrentSessionType();
   const setFocusDuration = useSetFocusDuration();
   const setShortBreakDuration = useSetShortBreakDuration();
   const setLongBreakDuration = useSetLongBreakDuration();
+
+  const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
+  const setStartTimeInMinutes = useSetStartTimeInMinutes();
+  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   const {
     draftFocus,
@@ -25,13 +35,6 @@ const useHandleSave = () => {
     setDraftShortBreak,
     setDraftLongBreak,
   } = useTimerSettingsContext();
-
-  const {
-    timerRunning,
-    timerPaused,
-    setStartTimeInMinutes,
-    setRemainingTimeInSeconds,
-  } = useCountdownTimerContext();
 
   const { validateAndSet } = useValidation();
 
