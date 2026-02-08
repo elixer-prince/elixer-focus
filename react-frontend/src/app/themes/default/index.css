@@ -1,2 +1,2 @@
-@import "./elixer.css";
-@import "./daisyui/index.css";
+@import "@/app/themes/default/elixer.css";
+@import "@/app/themes/default/daisyui/index.css";

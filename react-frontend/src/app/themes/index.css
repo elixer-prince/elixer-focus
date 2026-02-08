@@ -1,2 +1,2 @@
-@import "./default/index.css";
-@import "./premium/index.css";
+@import "@/app/themes/default/index.css";
+@import "@/app/themes/premium/index.css";

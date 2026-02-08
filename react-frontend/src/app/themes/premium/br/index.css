@@ -1,4 +1,4 @@
-@import "./daiki.css";
-@import "./emilia.css";
-@import "./leila.css";
-@import "./natsu.css";
+@import "@/app/themes/premium/br/daiki.css";
+@import "@/app/themes/premium/br/emilia.css";
+@import "@/app/themes/premium/br/leila.css";
+@import "@/app/themes/premium/br/natsu.css";

@@ -2,7 +2,8 @@
 @plugin "daisyui" {
   themes: all;
 }
-@import "./themes/index.css";
+
+@import "@/app/themes/index.css";
 
 :root {
   --navbar-height: 4.5rem;
