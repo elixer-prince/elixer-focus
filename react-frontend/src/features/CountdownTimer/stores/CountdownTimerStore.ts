@@ -1,3 +1,4 @@
+import { convertMinutesToSeconds } from "@/utils/conversion";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -22,7 +23,7 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
     (set) => ({
       timerRunning: false,
       timerPaused: true,
-      remainingTimeInSeconds: 0,
+      remainingTimeInSeconds: convertMinutesToSeconds(25),
       startTimeInMinutes: 25,
 
       setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
