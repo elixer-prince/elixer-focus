@@ -1,6 +1,6 @@
-import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch.ts";
-import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext.tsx";
-import { playSound } from "@/utils/sound.ts";
+import useSessionSwitch from "@/features/CountdownTimer/hooks/useSessionSwitch";
+import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import { playSound } from "@/utils/sound";
 
 const useSkipCountdown = (): {
   skipCountdown: () => void;

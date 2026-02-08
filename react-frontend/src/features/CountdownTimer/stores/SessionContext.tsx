@@ -1,4 +1,4 @@
-import { getFromLocalStorage } from "@/utils/storage.ts";
+import { getFromLocalStorage } from "@/utils/storage";
 import {
   createContext,
   type Dispatch,

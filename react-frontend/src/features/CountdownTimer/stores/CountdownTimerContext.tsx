@@ -3,8 +3,8 @@ import offClickSoundURL from "@/features/CountdownTimer/assets/sound-effects/off
 import onClickSoundURL from "@/features/CountdownTimer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/CountdownTimer/assets/sound-effects/reset-timer.mp3";
 import tickingSoundURL from "@/features/CountdownTimer/assets/sound-effects/ticking.mp3";
-import { convertMinutesToSeconds } from "@/utils/conversion.ts";
-import { getFromLocalStorage } from "@/utils/storage.ts";
+import { convertMinutesToSeconds } from "@/utils/conversion";
+import { getFromLocalStorage } from "@/utils/storage";
 import {
   createContext,
   type Dispatch,

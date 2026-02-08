@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navigation/Navbar/Index";
 import Sidebar from "@/components/Navigation/Sidebar/Index";
 import MusicPlayer from "@/features/MusicPlayer/components/Index";
+import toast, { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 
 const DefaultLayout = () => {
@@ -9,6 +10,8 @@ const DefaultLayout = () => {
       <Navbar />
 
       <Sidebar />
+
+      <Toaster />
 
       <main
         className={
