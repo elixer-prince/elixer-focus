@@ -1,5 +1,5 @@
 import ThemePreview from "@/features/Settings/components/ThemeSettings/ThemePreview";
-import { useCurrentTheme, useSetCurrentTheme } from "@/stores/ThemeStore";
+import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme.ts";
 import type { PropsWithChildren } from "react";
 
 type ThemeLabelProps = {
