@@ -1,13 +1,13 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
 import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
@@ -16,7 +16,7 @@ import { useCallback } from "react";
 
 const useCountdownTimerHelpers = () => {
   const { clearIntervalIfItExists } = useCountdownInterval();
-  const { switchSessionType } = useSessionSwitch();
+  const { autoSwitchSessionType } = useSessionSwitch();
   const { stopEndTicking } = useEndTicking();
 
   const timerRunning = useTimerRunning();
@@ -58,7 +58,7 @@ const useCountdownTimerHelpers = () => {
     setRemainingTimeInSeconds(0);
     setTimerPaused(true);
     setTimerRunning(false);
-    switchSessionType();
+    autoSwitchSessionType();
     clearIntervalIfItExists();
     saveToLocalStorage("timerEndTime", null);
   }, []);
@@ -70,12 +70,10 @@ const useCountdownTimerHelpers = () => {
 
       const now = getCurrentTimestamp();
 
-      const remainingSeconds = Math.max(
+      return Math.max(
         0,
         Math.round(convertMillisecondsToSeconds(endTime - now)),
       );
-
-      return remainingSeconds;
     },
     [timerEndTimeRef],
   );

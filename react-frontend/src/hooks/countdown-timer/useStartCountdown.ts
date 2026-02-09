@@ -1,13 +1,12 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 import { calculateEndTime } from "@/features/countdown-timer/utils/timerCalculations";
 import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
@@ -17,7 +16,6 @@ import { useCallback } from "react";
 
 const useStartCountdown = () => {
   const { startEndTicking, stopEndTicking } = useEndTicking();
-  const { switchSessionType } = useSessionSwitch();
   const { clearIntervalIfItExists, runInterval } = useCountdownInterval();
   const { calculateNewRemainingSeconds } = useCountdownHelpers();
   const {
@@ -89,7 +87,6 @@ const useStartCountdown = () => {
     timerEndTimeRef,
     startEndTicking,
     stopEndTicking,
-    switchSessionType,
     startCountdown,
     runInterval,
   ]);

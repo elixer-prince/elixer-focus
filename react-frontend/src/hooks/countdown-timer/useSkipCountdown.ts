@@ -1,11 +1,11 @@
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
 import { playSound } from "@/utils/sound";
 
 const useSkipCountdown = (): {
   skipCountdown: () => void;
 } => {
-  const { switchSessionType } = useSessionSwitch();
+  const { autoSwitchSessionType } = useSessionSwitch();
 
   const { resetTimerSoundEffectRef } = useCountdownTimerContext();
 
@@ -14,7 +14,7 @@ const useSkipCountdown = (): {
     // TODO: Implement this as an overlay
     if (confirm("Are you sure you want to skip the countdown?")) {
       playSound(resetTimerSoundEffectRef.current);
-      switchSessionType();
+      autoSwitchSessionType();
     }
   };
 

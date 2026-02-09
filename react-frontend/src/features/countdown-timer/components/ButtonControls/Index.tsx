@@ -2,7 +2,10 @@ import PauseButton from "@/features/countdown-timer/components/ButtonControls/Pa
 import ResetButton from "@/features/countdown-timer/components/ButtonControls/ResetButton";
 import SkipButton from "@/features/countdown-timer/components/ButtonControls/SkipButton";
 import StartButton from "@/features/countdown-timer/components/ButtonControls/StartButton";
-import { useTimerPaused, useTimerRunning } from "@/stores/CountdownTimerStore";
+import {
+  useTimerPaused,
+  useTimerRunning,
+} from "@/stores/countdown-timer/store.ts";
 
 const ButtonControls = () => {
   const timerPaused = useTimerPaused();

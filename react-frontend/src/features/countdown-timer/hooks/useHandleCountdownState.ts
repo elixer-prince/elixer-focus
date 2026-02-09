@@ -3,7 +3,7 @@ import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
 import {
   useRemainingTimeInSeconds,
   useTimerPaused,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 
 const useHandleCountdownState = () => {
   const { startCountdownWithSound } = useStartCountdown();

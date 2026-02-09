@@ -1,9 +1,9 @@
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
 import {
   useSetTimerPaused,
   useTimerPaused,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 import { playSound } from "@/utils/sound";
 
 const usePauseCountdown = () => {

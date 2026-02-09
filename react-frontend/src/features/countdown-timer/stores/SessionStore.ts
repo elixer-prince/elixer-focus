@@ -1,14 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type CountdownSessionType = "Focus" | "Short Break" | "Long Break";
+import type { CountdownSession } from "@/types/countdown-timer.ts";
 
 type SessionState = {
   focusDuration: number;
   shortBreakDuration: number;
   longBreakDuration: number;
   sessionCountLimit: number;
-  currentSessionType: CountdownSessionType;
+  currentSessionType: CountdownSession;
   currentSessionCount: number;
   totalSessionsCompleted: number;
 };
@@ -18,7 +17,7 @@ type SessionActions = {
   setShortBreakDuration: (duration: number) => void;
   setLongBreakDuration: (duration: number) => void;
   setSessionCountLimit: (limit: number) => void;
-  setCurrentSessionType: (type: CountdownSessionType) => void;
+  setCurrentSessionType: (type: CountdownSession) => void;
   setCurrentSessionCount: (count: number) => void;
   setTotalSessionsCompleted: (count: number) => void;
 };

@@ -8,19 +8,13 @@ import {
   useSetCurrentSessionType,
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/SessionStore";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
-import {
-  useSetRemainingTimeInSeconds,
-  useSetStartTimeInMinutes,
-  useSetTimerPaused,
-  useSetTimerRunning,
-  useTimerRunning,
-} from "@/stores/CountdownTimerStore";
-import { convertMinutesToSeconds } from "@/utils/conversion";
-import { saveToLocalStorage } from "@/utils/storage";
+import { useTimerRunning } from "@/stores/countdown-timer/store.ts";
+import usePageTitle from "@/hooks/usePageTitle.ts";
+import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
+import type { CountdownSession } from "@/types/countdown-timer.ts";
 
 const useSessionSwitch = () => {
-  const { timerIntervalRef, timerEndTimeRef } = useCountdownTimerContext();
+  const { resetPageTitle } = usePageTitle();
 
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
@@ -32,40 +26,31 @@ const useSessionSwitch = () => {
   const setCurrentSessionCount = useSetCurrentSessionCount();
 
   const timerRunning = useTimerRunning();
-  const setTimerRunning = useSetTimerRunning();
-  const setTimerPaused = useSetTimerPaused();
-  const setStartTimeInMinutes = useSetStartTimeInMinutes();
-  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
+  const { resetTimerStorage } = useCountdownTimerStorage();
 
   const confirmationMessage =
     "Switching sessions will reset the current timer. Do you want to proceed?";
 
-  const switchSessionType = () => {
+  const autoSwitchSessionType = () => {
     switch (currentSessionType) {
       case "Short Break":
-        updateFocusDurationAndReset();
+        updateTimerDurationAndReset("Short Break", shortBreakDuration);
         break;
       case "Long Break":
-        updateFocusDurationAndReset();
+        updateTimerDurationAndReset("Long Break", longBreakDuration);
         break;
       default:
         handleBreakSwitching();
     }
+    resetPageTitle();
   };
 
-  const updateFocusDurationAndReset = () => {
-    setCurrentSessionType("Focus");
-    resetTimer(focusDuration);
-  };
-
-  const updateShortBreakDurationAndReset = () => {
-    setCurrentSessionType("Short Break");
-    resetTimer(shortBreakDuration);
-  };
-
-  const updateLongBreakDurationAndReset = () => {
-    setCurrentSessionType("Long Break");
-    resetTimer(longBreakDuration);
+  const updateTimerDurationAndReset = (
+    sessionType: CountdownSession,
+    sessionDuration: number,
+  ) => {
+    setCurrentSessionType(sessionType);
+    resetTimerStorage(sessionDuration);
   };
 
   const updateSessionCount = (newSessionCount: number) => {
@@ -74,62 +59,52 @@ const useSessionSwitch = () => {
 
   const handleBreakSwitching = () => {
     if (currentSessionCount + 1 >= sessionCountLimit) {
-      updateLongBreakDurationAndReset();
+      updateTimerDurationAndReset("Long Break", longBreakDuration);
       return updateSessionCount(0);
     }
 
-    updateShortBreakDurationAndReset();
+    updateTimerDurationAndReset("Short Break", shortBreakDuration);
     setCurrentSessionCount(currentSessionCount + 1);
   };
 
   const switchToFocus = () => {
     if (currentSessionType === "Focus") return;
 
-    if (!timerRunning) return updateFocusDurationAndReset();
+    if (!timerRunning)
+      return updateTimerDurationAndReset("Focus", focusDuration);
 
     if (confirm(confirmationMessage)) {
-      updateFocusDurationAndReset();
+      updateTimerDurationAndReset("Focus", focusDuration);
+      resetPageTitle();
     }
   };
 
   const switchToShortBreak = () => {
     if (currentSessionType === "Short Break") return;
 
-    if (!timerRunning) return updateShortBreakDurationAndReset();
+    if (!timerRunning)
+      return updateTimerDurationAndReset("Short Break", shortBreakDuration);
 
     if (confirm(confirmationMessage)) {
-      updateShortBreakDurationAndReset();
+      updateTimerDurationAndReset("Short Break", shortBreakDuration);
+      resetPageTitle();
     }
   };
 
   const switchToLongBreak = () => {
     if (currentSessionType === "Long Break") return;
 
-    if (!timerRunning) return updateLongBreakDurationAndReset();
+    if (!timerRunning)
+      return updateTimerDurationAndReset("Long Break", longBreakDuration);
 
     if (confirm(confirmationMessage)) {
-      updateLongBreakDurationAndReset();
+      updateTimerDurationAndReset("Long Break", longBreakDuration);
+      resetPageTitle();
     }
-  };
-
-  const resetTimer = (newStartTime: number) => {
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
-    }
-
-    setTimerRunning(false);
-    setTimerPaused(true);
-
-    timerEndTimeRef.current = null;
-    saveToLocalStorage("timerEndTime", null);
-
-    setStartTimeInMinutes(newStartTime);
-    setRemainingTimeInSeconds(convertMinutesToSeconds(newStartTime));
   };
 
   return {
-    switchSessionType,
+    autoSwitchSessionType,
     switchToFocus,
     switchToShortBreak,
     switchToLongBreak,

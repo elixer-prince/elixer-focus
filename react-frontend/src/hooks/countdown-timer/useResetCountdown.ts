@@ -5,73 +5,52 @@ import {
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/SessionStore";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
-import {
-  useSetRemainingTimeInSeconds,
-  useSetStartTimeInMinutes,
-  useSetTimerPaused,
-  useSetTimerRunning,
-  useStartTimeInMinutes,
-  useTimerRunning,
-} from "@/stores/CountdownTimerStore";
-import { convertMinutesToSeconds } from "@/utils/conversion";
+import usePageTitle from "@/hooks/usePageTitle";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
+import { useTimerRunning } from "@/stores/countdown-timer/store.ts";
 import { playSound } from "@/utils/sound";
-import { saveToLocalStorage } from "@/utils/storage";
+import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
 
 const useResetCountdown = () => {
   const { resetTimerSoundEffectRef } = useCountdownTimerContext();
   const { clearIntervalIfItExists } = useCountdownInterval();
+  const { resetPageTitle } = usePageTitle();
+  const { resetTimerStorage } = useCountdownTimerStorage();
 
   const timerRunning = useTimerRunning();
-  const startTimeInMinutes = useStartTimeInMinutes();
-  const setTimerRunning = useSetTimerRunning();
-  const setTimerPaused = useSetTimerPaused();
-  const setStartTimeInMinutes = useSetStartTimeInMinutes();
-  const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
   const currentSessionType = useCurrentSessionType();
 
+  // * Locked * //
+  const calculateInitialTime = (): number => {
+    switch (currentSessionType) {
+      case "Focus":
+        return focusDuration;
+      case "Short Break":
+        return shortBreakDuration;
+      case "Long Break":
+        return longBreakDuration;
+    }
+  };
+
+  // * Locked * //
   const resetCountdown = () => {
     clearIntervalIfItExists();
 
-    // GET THE CORRECT DURATION FOR CURRENT SESSION
-    let currentDuration = startTimeInMinutes; // fallback to existing
+    const initialTime = calculateInitialTime();
 
-    switch (currentSessionType) {
-      case "Focus":
-        currentDuration = focusDuration;
-        break;
-      case "Short Break":
-        currentDuration = shortBreakDuration;
-        break;
-      case "Long Break":
-        currentDuration = longBreakDuration;
-        break;
-    }
-
-    // ALSO UPDATE startTimeInMinutes to stay in sync
-    setStartTimeInMinutes(currentDuration);
-    saveToLocalStorage("startTimeInMinutes", currentDuration);
-
-    const initialTime = convertMinutesToSeconds(currentDuration); // Use currentDuration
-
-    setTimerPaused(true);
-    setTimerRunning(false);
-    setRemainingTimeInSeconds(initialTime);
-
-    // Clear localStorage for refs
-    saveToLocalStorage("timerEndTime", null);
-    saveToLocalStorage("timeRemainingOnPause", null);
-
-    document.title = "Elixer Focus";
+    resetTimerStorage(initialTime);
+    resetPageTitle();
   };
 
+  // * Locked * //
   const resetCountdownWithSound = () => {
-    if (!timerRunning) return alert("The timer is not running.");
+    if (!timerRunning) return;
 
+    // TODO: Implement this as an overlay
     if (confirm("Are you sure you want to reset the countdown?")) {
       resetCountdown();
       playSound(resetTimerSoundEffectRef.current);

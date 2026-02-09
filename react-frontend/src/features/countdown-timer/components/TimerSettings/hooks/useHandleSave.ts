@@ -4,7 +4,7 @@ import {
   useSetStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 import {
   useCurrentSessionType,
   useSetFocusDuration,
@@ -14,7 +14,7 @@ import {
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
-import { useSetRemainingTimeInSeconds } from "../../../../../stores/CountdownTimerStore";
+import { useSetRemainingTimeInSeconds } from "../../../../../stores/countdown-timer/store.ts";
 
 const useHandleSave = () => {
   const currentSessionType = useCurrentSessionType();

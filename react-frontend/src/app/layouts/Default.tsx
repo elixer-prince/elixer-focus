@@ -5,9 +5,10 @@ import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 
-useCountdownTimer();
 
 const DefaultLayout = () => {
+  useCountdownTimer();
+
   return (
     <>
       <Navbar />

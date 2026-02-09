@@ -1,8 +1,8 @@
 import useCountdownAlerts from "@/hooks/countdown-timer/useCountdownAlerts";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
-import { useSetRemainingTimeInSeconds } from "@/stores/CountdownTimerStore";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
+import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/store.ts";
 import { useCurrentSessionType } from "@/features/countdown-timer/stores/SessionStore";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/timerCalculations";
 import {
@@ -15,9 +15,9 @@ import { playSound } from "@/utils/sound";
 import { useCallback } from "react";
 
 const useRunInterval = () => {
-  const { switchSessionType } = useSessionSwitch();
+  const { autoSwitchSessionType } = useSessionSwitch();
   const { startEndTicking, stopEndTicking } = useEndTicking();
-  const { displayRemainingTimeInPageTitle, resetPageTitle } = usePageTitle();
+  const { displayRemainingTimeInPageTitle } = usePageTitle();
   const { alertUserOfTimerEnd } = useCountdownAlerts();
 
   const { timerBeepSoundEffectRef, timerIntervalRef } =
@@ -52,15 +52,14 @@ const useRunInterval = () => {
           stopEndTicking();
           playSound(timerBeepSoundEffectRef.current);
           alertUserOfTimerEnd();
-          switchSessionType();
-          resetPageTitle();
+          autoSwitchSessionType();
           // TODO: Implement timeElapsed here
         }
       }, 1000);
     },
     [
       timerBeepSoundEffectRef,
-      switchSessionType,
+      autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,
       alertUserOfTimerEnd,

@@ -1,5 +1,5 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import { useCountdownTimerContext } from "@/stores/CountdownTimerContext";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
 import { useEffect } from "react";

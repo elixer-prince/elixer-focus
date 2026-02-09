@@ -10,7 +10,7 @@ import {
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/CountdownTimerStore";
+} from "@/stores/countdown-timer/store.ts";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { useEffect } from "react";
 
