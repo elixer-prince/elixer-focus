@@ -1,4 +1,4 @@
-import type { Song } from "@/features/music-player/types/song.ts";
+import type { Song } from "@/types/music-player/song.ts";
 import { create } from "zustand";
 
 const defaultSongs = [
@@ -53,7 +53,7 @@ type MusicPlayer = MusicPlayerState & MusicPlayerActions;
 */
 
 const useMusicPlayerStore = create<MusicPlayer>((set) => ({
-  playbackPaused: false,
+  playbackPaused: true,
   showSlider: false,
   volume: 50,
   chosenSongId: defaultSongs[0].id,

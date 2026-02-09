@@ -1,8 +1,13 @@
 import { useSetPlaybackPaused } from "@/stores/music-player.ts";
 import { playVideo } from "@/features/music-player/utils/playback";
 import { FaPlay } from "react-icons/fa6";
+import type { YTPlayerRef } from "@/types/music-player/player.ts";
 
-const PlayButton = ({ playerInstanceRef }: { playerInstanceRef: any }) => {
+const PlayButton = ({
+  playerInstanceRef,
+}: {
+  playerInstanceRef: YTPlayerRef;
+}) => {
   const setPlaybackPaused = useSetPlaybackPaused();
 
   return (
@@ -11,8 +16,8 @@ const PlayButton = ({ playerInstanceRef }: { playerInstanceRef: any }) => {
         "flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       }
       onClick={() => {
-        playVideo(playerInstanceRef.current);
-        setPlaybackPaused(true);
+        playVideo(playerInstanceRef);
+        setPlaybackPaused(false);
       }}
     >
       <FaPlay size={16} />

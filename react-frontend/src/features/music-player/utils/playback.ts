@@ -1,21 +1,33 @@
-/**
- * Plays the YouTube video using the IFrame API.
- *
- * @param {any} player - The YouTube API player instance. If falsy, the function does nothing.
- * @returns {void}
- */
-export const playVideo = (player: any): void => {
-  if (!player) return;
-  player.playVideo();
+import type { YTPlayer } from "@/types/music-player/player.ts";
+import type { RefObject } from "react";
+
+export const playVideo = (playerRef: RefObject<YTPlayer | null>): void => {
+  // Access the actual player via .current
+  const player = playerRef.current;
+
+  if (!player) {
+    console.warn("YouTube player not available");
+    return;
+  }
+
+  try {
+    player.playVideo();
+  } catch (error) {
+    console.error("Failed to play video:", error);
+  }
 };
 
-/**
- * Pauses the YouTube video using the IFrame API.
- *
- * @param {any} player - The YouTube API player instance. If falsy, the function does nothing.
- * @returns {void}
- */
-export const pauseVideo = (player: any): void => {
-  if (!player) return;
-  player.pauseVideo();
+export const pauseVideo = (playerRef: RefObject<YTPlayer | null>): void => {
+  const player = playerRef.current;
+
+  if (!player) {
+    console.warn("YouTube player not available");
+    return;
+  }
+
+  try {
+    player.pauseVideo();
+  } catch (error) {
+    console.error("Failed to pause video:", error);
+  }
 };

@@ -28,5 +28,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/types/youtube.d.ts"]
+  "include": ["src",
+    "src/types/global/youtube.d.ts"
+  ]
 }
