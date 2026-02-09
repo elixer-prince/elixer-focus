@@ -1,4 +1,4 @@
-import type { Song } from "@/features/MusicPlayer/types/song";
+import type { Song } from "@/features/music-player/types/song";
 import { create } from "zustand";
 
 const defaultSongs = [

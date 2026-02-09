@@ -1,8 +1,8 @@
-import PauseButton from "@/features/MusicPlayer/components/PauseButton";
-import PlayButton from "@/features/MusicPlayer/components/PlayButton";
-import VolumeControls from "@/features/MusicPlayer/components/VolumeControls";
-import useMusicPlayer from "@/features/MusicPlayer/hooks/useMusicPlayer";
-import { usePlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
+import PauseButton from "@/features/music-player/components/PauseButton";
+import PlayButton from "@/features/music-player/components/PlayButton";
+import VolumeControls from "@/features/music-player/components/VolumeControls";
+import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
+import { usePlaybackPaused } from "@/features/music-player/stores/MusicPlayerStore";
 import { useRef } from "react";
 
 const MusicPlayer = () => {

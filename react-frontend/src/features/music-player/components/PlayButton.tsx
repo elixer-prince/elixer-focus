@@ -1,5 +1,5 @@
-import { useSetPlaybackPaused } from "@/features/MusicPlayer/stores/MusicPlayerStore";
-import { playVideo } from "@/features/MusicPlayer/utils/playback";
+import { useSetPlaybackPaused } from "@/features/music-player/stores/MusicPlayerStore";
+import { playVideo } from "@/features/music-player/utils/playback";
 import { FaPlay } from "react-icons/fa6";
 
 const PlayButton = ({ playerInstanceRef }: { playerInstanceRef: any }) => {

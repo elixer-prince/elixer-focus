@@ -1,10 +1,9 @@
 import Navbar from "@/components/Navigation/Navbar/Index";
 import Sidebar from "@/components/Navigation/Sidebar/Index";
-import MusicPlayer from "@/features/MusicPlayer/components/Index";
+import MusicPlayer from "@/features/music-player/components/Index";
 import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
-
 
 const DefaultLayout = () => {
   useCountdownTimer();

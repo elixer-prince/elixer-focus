@@ -1,9 +1,9 @@
 import {
   useChosenSongId,
   useSongs,
-} from "@/features/MusicPlayer/stores/MusicPlayerStore";
-import { getVideoId } from "@/features/MusicPlayer/utils/conversion";
-import { useEffect, type RefObject } from "react";
+} from "@/features/music-player/stores/MusicPlayerStore";
+import { getVideoId } from "@/features/music-player/utils/conversion";
+import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
   playerRef: RefObject<HTMLDivElement | null>;
