@@ -1,6 +1,7 @@
 import useValidation from "@/features/countdown-timer/components/TimerSettings/hooks/useValidation";
 import { useTimerSettingsContext } from "@/features/countdown-timer/components/TimerSettings/stores/TimerSettingsContext";
 import {
+  useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
@@ -14,7 +15,6 @@ import {
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
-import { useSetRemainingTimeInSeconds } from "../../../../../stores/countdown-timer/CountdownStore.ts";
 
 const useHandleSave = () => {
   const currentSessionType = useCurrentSessionType();
@@ -104,15 +104,19 @@ const useHandleSave = () => {
 
     alert("Timer settings saved successfully!");
   }, [
+    currentSessionType,
     draftFocus,
     draftShortBreak,
     draftLongBreak,
+    timerRunning,
+    timerPaused,
     validateAndSet,
+    setFocusDuration,
+    setShortBreakDuration,
+    setLongBreakDuration,
     setDraftFocus,
     setDraftShortBreak,
     setDraftLongBreak,
-    timerRunning,
-    timerPaused,
     setStartTimeInMinutes,
     setRemainingTimeInSeconds,
   ]);
