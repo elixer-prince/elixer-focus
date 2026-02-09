@@ -1,4 +1,4 @@
-import { useSetPlaybackPaused } from "@/features/music-player/stores/MusicPlayerStore";
+import { useSetPlaybackPaused } from "@/stores/music-player.ts";
 import { playVideo } from "@/features/music-player/utils/playback";
 import { FaPlay } from "react-icons/fa6";
 

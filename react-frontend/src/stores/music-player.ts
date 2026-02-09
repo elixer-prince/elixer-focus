@@ -1,4 +1,4 @@
-import type { Song } from "@/features/music-player/types/song";
+import type { Song } from "@/features/music-player/types/song.ts";
 import { create } from "zustand";
 
 const defaultSongs = [
@@ -44,7 +44,7 @@ type MusicPlayerActions = {
   setSongs: (songs: Song[]) => void;
 };
 
-type MusicPlayerStore = MusicPlayerState & MusicPlayerActions;
+type MusicPlayer = MusicPlayerState & MusicPlayerActions;
 
 /*--------------------------------------------------
 | NAVBAR STORE
@@ -52,7 +52,7 @@ type MusicPlayerStore = MusicPlayerState & MusicPlayerActions;
 |
 */
 
-const useMusicPlayerStore = create<MusicPlayerStore>((set) => ({
+const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   playbackPaused: false,
   showSlider: false,
   volume: 50,

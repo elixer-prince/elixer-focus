@@ -1,13 +1,10 @@
-import {
-  useChosenSongId,
-  useSongs,
-} from "@/features/music-player/stores/MusicPlayerStore";
-import { getVideoId } from "@/features/music-player/utils/conversion";
+import { useChosenSongId, useSongs } from "@/stores/music-player.ts";
+import { getVideoId } from "@/features/music-player/utils/conversion.ts";
 import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
   playerRef: RefObject<HTMLDivElement | null>;
-  playerInstanceRef: RefObject<any>;
+  playerInstanceRef: RefObject<unknown>;
 }
 
 const useMusicPlayer = ({
@@ -16,15 +13,6 @@ const useMusicPlayer = ({
 }: MusicPlayerContextType) => {
   const songs = useSongs();
   const chosenSongId = useChosenSongId();
-
-  // useEffect(() => {
-  //   if (playerInstanceRef.current) {
-  //     const song = songs.find((s) => s.id === chosenSongId);
-  //     if (song) {
-  //       playerInstanceRef.current.loadVideoById(getVideoId(song.src));
-  //     }
-  //   }
-  // }, [chosenSongId, songs]);
 
   useEffect(() => {
     const tag = document.createElement("script");

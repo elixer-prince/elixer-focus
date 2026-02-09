@@ -3,7 +3,7 @@ import {
   useSetVolume,
   useShowSlider,
   useVolume,
-} from "@/features/music-player/stores/MusicPlayerStore";
+} from "@/stores/music-player.ts";
 import { FaVolumeUp } from "react-icons/fa";
 
 const VolumeControls = ({ playerInstanceRef }: { playerInstanceRef: any }) => {

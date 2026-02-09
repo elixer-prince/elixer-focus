@@ -1,8 +1,8 @@
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
-import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
-import { usePlaybackPaused } from "@/features/music-player/stores/MusicPlayerStore";
+import useMusicPlayer from "@/hooks/useMusicPlayer.ts";
+import { usePlaybackPaused } from "@/stores/music-player.ts";
 import { useRef } from "react";
 
 const MusicPlayer = () => {
