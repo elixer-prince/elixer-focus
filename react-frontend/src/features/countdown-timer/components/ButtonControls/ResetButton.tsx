@@ -1,5 +1,5 @@
 import useResetCountdown from "@/hooks/countdown-timer/useResetCountdown";
-import { VscDebugRestart } from "react-icons/vsc";
+import { MdReplay } from "react-icons/md";
 
 const ResetButton = () => {
   const { resetCountdownWithSound } = useResetCountdown();
@@ -9,7 +9,7 @@ const ResetButton = () => {
       className={"btn btn-error btn-soft"}
       onClick={resetCountdownWithSound}
     >
-      <VscDebugRestart size={20} />
+      <MdReplay size={24} />
       Reset
     </button>
   );

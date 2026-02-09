@@ -1,12 +1,12 @@
 import usePauseCountdown from "@/hooks/countdown-timer/usePauseCountdown";
-import { FaPause } from "react-icons/fa";
+import { MdPause } from "react-icons/md";
 
 const PauseButton = () => {
   const { pauseCountdown } = usePauseCountdown();
 
   return (
     <button className={"btn btn-primary"} onClick={pauseCountdown}>
-      <FaPause size={12} />
+      <MdPause size={20} />
       <span className={"max-sm:hidden"}>Pause</span>
     </button>
   );
