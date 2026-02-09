@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-const useTheme = () => {
+const useAppTheme = () => {
   useEffect(() => {}, []);
 };
 
-export default useTheme;
+export default useAppTheme;
