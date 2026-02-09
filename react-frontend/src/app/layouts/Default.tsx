@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navigation/Navbar/Index";
-import Sidebar from "@/components/Navigation/Sidebar/Index";
+import Navbar from "@/components/navigation/Navbar/Index";
+import Sidebar from "@/components/navigation/Sidebar/Index";
 import MusicPlayer from "@/features/music-player/components/Index";
 import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Toaster } from "react-hot-toast";

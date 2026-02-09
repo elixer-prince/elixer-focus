@@ -3,7 +3,7 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store.ts";
+} from "@/stores/countdown-timer/SessionStore.ts";
 import { useCallback } from "react";
 
 const useValidation = () => {

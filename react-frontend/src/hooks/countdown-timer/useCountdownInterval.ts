@@ -1,9 +1,9 @@
 import useCountdownAlerts from "@/hooks/countdown-timer/useCountdownAlerts";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
-import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/countdown-store.ts";
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store.ts";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
+import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/CountdownStore.ts";
+import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore.ts";
 import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations.ts";
 import {
   timerHasEnded,
@@ -20,8 +20,7 @@ const useRunInterval = () => {
   const { displayRemainingTimeInPageTitle } = usePageTitle();
   const { alertUserOfTimerEnd } = useCountdownAlerts();
 
-  const { timerBeepSoundEffectRef, timerIntervalRef } =
-    useCountdownTimerContext();
+  const { timerBeepSoundEffectRef, timerIntervalRef } = useCountdownContext();
 
   const currentSessionType = useCurrentSessionType();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
@@ -58,12 +57,15 @@ const useRunInterval = () => {
       }, 1000);
     },
     [
+      currentSessionType,
       timerBeepSoundEffectRef,
       autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,
       alertUserOfTimerEnd,
+      displayRemainingTimeInPageTitle,
       clearIntervalIfItExists,
+      setRemainingTimeInSeconds,
     ],
   );
 
@@ -73,7 +75,7 @@ const useRunInterval = () => {
       clearIntervalIfItExists();
       timerIntervalRef.current = createNewInterval(endTime);
     },
-    [timerIntervalRef, createNewInterval],
+    [timerIntervalRef, createNewInterval, clearIntervalIfItExists],
   );
 
   return { runInterval, clearIntervalIfItExists };

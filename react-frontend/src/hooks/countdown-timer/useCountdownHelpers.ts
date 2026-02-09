@@ -1,18 +1,18 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/countdown-store.ts";
+} from "@/stores/countdown-timer/CountdownStore.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
 
 const useCountdownTimerHelpers = () => {
   const { clearIntervalIfItExists } = useCountdownInterval();
@@ -25,7 +25,7 @@ const useCountdownTimerHelpers = () => {
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const { timerEndTimeRef, isEndTickingRef } = useCountdownTimerContext();
+  const { timerEndTimeRef, isEndTickingRef } = useCountdownContext();
 
   // * Locked * //
   const timerShouldNotBeActiveOnRefresh = useCallback((): boolean => {
@@ -61,7 +61,14 @@ const useCountdownTimerHelpers = () => {
     autoSwitchSessionType();
     clearIntervalIfItExists();
     saveToLocalStorage("timerEndTime", null);
-  }, []);
+  }, [
+    stopEndTicking,
+    setRemainingTimeInSeconds,
+    setTimerPaused,
+    setTimerRunning,
+    autoSwitchSessionType,
+    clearIntervalIfItExists,
+  ]);
 
   // * Locked * //
   const calculateNewRemainingSeconds = useCallback(

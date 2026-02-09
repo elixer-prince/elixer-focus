@@ -32,7 +32,7 @@ const useMusicPlayer = ({
         });
       }
     };
-  }, []);
+  }, [chosenSongId, playerInstanceRef, playerRef, songs]);
 };
 
 export default useMusicPlayer;

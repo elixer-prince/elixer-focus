@@ -1,10 +1,9 @@
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
 import { playSound, stopSound } from "@/utils/sound";
 import { useCallback } from "react";
 
 const useEndTicking = () => {
-  const { timerTickingSoundEffectRef, isEndTickingRef } =
-    useCountdownTimerContext();
+  const { timerTickingSoundEffectRef, isEndTickingRef } = useCountdownContext();
 
   // * Locked * //
   /**

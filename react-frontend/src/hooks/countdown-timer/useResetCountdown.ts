@@ -3,16 +3,16 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store.ts";
+} from "@/stores/countdown-timer/SessionStore.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
-import { useTimerRunning } from "@/stores/countdown-timer/countdown-store.ts";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
+import { useTimerRunning } from "@/stores/countdown-timer/CountdownStore.ts";
 import { playSound } from "@/utils/sound";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
 
 const useResetCountdown = () => {
-  const { resetTimerSoundEffectRef } = useCountdownTimerContext();
+  const { resetTimerSoundEffectRef } = useCountdownContext();
   const { clearIntervalIfItExists } = useCountdownInterval();
   const { resetPageTitle } = usePageTitle();
   const { resetTimerStorage } = useCountdownTimerStorage();

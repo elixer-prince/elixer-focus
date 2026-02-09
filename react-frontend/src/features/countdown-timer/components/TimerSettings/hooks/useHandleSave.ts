@@ -4,17 +4,17 @@ import {
   useSetStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/countdown-store.ts";
+} from "@/stores/countdown-timer/CountdownStore.ts";
 import {
   useCurrentSessionType,
   useSetFocusDuration,
   useSetLongBreakDuration,
   useSetShortBreakDuration,
-} from "@/stores/countdown-timer/session-store.ts";
+} from "@/stores/countdown-timer/SessionStore.ts";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
-import { useSetRemainingTimeInSeconds } from "../../../../../stores/countdown-timer/countdown-store.ts";
+import { useSetRemainingTimeInSeconds } from "../../../../../stores/countdown-timer/CountdownStore.ts";
 
 const useHandleSave = () => {
   const currentSessionType = useCurrentSessionType();

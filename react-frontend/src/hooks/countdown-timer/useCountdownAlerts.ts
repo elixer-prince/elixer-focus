@@ -1,4 +1,4 @@
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store.ts";
+import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore.ts";
 import toast from "react-hot-toast";
 
 const useCountdownAlerts = () => {

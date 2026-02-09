@@ -3,7 +3,7 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store.ts";
+} from "@/stores/countdown-timer/SessionStore.ts";
 import { useEffect } from "react";
 
 const useInputInitialisation = () => {

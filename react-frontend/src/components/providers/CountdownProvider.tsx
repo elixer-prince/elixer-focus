@@ -4,32 +4,11 @@ import offClickSoundURL from "@/features/countdown-timer/assets/sound-effects/of
 import onClickSoundURL from "@/features/countdown-timer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/reset-timer.mp3";
 import { getFromLocalStorage } from "@/utils/storage.ts";
-import {
-  createContext,
-  type PropsWithChildren,
-  type RefObject,
-  useContext,
-  useRef,
-} from "react";
+import { type PropsWithChildren, useRef } from "react";
+import type { CountdownTimerContextType } from "@/types/countdown-timer.ts";
+import CountdownContext from "@/stores/countdown-timer/CountdownContext.tsx";
 
-type CountdownTimerContextType = {
-  timerIntervalRef: RefObject<ReturnType<typeof setInterval> | null>;
-  timerEndTimeRef: RefObject<number | null>;
-  hasPlayedEndBeepRef: RefObject<boolean>;
-  isEndTickingRef: RefObject<boolean>;
-
-  readonly timerBeepSoundEffectRef: RefObject<HTMLAudioElement>;
-  readonly timerOffClickSoundEffectRef: RefObject<HTMLAudioElement>;
-  readonly timerOnClickSoundEffectRef: RefObject<HTMLAudioElement>;
-  readonly timerTickingSoundEffectRef: RefObject<HTMLAudioElement>;
-  readonly resetTimerSoundEffectRef: RefObject<HTMLAudioElement>;
-};
-
-const CountdownTimerContext = createContext<
-  CountdownTimerContextType | undefined
->(undefined);
-
-export const CountdownTimerProvider = ({ children }: PropsWithChildren) => {
+const CountdownProvider = ({ children }: PropsWithChildren) => {
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timerEndTimeRef = useRef<number | null>(
     getFromLocalStorage("timerEndTime") || null,
@@ -57,17 +36,10 @@ export const CountdownTimerProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <CountdownTimerContext.Provider value={contextValue}>
+    <CountdownContext.Provider value={contextValue}>
       {children}
-    </CountdownTimerContext.Provider>
+    </CountdownContext.Provider>
   );
 };
 
-export const useCountdownTimerContext = () => {
-  const countdownTimerContext = useContext(CountdownTimerContext);
-
-  if (!countdownTimerContext)
-    throw new Error("CountdownTimerContext must be defined!");
-
-  return countdownTimerContext;
-};
+export default CountdownProvider;

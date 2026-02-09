@@ -3,14 +3,14 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store.ts";
+} from "@/stores/countdown-timer/SessionStore.ts";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/countdown-store.ts";
+} from "@/stores/countdown-timer/CountdownStore.ts";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { useEffect } from "react";
 

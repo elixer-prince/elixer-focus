@@ -1,12 +1,12 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
-} from "@/stores/countdown-timer/countdown-store.ts";
+} from "@/stores/countdown-timer/CountdownStore.ts";
 import { calculateEndTime } from "@/utils/countdown-timer/calculations.ts";
 import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
@@ -31,8 +31,7 @@ const useStartCountdown = () => {
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const { timerOnClickSoundEffectRef, timerEndTimeRef } =
-    useCountdownTimerContext();
+  const { timerOnClickSoundEffectRef, timerEndTimeRef } = useCountdownContext();
 
   // * Locked * //
   const startCountdown = useCallback(() => {
@@ -49,7 +48,14 @@ const useStartCountdown = () => {
     saveToLocalStorage("timerEndTime", endTime);
 
     runInterval(endTime);
-  }, [runInterval, timerEndTimeRef, stopEndTicking]);
+  }, [
+    timerEndTimeRef,
+    remainingTimeInSeconds,
+    runInterval,
+    setTimerPaused,
+    setTimerRunning,
+    stopEndTicking,
+  ]);
 
   // * Locked * //
   const startCountdownWithSound = () => {
@@ -85,10 +91,15 @@ const useStartCountdown = () => {
     runInterval(endTime);
   }, [
     timerEndTimeRef,
-    startEndTicking,
-    stopEndTicking,
-    startCountdown,
+    timerEndedWhileAway,
+    timerShouldBeTickingOnRefresh,
+    timerShouldNotBeActiveOnRefresh,
     runInterval,
+    startEndTicking,
+    calculateNewRemainingSeconds,
+    clearIntervalIfItExists,
+    handleEndedTimerWhileAway,
+    setRemainingTimeInSeconds,
   ]);
 
   return {

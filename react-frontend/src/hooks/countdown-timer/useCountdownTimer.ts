@@ -1,15 +1,15 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
 import { useEffect } from "react";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
 
 const useCountdownTimer = () => {
   const { startCountdownOnPageLoad } = useStartCountdown();
   const { clearIntervalIfItExists } = useCountdownInterval();
   const { stopEndTicking } = useEndTicking();
 
-  const { timerIntervalRef } = useCountdownTimerContext();
+  const { timerIntervalRef } = useCountdownContext();
 
   useEffect(() => {
     startCountdownOnPageLoad();
@@ -18,7 +18,12 @@ const useCountdownTimer = () => {
       clearIntervalIfItExists();
       stopEndTicking();
     };
-  }, [startCountdownOnPageLoad, stopEndTicking, timerIntervalRef]);
+  }, [
+    startCountdownOnPageLoad,
+    stopEndTicking,
+    clearIntervalIfItExists,
+    timerIntervalRef,
+  ]);
 };
 
 export default useCountdownTimer;
