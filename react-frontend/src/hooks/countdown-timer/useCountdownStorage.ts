@@ -1,6 +1,6 @@
 import { saveToLocalStorage } from "@/utils/storage.ts";
 import { convertMinutesToSeconds } from "@/utils/conversion.ts";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,

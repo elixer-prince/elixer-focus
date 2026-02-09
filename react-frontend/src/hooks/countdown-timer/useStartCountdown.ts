@@ -1,5 +1,5 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,

@@ -1,4 +1,4 @@
-import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import { playSound, stopSound } from "@/utils/sound";
 import { useCallback } from "react";
 

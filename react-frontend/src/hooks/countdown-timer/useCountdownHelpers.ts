@@ -1,6 +1,6 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,

@@ -6,7 +6,7 @@ import {
 } from "@/stores/countdown-timer/session-store.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useCountdownTimerContext } from "@/contexts/CountdownTimer.tsx";
 import { useTimerRunning } from "@/stores/countdown-timer/countdown-store.ts";
 import { playSound } from "@/utils/sound";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
