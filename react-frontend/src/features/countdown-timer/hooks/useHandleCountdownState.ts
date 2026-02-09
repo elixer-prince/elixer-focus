@@ -1,4 +1,4 @@
-import usePauseCountdown from "@/features/countdown-timer/hooks/usePauseCountdown.ts";
+import usePauseCountdown from "@/hooks/countdown-timer/usePauseCountdown";
 import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
 import {
   useRemainingTimeInSeconds,

@@ -1,4 +1,4 @@
-import useHandleCountdownState from "@/features/countdown-timer/components/TimerDisplay/hooks/useHandleCountdownState";
+import useHandleCountdownState from "@/features/countdown-timer/hooks/useHandleCountdownState";
 import {
   useCurrentSessionCount,
   useSessionCountLimit,

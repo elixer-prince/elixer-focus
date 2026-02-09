@@ -22,7 +22,7 @@ const useFocusRing = () => {
   // Ring empties as time passes
   const dashoffset = circumference * progress;
 
-  // Angle in degrees, negative for counterclockwise (since you rotated the SVG -90deg)
+  // Angle in degrees, negative for counter-clockwise (since you rotated the SVG -90deg)
   const angleDeg = -360 * progress;
 
   return { radius, dashoffset, circumference, angleDeg, CENTER };

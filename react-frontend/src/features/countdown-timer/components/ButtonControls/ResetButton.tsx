@@ -1,4 +1,4 @@
-import useResetCountdown from "@/features/countdown-timer/hooks/useResetCountdown";
+import useResetCountdown from "@/hooks/countdown-timer/useResetCountdown";
 import { VscDebugRestart } from "react-icons/vsc";
 
 const ResetButton = () => {

@@ -1,18 +1,17 @@
 import {
+  useCurrentSessionType,
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/features/countdown-timer/stores/SessionStore";
+import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
 } from "@/stores/CountdownTimerStore";
-import {
-  useCurrentSessionType,
-  useFocusDuration,
-  useLongBreakDuration,
-  useShortBreakDuration,
-} from "@/features/countdown-timer/stores/SessionStore";
 import { convertMinutesToSeconds } from "@/utils/conversion";
-import { saveToLocalStorage } from "@/utils/storage";
 import { useEffect } from "react";
 
 const useAutoSyncTimer = () => {
@@ -60,17 +59,6 @@ const useAutoSyncTimer = () => {
       // Update timer state
       setStartTimeInMinutes(correctDuration);
       setRemainingTimeInSeconds(convertMinutesToSeconds(correctDuration));
-
-      // Persist to localStorage
-      saveToLocalStorage("startTimeInMinutes", correctDuration);
-      saveToLocalStorage(
-        "remainingTimeInSeconds",
-        convertMinutesToSeconds(correctDuration),
-      );
-
-      console.log(
-        `Auto-synced timer: ${currentSessionType} = ${correctDuration}min`,
-      );
     }
   }, [
     focusDuration,
