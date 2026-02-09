@@ -1,5 +1,8 @@
 import Sidebar from "@/features/ui/Sidebar/Index";
+import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Outlet } from "react-router";
+
+useCountdownTimer();
 
 const Settings = () => {
   return (

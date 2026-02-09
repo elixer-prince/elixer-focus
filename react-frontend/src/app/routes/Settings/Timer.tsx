@@ -1,5 +1,5 @@
-import TimerSettings from "@/features/CountdownTimer/components/TimerSettings/Index";
-import { CountdownTimerProvider } from "@/features/CountdownTimer/stores/CountdownTimerContext";
+import TimerSettings from "@/features/countdown-timer/components/TimerSettings/Index";
+import { CountdownTimerProvider } from "@/stores/CountdownTimerContext";
 
 const Timer = () => {
   return (

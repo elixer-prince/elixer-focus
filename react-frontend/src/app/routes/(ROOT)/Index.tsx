@@ -1,4 +1,4 @@
-import CountdownTimerContainer from "@/features/CountdownTimer/components/Index.tsx";
+import CountdownTimerContainer from "@/features/countdown-timer/components/Index.tsx";
 // import Tasks from "@/features/Tasks/components/Index.tsx";
 
 const Home = () => {
