@@ -2,13 +2,11 @@ import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/Count
 import { playSound, stopSound } from "@/utils/sound";
 import { useCallback } from "react";
 
-const useEndTicking = (): {
-  startEndTicking: () => void;
-  stopEndTicking: () => void;
-} => {
+const useEndTicking = () => {
   const { timerTickingSoundEffectRef, isEndTickingRef } =
     useCountdownTimerContext();
 
+  // * Locked * //
   /**
    * Start the timer ticking sound effect if it is not already ticking.
    *
@@ -17,30 +15,31 @@ const useEndTicking = (): {
   const startEndTicking = useCallback((): void => {
     if (isEndTickingRef.current) return;
 
-    // Timer isn't ticking so we set it to tick
     isEndTickingRef.current = true;
 
-    const audio = timerTickingSoundEffectRef.current;
+    const sound = timerTickingSoundEffectRef.current;
 
-    if (!audio) return;
+    try {
+      sound.loop = false;
+    } catch (error) {
+      console.error(`Error setting loop for sound: ${sound.src}`, error);
+    }
 
-    // Ensure no looping
-    audio.loop = false;
+    playSound(sound);
+  }, [isEndTickingRef, timerTickingSoundEffectRef]);
 
-    playSound(audio);
-  }, [timerTickingSoundEffectRef, isEndTickingRef]);
-
+  // * Locked * //
   /**
    * Stop the timer ticking sound effect if it hasn't started yet.
    *
    * @returns {void}
    */
-  const stopEndTicking = (): void => {
+  const stopEndTicking = useCallback((): void => {
     if (!isEndTickingRef.current) return;
 
     isEndTickingRef.current = false;
     stopSound(timerTickingSoundEffectRef.current);
-  };
+  }, [isEndTickingRef, timerTickingSoundEffectRef]);
 
   return { startEndTicking, stopEndTicking };
 };

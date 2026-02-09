@@ -37,3 +37,13 @@ export function convertSecondsToMinutes(seconds: number): number {
 export function convertSecondsToMilliseconds(seconds: number): number {
   return seconds * 1000;
 }
+
+/**
+ * Converts milliseconds to seconds.
+ *
+ * @param {number} milliseconds - The milliseconds to be converted to seconds.
+ * @returns {number} The milliseconds converted to seconds.
+ */
+export function convertMillisecondsToSeconds(milliseconds: number): number {
+  return milliseconds / 1000;
+}

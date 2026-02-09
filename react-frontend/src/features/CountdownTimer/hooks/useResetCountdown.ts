@@ -1,3 +1,4 @@
+import useCountdownInterval from "@/features/CountdownTimer/hooks/useCountdownInterval";
 import { useCountdownTimerContext } from "@/features/CountdownTimer/stores/CountdownTimerContext";
 import {
   useSetRemainingTimeInSeconds,
@@ -17,12 +18,9 @@ import { convertMinutesToSeconds } from "@/utils/conversion";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";
 
-const useResetCountdown = (): {
-  resetCountdown: () => void;
-  resetCountdownWithSound: () => void;
-} => {
-  const { resetTimerSoundEffectRef, timerIntervalRef, timerEndTimeRef } =
-    useCountdownTimerContext();
+const useResetCountdown = () => {
+  const { resetTimerSoundEffectRef } = useCountdownTimerContext();
+  const { clearIntervalIfItExists } = useCountdownInterval();
 
   const timerRunning = useTimerRunning();
   const startTimeInMinutes = useStartTimeInMinutes();
@@ -37,9 +35,7 @@ const useResetCountdown = (): {
   const currentSessionType = useCurrentSessionType();
 
   const resetCountdown = () => {
-    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-
-    timerEndTimeRef.current = null;
+    clearIntervalIfItExists();
 
     // GET THE CORRECT DURATION FOR CURRENT SESSION
     let currentDuration = startTimeInMinutes; // fallback to existing
