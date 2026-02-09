@@ -1,5 +1,5 @@
-import AuthLayout from "@/app/layouts/Auth";
-import DefaultLayout from "@/app/layouts/Default";
+import AuthLayout from "@/components/layout/Auth";
+import DefaultLayout from "@/components/layout/Default";
 import Home from "@/app/routes/(ROOT)/Index";
 import Journal from "@/app/routes/(ROOT)/Journal";
 import Profile from "@/app/routes/(ROOT)/Profile";
