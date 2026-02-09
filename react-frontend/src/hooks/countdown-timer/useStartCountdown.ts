@@ -1,12 +1,12 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
-} from "@/stores/countdown-timer/store.ts";
+} from "@/stores/countdown-timer/countdown-store.ts";
 import { calculateEndTime } from "@/features/countdown-timer/utils/timerCalculations";
 import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";

@@ -1,4 +1,4 @@
-import { CountdownTimerProvider } from "@/stores/countdown-timer/Context.tsx";
+import { CountdownTimerProvider } from "@/stores/countdown-timer/CountdownContext.tsx";
 import type { PropsWithChildren } from "react";
 
 const Provider = ({ children }: PropsWithChildren) => {

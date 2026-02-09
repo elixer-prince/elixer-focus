@@ -5,7 +5,7 @@ import StartButton from "@/features/countdown-timer/components/ButtonControls/St
 import {
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/store.ts";
+} from "@/stores/countdown-timer/countdown-store.ts";
 
 const ButtonControls = () => {
   const timerPaused = useTimerPaused();

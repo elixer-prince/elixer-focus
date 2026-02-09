@@ -3,11 +3,11 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/features/countdown-timer/stores/SessionStore";
+} from "@/stores/countdown-timer/session-store.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
-import { useTimerRunning } from "@/stores/countdown-timer/store.ts";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useTimerRunning } from "@/stores/countdown-timer/countdown-store.ts";
 import { playSound } from "@/utils/sound";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
 

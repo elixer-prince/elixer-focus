@@ -2,7 +2,7 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/features/countdown-timer/stores/SessionStore";
+} from "@/stores/countdown-timer/session-store.ts";
 import {
   createContext,
   type Dispatch,

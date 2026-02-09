@@ -1,13 +1,13 @@
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
 import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/store.ts";
+} from "@/stores/countdown-timer/countdown-store.ts";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";

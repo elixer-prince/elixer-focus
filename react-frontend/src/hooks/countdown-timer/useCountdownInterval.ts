@@ -1,9 +1,9 @@
 import useCountdownAlerts from "@/hooks/countdown-timer/useCountdownAlerts";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCountdownTimerContext } from "@/stores/countdown-timer/Context.tsx";
-import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/store.ts";
-import { useCurrentSessionType } from "@/features/countdown-timer/stores/SessionStore";
+import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
+import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/countdown-store.ts";
+import { useCurrentSessionType } from "@/stores/countdown-timer/session-store.ts";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/timerCalculations";
 import {
   timerHasEnded,

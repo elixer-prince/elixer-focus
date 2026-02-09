@@ -7,8 +7,8 @@ import {
   useSetCurrentSessionCount,
   useSetCurrentSessionType,
   useShortBreakDuration,
-} from "@/features/countdown-timer/stores/SessionStore";
-import { useTimerRunning } from "@/stores/countdown-timer/store.ts";
+} from "@/stores/countdown-timer/session-store.ts";
+import { useTimerRunning } from "@/stores/countdown-timer/countdown-store.ts";
 import usePageTitle from "@/hooks/usePageTitle.ts";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
 import type { CountdownSession } from "@/types/countdown-timer.ts";

@@ -2,7 +2,7 @@ import useHandleCountdownState from "@/features/countdown-timer/hooks/useHandleC
 import {
   useCurrentSessionCount,
   useSessionCountLimit,
-} from "@/features/countdown-timer/stores/SessionStore";
+} from "@/stores/countdown-timer/session-store.ts";
 
 const SessionCount = () => {
   const currentSessionCount = useCurrentSessionCount();
