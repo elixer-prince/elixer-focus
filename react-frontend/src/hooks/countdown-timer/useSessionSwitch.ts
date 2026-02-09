@@ -34,10 +34,10 @@ const useSessionSwitch = () => {
   const autoSwitchSessionType = () => {
     switch (currentSessionType) {
       case "Short Break":
-        updateTimerDurationAndReset("Short Break", shortBreakDuration);
+        updateTimerDurationAndReset("Focus", focusDuration);
         break;
       case "Long Break":
-        updateTimerDurationAndReset("Long Break", longBreakDuration);
+        updateTimerDurationAndReset("Focus", focusDuration);
         break;
       default:
         handleBreakSwitching();

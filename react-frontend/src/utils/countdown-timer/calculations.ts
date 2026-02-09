@@ -1,5 +1,5 @@
-import { convertSecondsToMilliseconds } from "@/utils/conversion";
-import { getCurrentTimestamp } from "@/utils/date";
+import { convertSecondsToMilliseconds } from "@/utils/conversion.ts";
+import { getCurrentTimestamp } from "@/utils/date.ts";
 
 /**
  * Calculates the countdown timer's end time based on the amount of seconds remaining.

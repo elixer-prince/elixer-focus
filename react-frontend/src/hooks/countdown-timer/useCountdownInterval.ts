@@ -4,11 +4,11 @@ import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import { useCountdownTimerContext } from "@/stores/countdown-timer/CountdownContext.tsx";
 import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/countdown-store.ts";
 import { useCurrentSessionType } from "@/stores/countdown-timer/session-store.ts";
-import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/timerCalculations";
+import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations.ts";
 import {
   timerHasEnded,
   timerIsAboutToEnd,
-} from "@/features/countdown-timer/utils/timerChecks";
+} from "@/utils/countdown-timer/checks.ts";
 import usePageTitle from "@/hooks/usePageTitle";
 import { getCurrentTimestamp } from "@/utils/date";
 import { playSound } from "@/utils/sound";

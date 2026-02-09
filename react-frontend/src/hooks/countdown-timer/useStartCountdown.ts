@@ -7,7 +7,7 @@ import {
   useSetTimerRunning,
   useTimerPaused,
 } from "@/stores/countdown-timer/countdown-store.ts";
-import { calculateEndTime } from "@/features/countdown-timer/utils/timerCalculations";
+import { calculateEndTime } from "@/utils/countdown-timer/calculations.ts";
 import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import { playSound } from "@/utils/sound";
