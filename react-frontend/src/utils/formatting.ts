@@ -5,7 +5,11 @@
  * @returns {string} The seconds formatted in minutes and seconds.
  */
 export function formatTimeInMinutesAndSeconds(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const secondsRemainder = seconds % 60;
-  return `${minutes.toString().padStart(2, "0")}:${secondsRemainder.toString().padStart(2, "0")}`;
+  const sign = seconds < 0 ? "-" : "";  // Check if negative sign is needed
+  const absSeconds = Math.abs(seconds); // Always positive
+
+  const minutes = Math.floor(absSeconds / 60);
+  const secondsRemainder = absSeconds % 60;
+
+  return `${sign}${minutes.toString().padStart(2, "0")}:${secondsRemainder.toString().padStart(2, "0")}`;
 }
