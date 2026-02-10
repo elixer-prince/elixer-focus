@@ -1,10 +1,10 @@
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
-import useMusicPlayer from "@/hooks/useMusicPlayer.ts";
-import { usePlaybackPaused } from "@/stores/music-player.ts";
+import useMusicPlayer from "@/hooks/useMusicPlayer";
+import { usePlaybackPaused } from "@/stores/music-player";
+import type { YTPlayer } from "@/types/music-player/player";
 import { useRef } from "react";
-import type { YTPlayer } from "@/types/music-player/player.ts";
 
 const MusicPlayer = () => {
   const playbackPaused = usePlaybackPaused();

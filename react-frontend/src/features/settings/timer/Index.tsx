@@ -1,9 +1,9 @@
-import FocusContainer from "@/features/settings/timer/FocusContainer.tsx";
-import useHandleSave from "@/features/settings/timer/hooks/useHandleSave.ts";
-import useValidation from "@/features/settings/timer/hooks/useValidation.ts";
-import LongBreakContainer from "@/features/settings/timer/LongBreakContainer.tsx";
-import ShortBreakContainer from "@/features/settings/timer/ShortBreakContainer.tsx";
-import TimerSettingsProvider from "@/features/settings/timer/stores/Provider.tsx";
+import FocusContainer from "@/features/settings/timer/FocusContainer";
+import useHandleSave from "@/features/settings/timer/hooks/useHandleSave";
+import useValidation from "@/features/settings/timer/hooks/useValidation";
+import LongBreakContainer from "@/features/settings/timer/LongBreakContainer";
+import ShortBreakContainer from "@/features/settings/timer/ShortBreakContainer";
+import TimerSettingsProvider from "@/features/settings/timer/stores/Provider";
 
 const TimerSettingsContent = () => {
   const { hasUnsavedChanges } = useValidation();

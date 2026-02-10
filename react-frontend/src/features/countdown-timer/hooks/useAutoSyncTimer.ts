@@ -1,16 +1,16 @@
 import {
-  useCurrentSessionType,
-  useFocusDuration,
-  useLongBreakDuration,
-  useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore.ts";
-import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore.ts";
+} from "@/stores/countdown-timer/CountdownStore";
+import {
+  useCurrentSessionType,
+  useFocusDuration,
+  useLongBreakDuration,
+  useShortBreakDuration,
+} from "@/stores/countdown-timer/SessionStore";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { useEffect } from "react";
 

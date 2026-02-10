@@ -1,8 +1,8 @@
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
+import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
 import { useEffect } from "react";
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
 
 const useCountdownTimer = () => {
   const { startCountdownOnPageLoad } = useStartCountdown();

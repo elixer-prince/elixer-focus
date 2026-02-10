@@ -1,6 +1,6 @@
 import SessionOption from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/SessionOption";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore.ts";
+import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore";
 
 const OptionsContainer = () => {
   const { switchToFocus, switchToShortBreak, switchToLongBreak } =

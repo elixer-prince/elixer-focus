@@ -1,4 +1,4 @@
-import type { YTPlayer } from "@/types/music-player/player.ts";
+import type { YTPlayer } from "@/types/music-player/player";
 import type { RefObject } from "react";
 
 export const playVideo = (playerRef: RefObject<YTPlayer | null>): void => {

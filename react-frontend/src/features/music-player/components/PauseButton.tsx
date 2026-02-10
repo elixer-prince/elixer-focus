@@ -1,13 +1,13 @@
-import { useSetPlaybackPaused } from "@/stores/music-player.ts";
 import { pauseVideo } from "@/features/music-player/utils/playback";
+import { useSetPlaybackPaused } from "@/stores/music-player";
+import type { YTPlayerRef } from "@/types/music-player/player";
 import { FaPause } from "react-icons/fa";
-import type { YTPlayerRef } from "@/types/music-player/player.ts";
 
-const PauseButton = ({
-  playerInstanceRef,
-}: {
+interface PauseButtonProps {
   playerInstanceRef: YTPlayerRef;
-}) => {
+}
+
+const PauseButton = ({ playerInstanceRef }: PauseButtonProps) => {
   const setPlaybackPaused = useSetPlaybackPaused();
 
   return (

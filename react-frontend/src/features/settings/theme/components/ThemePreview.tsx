@@ -1,7 +1,7 @@
-type ThemePreviewProps = {
+interface ThemePreviewProps {
   theme: string;
   selected?: boolean;
-};
+}
 
 const ThemePreview = ({ theme, selected }: ThemePreviewProps) => {
   return (

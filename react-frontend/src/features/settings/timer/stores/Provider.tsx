@@ -1,10 +1,10 @@
+import TimerSettingsContext from "@/features/settings/timer/stores/Context";
 import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore.ts";
+} from "@/stores/countdown-timer/SessionStore";
 import { type PropsWithChildren, useMemo, useState } from "react";
-import TimerSettingsContext from "@/features/settings/timer/stores/Context.tsx";
 
 const TimerSettingsProvider = ({ children }: PropsWithChildren) => {
   const focusDuration = useFocusDuration();

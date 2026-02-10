@@ -1,5 +1,5 @@
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
-import { it, expect, describe } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("formatTimeInMinutesAndSeconds", () => {
   it("should return the string 00:00 when given 0", () => {

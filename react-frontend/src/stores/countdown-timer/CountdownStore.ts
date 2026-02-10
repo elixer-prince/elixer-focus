@@ -1,4 +1,4 @@
-import { convertMinutesToSeconds } from "@/utils/conversion.ts";
+import { convertMinutesToSeconds } from "@/utils/conversion";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

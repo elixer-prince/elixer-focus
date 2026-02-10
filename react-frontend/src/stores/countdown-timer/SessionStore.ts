@@ -1,6 +1,6 @@
+import type { CountdownSession } from "@/types/countdown-timer";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CountdownSession } from "@/types/countdown-timer.ts";
 
 type SessionState = {
   focusDuration: number;

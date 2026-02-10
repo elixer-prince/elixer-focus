@@ -1,4 +1,4 @@
-import type { YTPlayerEvent } from "@/types/music-player/player.ts";
+import type { YTPlayerEvent } from "@/types/music-player/player";
 
 /**
  * Called when the YouTube player is ready.

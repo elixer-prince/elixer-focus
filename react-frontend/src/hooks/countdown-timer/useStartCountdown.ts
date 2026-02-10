@@ -1,15 +1,15 @@
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
+import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
+import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
+import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
-} from "@/stores/countdown-timer/CountdownStore.ts";
-import { calculateEndTime } from "@/utils/countdown-timer/calculations.ts";
-import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
+} from "@/stores/countdown-timer/CountdownStore";
+import { calculateEndTime } from "@/utils/countdown-timer/calculations";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";

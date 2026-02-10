@@ -3,10 +3,10 @@ import tickingSoundURL from "@/assets/sound-effects/countdown-timer/ticking.mp3"
 import offClickSoundURL from "@/features/countdown-timer/assets/sound-effects/off-click.mp3";
 import onClickSoundURL from "@/features/countdown-timer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/reset-timer.mp3";
-import { getFromLocalStorage } from "@/utils/storage.ts";
+import CountdownContext from "@/stores/countdown-timer/CountdownContext";
+import type { CountdownTimerContextType } from "@/types/countdown-timer";
+import { getFromLocalStorage } from "@/utils/storage";
 import { type PropsWithChildren, useRef } from "react";
-import type { CountdownTimerContextType } from "@/types/countdown-timer.ts";
-import CountdownContext from "@/stores/countdown-timer/CountdownContext.tsx";
 
 const CountdownProvider = ({ children }: PropsWithChildren) => {
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);

@@ -1,10 +1,10 @@
-import ThemePreview from "@/features/settings/theme/components/ThemePreview.tsx";
-import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme.ts";
+import ThemePreview from "@/features/settings/theme/components/ThemePreview";
+import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme";
 import type { PropsWithChildren } from "react";
 
-type ThemeLabelProps = {
+interface ThemeLabelProps {
   value: string;
-};
+}
 
 const ThemeLabel = ({
   value,

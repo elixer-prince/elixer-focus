@@ -1,4 +1,4 @@
-import type { Song } from "@/types/music-player/song.ts";
+import type { Song } from "@/types/music-player/song";
 import { create } from "zustand";
 
 const defaultSongs = [

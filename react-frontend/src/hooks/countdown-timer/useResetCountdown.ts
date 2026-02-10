@@ -1,15 +1,15 @@
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
+import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
+import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
+import usePageTitle from "@/hooks/usePageTitle";
+import { useTimerRunning } from "@/stores/countdown-timer/CountdownStore";
 import {
   useCurrentSessionType,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore.ts";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
-import usePageTitle from "@/hooks/usePageTitle";
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
-import { useTimerRunning } from "@/stores/countdown-timer/CountdownStore.ts";
+} from "@/stores/countdown-timer/SessionStore";
 import { playSound } from "@/utils/sound";
-import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage.ts";
 
 const useResetCountdown = () => {
   const { resetTimerSoundEffectRef } = useCountdownContext();

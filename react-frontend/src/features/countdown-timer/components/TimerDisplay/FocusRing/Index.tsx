@@ -1,6 +1,6 @@
-import BackgroundTrack from "@/features/countdown-timer/components/TimerDisplay/FocusRing/BackgroundTrack.tsx";
-import ColouredArc from "@/features/countdown-timer/components/TimerDisplay/FocusRing/ColouredArc.tsx";
-import EndDot from "@/features/countdown-timer/components/TimerDisplay/FocusRing/EndDot.tsx";
+import BackgroundTrack from "@/features/countdown-timer/components/TimerDisplay/FocusRing/BackgroundTrack";
+import ColouredArc from "@/features/countdown-timer/components/TimerDisplay/FocusRing/ColouredArc";
+import EndDot from "@/features/countdown-timer/components/TimerDisplay/FocusRing/EndDot";
 
 const FocusRing = () => {
   return (

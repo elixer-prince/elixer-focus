@@ -1,15 +1,15 @@
 import useCountdownAlerts from "@/hooks/countdown-timer/useCountdownAlerts";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
-import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/CountdownStore.ts";
-import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore.ts";
-import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations.ts";
+import usePageTitle from "@/hooks/usePageTitle";
+import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/CountdownStore";
+import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore";
+import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
 import {
   timerHasEnded,
   timerIsAboutToEnd,
-} from "@/utils/countdown-timer/checks.ts";
-import usePageTitle from "@/hooks/usePageTitle";
+} from "@/utils/countdown-timer/checks";
 import { getCurrentTimestamp } from "@/utils/date";
 import { playSound } from "@/utils/sound";
 import { useCallback } from "react";

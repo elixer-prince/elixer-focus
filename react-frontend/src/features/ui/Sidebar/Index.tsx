@@ -1,5 +1,5 @@
 import NavLogo from "@/components/navigation/NavLogo";
-import LinkContainer from "@/features/ui/Sidebar/LinkContainer.tsx";
+import LinkContainer from "@/features/ui/Sidebar/LinkContainer";
 import { GoSidebarExpand } from "react-icons/go";
 
 const Sidebar = () => {

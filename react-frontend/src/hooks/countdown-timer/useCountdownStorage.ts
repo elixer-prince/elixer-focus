@@ -1,12 +1,12 @@
-import { saveToLocalStorage } from "@/utils/storage.ts";
-import { convertMinutesToSeconds } from "@/utils/conversion.ts";
-import useCountdownTimerContext from "@/hooks/countdown-timer/useCountdownContext.ts";
+import useCountdownTimerContext from "@/hooks/countdown-timer/useCountdownContext";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useSetTimerPaused,
   useSetTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore.ts";
+} from "@/stores/countdown-timer/CountdownStore";
+import { convertMinutesToSeconds } from "@/utils/conversion";
+import { saveToLocalStorage } from "@/utils/storage";
 
 const UseCountdownStorage = () => {
   const { timerIntervalRef, timerEndTimeRef } = useCountdownTimerContext();

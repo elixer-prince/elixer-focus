@@ -1,3 +1,5 @@
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
+import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import {
@@ -6,13 +8,11 @@ import {
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore.ts";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
+} from "@/stores/countdown-timer/CountdownStore";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext.ts";
 
 const useCountdownTimerHelpers = () => {
   const { clearIntervalIfItExists } = useCountdownInterval();

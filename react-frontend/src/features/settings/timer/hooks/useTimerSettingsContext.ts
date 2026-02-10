@@ -1,5 +1,5 @@
+import TimerSettingsContext from "@/features/settings/timer/stores/Context";
 import { useContext } from "react";
-import TimerSettingsContext from "@/features/settings/timer/stores/Context.tsx";
 
 export const useTimerSettingsContext = () => {
   const timerSettingsContext = useContext(TimerSettingsContext);

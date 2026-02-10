@@ -1,5 +1,5 @@
-import useValidation from "@/features/settings/timer/hooks/useValidation.ts";
-import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext.ts";
+import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext";
+import useValidation from "@/features/settings/timer/hooks/useValidation";
 
 const ShortBreakContainer = () => {
   const { validateAndSet } = useValidation();

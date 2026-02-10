@@ -1,9 +1,9 @@
-import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext.tsx";
+import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext";
 import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore.ts";
+} from "@/stores/countdown-timer/SessionStore";
 import { useCallback } from "react";
 
 const useValidation = () => {

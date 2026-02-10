@@ -1,19 +1,19 @@
-import useValidation from "@/features/settings/timer/hooks/useValidation.ts";
-import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext.ts";
+import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext";
+import useValidation from "@/features/settings/timer/hooks/useValidation";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore.ts";
+} from "@/stores/countdown-timer/CountdownStore";
 import {
   useCurrentSessionType,
   useSetFocusDuration,
   useSetLongBreakDuration,
   useSetShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore.ts";
-import { convertMinutesToSeconds } from "@/utils/conversion.ts";
-import { saveToLocalStorage } from "@/utils/storage.ts";
+} from "@/stores/countdown-timer/SessionStore";
+import { convertMinutesToSeconds } from "@/utils/conversion";
+import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
 
 const useHandleSave = () => {

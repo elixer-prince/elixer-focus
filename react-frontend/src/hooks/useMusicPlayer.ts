@@ -1,5 +1,5 @@
-import { useChosenSongId, useSongs } from "@/stores/music-player.ts";
-import { getVideoId } from "@/features/music-player/utils/conversion.ts";
+import { getVideoId } from "@/features/music-player/utils/conversion";
+import { useChosenSongId, useSongs } from "@/stores/music-player";
 import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
