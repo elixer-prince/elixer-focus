@@ -3,7 +3,7 @@ import useHandleSave from "@/features/settings/timer/hooks/useHandleSave.ts";
 import useValidation from "@/features/settings/timer/hooks/useValidation.ts";
 import LongBreakContainer from "@/features/settings/timer/LongBreakContainer.tsx";
 import ShortBreakContainer from "@/features/settings/timer/ShortBreakContainer.tsx";
-import { TimerSettingsProvider } from "@/features/settings/timer/stores/Context.tsx";
+import TimerSettingsProvider from "@/features/settings/timer/stores/Provider.tsx";
 
 const TimerSettingsContent = () => {
   const { hasUnsavedChanges } = useValidation();
