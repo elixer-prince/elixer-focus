@@ -1,4 +1,4 @@
-import ThemePreview from "@/features/Settings/components/ThemeSettings/ThemePreview";
+import ThemePreview from "@/features/settings/theme/components/ThemePreview.tsx";
 import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme.ts";
 import type { PropsWithChildren } from "react";
 

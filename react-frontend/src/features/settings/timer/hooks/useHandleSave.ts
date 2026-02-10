@@ -1,5 +1,5 @@
-import useValidation from "@/features/countdown-timer/components/TimerSettings/hooks/useValidation";
-import { useTimerSettingsContext } from "@/features/countdown-timer/components/TimerSettings/stores/TimerSettingsContext";
+import useValidation from "@/features/settings/timer/hooks/useValidation.ts";
+import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext.ts";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
@@ -12,8 +12,8 @@ import {
   useSetLongBreakDuration,
   useSetShortBreakDuration,
 } from "@/stores/countdown-timer/SessionStore.ts";
-import { convertMinutesToSeconds } from "@/utils/conversion";
-import { saveToLocalStorage } from "@/utils/storage";
+import { convertMinutesToSeconds } from "@/utils/conversion.ts";
+import { saveToLocalStorage } from "@/utils/storage.ts";
 import { useCallback } from "react";
 
 const useHandleSave = () => {

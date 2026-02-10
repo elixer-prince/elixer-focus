@@ -5,4 +5,8 @@ export type YTPlayer = {
   pauseVideo: () => void;
 };
 
+export type YTPlayerEvent = {
+  target: YTPlayer;
+};
+
 export type YTPlayerRef = RefObject<YTPlayer | null>;

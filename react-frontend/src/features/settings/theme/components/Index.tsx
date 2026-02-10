@@ -1,4 +1,4 @@
-import ThemeLabel from "@/features/Settings/components/ThemeSettings/ThemeLabel";
+import ThemeLabel from "@/features/settings/theme/components/ThemeLabel.tsx";
 
 const ThemeSettings = () => {
   return (

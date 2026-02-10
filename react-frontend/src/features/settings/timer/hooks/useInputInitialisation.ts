@@ -1,4 +1,4 @@
-import { useTimerSettingsContext } from "@/features/countdown-timer/components/TimerSettings/stores/TimerSettingsContext";
+import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext.ts";
 import {
   useFocusDuration,
   useLongBreakDuration,

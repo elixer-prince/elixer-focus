@@ -3,32 +3,10 @@ import {
   useLongBreakDuration,
   useShortBreakDuration,
 } from "@/stores/countdown-timer/SessionStore.ts";
-import {
-  createContext,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { type PropsWithChildren, useMemo, useState } from "react";
+import TimerSettingsContext from "@/features/settings/timer/stores/Context.tsx";
 
-interface TimerSettingsProps {
-  children: ReactNode;
-}
-
-type TimerSettingsType = {
-  draftFocus: string;
-  draftShortBreak: string;
-  draftLongBreak: string;
-  setDraftFocus: Dispatch<SetStateAction<string>>;
-  setDraftShortBreak: Dispatch<SetStateAction<string>>;
-  setDraftLongBreak: Dispatch<SetStateAction<string>>;
-};
-
-const TimerSettingsContext = createContext<TimerSettingsType | null>(null);
-
-export const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
+const TimerSettingsProvider = ({ children }: PropsWithChildren) => {
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
@@ -69,14 +47,4 @@ export const TimerSettingsProvider = ({ children }: TimerSettingsProps) => {
   );
 };
 
-export const useTimerSettingsContext = () => {
-  const timerSettingsContext = useContext(TimerSettingsContext);
-
-  if (!timerSettingsContext) {
-    throw new Error(
-      "useTimerSettingContext must be used within a TimerSettingsProvider!",
-    );
-  }
-
-  return timerSettingsContext;
-};
+export default TimerSettingsProvider;

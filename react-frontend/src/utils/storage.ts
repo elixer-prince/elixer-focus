@@ -2,9 +2,9 @@
  * Returns the value of the item stored in local storage.
  *
  * @param {string} key - The key of the item in local storage.
- * @returns {any} The value of the stored item from local storage.
+ * @returns The value of the stored item from local storage.
  */
-export function getFromLocalStorage(key: string): any {
+export function getFromLocalStorage<T>(key: string): T | undefined {
   const storedItem = localStorage.getItem(key);
   if (!storedItem) return;
   return JSON.parse(storedItem);
@@ -17,6 +17,6 @@ export function getFromLocalStorage(key: string): any {
  * @param {any} value - The value to be stored in local storage.
  * @returns {void}
  */
-export function saveToLocalStorage<Type>(key: string, value: Type): void {
+export function saveToLocalStorage<T>(key: string, value: T): void {
   localStorage.setItem(key, JSON.stringify(value));
 }
