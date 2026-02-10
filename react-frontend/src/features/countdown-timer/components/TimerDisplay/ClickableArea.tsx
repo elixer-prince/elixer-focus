@@ -7,7 +7,7 @@ const ClickableArea = () => {
     <button
       onClick={handleCountdownState}
       className={
-        "hover:bg-base-200 active:bg-base-100 bg-transition-all peer pointer-events-auto absolute inset-5 rounded-full duration-1000 hover:duration-1000 active:duration-100"
+        "hover:bg-base-200 active:bg-base-100 bg-transition-all peer pointer-events-auto absolute inset-5 cursor-pointer rounded-full duration-1000 hover:duration-1000 active:duration-100"
       }
     />
   );
