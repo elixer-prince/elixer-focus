@@ -18,10 +18,19 @@ const usePageTitle = () => {
 
   // * Locked * //
   const resetPageTitle = useCallback(() => {
-    document.title = "Elixer Focus";
+    document.title = "Elixer Focus - Home";
   }, []);
 
-  return { displayRemainingTimeInPageTitle, resetPageTitle };
+  // * Locked * //
+  const displayNotFoundPageTitle = useCallback(() => {
+    document.title = "Not Found - Elixer Focus";
+  }, []);
+
+  return {
+    displayRemainingTimeInPageTitle,
+    resetPageTitle,
+    displayNotFoundPageTitle,
+  };
 };
 
 export default usePageTitle;
