@@ -3,10 +3,15 @@ import {
   useSetVolume,
   useShowSlider,
   useVolume,
-} from "@/stores/music-player.ts";
+} from "@/stores/music-player";
+import type { YTPlayerRef } from "@/types/music-player/player";
 import { FaVolumeUp } from "react-icons/fa";
 
-const VolumeControls = ({ playerInstanceRef }: { playerInstanceRef: any }) => {
+interface VolumeControlsProps {
+  playerInstanceRef: YTPlayerRef;
+}
+
+const VolumeControls = ({ playerInstanceRef }: VolumeControlsProps) => {
   const volume = useVolume();
   const showSlider = useShowSlider();
   const setVolume = useSetVolume();
