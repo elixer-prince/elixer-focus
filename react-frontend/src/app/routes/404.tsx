@@ -2,9 +2,9 @@ import { Link } from "react-router";
 import usePageTitle from "@/hooks/usePageTitle";
 
 const NotFound = () => {
-  const { displayNotFoundPageTitle } = usePageTitle();
+  const { updatePageTitle } = usePageTitle();
 
-  displayNotFoundPageTitle();
+  updatePageTitle("Elixer Focus - Not Found");
 
   return (
     <main>

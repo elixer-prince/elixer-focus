@@ -22,14 +22,14 @@ const usePageTitle = () => {
   }, []);
 
   // * Locked * //
-  const displayNotFoundPageTitle = useCallback(() => {
-    document.title = "Not Found - Elixer Focus";
+  const updatePageTitle = useCallback((newTitle: string = "Elixer Focus") => {
+    document.title = newTitle;
   }, []);
 
   return {
     displayRemainingTimeInPageTitle,
     resetPageTitle,
-    displayNotFoundPageTitle,
+    updatePageTitle,
   };
 };
 
