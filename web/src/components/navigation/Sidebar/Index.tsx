@@ -2,7 +2,7 @@ import SidebarLink from "@/components/navigation/Sidebar/SidebarLink";
 import {
   // MdAccountCircle,
   MdHomeFilled,
-  // MdLibraryBooks,
+  MdLibraryBooks,
   // MdTaskAlt,
 } from "react-icons/md";
 
@@ -21,14 +21,14 @@ const Sidebar = () => {
             <MdAccountCircle size={20} />
             Profile
           </SidebarLink>
-        </li>
+        </li> */}
         <li>
           <SidebarLink to="/journal">
             <MdLibraryBooks size={20} />
             Journal
           </SidebarLink>
         </li>
-        <li>
+        {/* <li>
           <SidebarLink to="/tasks">
             <MdTaskAlt size={20} />
             Tasks
