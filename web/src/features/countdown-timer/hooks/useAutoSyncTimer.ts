@@ -4,7 +4,7 @@ import {
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/countdown-store";
+} from "@/stores/countdown-timer/store";
 import {
   useCurrentSessionType,
   useFocusDuration,

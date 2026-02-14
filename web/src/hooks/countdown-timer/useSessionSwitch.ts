@@ -1,6 +1,6 @@
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/countdown-store";
+import { useTimerRunning } from "@/stores/countdown-timer/store";
 import {
   useCurrentSessionCount,
   useCurrentSessionType,

@@ -1,5 +1,5 @@
 import useHandleCountdownState from "@/features/countdown-timer/hooks/useHandleCountdownState";
-import { useRemainingTimeInSeconds } from "@/stores/countdown-timer/countdown-store";
+import { useRemainingTimeInSeconds } from "@/stores/countdown-timer/store";
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const CountdownMinutesAndSeconds = () => {

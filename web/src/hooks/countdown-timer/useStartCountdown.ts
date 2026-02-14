@@ -8,7 +8,7 @@ import {
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
-} from "@/stores/countdown-timer/countdown-store";
+} from "@/stores/countdown-timer/store";
 import { calculateEndTime } from "@/utils/countdown-timer/calculations";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";

@@ -1,5 +1,5 @@
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/countdown-store";
+import { useTimerRunning } from "@/stores/countdown-timer/store";
 
 const Profile = () => {
   const { updatePageTitle } = usePageTitle();

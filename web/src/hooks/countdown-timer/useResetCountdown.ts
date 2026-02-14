@@ -2,7 +2,7 @@ import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/countdown-store";
+import { useTimerRunning } from "@/stores/countdown-timer/store";
 import {
   useCurrentSessionType,
   useFocusDuration,
