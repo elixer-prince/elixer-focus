@@ -1,12 +1,11 @@
 const ProfileAvatar = () => {
   return (
-    // Profile Circle
-    <div className="avatar hidden">
-      <div className="ring-primary ring-offset-base-100 w-8 rounded-full ring-3 ring-offset-2">
-        {/* Profile Picture */}
+    <div className="profile-avatar avatar hidden">
+      <div className="profile-avatar-ring ring-primary ring-offset-base-100 w-8 rounded-full ring-3 ring-offset-2">
         <img
+          className="profile-picture"
           src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp"
-          alt=""
+          alt="Profile Avatar"
         />
       </div>
     </div>
