@@ -8,11 +8,7 @@ import {
 
 const Sidebar = () => {
   return (
-    <nav
-      className={
-        "border-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col border-r select-none md:flex"
-      }
-    >
+    <nav className="sidebar border-r-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col border border-r pl-1.5 select-none md:flex">
       <ul className={"overflow-y-scroll pt-6 pl-2"}>
         <li>
           <SidebarLink to={"/"}>
