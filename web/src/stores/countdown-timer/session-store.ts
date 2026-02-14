@@ -28,7 +28,7 @@ const useSessionStore = create<SessionStore>()(
   persist(
     (set) => ({
       focusDuration: 25,
-      shortBreakDuration: 1,
+      shortBreakDuration: 5,
       longBreakDuration: 15,
       sessionCountLimit: 4,
       currentSessionType: "Focus",
