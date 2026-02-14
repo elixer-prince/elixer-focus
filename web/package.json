@@ -13,9 +13,10 @@
   },
   "release": {
     "branches": [
+      "master",
       {
-        "name": "master",
-        "prerelease": "alpha"
+        "name": "alpha",
+        "prerelease": "true"
       }
     ],
     "plugins": [
