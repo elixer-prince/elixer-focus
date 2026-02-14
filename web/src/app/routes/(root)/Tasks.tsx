@@ -1,5 +1,5 @@
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/CountdownStore";
+import { useTimerRunning } from "@/stores/countdown-timer/countdown-store";
 
 const Tasks = () => {
   const { updatePageTitle } = usePageTitle();

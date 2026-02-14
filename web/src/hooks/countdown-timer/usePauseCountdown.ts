@@ -3,7 +3,7 @@ import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import {
   useSetTimerPaused,
   useTimerPaused,
-} from "@/stores/countdown-timer/CountdownStore";
+} from "@/stores/countdown-timer/countdown-store";
 import { playSound } from "@/utils/sound";
 
 const usePauseCountdown = () => {

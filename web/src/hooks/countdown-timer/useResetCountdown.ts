@@ -2,13 +2,13 @@ import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/CountdownStore";
+import { useTimerRunning } from "@/stores/countdown-timer/countdown-store";
 import {
   useCurrentSessionType,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore";
+} from "@/stores/countdown-timer/session-store";
 import { playSound } from "@/utils/sound";
 
 const useResetCountdown = () => {

@@ -3,7 +3,7 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore";
+} from "@/stores/countdown-timer/session-store";
 import { type PropsWithChildren, useMemo, useState } from "react";
 
 const TimerSettingsProvider = ({ children }: PropsWithChildren) => {

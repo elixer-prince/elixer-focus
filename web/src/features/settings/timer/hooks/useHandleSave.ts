@@ -5,13 +5,13 @@ import {
   useSetStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore";
+} from "@/stores/countdown-timer/countdown-store";
 import {
   useCurrentSessionType,
   useSetFocusDuration,
   useSetLongBreakDuration,
   useSetShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore";
+} from "@/stores/countdown-timer/session-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";

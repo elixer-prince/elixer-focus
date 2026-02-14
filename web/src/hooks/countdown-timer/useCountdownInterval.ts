@@ -3,8 +3,8 @@ import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/CountdownStore";
-import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore";
+import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/countdown-store";
+import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
 import {
   timerHasEnded,

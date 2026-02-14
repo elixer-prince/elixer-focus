@@ -8,7 +8,7 @@ import {
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore";
+} from "@/stores/countdown-timer/countdown-store";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
 import { saveToLocalStorage } from "@/utils/storage";

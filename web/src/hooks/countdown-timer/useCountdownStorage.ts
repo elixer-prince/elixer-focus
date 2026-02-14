@@ -4,7 +4,7 @@ import {
   useSetStartTimeInMinutes,
   useSetTimerPaused,
   useSetTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore";
+} from "@/stores/countdown-timer/countdown-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 

@@ -1,4 +1,4 @@
-import { useCurrentSessionType } from "@/stores/countdown-timer/SessionStore";
+import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 
 const CurrentSessionType = () => {
   const currentSessionType = useCurrentSessionType();

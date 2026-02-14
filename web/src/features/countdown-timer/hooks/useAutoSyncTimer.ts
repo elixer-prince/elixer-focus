@@ -4,13 +4,13 @@ import {
   useStartTimeInMinutes,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/CountdownStore";
+} from "@/stores/countdown-timer/countdown-store";
 import {
   useCurrentSessionType,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/SessionStore";
+} from "@/stores/countdown-timer/session-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { useEffect } from "react";
 
