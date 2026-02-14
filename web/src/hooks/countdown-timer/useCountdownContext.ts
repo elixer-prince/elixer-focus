@@ -1,4 +1,4 @@
-import CountdownContext from "@/stores/countdown-timer/CountdownContext";
+import CountdownContext from "@/stores/countdown-timer/Context";
 import { useContext } from "react";
 
 const useCountdownContext = () => {
