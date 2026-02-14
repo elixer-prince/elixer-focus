@@ -16,7 +16,7 @@
       "master",
       {
         "name": "alpha",
-        "prerelease": "true"
+        "prerelease": true
       }
     ],
     "plugins": [
