@@ -5,6 +5,7 @@ import {
   convertSecondsToMilliseconds,
   convertSecondsToMinutes,
 } from "@/utils/conversion";
+import { describe, expect, it } from "vitest";
 
 describe("convertMinutesToSeconds", () => {
   it("should return 60 when given 1 as an argument", () => {
