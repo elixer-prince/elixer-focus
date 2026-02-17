@@ -1,7 +1,19 @@
-import { it, expect, describe } from "vitest";
+import { beforeEach } from "vitest";
+import { getFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
 
-describe("getFromLocalStorage", () => {
-  it("should return the stored item when given a valid key", () => {
-    expect(true).toBe("true");
+describe("localStorage functions", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("should return the value from local storage", () => {
+    const value = "Test Value";
+
+    saveToLocalStorage("testKey", value);
+
+    const storedValue = getFromLocalStorage("testKey");
+
+    expect(value).toBe(storedValue);
+    expect(storedValue).toBe("Test Value");
   });
 });
