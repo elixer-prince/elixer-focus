@@ -1,9 +1,13 @@
 import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import { usePreviousSessionType } from "@/stores/countdown-timer/session-store";
+import { useElapsedTimeInSeconds } from "@/stores/countdown-timer/store";
+import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const Modal = () => {
-  const previousSessionType = usePreviousSessionType();
   const { modalRef } = useCountdownContext();
+
+  const previousSessionType = usePreviousSessionType();
+  const elapsedTimeInSeconds = useElapsedTimeInSeconds();
 
   return (
     <dialog ref={modalRef} className="modal">
@@ -13,7 +17,12 @@ const Modal = () => {
             Your {previousSessionType} Session has ended!
           </h2>
 
-          <p>00:00</p>
+          <p>
+            Elapsed Time:{" "}
+            <span className="text-error">
+              {formatTimeInMinutesAndSeconds(elapsedTimeInSeconds)}
+            </span>
+          </p>
         </div>
 
         <div className="">
