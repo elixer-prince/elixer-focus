@@ -3,8 +3,11 @@ import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import usePageTitle from "@/hooks/usePageTitle";
+import {
+  useCurrentSessionType,
+  useSetPreviousSessionType,
+} from "@/stores/countdown-timer/session-store";
 import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/store";
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
 import {
   timerHasEnded,
@@ -23,6 +26,8 @@ const useRunInterval = () => {
   const { timerBeepSoundEffectRef, timerIntervalRef } = useCountdownContext();
 
   const currentSessionType = useCurrentSessionType();
+  const setPreviousSessionType = useSetPreviousSessionType();
+
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   // * Locked * //
@@ -50,6 +55,7 @@ const useRunInterval = () => {
           clearIntervalIfItExists();
           stopEndTicking();
           playSound(timerBeepSoundEffectRef.current);
+          setPreviousSessionType(currentSessionType);
           alertUserOfTimerEnd();
           autoSwitchSessionType();
           // TODO: Implement timeElapsed here
@@ -66,6 +72,7 @@ const useRunInterval = () => {
       displayRemainingTimeInPageTitle,
       clearIntervalIfItExists,
       setRemainingTimeInSeconds,
+      setPreviousSessionType,
     ],
   );
 
