@@ -15,7 +15,7 @@ const CountdownProvider = ({ children }: PropsWithChildren) => {
   );
   const hasPlayedEndBeepRef = useRef<boolean>(false);
   const isEndTickingRef = useRef<boolean>(false);
-  const modalRef = useRef<HTMLButtonElement | null>(null);
+  const modalRef = useRef<HTMLDialogElement | null>(null);
 
   const timerBeepSoundEffectRef = useRef(new Audio(beepSoundURL));
   const timerOffClickSoundEffectRef = useRef(new Audio(offClickSoundURL));
