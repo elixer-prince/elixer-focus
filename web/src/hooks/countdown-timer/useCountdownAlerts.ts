@@ -1,9 +1,11 @@
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 
 const useCountdownAlerts = () => {
-  const currentSessionType = useCurrentSessionType();
+  const { modalRef } = useCountdownContext();
 
-  const alertUserOfTimerEnd = () => {};
+  const alertUserOfTimerEnd = () => {
+    modalRef.current?.showModal();
+  };
 
   return { alertUserOfTimerEnd };
 };
