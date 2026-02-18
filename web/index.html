@@ -3,12 +3,12 @@
 <html class="html bg-base-300 not-motion-reduce:scroll-smooth" lang="en-JM">
   <head>
     <meta charset="UTF-8" />
-    <meta content="Daniel J. Leith (Elixer Prince)" name="author" />
+    <meta name="author" content="Daniel J. Leith (Elixer Prince)" />
     <meta
-      content="Elixer Focus is a gamified productivity app that helps you achieve focus, track progress, and reach your full potential. Connect with friends, join global focus sessions, and get AI-powered guidance tailored to your life."
       name="description"
+      content="Elixer Focus is a gamified productivity app that helps you achieve focus, track progress, and reach your full potential. Connect with friends, join global focus sessions, and get AI-powered guidance tailored to your life."
     />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Application Title -->
     <title>Elixer Focus</title>
@@ -23,9 +23,40 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
+
+    <link rel="manifest" href="./manifest.json" />
+
+    <!-- TODO: I am going to implement this to follow the user's selected theme in React -->
+    <meta name="theme-color" content="#1F2937" />
+
+    <!-- Open Graph Tags (For Social Media) -->
+
+    <meta property="og:title" content="Elixer Focus" />
+    <meta
+      property="og:description"
+      content="Achieve focus, track progress, and reach your full potential with Elixer Focus."
+    />
+    <!-- Tells websites how to display the site -->
+    <meta property="og:type" content="website" />
+    <!-- TODO: Add an actual preview image -->
+    <meta
+      property="og:image"
+      content="./src/assets/images/elixerfocus-favicon.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Elixer Focus" />
+    <meta
+      name="twitter:description"
+      content="Achieve focus, track progress, and reach your full potential with Elixer Focus."
+    />
+    <meta
+      name="twitter:image"
+      content="./src/assets/images/elixerfocus-favicon.png"
+    />
   </head>
 
-  <!-- Transition colors for smooth theme changes -->
+  <!-- Transition body colours for smooth theme changes -->
+
   <body class="body font-roboto transition-colors duration-1000">
     <div id="root"></div>
     <script src="./src/app/app.tsx" type="module"></script>
