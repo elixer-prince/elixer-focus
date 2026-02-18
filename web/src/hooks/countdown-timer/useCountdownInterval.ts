@@ -3,8 +3,15 @@ import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useSetRemainingTimeInSeconds } from "@/stores/countdown-timer/store";
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
+import {
+  useCurrentSessionType,
+  useSetPreviousSessionType,
+} from "@/stores/countdown-timer/session-store";
+import {
+  useIncrementElapsedTimeInSeconds,
+  useResetElapsedTimeInSeconds,
+  useSetRemainingTimeInSeconds,
+} from "@/stores/countdown-timer/store";
 import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
 import {
   timerHasEnded,
@@ -20,12 +27,16 @@ const useRunInterval = () => {
   const { displayRemainingTimeInPageTitle } = usePageTitle();
   const { alertUserOfTimerEnd } = useCountdownAlerts();
 
-  const { timerBeepSoundEffectRef, timerIntervalRef } = useCountdownContext();
+  const { timerBeepSoundEffectRef, timerIntervalRef, elapsedIntervalRef } =
+    useCountdownContext();
 
   const currentSessionType = useCurrentSessionType();
+  const setPreviousSessionType = useSetPreviousSessionType();
+  const incrementElapsedTimeInSeconds = useIncrementElapsedTimeInSeconds();
+  const resetElapsedTimeInSeconds = useResetElapsedTimeInSeconds();
+
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  // * Locked * //
   const clearIntervalIfItExists = useCallback(() => {
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
@@ -33,7 +44,17 @@ const useRunInterval = () => {
     }
   }, [timerIntervalRef]);
 
-  // * Temp Locked * //
+  const resetElapsedTime = useCallback(() => {
+    if (elapsedIntervalRef.current) clearInterval(elapsedIntervalRef.current);
+    resetElapsedTimeInSeconds();
+  }, [elapsedIntervalRef, resetElapsedTimeInSeconds]);
+
+  const createElapsedInterval = useCallback(() => {
+    elapsedIntervalRef.current = setInterval(() => {
+      incrementElapsedTimeInSeconds();
+    }, 1000);
+  }, [incrementElapsedTimeInSeconds, elapsedIntervalRef]);
+
   const createNewInterval = useCallback(
     (endTime: number) => {
       return setInterval(() => {
@@ -50,9 +71,10 @@ const useRunInterval = () => {
           clearIntervalIfItExists();
           stopEndTicking();
           playSound(timerBeepSoundEffectRef.current);
+          setPreviousSessionType(currentSessionType);
           alertUserOfTimerEnd();
           autoSwitchSessionType();
-          // TODO: Implement timeElapsed here
+          createElapsedInterval();
         }
       }, 1000);
     },
@@ -66,10 +88,11 @@ const useRunInterval = () => {
       displayRemainingTimeInPageTitle,
       clearIntervalIfItExists,
       setRemainingTimeInSeconds,
+      setPreviousSessionType,
+      createElapsedInterval,
     ],
   );
 
-  // * Locked * //
   const runInterval = useCallback(
     (endTime: number) => {
       clearIntervalIfItExists();
@@ -78,7 +101,7 @@ const useRunInterval = () => {
     [timerIntervalRef, createNewInterval, clearIntervalIfItExists],
   );
 
-  return { runInterval, clearIntervalIfItExists };
+  return { runInterval, clearIntervalIfItExists, resetElapsedTime };
 };
 
 export default useRunInterval;

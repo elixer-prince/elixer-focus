@@ -6,7 +6,7 @@ import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/
 import CountdownContext from "@/stores/countdown-timer/Context";
 import type { CountdownTimerContextType } from "@/types/countdown-timer";
 import { getFromLocalStorage } from "@/utils/storage";
-import { type PropsWithChildren, useRef } from "react";
+import { type PropsWithChildren, useMemo, useRef } from "react";
 
 const CountdownProvider = ({ children }: PropsWithChildren) => {
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -15,6 +15,10 @@ const CountdownProvider = ({ children }: PropsWithChildren) => {
   );
   const hasPlayedEndBeepRef = useRef<boolean>(false);
   const isEndTickingRef = useRef<boolean>(false);
+  const modalRef = useRef<HTMLDialogElement | null>(null);
+  const elapsedIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
 
   const timerBeepSoundEffectRef = useRef(new Audio(beepSoundURL));
   const timerOffClickSoundEffectRef = useRef(new Audio(offClickSoundURL));
@@ -22,18 +26,23 @@ const CountdownProvider = ({ children }: PropsWithChildren) => {
   const timerTickingSoundEffectRef = useRef(new Audio(tickingSoundURL));
   const resetTimerSoundEffectRef = useRef(new Audio(resetTimerSoundURL));
 
-  const contextValue: CountdownTimerContextType = {
-    timerIntervalRef,
-    timerEndTimeRef,
-    hasPlayedEndBeepRef,
-    isEndTickingRef,
+  const contextValue: CountdownTimerContextType = useMemo(
+    () => ({
+      timerIntervalRef,
+      timerEndTimeRef,
+      hasPlayedEndBeepRef,
+      isEndTickingRef,
+      modalRef,
+      elapsedIntervalRef,
 
-    timerBeepSoundEffectRef,
-    timerOffClickSoundEffectRef,
-    timerOnClickSoundEffectRef,
-    timerTickingSoundEffectRef,
-    resetTimerSoundEffectRef,
-  };
+      timerBeepSoundEffectRef,
+      timerOffClickSoundEffectRef,
+      timerOnClickSoundEffectRef,
+      timerTickingSoundEffectRef,
+      resetTimerSoundEffectRef,
+    }),
+    [],
+  );
 
   return (
     <CountdownContext.Provider value={contextValue}>

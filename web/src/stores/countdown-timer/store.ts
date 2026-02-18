@@ -7,6 +7,7 @@ type CountdownTimerState = {
   timerPaused: boolean;
   remainingTimeInSeconds: number;
   startTimeInMinutes: number;
+  elapsedTimeInSeconds: number;
 };
 
 type CountdownTimerActions = {
@@ -14,6 +15,8 @@ type CountdownTimerActions = {
   setTimerPaused: (timerPaused: boolean) => void;
   setRemainingTimeInSeconds: (remainingSeconds: number) => void;
   setStartTimeInMinutes: (startTimeInMinutes: number) => void;
+  incrementElapsedTimeInSeconds: () => void;
+  resetElapsedTimeInSeconds: () => void;
 };
 
 type CountdownTimerStore = CountdownTimerState & CountdownTimerActions;
@@ -25,6 +28,7 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
       timerPaused: true,
       remainingTimeInSeconds: convertMinutesToSeconds(25),
       startTimeInMinutes: 25,
+      elapsedTimeInSeconds: 0,
 
       setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
 
@@ -35,6 +39,13 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
 
       setStartTimeInMinutes: (startTimeInMinutes: number) =>
         set({ startTimeInMinutes }),
+
+      incrementElapsedTimeInSeconds: () =>
+        set((state) => ({
+          elapsedTimeInSeconds: state.elapsedTimeInSeconds + 1,
+        })),
+
+      resetElapsedTimeInSeconds: () => set({ elapsedTimeInSeconds: 0 }),
     }),
     { name: "countdown-timer-storage" },
   ),
@@ -60,6 +71,9 @@ export const useRemainingTimeInSeconds = () =>
 export const useStartTimeInMinutes = () =>
   useCountdownTimerStore((state) => state.startTimeInMinutes);
 
+export const useElapsedTimeInSeconds = () =>
+  useCountdownTimerStore((state) => state.elapsedTimeInSeconds);
+
 // ACTIONS
 
 export const useSetTimerRunning = () =>
@@ -73,3 +87,9 @@ export const useSetRemainingTimeInSeconds = () =>
 
 export const useSetStartTimeInMinutes = () =>
   useCountdownTimerStore((state) => state.setStartTimeInMinutes);
+
+export const useIncrementElapsedTimeInSeconds = () =>
+  useCountdownTimerStore((state) => state.incrementElapsedTimeInSeconds);
+
+export const useResetElapsedTimeInSeconds = () =>
+  useCountdownTimerStore((state) => state.resetElapsedTimeInSeconds);

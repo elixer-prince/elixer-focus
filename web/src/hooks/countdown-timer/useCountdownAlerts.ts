@@ -1,16 +1,10 @@
-import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
-import toast from "react-hot-toast";
+import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
 
 const useCountdownAlerts = () => {
-  const currentSessionType = useCurrentSessionType();
+  const { modalRef } = useCountdownContext();
 
-  // * Temp Locked * //
   const alertUserOfTimerEnd = () => {
-    // TODO: Make this toast themed
-    // ? I might convert this to a overlay
-    toast(`Your ${currentSessionType} session has ended!`, {
-      duration: 10000,
-    });
+    modalRef.current?.showModal();
   };
 
   return { alertUserOfTimerEnd };

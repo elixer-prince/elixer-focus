@@ -8,6 +8,7 @@ type SessionState = {
   longBreakDuration: number;
   sessionCountLimit: number;
   currentSessionType: CountdownSession;
+  previousSessionType: CountdownSession | null;
   currentSessionCount: number;
   totalSessionsCompleted: number;
 };
@@ -18,6 +19,7 @@ type SessionActions = {
   setLongBreakDuration: (duration: number) => void;
   setSessionCountLimit: (limit: number) => void;
   setCurrentSessionType: (type: CountdownSession) => void;
+  setPreviousSessionType: (type: CountdownSession) => void;
   setCurrentSessionCount: (count: number) => void;
   setTotalSessionsCompleted: (count: number) => void;
 };
@@ -32,6 +34,7 @@ const useSessionStore = create<SessionStore>()(
       longBreakDuration: 15,
       sessionCountLimit: 4,
       currentSessionType: "Focus",
+      previousSessionType: null,
       currentSessionCount: 0,
       totalSessionsCompleted: 0,
 
@@ -45,6 +48,8 @@ const useSessionStore = create<SessionStore>()(
       setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
 
       setCurrentSessionType: (type) => set({ currentSessionType: type }),
+
+      setPreviousSessionType: (type) => set({ previousSessionType: type }),
 
       setCurrentSessionCount: (count) => set({ currentSessionCount: count }),
 
@@ -78,6 +83,9 @@ export const useSessionCountLimit = () =>
 export const useCurrentSessionType = () =>
   useSessionStore((state) => state.currentSessionType);
 
+export const usePreviousSessionType = () =>
+  useSessionStore((state) => state.previousSessionType);
+
 export const useCurrentSessionCount = () =>
   useSessionStore((state) => state.currentSessionCount);
 
@@ -100,6 +108,9 @@ export const useSetSessionCountLimit = () =>
 
 export const useSetCurrentSessionType = () =>
   useSessionStore((state) => state.setCurrentSessionType);
+
+export const useSetPreviousSessionType = () =>
+  useSessionStore((state) => state.setPreviousSessionType);
 
 export const useSetCurrentSessionCount = () =>
   useSessionStore((state) => state.setCurrentSessionCount);

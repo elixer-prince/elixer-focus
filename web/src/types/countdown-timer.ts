@@ -7,6 +7,8 @@ export type CountdownTimerContextType = {
   timerEndTimeRef: RefObject<number | null>;
   hasPlayedEndBeepRef: RefObject<boolean>;
   isEndTickingRef: RefObject<boolean>;
+  modalRef: RefObject<HTMLDialogElement | null>;
+  elapsedIntervalRef: RefObject<ReturnType<typeof setInterval> | null>;
 
   readonly timerBeepSoundEffectRef: RefObject<HTMLAudioElement>;
   readonly timerOffClickSoundEffectRef: RefObject<HTMLAudioElement>;
