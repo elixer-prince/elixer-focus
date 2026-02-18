@@ -1,5 +1,6 @@
 import Navbar from "@/components/navigation/Navbar/Index";
 import Sidebar from "@/components/navigation/Sidebar/Index";
+import Modal from "@/components/ui/Modal";
 import MusicPlayer from "@/features/music-player/components/Index";
 import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Toaster } from "react-hot-toast";
@@ -15,6 +16,8 @@ const DefaultLayout = () => {
       <Sidebar />
 
       <Toaster />
+
+      <Modal />
 
       <main
         className={
