@@ -39,11 +39,13 @@ const useRunInterval = () => {
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   const resetElapsedTime = useCallback(() => {
-    if (elapsedIntervalRef.current) clearInterval(elapsedIntervalRef.current);
+    clearIntervalIfItExists(elapsedIntervalRef);
     resetElapsedTimeInSeconds();
   }, [elapsedIntervalRef, resetElapsedTimeInSeconds]);
 
   const createElapsedInterval = useCallback(() => {
+    if (elapsedIntervalRef.current) return;
+
     elapsedIntervalRef.current = setInterval(() => {
       incrementElapsedTimeInSeconds();
     }, 1000);
