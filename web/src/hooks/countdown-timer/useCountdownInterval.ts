@@ -22,7 +22,7 @@ import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 import { useCallback } from "react";
 
-const useRunInterval = () => {
+const useCountdownInterval = () => {
   const { autoSwitchSessionType } = useSessionSwitch();
   const { startEndTicking, stopEndTicking } = useEndTicking();
   const { displayRemainingTimeInPageTitle } = usePageTitle();
@@ -100,4 +100,4 @@ const useRunInterval = () => {
   return { runInterval, resetElapsedTime };
 };
 
-export default useRunInterval;
+export default useCountdownInterval;
