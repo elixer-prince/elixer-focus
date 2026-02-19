@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "prepare": "husky"
+    "prepare": "cd .. && husky web/.husky"
   },
   "release": {
     "branches": [
