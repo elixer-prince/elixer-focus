@@ -10,13 +10,14 @@ import {
   useTimerPaused,
 } from "@/stores/countdown-timer/store";
 import { calculateEndTime } from "@/utils/countdown-timer/calculations";
+import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
 
 const useStartCountdown = () => {
   const { startEndTicking, stopEndTicking } = useEndTicking();
-  const { clearIntervalIfItExists, runInterval } = useCountdownInterval();
+  const { runInterval } = useCountdownInterval();
   const { calculateNewRemainingSeconds } = useCountdownHelpers();
   const {
     timerEndedWhileAway,
@@ -31,9 +32,9 @@ const useStartCountdown = () => {
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const { timerOnClickSoundEffectRef, timerEndTimeRef } = useCountdownContext();
+  const { timerOnClickSoundEffectRef, timerEndTimeRef, timerIntervalRef } =
+    useCountdownContext();
 
-  // * Locked * //
   const startCountdown = useCallback(() => {
     stopEndTicking();
 
@@ -57,7 +58,6 @@ const useStartCountdown = () => {
     stopEndTicking,
   ]);
 
-  // * Locked * //
   const startCountdownWithSound = () => {
     if (!timerPaused) return;
 
@@ -65,7 +65,6 @@ const useStartCountdown = () => {
     startCountdown();
   };
 
-  // * Locked * //
   /**
    * Starts the timer on page load if the timer is
    * not paused or running.
@@ -77,7 +76,7 @@ const useStartCountdown = () => {
 
     if (!timerEndTimeRef.current) return;
 
-    clearIntervalIfItExists();
+    clearIntervalIfItExists(timerIntervalRef);
 
     const endTime = timerEndTimeRef.current;
     const remainingSeconds = calculateNewRemainingSeconds(endTime);
@@ -91,13 +90,13 @@ const useStartCountdown = () => {
     runInterval(endTime);
   }, [
     timerEndTimeRef,
+    timerIntervalRef,
     timerEndedWhileAway,
     timerShouldBeTickingOnRefresh,
     timerShouldNotBeActiveOnRefresh,
     runInterval,
     startEndTicking,
     calculateNewRemainingSeconds,
-    clearIntervalIfItExists,
     handleEndedTimerWhileAway,
     setRemainingTimeInSeconds,
   ]);
