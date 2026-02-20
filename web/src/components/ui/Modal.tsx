@@ -12,20 +12,22 @@ const Modal = () => {
   return (
     <dialog ref={modalRef} className="modal">
       <div className="modal-box">
-        <div>
+        <div className="text-center">
           <h2 className="modal-header text-2xl font-bold">
-            Your {previousSessionType} Session has ended!
+            Your <span className="text-primary">{previousSessionType}</span>{" "}
+            Session has ended!
           </h2>
 
-          <p>
-            Elapsed Time:{" "}
-            <span className="text-error">
+          <p className="elapsed-paragraph mt-2 mb-3 font-bold">
+            You went over by{" "}
+            <span className="elapsed-time text-error text-2xl">
               {formatTimeInMinutesAndSeconds(elapsedTimeInSeconds)}
-            </span>
+            </span>{" "}
+            minutes.
           </p>
         </div>
 
-        <div className="">
+        <div className="flex justify-center">
           <form method="dialog">
             <button className="btn">Close</button>
           </form>
