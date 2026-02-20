@@ -1,25 +1,24 @@
 import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import {
   useSetTimerPaused,
   useTimerPaused,
 } from "@/stores/countdown-timer/store";
+import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 
 const usePauseCountdown = () => {
-  const { timerOffClickSoundEffectRef } = useCountdownContext();
-  const { clearIntervalIfItExists } = useCountdownInterval();
+  const { timerOffClickSoundEffectRef, timerIntervalRef } =
+    useCountdownContext();
 
   const timerPaused = useTimerPaused();
   const setTimerPaused = useSetTimerPaused();
 
-  // * Locked * //
   const pauseCountdown = () => {
     if (timerPaused) return;
 
     playSound(timerOffClickSoundEffectRef.current);
     setTimerPaused(true);
-    clearIntervalIfItExists();
+    clearIntervalIfItExists(timerIntervalRef);
   };
 
   return { pauseCountdown };

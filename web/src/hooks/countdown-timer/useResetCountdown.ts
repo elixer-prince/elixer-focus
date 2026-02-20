@@ -1,19 +1,18 @@
 import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
 import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
 import {
   useCurrentSessionType,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
 } from "@/stores/countdown-timer/session-store";
+import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 
 const useResetCountdown = () => {
-  const { resetTimerSoundEffectRef } = useCountdownContext();
-  const { clearIntervalIfItExists } = useCountdownInterval();
+  const { resetTimerSoundEffectRef, timerIntervalRef } = useCountdownContext();
   const { resetPageTitle } = usePageTitle();
   const { resetTimerStorage } = useCountdownTimerStorage();
 
@@ -24,7 +23,6 @@ const useResetCountdown = () => {
   const longBreakDuration = useLongBreakDuration();
   const currentSessionType = useCurrentSessionType();
 
-  // * Locked * //
   const calculateInitialTime = (): number => {
     switch (currentSessionType) {
       case "Focus":
@@ -36,9 +34,8 @@ const useResetCountdown = () => {
     }
   };
 
-  // * Locked * //
   const resetCountdown = () => {
-    clearIntervalIfItExists();
+    clearIntervalIfItExists(timerIntervalRef);
 
     const initialTime = calculateInitialTime();
 
@@ -46,7 +43,6 @@ const useResetCountdown = () => {
     resetPageTitle();
   };
 
-  // * Locked * //
   const resetCountdownWithSound = () => {
     if (!timerRunning) return;
 
