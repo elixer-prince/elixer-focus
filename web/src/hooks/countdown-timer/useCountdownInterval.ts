@@ -8,8 +8,8 @@ import {
   useSetPreviousSessionType,
 } from "@/stores/countdown-timer/session-store";
 import {
-  useIncrementElapsedTimeInSeconds,
   useResetElapsedTimeInSeconds,
+  useSetElapsedTimeInSeconds,
   useSetRemainingTimeInSeconds,
 } from "@/stores/countdown-timer/store";
 import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
@@ -33,7 +33,7 @@ const useCountdownInterval = () => {
 
   const currentSessionType = useCurrentSessionType();
   const setPreviousSessionType = useSetPreviousSessionType();
-  const incrementElapsedTimeInSeconds = useIncrementElapsedTimeInSeconds();
+  const setElapsedTimeInSeconds = useSetElapsedTimeInSeconds();
   const resetElapsedTimeInSeconds = useResetElapsedTimeInSeconds();
 
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
@@ -46,10 +46,14 @@ const useCountdownInterval = () => {
   const createElapsedInterval = useCallback(() => {
     if (elapsedIntervalRef.current) return;
 
+    const startTime = getCurrentTimestamp();
+
     elapsedIntervalRef.current = setInterval(() => {
-      incrementElapsedTimeInSeconds();
+      const now = getCurrentTimestamp();
+      const elapsedSeconds = Math.floor((now - startTime) / 1000);
+      setElapsedTimeInSeconds(elapsedSeconds);
     }, 1000);
-  }, [incrementElapsedTimeInSeconds, elapsedIntervalRef]);
+  }, [setElapsedTimeInSeconds, elapsedIntervalRef]);
 
   const createNewInterval = useCallback(
     (endTime: number) => {
