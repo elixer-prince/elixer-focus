@@ -70,6 +70,7 @@ const useCountdownInterval = () => {
           setPreviousSessionType(currentSessionType);
           alertUserOfTimerEnd();
           autoSwitchSessionType();
+          resetElapsedTime();
           createElapsedInterval();
         }
       }, 1000);
@@ -81,6 +82,7 @@ const useCountdownInterval = () => {
       autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,
+      resetElapsedTime,
       alertUserOfTimerEnd,
       displayRemainingTimeInPageTitle,
       setRemainingTimeInSeconds,
