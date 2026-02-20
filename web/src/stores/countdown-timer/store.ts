@@ -15,7 +15,7 @@ type CountdownTimerActions = {
   setTimerPaused: (timerPaused: boolean) => void;
   setRemainingTimeInSeconds: (remainingSeconds: number) => void;
   setStartTimeInMinutes: (startTimeInMinutes: number) => void;
-  incrementElapsedTimeInSeconds: () => void;
+  setElapsedTimeInSeconds: (elapsedTimeInSeconds: number) => void;
   resetElapsedTimeInSeconds: () => void;
 };
 
@@ -40,10 +40,10 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
       setStartTimeInMinutes: (startTimeInMinutes: number) =>
         set({ startTimeInMinutes }),
 
-      incrementElapsedTimeInSeconds: () =>
-        set((state) => ({
-          elapsedTimeInSeconds: state.elapsedTimeInSeconds + 1,
-        })),
+      setElapsedTimeInSeconds: (elapsedTimeInSeconds: number) =>
+        set({
+          elapsedTimeInSeconds,
+        }),
 
       resetElapsedTimeInSeconds: () => set({ elapsedTimeInSeconds: 0 }),
     }),
@@ -88,8 +88,8 @@ export const useSetRemainingTimeInSeconds = () =>
 export const useSetStartTimeInMinutes = () =>
   useCountdownTimerStore((state) => state.setStartTimeInMinutes);
 
-export const useIncrementElapsedTimeInSeconds = () =>
-  useCountdownTimerStore((state) => state.incrementElapsedTimeInSeconds);
+export const useSetElapsedTimeInSeconds = () =>
+  useCountdownTimerStore((state) => state.setElapsedTimeInSeconds);
 
 export const useResetElapsedTimeInSeconds = () =>
   useCountdownTimerStore((state) => state.resetElapsedTimeInSeconds);
