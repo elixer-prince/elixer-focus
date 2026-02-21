@@ -1,17 +1,30 @@
 import Task from "@/features/tasks/components/Task";
-import { useTasks } from "@/features/tasks/stores/tasks-store";
+import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 
 const TaskList = () => {
   const tasks = useTasks();
+  // const setTasks = useSetTasks();
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    // if (event.canceled) return;
+    // setTasks((items) => move(items, event));
+  };
 
   return (
-    <ul>
-      {tasks.map(({ id, title, description }) => (
-        <li key={id} className="task flex items-center gap-2 select-none">
-          <Task id={id} title={title} description={description} />
-        </li>
-      ))}
-    </ul>
+    <DragDropProvider onDragEnd={() => handleDragEnd}>
+      <ul>
+        {tasks.map(({ id, title, description }, index) => (
+          <Task
+            key={id}
+            id={id}
+            title={title}
+            description={description}
+            index={index}
+          />
+        ))}
+      </ul>
+    </DragDropProvider>
   );
 };
 
