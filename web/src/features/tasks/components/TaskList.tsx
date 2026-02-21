@@ -7,7 +7,7 @@ const TaskList = () => {
   return (
     <ul>
       {tasks.map((task) => (
-        <li key={task} className="flex items-center gap-2">
+        <li key={task} className="task flex items-center gap-2 select-none">
           <p>{task}</p>
           <button
             className="text-error cursor-pointer hover:underline"
