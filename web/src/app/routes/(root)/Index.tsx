@@ -1,4 +1,5 @@
 import CountdownTimerContainer from "@/features/countdown-timer/components/Index";
+import TaskList from "@/features/tasks/components/TaskList";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/stores/countdown-timer/store";
 
@@ -11,6 +12,8 @@ const Home = () => {
   return (
     <div className={"flex justify-center gap-8"}>
       <CountdownTimerContainer />
+
+      <TaskList />
     </div>
   );
 };
