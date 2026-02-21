@@ -1,4 +1,5 @@
 import type { Task } from "@/features/tasks/types/task";
+import { getCurrentTimestamp } from "@/utils/date";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -7,7 +8,7 @@ type TaskState = {
 };
 
 type TaskActions = {
-  addTask: (task: string) => void;
+  addTask: (task: string, description?: string) => void;
   removeTask: (task: string) => void;
 };
 
@@ -16,9 +17,17 @@ const useTasksStore = create<TaskState & TaskActions>()(
     (set) => ({
       tasks: [],
 
-      addTask: (task) => {
+      addTask: (title, description) => {
         set((state) => ({
-          tasks: [task, ...state.tasks],
+          tasks: [
+            {
+              id: crypto.randomUUID(),
+              title,
+              description,
+              createdAt: getCurrentTimestamp(),
+            },
+            ...state.tasks,
+          ],
         }));
       },
 
