@@ -1,8 +1,9 @@
+import type { Task } from "@/features/tasks/types/task";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type TaskState = {
-  tasks: string[];
+  tasks: Task[];
 };
 
 type TaskActions = {
