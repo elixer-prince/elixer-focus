@@ -1,7 +1,7 @@
 import Task from "@/features/tasks/components/Task";
 import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import { move } from "@dnd-kit/helpers";
-import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { DragDropProvider } from "@dnd-kit/react";
 
 const TaskList = () => {
   const tasks = useTasks();
