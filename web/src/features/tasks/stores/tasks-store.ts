@@ -8,6 +8,7 @@ type TaskState = {
 };
 
 type TaskActions = {
+  setTasks: (tasks: Task[]) => void;
   addTask: (task: string, description?: string) => void;
   removeTask: (id: string) => void;
 };
@@ -16,6 +17,10 @@ const useTasksStore = create<TaskState & TaskActions>()(
   persist(
     (set) => ({
       tasks: [],
+
+      setTasks: (tasks: Task[]) => {
+        set({ tasks });
+      },
 
       addTask: (title, description) => {
         set((state) => ({
@@ -48,6 +53,8 @@ const useTasksStore = create<TaskState & TaskActions>()(
 export const useTasks = () => useTasksStore((state) => state.tasks);
 
 // Actions
+
+export const useSetTasks = () => useTasksStore((state) => state.setTasks);
 
 export const useAddTask = () => useTasksStore((state) => state.addTask);
 
