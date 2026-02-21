@@ -2,8 +2,8 @@ import SidebarLink from "@/components/navigation/Sidebar/SidebarLink";
 import {
   // MdAccountCircle,
   MdHomeFilled,
-  MdLibraryBooks,
-  // MdTaskAlt,
+  // MdLibraryBooks,
+  MdTaskAlt,
 } from "react-icons/md";
 
 const Sidebar = () => {
@@ -22,18 +22,18 @@ const Sidebar = () => {
             Profile
           </SidebarLink>
         </li> */}
-        <li>
+        {/* <li>
           <SidebarLink to="/journal">
             <MdLibraryBooks size={20} />
             Journal
           </SidebarLink>
-        </li>
-        {/* <li>
+        </li> */}
+        <li>
           <SidebarLink to="/tasks">
             <MdTaskAlt size={20} />
             Tasks
           </SidebarLink>
-        </li> */}
+        </li>
       </ul>
 
       {/*<div className={"mt-auto px-4 py-2"}>(Profile)</div>*/}
