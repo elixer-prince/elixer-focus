@@ -33,7 +33,11 @@ const useTasksStore = create<TaskState & TaskActions>()(
   ),
 );
 
+// States
+
 export const useTasks = () => useTasksStore((state) => state.tasks);
+
+// Actions
 
 export const useAddTask = () => useTasksStore((state) => state.addTask);
 
