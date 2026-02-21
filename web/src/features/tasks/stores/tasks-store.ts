@@ -17,7 +17,7 @@ const useTasksStore = create<TaskState & TaskActions>()(
 
       addTask: (task) => {
         set((state) => ({
-          tasks: [...state.tasks, task],
+          tasks: [task, ...state.tasks],
         }));
       },
 
