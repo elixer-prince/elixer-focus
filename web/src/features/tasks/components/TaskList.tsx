@@ -13,7 +13,7 @@ const TaskList = () => {
           <p>{description}</p>
           <button
             className="text-error cursor-pointer hover:underline"
-            onClick={() => removeTask}
+            onClick={() => removeTask(id)}
           >
             Remove
           </button>

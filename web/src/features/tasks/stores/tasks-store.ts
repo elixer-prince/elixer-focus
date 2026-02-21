@@ -9,7 +9,7 @@ type TaskState = {
 
 type TaskActions = {
   addTask: (task: string, description?: string) => void;
-  removeTask: (task: string) => void;
+  removeTask: (id: string) => void;
 };
 
 const useTasksStore = create<TaskState & TaskActions>()(
@@ -31,9 +31,9 @@ const useTasksStore = create<TaskState & TaskActions>()(
         }));
       },
 
-      removeTask: (task) => {
+      removeTask: (id) => {
         set((state) => ({
-          tasks: state.tasks.filter((t) => t !== task),
+          tasks: state.tasks.filter((task) => task.id !== id),
         }));
       },
     }),
