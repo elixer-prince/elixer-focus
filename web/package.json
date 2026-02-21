@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.15",
