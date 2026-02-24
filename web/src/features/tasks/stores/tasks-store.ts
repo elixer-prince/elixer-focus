@@ -11,6 +11,7 @@ type TaskActions = {
   setTasks: (tasks: Task[]) => void;
   addTask: (task: string, description?: string) => void;
   removeTask: (id: string) => void;
+  toggleTaskCompletion: (id: string, completed: boolean) => void;
 };
 
 const useTasksStore = create<TaskState & TaskActions>()(
@@ -29,6 +30,7 @@ const useTasksStore = create<TaskState & TaskActions>()(
               id: crypto.randomUUID(),
               title,
               description,
+              isCompleted: false,
               createdAt: getCurrentTimestamp(),
             },
             ...state.tasks,
@@ -39,6 +41,13 @@ const useTasksStore = create<TaskState & TaskActions>()(
       removeTask: (id) => {
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== id),
+        }));
+      },
+      toggleTaskCompletion: (id, completed) => {
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === id ? { ...t, isCompleted: completed } : t,
+          ),
         }));
       },
     }),
@@ -59,3 +68,6 @@ export const useSetTasks = () => useTasksStore((state) => state.setTasks);
 export const useAddTask = () => useTasksStore((state) => state.addTask);
 
 export const useRemoveTask = () => useTasksStore((state) => state.removeTask);
+
+export const useToggleTaskCompletion = () =>
+  useTasksStore((state) => state.toggleTaskCompletion);
