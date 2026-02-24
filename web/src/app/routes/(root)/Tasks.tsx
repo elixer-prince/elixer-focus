@@ -31,7 +31,16 @@ const Tasks = () => {
         />
       </div>
 
-      <TaskList />
+      <div className="mt-8 flex flex-col items-center">
+        <div className="flex gap-8">
+          <TaskList title="Urgent and Important (Do Now)" />
+          <TaskList title="Not Urgent but Important (Schedule)" />
+        </div>
+        <div className="flex gap-8">
+          <TaskList title="Urgent but Not Important (Limit/Delegate)" />
+          <TaskList title="Not Urgent nor Important (Delete)" />
+        </div>
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const Home = () => {
     <div className="flex justify-center gap-8 p-8">
       <CountdownTimerContainer />
 
-      <TaskList />
+      <TaskList title="To-Do (In Progress)" />
     </div>
   );
 };
