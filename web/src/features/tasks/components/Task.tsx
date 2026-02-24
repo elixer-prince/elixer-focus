@@ -1,4 +1,7 @@
-import { useRemoveTask } from "@/features/tasks/stores/tasks-store";
+import {
+  useRemoveTask,
+  useToggleTaskCompletion,
+} from "@/features/tasks/stores/tasks-store";
 import { useSortable } from "@dnd-kit/react/sortable";
 
 interface TaskProps {
@@ -6,10 +9,12 @@ interface TaskProps {
   id: string;
   title: string;
   description?: string;
+  isCompleted: boolean;
 }
 
-const Task = ({ index, id, title, description }: TaskProps) => {
+const Task = ({ index, id, title, description, isCompleted }: TaskProps) => {
   const removeTask = useRemoveTask();
+  const toggleTaskCompletion = useToggleTaskCompletion();
 
   const { ref } = useSortable({ id, index });
 
@@ -18,11 +23,17 @@ const Task = ({ index, id, title, description }: TaskProps) => {
       ref={ref}
       className="task bg-base-300 flex cursor-grab items-center gap-1 rounded-md px-4 py-2"
     >
-      <p>{title}</p>
-      {/* TODO: Optional if present */}
+      <input
+        type="checkbox"
+        checked={isCompleted}
+        onChange={() => toggleTaskCompletion(id, !isCompleted)}
+      />
+      <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
+        {title}
+      </p>
       <p>{description}</p>
       <button
-        className="text-error cursor-pointer hover:underline"
+        className={`error-button cursor-pointer ${isCompleted ? "text-error/50 line-through" : "text-error hover:underline"}`.trim()}
         onClick={() => removeTask(id)}
       >
         Remove
