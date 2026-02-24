@@ -16,7 +16,7 @@ const TaskList = () => {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <ul>
+      <ul className="bg-base-100 border-base-content/25 right-0 flex w-80 flex-col gap-2 rounded-md border p-4">
         {tasks.map(({ id, title, description }, index) => (
           <Task
             key={id}
