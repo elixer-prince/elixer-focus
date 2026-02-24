@@ -10,7 +10,7 @@ const Home = () => {
   if (!timerRunning) updatePageTitle("Elixer Focus - Home");
 
   return (
-    <div className={"flex justify-center gap-8"}>
+    <div className="flex justify-center gap-8 p-8">
       <CountdownTimerContainer />
 
       <TaskList />

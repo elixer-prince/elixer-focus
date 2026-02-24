@@ -3,11 +3,7 @@ import SessionSwitcher from "@/features/countdown-timer/components/SessionDispla
 
 const CountdownTimerHeader = () => {
   return (
-    <header
-      className={
-        "mt-8 flex flex-col items-center justify-center gap-4 select-none"
-      }
-    >
+    <header className="timer-header flex flex-col items-center justify-center gap-4 select-none">
       <CurrentSessionType />
       <SessionSwitcher />
     </header>
