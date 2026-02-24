@@ -36,7 +36,7 @@ const Task = ({ index, id, title, description, isCompleted }: TaskProps) => {
         className={`error-button cursor-pointer ${isCompleted ? "text-error/50 line-through" : "text-error hover:underline"}`.trim()}
         onClick={() => removeTask(id)}
       >
-        Remove
+        {isCompleted ? "Dismiss" : "Delete"}
       </button>
     </li>
   );
