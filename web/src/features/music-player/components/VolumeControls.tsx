@@ -23,6 +23,9 @@ const VolumeControls = ({ playerInstanceRef }: VolumeControlsProps) => {
     playerInstanceRef.current?.setVolume(newVolume);
   };
 
+  // BUG: The volume of the music doesn't get synced at startup even
+  // though it shows the correct volume visually.
+
   return (
     <div className="volume-controls flex items-center gap-4">
       <button onClick={() => setShowVolumeSlider(!showVolumeSlider)}>

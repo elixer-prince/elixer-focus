@@ -1,4 +1,4 @@
-import DropdownButton from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/DropdownButton";
+import DropdownButton from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/DropdownToggle";
 import OptionsContainer from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/OptionsContainer";
 
 const SessionSwitcher = () => {

@@ -7,9 +7,9 @@ interface OptionProps {
 
 const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
   return (
-    <label key={id} className="music-option px-4 py-2">
+    <label key={id} className="music-option bg-red-500">
       <input
-        name="session-type"
+        name="song-choice"
         type="radio"
         className={`${chosenSongId === id ? "accent-primary" : ""}`}
         onChange={() => setChosenSongId(id)}
