@@ -19,7 +19,7 @@ const useMusicPlayer = ({
     tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
 
-    window.onYouTubeIframeAPIReady = () => {
+    globalThis.onYouTubeIframeAPIReady = () => {
       if (playerRef.current) {
         playerInstanceRef.current = new window.YT.Player(playerRef.current, {
           videoId: getVideoId(songs[chosenSongId].src),
