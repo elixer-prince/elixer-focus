@@ -1,5 +1,6 @@
 import type { Song } from "@/types/music-player/song";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const defaultSongs = [
   {
@@ -48,24 +49,31 @@ type MusicPlayerActions = {
 
 type MusicPlayer = MusicPlayerState & MusicPlayerActions;
 
-const useMusicPlayerStore = create<MusicPlayer>((set) => ({
-  chosenSongId: defaultSongs[0].id,
-  musicPaused: true,
-  showVolumeSlider: false,
-  songs: defaultSongs,
-  volume: 50,
+const useMusicPlayerStore = create<MusicPlayer>()(
+  persist(
+    (set) => ({
+      chosenSongId: defaultSongs[0].id,
+      musicPaused: true,
+      showVolumeSlider: false,
+      songs: defaultSongs,
+      volume: 50,
 
-  setChosenSongId: (id: number) => set(() => ({ chosenSongId: id })),
+      setChosenSongId: (id: number) => set(() => ({ chosenSongId: id })),
 
-  setMusicPaused: (paused: boolean) => set(() => ({ musicPaused: paused })),
+      setMusicPaused: (paused: boolean) => set(() => ({ musicPaused: paused })),
 
-  setShowVolumeSlider: (show: boolean) =>
-    set(() => ({ showVolumeSlider: show })),
+      setShowVolumeSlider: (show: boolean) =>
+        set(() => ({ showVolumeSlider: show })),
 
-  setSongs: (songs: Song[]) => set(() => ({ songs })),
+      setSongs: (songs: Song[]) => set(() => ({ songs })),
 
-  setVolume: (volume: number) => set(() => ({ volume })),
-}));
+      setVolume: (volume: number) => set(() => ({ volume })),
+    }),
+    {
+      name: "music-player-storage",
+    },
+  ),
+);
 
 // STATES
 
