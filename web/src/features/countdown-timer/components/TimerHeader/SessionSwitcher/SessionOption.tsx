@@ -2,15 +2,15 @@ import type { PropsWithChildren } from "react";
 
 interface SessionOptionProps {
   value: string;
-  onChange: () => void;
   checked: boolean;
+  onChange: () => void;
 }
 
 const SessionOption = ({
   value,
-  onChange,
   checked,
   children,
+  onChange,
 }: PropsWithChildren<SessionOptionProps>) => {
   return (
     <label>
