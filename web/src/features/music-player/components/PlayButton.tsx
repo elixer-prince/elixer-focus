@@ -8,14 +8,14 @@ interface PlayButtonProps {
 }
 
 const PlayButton = ({ playerInstanceRef }: PlayButtonProps) => {
-  const setPlaybackPaused = useSetPlaybackPaused();
+  const setMusicPaused = useSetPlaybackPaused();
 
   return (
     <button
       className="play-button flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       onClick={() => {
         playVideo(playerInstanceRef);
-        setPlaybackPaused(false);
+        setMusicPaused(false);
       }}
     >
       <FaPlay size={16} />
