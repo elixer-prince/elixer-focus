@@ -2,16 +2,13 @@ import { MdChevronRight } from "react-icons/md";
 
 const DropdownButton = () => {
   return (
-    <div
+    <button
       tabIndex={0}
-      role={"button"}
-      className={
-        "btn btn-soft from-primary/10 btn-ghost border-b-primary/50 border-b bg-linear-to-t"
-      }
+      className="session-dropdown__button btn btn-soft from-primary/10 btn-ghost border-b-primary/50 border-b bg-linear-to-t"
     >
       Switch Session
       <MdChevronRight className={"rotate-90"} size={24} />
-    </div>
+    </button>
   );
 };
 
