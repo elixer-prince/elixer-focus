@@ -32,7 +32,7 @@ console.log(defaultSongs[0]);
 
 type MusicPlayerState = {
   playbackPaused: boolean;
-  showSlider: boolean;
+  showVolumeSlider: boolean;
   volume: number;
   chosenSongId: number;
   songs: Song[];
@@ -40,7 +40,7 @@ type MusicPlayerState = {
 
 type MusicPlayerActions = {
   setPlaybackPaused: (paused: boolean) => void;
-  setShowSlider: (show: boolean) => void;
+  setShowVolumeSlider: (show: boolean) => void;
   setVolume: (volume: number) => void;
   setChosenSongId: (id: number) => void;
   setSongs: (songs: Song[]) => void;
@@ -50,7 +50,7 @@ type MusicPlayer = MusicPlayerState & MusicPlayerActions;
 
 const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   playbackPaused: true,
-  showSlider: false,
+  showVolumeSlider: false,
   volume: 50,
   chosenSongId: defaultSongs[0].id,
   songs: defaultSongs,
@@ -58,7 +58,8 @@ const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   setPlaybackPaused: (paused: boolean) =>
     set(() => ({ playbackPaused: paused })),
 
-  setShowSlider: (show: boolean) => set(() => ({ showSlider: show })),
+  setShowVolumeSlider: (show: boolean) =>
+    set(() => ({ showVolumeSlider: show })),
 
   setVolume: (volume: number) => set(() => ({ volume })),
 
@@ -72,8 +73,8 @@ const useMusicPlayerStore = create<MusicPlayer>((set) => ({
 export const usePlaybackPaused = () =>
   useMusicPlayerStore((state) => state.playbackPaused);
 
-export const useShowSlider = () =>
-  useMusicPlayerStore((state) => state.showSlider);
+export const useShowVolumeSlider = () =>
+  useMusicPlayerStore((state) => state.showVolumeSlider);
 
 export const useVolume = () => useMusicPlayerStore((state) => state.volume);
 
@@ -87,8 +88,8 @@ export const useChosenSongId = () =>
 export const useSetPlaybackPaused = () =>
   useMusicPlayerStore((state) => state.setPlaybackPaused);
 
-export const useSetShowSlider = () =>
-  useMusicPlayerStore((state) => state.setShowSlider);
+export const useSetShowVolumeSlider = () =>
+  useMusicPlayerStore((state) => state.setShowVolumeSlider);
 
 export const useSetVolume = () =>
   useMusicPlayerStore((state) => state.setVolume);
