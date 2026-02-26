@@ -11,17 +11,15 @@ const PlayButton = ({ playerInstanceRef }: PlayButtonProps) => {
   const setPlaybackPaused = useSetPlaybackPaused();
 
   return (
-    <div
-      className={
-        "flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
-      }
+    <button
+      className="play-button flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       onClick={() => {
         playVideo(playerInstanceRef);
         setPlaybackPaused(false);
       }}
     >
       <FaPlay size={16} />
-    </div>
+    </button>
   );
 };
 
