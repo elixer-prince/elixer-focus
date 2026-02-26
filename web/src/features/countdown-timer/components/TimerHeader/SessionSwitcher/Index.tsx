@@ -1,9 +1,9 @@
-import DropdownButton from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/DropdownButton";
-import OptionsContainer from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/OptionsContainer";
+import DropdownButton from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/DropdownButton";
+import OptionsContainer from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/OptionsContainer";
 
 const SessionSwitcher = () => {
   return (
-    <div className={"dropdown dropdown-center"}>
+    <div className="session-switcher dropdown dropdown-center">
       <DropdownButton />
       <OptionsContainer />
     </div>

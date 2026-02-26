@@ -15,9 +15,9 @@ const SessionOption = ({
   return (
     <label>
       <input
-        name={"session-type"}
-        type={"radio"}
-        className={"accent-primary"}
+        name="session-type"
+        type="radio"
+        className="session-option accent-primary"
         value={value}
         onChange={onChange}
         checked={checked}
