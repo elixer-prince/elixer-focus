@@ -29,8 +29,6 @@ const defaultSongs = [
   },
 ];
 
-console.log(defaultSongs[0]);
-
 type MusicPlayerState = {
   chosenSongId: number;
   musicPaused: boolean;
