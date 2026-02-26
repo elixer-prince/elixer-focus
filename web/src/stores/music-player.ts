@@ -28,6 +28,8 @@ const defaultSongs = [
   },
 ];
 
+console.log(defaultSongs[0]);
+
 type MusicPlayerState = {
   playbackPaused: boolean;
   showSlider: boolean;
@@ -45,12 +47,6 @@ type MusicPlayerActions = {
 };
 
 type MusicPlayer = MusicPlayerState & MusicPlayerActions;
-
-/*--------------------------------------------------
-| NAVBAR STORE
-|---------------------------------------------------
-|
-*/
 
 const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   playbackPaused: true,
@@ -70,12 +66,6 @@ const useMusicPlayerStore = create<MusicPlayer>((set) => ({
 
   setSongs: (songs: Song[]) => set(() => ({ songs })),
 }));
-
-/*--------------------------------------------------
-| NAVBAR EXPORTS
-|---------------------------------------------------
-|
-*/
 
 // STATES
 
