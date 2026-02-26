@@ -1,4 +1,4 @@
-import SessionOption from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/SessionOption";
+import SessionOption from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/SessionOption";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 

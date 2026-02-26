@@ -1,5 +1,5 @@
-import CurrentSessionType from "@/features/countdown-timer/components/SessionDisplay/CurrentSessionType";
-import SessionSwitcher from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/Index";
+import CurrentSessionType from "@/features/countdown-timer/components/TimerHeader/CurrentSessionType";
+import SessionSwitcher from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/Index";
 
 const CountdownTimerHeader = () => {
   return (
