@@ -1,5 +1,11 @@
+import { onPlayerReady } from "@/features/music-player/utils/controls";
 import { getVideoId } from "@/features/music-player/utils/conversion";
-import { useChosenSongId, useSongs } from "@/stores/music-player";
+import {
+  useChosenSongId,
+  useMusicPaused,
+  useSongs,
+} from "@/stores/music-player";
+import type { YTPlayerEvent } from "@/types/music-player/player";
 import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
@@ -11,6 +17,7 @@ const useMusicPlayer = ({
   playerRef,
   playerInstanceRef,
 }: MusicPlayerContextType) => {
+  const musicPaused = useMusicPaused();
   const songs = useSongs();
   const chosenSongId = useChosenSongId();
 
@@ -21,18 +28,21 @@ const useMusicPlayer = ({
 
     globalThis.onYouTubeIframeAPIReady = () => {
       if (playerRef.current) {
-        playerInstanceRef.current = new window.YT.Player(playerRef.current, {
-          videoId: getVideoId(songs[chosenSongId].src),
-          playerVars: { autoplay: 0, playsinline: 1 },
-          // events: {
-          //     onReady: (event: any) =>
-          //         onPlayerReady(event, playbackPaused),
-          //     onStateChange: onPlayerStateChange,
-          // },
-        });
+        playerInstanceRef.current = new globalThis.YT.Player(
+          playerRef.current,
+          {
+            videoId: getVideoId(songs[chosenSongId].src),
+            playerVars: { autoplay: 0, playsinline: 1 },
+            events: {
+              onReady: (event: YTPlayerEvent) =>
+                onPlayerReady(event, musicPaused),
+              // onStateChange: onPlayerStateChange,
+            },
+          },
+        );
       }
     };
-  }, [chosenSongId, playerInstanceRef, playerRef, songs]);
+  }, [songs, chosenSongId, musicPaused, playerInstanceRef, playerRef]);
 };
 
 export default useMusicPlayer;
