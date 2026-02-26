@@ -1,3 +1,4 @@
+import MusicSwitcher from "@/features/music-player/components/MusicSwitcher/Index";
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
@@ -14,9 +15,14 @@ const MusicPlayer = () => {
 
   useMusicPlayer({ playerRef, playerInstanceRef });
 
+  // BUG: The component hovers when cursor is above
+  // but not directly on it!
+
   return (
     <article className="music-player border-t-base-content/25 bg-base-100 hover:outline-primary/75 fixed right-4 bottom-5 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg outline-2 outline-transparent transition-all duration-300 select-none hover:-translate-y-0.5">
       <div className="invisible-player hidden" ref={playerRef}></div>
+
+      <MusicSwitcher />
 
       {musicPaused ? (
         <PlayButton playerInstanceRef={playerInstanceRef} />
@@ -25,8 +31,6 @@ const MusicPlayer = () => {
       )}
 
       <VolumeControls playerInstanceRef={playerInstanceRef} />
-
-      {/*<MusicSwitcher />*/}
     </article>
   );
 };
