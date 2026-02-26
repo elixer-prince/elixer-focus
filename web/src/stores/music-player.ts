@@ -32,7 +32,7 @@ console.log(defaultSongs[0]);
 
 type MusicPlayerState = {
   chosenSongId: number;
-  playbackPaused: boolean;
+  musicPaused: boolean;
   showVolumeSlider: boolean;
   songs: Song[];
   volume: number;
@@ -50,7 +50,7 @@ type MusicPlayer = MusicPlayerState & MusicPlayerActions;
 
 const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   chosenSongId: defaultSongs[0].id,
-  playbackPaused: true,
+  musicPaused: true,
   showVolumeSlider: false,
   songs: defaultSongs,
   volume: 50,
@@ -58,7 +58,7 @@ const useMusicPlayerStore = create<MusicPlayer>((set) => ({
   setChosenSongId: (id: number) => set(() => ({ chosenSongId: id })),
 
   setPlaybackPaused: (paused: boolean) =>
-    set(() => ({ playbackPaused: paused })),
+    set(() => ({ musicPaused: paused })),
 
   setShowVolumeSlider: (show: boolean) =>
     set(() => ({ showVolumeSlider: show })),
@@ -73,8 +73,8 @@ const useMusicPlayerStore = create<MusicPlayer>((set) => ({
 export const useChosenSongId = () =>
   useMusicPlayerStore((state) => state.chosenSongId);
 
-export const usePlaybackPaused = () =>
-  useMusicPlayerStore((state) => state.playbackPaused);
+export const useMusicPaused = () =>
+  useMusicPlayerStore((state) => state.musicPaused);
 
 export const useShowVolumeSlider = () =>
   useMusicPlayerStore((state) => state.showVolumeSlider);

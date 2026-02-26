@@ -2,12 +2,12 @@ import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
 import useMusicPlayer from "@/hooks/useMusicPlayer";
-import { usePlaybackPaused } from "@/stores/music-player";
+import { useMusicPaused } from "@/stores/music-player";
 import type { YTPlayer } from "@/types/music-player/player";
 import { useRef } from "react";
 
 const MusicPlayer = () => {
-  const playbackPaused = usePlaybackPaused();
+  const musicPaused = useMusicPaused();
 
   const playerRef = useRef<HTMLDivElement | null>(null);
   const playerInstanceRef = useRef<YTPlayer | null>(null);
@@ -18,7 +18,7 @@ const MusicPlayer = () => {
     <article className="music-player border-t-base-content/25 bg-base-100 hover:outline-primary/75 fixed right-4 bottom-5 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg outline-2 outline-transparent transition-all duration-300 select-none hover:-translate-y-0.5">
       <div className="invisible-player hidden" ref={playerRef}></div>
 
-      {playbackPaused ? (
+      {musicPaused ? (
         <PlayButton playerInstanceRef={playerInstanceRef} />
       ) : (
         <PauseButton playerInstanceRef={playerInstanceRef} />
