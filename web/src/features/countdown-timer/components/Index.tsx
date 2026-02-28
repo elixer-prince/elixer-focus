@@ -1,6 +1,6 @@
 import ButtonControls from "@/features/countdown-timer/components/ButtonControls/Index";
-import CountdownHeader from "@/features/countdown-timer/components/SessionDisplay/Index";
 import CountdownDisplay from "@/features/countdown-timer/components/TimerDisplay/Index";
+import CountdownHeader from "@/features/countdown-timer/components/TimerHeader/Index";
 
 const CountdownTimerContainer = () => {
   return (

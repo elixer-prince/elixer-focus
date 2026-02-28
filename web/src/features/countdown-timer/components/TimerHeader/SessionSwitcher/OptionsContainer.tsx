@@ -1,4 +1,4 @@
-import SessionOption from "@/features/countdown-timer/components/SessionDisplay/SessionSwitcher/SessionOption";
+import SessionOption from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/SessionOption";
 import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
 import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 
@@ -10,13 +10,11 @@ const OptionsContainer = () => {
   return (
     <ul
       tabIndex={-1}
-      className={
-        "dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-      }
+      className="session-switcher__options-container dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
     >
       <li>
         <SessionOption
-          value={"Focus"}
+          value="Focus"
           onChange={switchToFocus}
           checked={currentSessionType === "Focus"}
         >
@@ -25,7 +23,7 @@ const OptionsContainer = () => {
       </li>
       <li>
         <SessionOption
-          value={"Short Break"}
+          value="Short Break"
           onChange={switchToShortBreak}
           checked={currentSessionType === "Short Break"}
         >
@@ -34,7 +32,7 @@ const OptionsContainer = () => {
       </li>
       <li>
         <SessionOption
-          value={"Long Break"}
+          value="Long Break"
           onChange={switchToLongBreak}
           checked={currentSessionType === "Long Break"}
         >
