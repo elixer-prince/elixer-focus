@@ -1,3 +1,4 @@
+import Ghost from "@/features/tasks/components/Task/Ghost";
 import Task from "@/features/tasks/components/Task/Index";
 import { useTasks } from "@/features/tasks/stores/tasks-store";
 import type { TaskCategory } from "../types/task";
@@ -19,6 +20,8 @@ const Column = ({ title, category }: ColumnProps) => {
         <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
           {title}
         </h2>
+
+        {tasks.length === 0 && <Ghost />}
 
         {tasks.map(
           (
