@@ -23,7 +23,7 @@ const Task = ({
 }: TaskProps) => {
   const toggleTaskCompletion = useToggleTaskCompletion();
 
-  const { ref } = useSortable({
+  const { ref, isDragging } = useSortable({
     id,
     index,
     type: "task",
@@ -34,17 +34,22 @@ const Task = ({
   return (
     <li
       ref={ref}
-      className={`task bg-base-100 flex cursor-grab items-center gap-1 rounded-md border px-4 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
+      data-dragging={isDragging}
+      className={`task bg-base-100 flex cursor-grab items-center justify-between gap-1 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
     >
-      <input
-        type="checkbox"
-        checked={isCompleted}
-        onChange={() => toggleTaskCompletion(id, !isCompleted)}
-      />
-      <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
-        {title}
-      </p>
-      <p>{description}</p>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={isCompleted}
+          onChange={() => toggleTaskCompletion(id, !isCompleted)}
+        />
+        <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
+          {title}
+        </p>
+        <div className="font-bold text-red-500">i: {index}</div>
+        <p>{description}</p>
+      </div>
+
       <DeleteButton id={id} isCompleted={isCompleted} />
     </li>
   );
