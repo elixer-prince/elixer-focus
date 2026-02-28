@@ -22,36 +22,34 @@ const Column = ({ title, category }: ColumnProps) => {
   });
 
   return (
-    <div
+    <ul
       ref={ref}
-      className={`tasks-container mb-8 h-fit w-100 rounded-md ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
+      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 mb-8 flex h-fit w-100 flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
     >
-      <ul className="tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 flex flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300">
-        <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
-          {title}
-        </h2>
+      <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
+        {title}
+      </h2>
 
-        {tasks.length === 0 && <Ghost />}
+      {tasks.length === 0 && <Ghost />}
 
-        {tasks.map(
-          (
-            { id, title, description, category, isCompleted, isSelected },
-            index,
-          ) => (
-            <Task
-              key={id}
-              id={id}
-              title={title}
-              category={category}
-              description={description}
-              isCompleted={isCompleted}
-              isSelected={isSelected}
-              index={index}
-            />
-          ),
-        )}
-      </ul>
-    </div>
+      {tasks.map(
+        (
+          { id, title, description, category, isCompleted, isSelected },
+          index,
+        ) => (
+          <Task
+            key={id}
+            id={id}
+            title={title}
+            category={category}
+            description={description}
+            isCompleted={isCompleted}
+            isSelected={isSelected}
+            index={index}
+          />
+        ),
+      )}
+    </ul>
   );
 };
 
