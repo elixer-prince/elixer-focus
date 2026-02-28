@@ -1,7 +1,9 @@
 import Ghost from "@/features/tasks/components/Task/Ghost";
 import Task from "@/features/tasks/components/Task/Index";
 import { useTasks } from "@/features/tasks/stores/tasks-store";
-import type { TaskCategory } from "../types/task";
+import type { TaskCategory } from "@/features/tasks/types/task";
+import { CollisionPriority } from "@dnd-kit/abstract";
+import { useDroppable } from "@dnd-kit/react";
 
 interface ColumnProps {
   title: string;
@@ -12,10 +14,18 @@ const Column = ({ title, category }: ColumnProps) => {
   const allTasks = useTasks();
   const tasks = allTasks.filter((task) => task.category === category);
 
-  // BUG: tasks are not sorting properly on the tasks page, except for the last one
+  const { ref, isDropTarget } = useDroppable({
+    id: category,
+    type: "task",
+    accept: "task",
+    collisionPriority: CollisionPriority.Low,
+  });
 
   return (
-    <div className="tasks-container mb-8 h-fit w-100">
+    <div
+      ref={ref}
+      className={`tasks-container mb-8 h-fit w-100 rounded-md ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
+    >
       <ul className="tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 flex flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300">
         <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
           {title}
