@@ -55,6 +55,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/ui": "^4.0.16",
+    "baseline-browser-mapping": "^2.10.0",
     "daisyui": "^5.4.4",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
