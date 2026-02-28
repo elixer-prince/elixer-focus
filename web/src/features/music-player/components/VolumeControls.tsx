@@ -1,23 +1,22 @@
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import {
   useSetShowVolumeSlider,
   useSetVolume,
   useShowVolumeSlider,
   useVolume,
 } from "@/stores/music-player";
-import type { YTPlayerRef } from "@/types/music-player/player";
+import type { ChangeEvent } from "react";
 import { FaVolumeUp } from "react-icons/fa";
 
-interface VolumeControlsProps {
-  playerInstanceRef: YTPlayerRef;
-}
-
-const VolumeControls = ({ playerInstanceRef }: VolumeControlsProps) => {
+const VolumeControls = () => {
   const volume = useVolume();
   const showVolumeSlider = useShowVolumeSlider();
   const setVolume = useSetVolume();
   const setShowVolumeSlider = useSetShowVolumeSlider();
 
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { playerInstanceRef } = useMusicPlayerContext();
+
+  const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number(event.target.value);
     setVolume(newVolume);
     playerInstanceRef.current?.setVolume(newVolume);

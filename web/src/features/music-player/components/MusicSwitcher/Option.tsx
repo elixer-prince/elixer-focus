@@ -7,11 +7,11 @@ interface OptionProps {
 
 const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
   return (
-    <label key={id} className="music-option bg-red-500">
+    <label>
       <input
         name="song-choice"
         type="radio"
-        className={`${chosenSongId === id ? "accent-primary" : ""}`}
+        className="song-option accent-primary"
         onChange={() => setChosenSongId(id)}
         checked={chosenSongId === id}
       />

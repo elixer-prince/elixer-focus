@@ -1,17 +1,15 @@
 import MusicSwitcher from "@/features/music-player/components/MusicSwitcher/Index";
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
+import MusicPlayerProvider from "@/features/music-player/components/providers/Provider";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import useMusicPlayer from "@/hooks/useMusicPlayer";
 import { useMusicPaused } from "@/stores/music-player";
-import type { YTPlayer } from "@/types/music-player/player";
-import { useRef } from "react";
 
-const MusicPlayer = () => {
+const MusicPlayerContent = () => {
   const musicPaused = useMusicPaused();
-
-  const playerRef = useRef<HTMLDivElement | null>(null);
-  const playerInstanceRef = useRef<YTPlayer | null>(null);
+  const { playerRef, playerInstanceRef } = useMusicPlayerContext();
 
   useMusicPlayer({ playerRef, playerInstanceRef });
 
@@ -24,14 +22,18 @@ const MusicPlayer = () => {
 
       <MusicSwitcher />
 
-      {musicPaused ? (
-        <PlayButton playerInstanceRef={playerInstanceRef} />
-      ) : (
-        <PauseButton playerInstanceRef={playerInstanceRef} />
-      )}
+      {musicPaused ? <PlayButton /> : <PauseButton />}
 
-      <VolumeControls playerInstanceRef={playerInstanceRef} />
+      <VolumeControls />
     </article>
+  );
+};
+
+const MusicPlayer = () => {
+  return (
+    <MusicPlayerProvider>
+      <MusicPlayerContent />
+    </MusicPlayerProvider>
   );
 };
 
