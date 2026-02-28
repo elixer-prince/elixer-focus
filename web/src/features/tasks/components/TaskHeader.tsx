@@ -9,7 +9,7 @@ const TaskHeader = () => {
   return (
     <div className="task-header">
       <h1 className="task-header__title mb-4 text-center text-4xl font-bold">
-        My Tasks
+        Your Tasks
       </h1>
 
       <div className="mx-auto flex w-fit items-center gap-4">
