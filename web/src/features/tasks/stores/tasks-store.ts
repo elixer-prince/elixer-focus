@@ -9,7 +9,7 @@ type TaskState = {
 
 type TaskActions = {
   setTasks: (tasks: Task[]) => void;
-  addTask: (task: string, description?: string) => void;
+  addTask: (task: string, description?: string, type?: string) => void;
   removeTask: (id: string) => void;
   toggleTaskCompletion: (id: string, completed: boolean) => void;
 };
@@ -30,7 +30,9 @@ const useTasksStore = create<TaskState & TaskActions>()(
               id: crypto.randomUUID(),
               title,
               description,
+              category: "uncategorised",
               isCompleted: false,
+              isSelected: false,
               createdAt: getCurrentTimestamp(),
             },
             ...state.tasks,
