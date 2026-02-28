@@ -3,5 +3,6 @@ export type Task = {
   title: string;
   description?: string;
   isCompleted: boolean;
+  isSelected: boolean;
   createdAt: number;
 };
