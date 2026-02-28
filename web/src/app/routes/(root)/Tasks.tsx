@@ -35,7 +35,7 @@ const Tasks = () => {
 
         <input
           type="text"
-          className="input placeholder:text-primary-content/75 mx-auto block placeholder:italic"
+          className="input input-primary placeholder:text-primary-content/75 border-primary-content/50 mx-auto block placeholder:italic"
           placeholder="Do the laundry..."
           onKeyDown={(event) => {
             if (event.key === "Enter") {
