@@ -1,4 +1,4 @@
-import { onPlayerReady } from "@/features/music-player/utils/controls";
+// import { onPlayerReady } from "@/features/music-player/utils/controls";
 import { getVideoId } from "@/features/music-player/utils/conversion";
 import {
   useChosenSongId,
@@ -63,8 +63,8 @@ const useMusicPlayer = ({
             videoId: getVideoId(songs[chosenSongId].src),
             playerVars: { autoplay: 1, playsinline: 1 },
             events: {
-              onReady: (event: YTPlayerEvent) =>
-                onPlayerReady(event, musicPaused),
+              // onReady: (event: YTPlayerEvent) =>
+              // onPlayerReady(event, musicPaused),
               // onStateChange: onPlayerStateChange,
             },
           },
