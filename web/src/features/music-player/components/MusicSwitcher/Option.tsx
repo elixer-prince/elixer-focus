@@ -7,16 +7,18 @@ interface OptionProps {
 
 const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
   return (
-    <label>
-      <input
-        name="song-choice"
-        type="radio"
-        className="song-option accent-primary"
-        onChange={() => setChosenSongId(id)}
-        checked={chosenSongId === id}
-      />
-      {title}
-    </label>
+    <li className="menu-item">
+      <label className="hover:bg-base-200 flex cursor-pointer items-center gap-2 p-2">
+        <input
+          className="radio radio-primary radio-sm"
+          name="song-choice"
+          type="radio"
+          onChange={() => setChosenSongId(id)}
+          checked={chosenSongId === id}
+        />
+        <span className="flex-1">{title}</span>
+      </label>
+    </li>
   );
 };
 
