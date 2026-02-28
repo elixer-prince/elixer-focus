@@ -1,7 +1,13 @@
-import TaskList from "@/features/tasks/components/TaskList";
-import { useAddTask } from "@/features/tasks/stores/tasks-store";
+import Column from "@/features/tasks/components/Column";
+import {
+  useAddTask,
+  // useSetTasks,
+  // useTasks,
+} from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/stores/countdown-timer/store";
+// import { move } from "@dnd-kit/helpers";
+// import { DragDropProvider } from "@dnd-kit/react";
 
 const Tasks = () => {
   const { updatePageTitle } = usePageTitle();
@@ -9,7 +15,16 @@ const Tasks = () => {
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
+  // const tasks = useTasks();
   const addTask = useAddTask();
+  // const setTasks = useSetTasks();
+
+  // const handleDragEnd: Parameters<typeof DragDropProvider>[0]["onDragEnd"] = (
+  //   event,
+  // ) => {
+  //   const nextTasks = move(tasks, event);
+  //   setTasks(nextTasks);
+  // };
 
   return (
     <div className="p-12">
@@ -20,7 +35,7 @@ const Tasks = () => {
 
         <input
           type="text"
-          className="input placeholder:text-primary mx-auto block placeholder:italic"
+          className="input placeholder:text-primary-content/75 mx-auto block placeholder:italic"
           placeholder="Do the laundry..."
           onKeyDown={(event) => {
             if (event.key === "Enter") {
@@ -31,15 +46,30 @@ const Tasks = () => {
         />
       </div>
 
-      <div className="mt-8 flex flex-col items-center">
-        <div className="flex gap-8">
-          <TaskList title="Urgent and Important (Do Now)" />
-          <TaskList title="Not Urgent but Important (Schedule)" />
+      <div className="tasks-container mt-8 flex flex-col items-center">
+        {/* <DragDropProvider onDragEnd={handleDragEnd}> */}
+        <div className="tasks-row flex gap-8">
+          <Column
+            title="Urgent and Important (Do First)"
+            category="urgent-important"
+          />
+          <Column
+            title="Not Urgent but Important (Schedule)"
+            category="not-urgent-important"
+          />
         </div>
-        <div className="flex gap-8">
-          <TaskList title="Urgent but Not Important (Limit/Delegate)" />
-          <TaskList title="Not Urgent nor Important (Delete)" />
+        <div className="tasks-row flex gap-8">
+          <Column
+            title="Urgent but Not Important (Delegate)"
+            category="urgent-not-important"
+          />
+          <Column
+            title="Not Urgent nor Important (Eliminate)"
+            category="not-urgent-not-important"
+          />
         </div>
+        <Column title="Uncategorised" category="uncategorised" />
+        {/* </DragDropProvider> */}
       </div>
     </div>
   );
