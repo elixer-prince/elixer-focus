@@ -5,7 +5,7 @@ import {
   useMusicPaused,
   useSongs,
 } from "@/stores/music-player";
-import type { YTPlayer, YTPlayerEvent } from "@/types/music-player/player";
+import type { YTPlayer } from "@/types/music-player/player";
 import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
