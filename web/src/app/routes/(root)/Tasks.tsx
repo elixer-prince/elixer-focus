@@ -1,9 +1,8 @@
 import Column from "@/features/tasks/components/Column";
 import TaskHeader from "@/features/tasks/components/TaskHeader";
-import {
-  // useSetTasks,
-  // useTasks,
-} from "@/features/tasks/stores/tasks-store";
+import {} from // useSetTasks,
+// useTasks,
+"@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/stores/countdown-timer/store";
 // import { move } from "@dnd-kit/helpers";
@@ -29,7 +28,7 @@ const Tasks = () => {
     <div className="p-12">
       <TaskHeader />
 
-      <div className="tasks-container mt-8 flex flex-col items-center">
+      <div className="tasks-container mt-8 flex flex-col items-center gap-8">
         {/* <DragDropProvider onDragEnd={handleDragEnd}> */}
         <div className="tasks-row flex gap-8">
           <Column

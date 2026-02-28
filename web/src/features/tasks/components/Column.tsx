@@ -24,7 +24,7 @@ const Column = ({ title, category }: ColumnProps) => {
   return (
     <ul
       ref={ref}
-      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 mb-8 flex h-fit w-100 flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
+      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 flex h-fit w-100 flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
     >
       <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
         {title}
