@@ -35,7 +35,7 @@ const Task = ({
     <li
       ref={ref}
       data-dragging={isDragging}
-      className={`task bg-base-100 flex cursor-grab items-center justify-between gap-1 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
+      className={`task bg-base-100 flex cursor-grab items-center justify-between gap-1 rounded-md border px-3 py-2 select-none ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
     >
       <div className="flex items-center gap-2">
         <input
