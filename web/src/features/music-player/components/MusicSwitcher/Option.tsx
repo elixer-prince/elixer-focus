@@ -8,7 +8,7 @@ interface OptionProps {
 const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
   return (
     <li className="menu-item">
-      <label className="hover:bg-base-200 flex cursor-pointer items-center gap-2 p-2">
+      <label>
         <input
           className="radio radio-primary radio-sm"
           name="song-choice"
@@ -16,7 +16,7 @@ const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
           onChange={() => setChosenSongId(id)}
           checked={chosenSongId === id}
         />
-        <span className="flex-1">{title}</span>
+        <span className={chosenSongId === id ? "font-bold" : ""}>{title}</span>
       </label>
     </li>
   );
