@@ -1,4 +1,4 @@
-import Sidebar from "@/features/ui/Sidebar/Index";
+import Sidebar from "@/features/ui/navigation/Sidebar/Settings/Index";
 import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Outlet } from "react-router";
 

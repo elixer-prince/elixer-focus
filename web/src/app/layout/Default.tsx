@@ -1,7 +1,7 @@
-import Navbar from "@/components/navigation/Navbar/Index";
-import Sidebar from "@/components/navigation/Sidebar/Index";
 import Modal from "@/components/ui/Modal";
 import MusicPlayer from "@/features/music-player/components/Index";
+import Navbar from "@/features/ui/navigation/Navbar/Index";
+import Sidebar from "@/features/ui/navigation/Sidebar/Default/Index";
 import useCountdownTimer from "@/hooks/countdown-timer/useCountdownTimer";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";

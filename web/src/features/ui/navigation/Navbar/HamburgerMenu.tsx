@@ -1,4 +1,4 @@
-import { useToggleNavbar } from "@/components/navigation/Navbar/stores/NavbarStore";
+import { useToggleNavbar } from "@/features/ui/navigation/Navbar/stores/NavbarStore";
 import { MdMenu } from "react-icons/md";
 
 const HamburgerMenu = () => {

@@ -1,4 +1,4 @@
-import SidebarLink from "@/features/ui/Sidebar/Link";
+import SidebarLink from "@/features/ui/navigation/Sidebar/Settings/Link";
 
 const LinkContainer = () => {
   return (

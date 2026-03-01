@@ -1,4 +1,4 @@
-import SidebarLink from "@/components/navigation/Sidebar/SidebarLink";
+import SidebarLink from "@/features/ui/navigation/Sidebar/Default/SidebarLink";
 import {
   // MdAccountCircle,
   MdHomeFilled,

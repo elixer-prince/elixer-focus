@@ -1,6 +1,6 @@
-import HamburgerMenu from "@/components/navigation/Navbar/HamburgerMenu";
-import { useNavbarIsOpen } from "@/components/navigation/Navbar/stores/NavbarStore";
-import NavLogo from "@/components/navigation/NavLogo";
+import HamburgerMenu from "@/features/ui/navigation/Navbar/HamburgerMenu";
+import { useNavbarIsOpen } from "@/features/ui/navigation/Navbar/stores/NavbarStore";
+import NavLogo from "@/features/ui/navigation/NavLogo";
 
 const Navbar = () => {
   const navbarIsOpen = useNavbarIsOpen();
