@@ -1,4 +1,4 @@
-import CountdownProvider from "@/components/providers/CountdownProvider";
+import CountdownProvider from "@/app/providers/CountdownProvider";
 import TimerSettings from "@/features/settings/timer/Index";
 
 const Timer = () => {

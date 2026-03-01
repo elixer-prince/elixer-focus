@@ -1,4 +1,4 @@
-import CountdownProvider from "@/components/providers/CountdownProvider";
+import CountdownProvider from "@/app/providers/CountdownProvider";
 import type { PropsWithChildren } from "react";
 
 const Provider = ({ children }: PropsWithChildren) => {
