@@ -1,6 +1,6 @@
 import MusicPlayerContext from "@/features/music-player/contexts/Context";
 import type { MusicPlayerContextType } from "@/features/music-player/types/context";
-import type { YTPlayer } from "@/types/music-player/player";
+import type { YTPlayer } from "@/features/music-player/types/player";
 import { useMemo, useRef, type PropsWithChildren } from "react";
 
 const MusicProvider = ({ children }: PropsWithChildren) => {

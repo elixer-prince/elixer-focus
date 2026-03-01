@@ -1,4 +1,4 @@
-import type { Song } from "@/types/music-player/song";
+import type { Song } from "@/features/music-player/types/song";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
