@@ -26,9 +26,17 @@ const Column = ({ title, category }: ColumnProps) => {
       ref={ref}
       className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 static flex h-fit max-h-60 w-full max-w-92 flex-col overflow-hidden rounded-md border outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
     >
-      <h2 className="tasks-list__heading bg-base-200 sticky top-0 p-4 text-center text-2xl font-bold select-none">
-        {title}
-      </h2>
+      <div className="flex items-center justify-center gap-2 p-4">
+        <h2 className="tasks-list__heading bg-base-200 sticky top-0 text-center text-2xl font-bold select-none">
+          {title}
+        </h2>
+
+        {category !== "uncategorised" && (
+          <button className="btn btn-sm btn-soft text-primary-content btn-primary">
+            Add task
+          </button>
+        )}
+      </div>
 
       <ul className="flex flex-col gap-4 overflow-auto pt-0.5 pr-1 pb-4 pl-4">
         {tasks.length === 0 && <Ghost />}
