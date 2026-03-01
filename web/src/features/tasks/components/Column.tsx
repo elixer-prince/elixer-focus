@@ -22,34 +22,36 @@ const Column = ({ title, category }: ColumnProps) => {
   });
 
   return (
-    <ul
+    <div
       ref={ref}
-      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 right-0 flex h-fit w-100 flex-col gap-4 rounded-md border p-4 outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
+      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 static flex h-fit max-h-60 w-full max-w-92 flex-col overflow-hidden rounded-md border outline-2 outline-transparent transition-colors duration-300 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
     >
-      <h2 className="tasks-list__heading text-center text-2xl font-bold select-none">
+      <h2 className="tasks-list__heading bg-base-200 sticky top-0 p-4 text-center text-2xl font-bold select-none">
         {title}
       </h2>
 
-      {tasks.length === 0 && <Ghost />}
+      <ul className="flex flex-col gap-4 overflow-auto pt-0.5 pr-1 pb-4 pl-4">
+        {tasks.length === 0 && <Ghost />}
 
-      {tasks.map(
-        (
-          { id, title, description, category, isCompleted, isSelected },
-          index,
-        ) => (
-          <Task
-            key={id}
-            id={id}
-            title={title}
-            category={category}
-            description={description}
-            isCompleted={isCompleted}
-            isSelected={isSelected}
-            index={index}
-          />
-        ),
-      )}
-    </ul>
+        {tasks.map(
+          (
+            { id, title, description, category, isCompleted, isSelected },
+            index,
+          ) => (
+            <Task
+              key={id}
+              id={id}
+              title={title}
+              category={category}
+              description={description}
+              isCompleted={isCompleted}
+              isSelected={isSelected}
+              index={index}
+            />
+          ),
+        )}
+      </ul>
+    </div>
   );
 };
 

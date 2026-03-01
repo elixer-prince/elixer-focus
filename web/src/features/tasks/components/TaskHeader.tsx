@@ -12,7 +12,7 @@ const TaskHeader = () => {
         Your Tasks
       </h1>
 
-      <div className="mx-auto flex w-fit items-center gap-4">
+      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-4">
         <input
           ref={inputRef}
           type="text"
@@ -20,7 +20,10 @@ const TaskHeader = () => {
           placeholder="Do the laundry..."
           onKeyDown={(event) => {
             if (event.key === "Enter") {
-              addTask(event.currentTarget.value);
+              const inputValue = event.currentTarget.value;
+              console.log({ inputValue });
+              if (inputValue.trim() === "") return;
+              addTask(inputValue);
               event.currentTarget.value = "";
             }
           }}
