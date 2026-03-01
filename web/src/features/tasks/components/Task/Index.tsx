@@ -39,6 +39,7 @@ const Task = ({
     >
       <div className="flex items-center gap-2">
         <input
+          className="accent-primary-content/25"
           type="checkbox"
           checked={isCompleted}
           onChange={() => toggleTaskCompletion(id, !isCompleted)}
@@ -46,7 +47,7 @@ const Task = ({
         <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
           {title}
         </p>
-        <div className="font-bold text-red-500">i: {index}</div>
+        {/* <div className="font-bold text-red-500">i: {index}</div> */}
         <p>{description}</p>
       </div>
 

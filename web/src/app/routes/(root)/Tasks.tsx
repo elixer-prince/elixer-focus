@@ -1,8 +1,8 @@
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column";
 import TaskHeader from "@/features/tasks/components/TaskHeader";
 import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider } from "@dnd-kit/react";
 
@@ -23,12 +23,13 @@ const Tasks = () => {
   };
 
   return (
-    <div className="p-12">
+    <div className="p-12 max-sm:px-4">
       <TaskHeader />
 
       <DragDropProvider onDragEnd={handleDragEnd}>
         <div className="tasks-container mt-8 flex flex-col items-center gap-8">
-          <div className="tasks-row flex gap-8">
+          <Column title="Uncategorised" category="uncategorised" />
+          <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
               title="Urgent and Important (Do First)"
               category="urgent-important"
@@ -38,7 +39,7 @@ const Tasks = () => {
               category="not-urgent-important"
             />
           </div>
-          <div className="tasks-row flex gap-8">
+          <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
               title="Urgent but Not Important (Delegate)"
               category="urgent-not-important"
@@ -48,7 +49,6 @@ const Tasks = () => {
               category="not-urgent-not-important"
             />
           </div>
-          <Column title="Uncategorised" category="uncategorised" />
         </div>
       </DragDropProvider>
     </div>
