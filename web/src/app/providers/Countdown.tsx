@@ -4,7 +4,7 @@ import offClickSoundURL from "@/features/countdown-timer/assets/sound-effects/of
 import onClickSoundURL from "@/features/countdown-timer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/reset-timer.mp3";
 import CountdownContext from "@/stores/countdown-timer/Context";
-import type { CountdownTimerContextType } from "@/types/countdown-timer";
+import type { CountdownTimerContextType } from "@/features/countdown-timer/types/session";
 import { getFromLocalStorage } from "@/utils/storage";
 import { type PropsWithChildren, useMemo, useRef } from "react";
 

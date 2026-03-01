@@ -1,4 +1,4 @@
-import type { CountdownSession } from "@/types/countdown-timer";
+import type { CountdownSession } from "@/features/countdown-timer/types/session";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

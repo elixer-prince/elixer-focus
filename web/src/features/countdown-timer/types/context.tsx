@@ -1,7 +1,5 @@
 import type { RefObject } from "react";
 
-export type CountdownSession = "Focus" | "Short Break" | "Long Break";
-
 export type CountdownTimerContextType = {
   timerIntervalRef: RefObject<ReturnType<typeof setInterval> | null>;
   timerEndTimeRef: RefObject<number | null>;

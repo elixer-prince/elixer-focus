@@ -11,7 +11,7 @@ import {
   useSetCurrentSessionType,
   useShortBreakDuration,
 } from "@/stores/countdown-timer/session-store";
-import type { CountdownSession } from "@/types/countdown-timer";
+import type { CountdownSession } from "@/features/countdown-timer/types/session";
 
 const useSessionSwitch = () => {
   const { resetPageTitle } = usePageTitle();
