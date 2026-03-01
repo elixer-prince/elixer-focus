@@ -13,10 +13,7 @@ const Home = () => {
     <div className="flex flex-wrap justify-center gap-8 p-8">
       <CountdownTimerContainer />
 
-      <div className="flex gap-8 border border-red-500">
-        <Column title="Test Task Sorting..." category="uncategorised" />
-        <Column title="To-Do (In Progress)" category="urgent-important" />
-      </div>
+      <Column title="To-Do (In Progress)" category="urgent-important" />
     </div>
   );
 };
