@@ -12,7 +12,7 @@ const TaskHeader = () => {
         Your Tasks
       </h1>
 
-      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-4">
+      <div className="mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
         <input
           ref={inputRef}
           type="text"
