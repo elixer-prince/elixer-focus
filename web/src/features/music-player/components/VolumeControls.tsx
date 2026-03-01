@@ -4,7 +4,7 @@ import {
   useSetVolume,
   useShowVolumeSlider,
   useVolume,
-} from "@/stores/music-player";
+} from "@/features/music-player/stores/store";
 import type { ChangeEvent } from "react";
 import { FaVolumeUp } from "react-icons/fa";
 

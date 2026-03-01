@@ -3,7 +3,7 @@ import {
   useChosenSongId,
   useSetChosenSongId,
   useSongs,
-} from "@/stores/music-player";
+} from "@/features/music-player/stores/store";
 
 const OptionsContainer = () => {
   const songs = useSongs();

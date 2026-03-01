@@ -4,7 +4,7 @@ import {
   useChosenSongId,
   useMusicPaused,
   useSongs,
-} from "@/stores/music-player";
+} from "@/features/music-player/stores/store";
 import type { YTPlayer } from "@/types/music-player/player";
 import { type RefObject, useEffect } from "react";
 
