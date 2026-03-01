@@ -9,7 +9,7 @@ import {
   useSetTimerRunning,
   useTimerPaused,
 } from "@/stores/countdown-timer/store";
-import { calculateEndTime } from "@/utils/countdown-timer/calculations";
+import { calculateEndTime } from "@/features/countdown-timer/utils/calculations";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 import { saveToLocalStorage } from "@/utils/storage";

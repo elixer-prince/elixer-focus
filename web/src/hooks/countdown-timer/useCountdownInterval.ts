@@ -12,11 +12,11 @@ import {
   useSetElapsedTimeInSeconds,
   useSetRemainingTimeInSeconds,
 } from "@/stores/countdown-timer/store";
-import { calculateRemainingSeconds } from "@/utils/countdown-timer/calculations";
+import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
 import {
   timerHasEnded,
   timerIsAboutToEnd,
-} from "@/utils/countdown-timer/checks";
+} from "@/features/countdown-timer/utils/checks";
 import { getCurrentTimestamp } from "@/utils/date";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
