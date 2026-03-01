@@ -1,13 +1,12 @@
 import MusicSwitcher from "@/features/music-player/components/MusicSwitcher/Index";
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
-import MusicPlayerProvider from "@/features/music-player/components/providers/Provider";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
-import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import { useMusicPaused } from "@/features/music-player/stores/store";
 
-const MusicPlayerContent = () => {
+const MusicPlayer = () => {
   const musicPaused = useMusicPaused();
   const { playerRef, playerInstanceRef } = useMusicPlayerContext();
 
@@ -23,14 +22,6 @@ const MusicPlayerContent = () => {
 
       <VolumeControls />
     </article>
-  );
-};
-
-const MusicPlayer = () => {
-  return (
-    <MusicPlayerProvider>
-      <MusicPlayerContent />
-    </MusicPlayerProvider>
   );
 };
 

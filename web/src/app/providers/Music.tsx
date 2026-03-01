@@ -3,7 +3,7 @@ import type { MusicPlayerContextType } from "@/features/music-player/types/conte
 import type { YTPlayer } from "@/types/music-player/player";
 import { useMemo, useRef, type PropsWithChildren } from "react";
 
-const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
+const MusicProvider = ({ children }: PropsWithChildren) => {
   const playerRef = useRef<HTMLDivElement | null>(null);
   const playerInstanceRef = useRef<YTPlayer | null>(null);
 
@@ -19,4 +19,4 @@ const MusicPlayerProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default MusicPlayerProvider;
+export default MusicProvider;
