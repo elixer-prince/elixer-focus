@@ -1,5 +1,5 @@
-import beepSoundURL from "@/assets/sound-effects/countdown-timer/beep.mp3";
-import tickingSoundURL from "@/assets/sound-effects/countdown-timer/ticking.mp3";
+import beepSoundURL from "@/assets/sound-effects/beep.mp3";
+import tickingSoundURL from "@/assets/sound-effects/ticking.mp3";
 import offClickSoundURL from "@/features/countdown-timer/assets/sound-effects/off-click.mp3";
 import onClickSoundURL from "@/features/countdown-timer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/reset-timer.mp3";
