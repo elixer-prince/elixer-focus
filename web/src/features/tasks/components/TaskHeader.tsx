@@ -21,7 +21,6 @@ const TaskHeader = () => {
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               const inputValue = event.currentTarget.value;
-              console.log({ inputValue });
               if (inputValue.trim() === "") return;
               addTask(inputValue);
               event.currentTarget.value = "";
