@@ -11,12 +11,12 @@ import usePageTitle from "@/hooks/usePageTitle";
 import {
   useCurrentSessionType,
   useSetPreviousSessionType,
-} from "@/stores/countdown-timer/session-store";
+} from "@/features/countdown-timer/stores/session-store";
 import {
   useResetElapsedTimeInSeconds,
   useSetElapsedTimeInSeconds,
   useSetRemainingTimeInSeconds,
-} from "@/stores/countdown-timer/store";
+} from "@/features/countdown-timer/stores/countdown-store";
 import { getCurrentTimestamp } from "@/utils/date";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";

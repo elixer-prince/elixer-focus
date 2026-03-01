@@ -4,7 +4,7 @@ import PlayButton from "@/features/music-player/components/PlayButton";
 import MusicPlayerProvider from "@/features/music-player/components/providers/Provider";
 import VolumeControls from "@/features/music-player/components/VolumeControls";
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
-import useMusicPlayer from "@/hooks/useMusicPlayer";
+import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
 import { useMusicPaused } from "@/stores/music-player";
 
 const MusicPlayerContent = () => {

@@ -2,7 +2,7 @@ import Column from "@/features/tasks/components/Column";
 import TaskHeader from "@/features/tasks/components/TaskHeader";
 import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider } from "@dnd-kit/react";
 

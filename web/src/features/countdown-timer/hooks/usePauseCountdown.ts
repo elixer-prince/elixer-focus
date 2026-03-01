@@ -2,7 +2,7 @@ import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownCo
 import {
   useSetTimerPaused,
   useTimerPaused,
-} from "@/stores/countdown-timer/store";
+} from "@/features/countdown-timer/stores/countdown-store";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 

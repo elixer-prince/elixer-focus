@@ -1,6 +1,6 @@
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
-import { usePreviousSessionType } from "@/stores/countdown-timer/session-store";
-import { useElapsedTimeInSeconds } from "@/stores/countdown-timer/store";
+import { usePreviousSessionType } from "@/features/countdown-timer/stores/session-store";
+import { useElapsedTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const Modal = () => {

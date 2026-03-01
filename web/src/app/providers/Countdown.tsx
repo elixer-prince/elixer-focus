@@ -3,7 +3,7 @@ import tickingSoundURL from "@/assets/sound-effects/ticking.mp3";
 import offClickSoundURL from "@/features/countdown-timer/assets/sound-effects/off-click.mp3";
 import onClickSoundURL from "@/features/countdown-timer/assets/sound-effects/on-click.mp3";
 import resetTimerSoundURL from "@/features/countdown-timer/assets/sound-effects/reset-timer.mp3";
-import CountdownContext from "@/stores/countdown-timer/Context";
+import CountdownContext from "@/features/countdown-timer/stores/CountdownContext";
 import type { CountdownTimerContextType } from "@/features/countdown-timer/types/session";
 import { getFromLocalStorage } from "@/utils/storage";
 import { type PropsWithChildren, useMemo, useRef } from "react";

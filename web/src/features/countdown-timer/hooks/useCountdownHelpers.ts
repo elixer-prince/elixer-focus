@@ -7,7 +7,7 @@ import {
   useSetTimerRunning,
   useTimerPaused,
   useTimerRunning,
-} from "@/stores/countdown-timer/store";
+} from "@/features/countdown-timer/stores/countdown-store";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
 import { clearIntervalIfItExists } from "@/utils/interval";

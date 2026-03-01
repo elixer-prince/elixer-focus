@@ -1,7 +1,7 @@
 import CountdownTimerContainer from "@/features/countdown-timer/components/Index";
 import Column from "@/features/tasks/components/Column";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 
 const Home = () => {
   const { updatePageTitle } = usePageTitle();

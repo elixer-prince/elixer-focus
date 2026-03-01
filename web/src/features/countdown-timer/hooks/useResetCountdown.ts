@@ -6,8 +6,8 @@ import {
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+} from "@/features/countdown-timer/stores/session-store";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 

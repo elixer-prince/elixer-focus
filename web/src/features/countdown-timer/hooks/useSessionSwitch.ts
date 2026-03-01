@@ -1,6 +1,6 @@
 import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionCount,
   useCurrentSessionType,
@@ -10,7 +10,7 @@ import {
   useSetCurrentSessionCount,
   useSetCurrentSessionType,
   useShortBreakDuration,
-} from "@/stores/countdown-timer/session-store";
+} from "@/features/countdown-timer/stores/session-store";
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
 
 const useSessionSwitch = () => {
