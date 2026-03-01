@@ -6,7 +6,7 @@ const useMusicPlayerContext = () => {
 
   if (!context) {
     throw new Error(
-      "useMusicPlayerContext must be used within a MusicPlayerProvider!",
+      "useMusicPlayerContext must be used within a MusicProvider!",
     );
   }
 

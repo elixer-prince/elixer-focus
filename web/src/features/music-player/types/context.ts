@@ -1,4 +1,4 @@
-import type { YTPlayer } from "@/types/music-player/player";
+import type { YTPlayer } from "@/features/music-player/types/player";
 import type { RefObject } from "react";
 
 export type MusicPlayerContextType = {

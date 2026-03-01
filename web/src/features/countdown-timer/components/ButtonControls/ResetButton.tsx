@@ -1,4 +1,4 @@
-import useResetCountdown from "@/hooks/countdown-timer/useResetCountdown";
+import useResetCountdown from "@/features/countdown-timer/hooks/useResetCountdown";
 import { MdReplay } from "react-icons/md";
 
 const ResetButton = () => {

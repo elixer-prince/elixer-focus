@@ -4,7 +4,7 @@ import {
   useSetVolume,
   useShowVolumeSlider,
   useVolume,
-} from "@/stores/music-player";
+} from "@/features/music-player/stores/store";
 import type { ChangeEvent } from "react";
 import { FaVolumeUp } from "react-icons/fa";
 
@@ -24,6 +24,9 @@ const VolumeControls = () => {
 
   // BUG: The volume of the music doesn't get synced at startup even
   // though it shows the correct volume visually.
+
+  // BUG: The music always auto plays which is
+  // good but the UI should reflect this and it should be state dependent.
 
   return (
     <div className="volume-controls flex items-center gap-4">

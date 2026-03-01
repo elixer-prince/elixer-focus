@@ -1,7 +1,7 @@
 import CountdownTimerContainer from "@/features/countdown-timer/components/Index";
-import TaskList from "@/features/tasks/components/TaskList";
+import Column from "@/features/tasks/components/Column";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 
 const Home = () => {
   const { updatePageTitle } = usePageTitle();
@@ -10,10 +10,10 @@ const Home = () => {
   if (!timerRunning) updatePageTitle("Elixer Focus - Home");
 
   return (
-    <div className="flex justify-center gap-8 p-8">
+    <div className="flex flex-col items-center justify-center gap-8 p-8">
       <CountdownTimerContainer />
 
-      <TaskList title="To-Do (In Progress)" />
+      <Column title="To-Do (In Progress)" category="urgent-important" />
     </div>
   );
 };
