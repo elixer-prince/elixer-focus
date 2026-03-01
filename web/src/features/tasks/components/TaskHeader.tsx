@@ -36,7 +36,7 @@ const TaskHeader = () => {
             inputRef.current.value = "";
           }}
         >
-          Add task
+          Create task
         </button>
       </div>
     </div>
