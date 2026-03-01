@@ -1,6 +1,6 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
+import useStartCountdown from "@/features/countdown-timer/hooks/useStartCountdown";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { useEffect } from "react";
 

@@ -1,4 +1,4 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
 import { usePreviousSessionType } from "@/stores/countdown-timer/session-store";
 import { useElapsedTimeInSeconds } from "@/stores/countdown-timer/store";
 import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";

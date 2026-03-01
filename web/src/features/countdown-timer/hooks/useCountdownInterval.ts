@@ -1,7 +1,12 @@
-import useCountdownAlerts from "@/hooks/countdown-timer/useCountdownAlerts";
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
+import useCountdownAlerts from "@/features/countdown-timer/hooks/useCountdownAlerts";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
+import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
+import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
+import {
+  timerHasEnded,
+  timerIsAboutToEnd,
+} from "@/features/countdown-timer/utils/checks";
 import usePageTitle from "@/hooks/usePageTitle";
 import {
   useCurrentSessionType,
@@ -12,11 +17,6 @@ import {
   useSetElapsedTimeInSeconds,
   useSetRemainingTimeInSeconds,
 } from "@/stores/countdown-timer/store";
-import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
-import {
-  timerHasEnded,
-  timerIsAboutToEnd,
-} from "@/features/countdown-timer/utils/checks";
 import { getCurrentTimestamp } from "@/utils/date";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";

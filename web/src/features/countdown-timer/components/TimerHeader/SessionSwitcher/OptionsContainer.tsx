@@ -1,5 +1,5 @@
 import SessionOption from "@/features/countdown-timer/components/TimerHeader/SessionSwitcher/SessionOption";
-import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
+import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import { useCurrentSessionType } from "@/stores/countdown-timer/session-store";
 
 const OptionsContainer = () => {

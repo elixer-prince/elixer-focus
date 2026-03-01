@@ -1,4 +1,4 @@
-import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
+import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/stores/countdown-timer/store";
 import {

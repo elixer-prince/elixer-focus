@@ -1,6 +1,6 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
-import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
+import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,

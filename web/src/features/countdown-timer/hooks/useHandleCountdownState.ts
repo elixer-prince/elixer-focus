@@ -1,5 +1,5 @@
-import usePauseCountdown from "@/hooks/countdown-timer/usePauseCountdown";
-import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
+import usePauseCountdown from "@/features/countdown-timer/hooks/usePauseCountdown";
+import useStartCountdown from "@/features/countdown-timer/hooks/useStartCountdown";
 import {
   useRemainingTimeInSeconds,
   useTimerPaused,

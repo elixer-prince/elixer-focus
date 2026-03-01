@@ -1,4 +1,4 @@
-import usePauseCountdown from "@/hooks/countdown-timer/usePauseCountdown";
+import usePauseCountdown from "@/features/countdown-timer/hooks/usePauseCountdown";
 import { MdPause } from "react-icons/md";
 
 const PauseButton = () => {

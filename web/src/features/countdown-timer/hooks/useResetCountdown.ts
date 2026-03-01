@@ -1,5 +1,5 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useCountdownTimerStorage from "@/hooks/countdown-timer/useCountdownStorage";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
 import usePageTitle from "@/hooks/usePageTitle";
 import {
   useCurrentSessionType,

@@ -1,4 +1,4 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
 import {
   useSetTimerPaused,
   useTimerPaused,

@@ -1,7 +1,7 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useCountdownHelpers from "@/hooks/countdown-timer/useCountdownHelpers";
-import useCountdownInterval from "@/hooks/countdown-timer/useCountdownInterval";
-import useEndTicking from "@/hooks/countdown-timer/useEndTicking";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useCountdownHelpers from "@/features/countdown-timer/hooks/useCountdownHelpers";
+import useCountdownInterval from "@/features/countdown-timer/hooks/useCountdownInterval";
+import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,

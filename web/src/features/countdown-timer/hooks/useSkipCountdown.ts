@@ -1,5 +1,5 @@
-import useCountdownContext from "@/hooks/countdown-timer/useCountdownContext";
-import useSessionSwitch from "@/hooks/countdown-timer/useSessionSwitch";
+import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
+import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import { playSound } from "@/utils/sound";
 
 const useSkipCountdown = (): {
