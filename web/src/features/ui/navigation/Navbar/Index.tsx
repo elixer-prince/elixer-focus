@@ -1,12 +1,10 @@
+import CurrentTime from "@/features/ui/navigation/Navbar/CurrentTime";
 import HamburgerMenu from "@/features/ui/navigation/Navbar/HamburgerMenu";
 import { useNavbarIsOpen } from "@/features/ui/navigation/Navbar/stores/NavbarStore";
 import NavLogo from "@/features/ui/navigation/NavLogo";
-import dayjs from "dayjs";
 
 const Navbar = () => {
   const navbarIsOpen = useNavbarIsOpen();
-
-  const currentTime = dayjs().format("h:mm A");
 
   return (
     <nav
@@ -22,10 +20,8 @@ const Navbar = () => {
         </div>
 
         <div className={"inner-right-container flex items-center gap-4"}>
-          <div className="border-primary/25 bg-base-100 rounded-md border-2 p-2 font-bold shadow-md max-sm:hidden">
-            {currentTime}
-          </div>
           {/* <LoginLink /> */}
+          <CurrentTime />
         </div>
       </div>
     </nav>
