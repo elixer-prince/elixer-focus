@@ -53,13 +53,15 @@ const useMusicPlayer = ({
   }, [chosenSongId, musicPaused, playerInstanceRef, songs]);
 
   useEffect(() => {
+    const initialSong = songs.find((song) => song.id === chosenSongId);
+
     globalThis.onYouTubeIframeAPIReady = () => {
       // Only proceed if player exists
       if (playerRef.current !== null) {
         playerInstanceRef.current = new globalThis.YT.Player(
           playerRef.current,
           {
-            videoId: getVideoId(songs[chosenSongId].src),
+            videoId: getVideoId(initialSong?.src ?? songs[0].src ?? ""),
             playerVars: { autoplay: musicPaused ? 0 : 1, playsinline: 1 },
             events: {
               // onReady: (event: YTPlayerEvent) =>
