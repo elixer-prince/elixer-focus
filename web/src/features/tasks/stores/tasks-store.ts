@@ -1,4 +1,4 @@
-import type { Task } from "@/features/tasks/types/task";
+import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { getCurrentTimestamp } from "@/utils/date";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -9,7 +9,11 @@ type TaskState = {
 
 type TaskActions = {
   setTasks: (tasks: Task[]) => void;
-  addTask: (task: string, description?: string, type?: string) => void;
+  addTask: (
+    task: string,
+    description?: string,
+    category?: TaskCategory,
+  ) => void;
   removeTask: (id: string) => void;
   toggleTaskCompletion: (id: string, completed: boolean) => void;
 };
@@ -23,14 +27,14 @@ const useTasksStore = create<TaskState & TaskActions>()(
         set({ tasks });
       },
 
-      addTask: (title, description) => {
+      addTask: (title, description, category = "uncategorised") => {
         set((state) => ({
           tasks: [
             {
               id: crypto.randomUUID(),
               title,
               description,
-              category: "uncategorised",
+              category: category,
               isCompleted: false,
               isSelected: false,
               createdAt: getCurrentTimestamp(),

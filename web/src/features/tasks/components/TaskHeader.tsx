@@ -21,8 +21,10 @@ const TaskHeader = () => {
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               const inputValue = event.currentTarget.value;
-              console.log({ inputValue });
-              if (inputValue.trim() === "") return;
+              if (inputValue.trim() === "") {
+                event.currentTarget.value = "";
+                return;
+              }
               addTask(inputValue);
               event.currentTarget.value = "";
             }
@@ -33,11 +35,15 @@ const TaskHeader = () => {
           className="btn btn-primary"
           onClick={() => {
             if (!inputRef.current) return;
+            if (inputRef.current.value.trim() === "") {
+              inputRef.current.value = "";
+              return;
+            }
             addTask(inputRef.current?.value);
             inputRef.current.value = "";
           }}
         >
-          Add task
+          Create task
         </button>
       </div>
     </div>
