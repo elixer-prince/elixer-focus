@@ -13,7 +13,7 @@ const TaskList = ({ category, inputShown }: TaskListProps) => {
   const tasks = allTasks.filter((task) => task.category === category);
 
   return (
-    <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto border pt-0.5 pr-1 pb-4 pl-4">
+    <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-0.5 pr-1 pb-4 pl-4">
       <div
         className={category === "uncategorised" ? "hidden" : "mr-3 space-y-4"}
       >
