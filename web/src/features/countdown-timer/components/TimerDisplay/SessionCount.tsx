@@ -15,6 +15,7 @@ const SessionCount = () => {
   return (
     <button
       onClick={() => {
+        if (currentSessionCount === 0) return;
         if (confirm("Are you sure you want to reset the session count?")) {
           resetCurrentSessionCount();
         }
