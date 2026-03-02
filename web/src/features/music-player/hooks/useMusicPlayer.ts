@@ -27,8 +27,8 @@ const useMusicPlayer = ({
     document.body.appendChild(tag);
   }, []);
 
+  // Effect for switching songs
   useEffect(() => {
-    // Only proceed if player exists
     if (!playerInstanceRef.current) return;
 
     const selectedSong = songs.find((song) => song.id === chosenSongId);
@@ -39,29 +39,31 @@ const useMusicPlayer = ({
 
     const videoId = getVideoId(selectedSong.src);
 
-    // Load new video to play the song
-    playerInstanceRef.current.loadVideoById({
-      videoId: videoId,
-      startSeconds: 0,
-    });
+    playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
+  }, [chosenSongId, songs, playerInstanceRef]);
 
-    // If music should be paused, pause it after loading
+  // Effect for play/pause only
+  useEffect(() => {
+    if (!playerInstanceRef.current) return;
+
     if (musicPaused) {
-      setTimeout(() => {
-        playerInstanceRef.current?.pauseVideo();
-      }, 100);
+      playerInstanceRef.current.pauseVideo();
+    } else {
+      playerInstanceRef.current.playVideo();
     }
-  }, [chosenSongId, musicPaused, playerInstanceRef, songs]);
+  }, [musicPaused, playerInstanceRef]);
 
   useEffect(() => {
+    const initialSong = songs.find((song) => song.id === chosenSongId);
+
     globalThis.onYouTubeIframeAPIReady = () => {
       // Only proceed if player exists
       if (playerRef.current !== null) {
         playerInstanceRef.current = new globalThis.YT.Player(
           playerRef.current,
           {
-            videoId: getVideoId(songs[chosenSongId].src),
-            playerVars: { autoplay: 1, playsinline: 1 },
+            videoId: getVideoId(initialSong?.src ?? songs[0].src ?? ""),
+            playerVars: { autoplay: musicPaused ? 0 : 1, playsinline: 1 },
             events: {
               // onReady: (event: YTPlayerEvent) =>
               // onPlayerReady(event, musicPaused),
