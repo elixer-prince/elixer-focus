@@ -1,6 +1,6 @@
 const Ghost = () => {
   return (
-    <div className="ghost-task border-base-content/25 mt-1 rounded-md border border-dashed py-5" />
+    <div className="ghost-task border-base-content/25 mt-1 h-10 rounded-md border border-dashed" />
   );
 };
 
