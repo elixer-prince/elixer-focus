@@ -1,11 +1,11 @@
-// import { onPlayerReady } from "@/features/music-player/utils/controls";
-import { getVideoId } from "@/features/music-player/utils/conversion";
 import {
   useChosenSongId,
   useMusicPaused,
   useSongs,
+  useVolume,
 } from "@/features/music-player/stores/store";
 import type { YTPlayer } from "@/features/music-player/types/player";
+import { getVideoId } from "@/features/music-player/utils/conversion";
 import { type RefObject, useEffect } from "react";
 
 interface MusicPlayerContextType {
@@ -19,6 +19,7 @@ const useMusicPlayer = ({
 }: MusicPlayerContextType) => {
   const chosenSongId = useChosenSongId();
   const musicPaused = useMusicPaused();
+  const volume = useVolume();
   const songs = useSongs();
 
   useEffect(() => {
@@ -63,17 +64,21 @@ const useMusicPlayer = ({
           playerRef.current,
           {
             videoId: getVideoId(initialSong?.src ?? songs[0].src ?? ""),
-            playerVars: { autoplay: musicPaused ? 0 : 1, playsinline: 1 },
+            playerVars: {
+              autoplay: musicPaused ? 0 : 1,
+              playsinline: 1,
+            },
             events: {
-              // onReady: (event: YTPlayerEvent) =>
-              // onPlayerReady(event, musicPaused),
-              // onStateChange: onPlayerStateChange,
+              onReady: () => {
+                // Set initial volume from store
+                playerInstanceRef.current?.setVolume(volume);
+              },
             },
           },
         );
       }
     };
-  }, [songs, chosenSongId, musicPaused, playerInstanceRef, playerRef]);
+  }, [songs, chosenSongId, musicPaused, playerInstanceRef, playerRef, volume]);
 };
 
 export default useMusicPlayer;
