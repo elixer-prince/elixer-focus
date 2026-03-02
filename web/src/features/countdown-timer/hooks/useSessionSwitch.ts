@@ -1,17 +1,18 @@
 import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
-import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionCount,
   useCurrentSessionType,
   useFocusDuration,
+  useIncrementCurrentSessionCount,
   useLongBreakDuration,
+  useResetCurrentSessionCount,
   useSessionCountLimit,
-  useSetCurrentSessionCount,
   useSetCurrentSessionType,
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/session-store";
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import usePageTitle from "@/hooks/usePageTitle";
 
 const useSessionSwitch = () => {
   const { resetPageTitle } = usePageTitle();
@@ -23,7 +24,8 @@ const useSessionSwitch = () => {
   const currentSessionCount = useCurrentSessionCount();
   const sessionCountLimit = useSessionCountLimit();
   const setCurrentSessionType = useSetCurrentSessionType();
-  const setCurrentSessionCount = useSetCurrentSessionCount();
+  const incrementCurrentSessionCount = useIncrementCurrentSessionCount();
+  const resetCurrentSessionCount = useResetCurrentSessionCount();
 
   const timerRunning = useTimerRunning();
   const { resetTimerStorage } = useCountdownTimerStorage();
@@ -53,18 +55,14 @@ const useSessionSwitch = () => {
     resetTimerStorage(sessionDuration);
   };
 
-  const updateSessionCount = (newSessionCount: number) => {
-    setCurrentSessionCount(newSessionCount);
-  };
-
   const handleBreakSwitching = () => {
     if (currentSessionCount + 1 >= sessionCountLimit) {
       updateTimerDurationAndReset("Long Break", longBreakDuration);
-      return updateSessionCount(0);
+      return resetCurrentSessionCount();
     }
 
     updateTimerDurationAndReset("Short Break", shortBreakDuration);
-    setCurrentSessionCount(currentSessionCount + 1);
+    incrementCurrentSessionCount();
   };
 
   const switchToFocus = () => {
