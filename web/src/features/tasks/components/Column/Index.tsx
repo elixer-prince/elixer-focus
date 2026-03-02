@@ -36,6 +36,7 @@ const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
       <TaskList
         category={category}
         inputShown={inputShown}
+        setInputShown={setInputShown}
         placeholder={inputPlaceholder}
       />
     </div>

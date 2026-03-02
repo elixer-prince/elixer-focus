@@ -2,14 +2,21 @@ import Ghost from "@/features/tasks/components/Task/Ghost";
 import Task from "@/features/tasks/components/Task/Index";
 import { useAddTask, useTasks } from "@/features/tasks/stores/tasks-store";
 import type { TaskCategory } from "@/features/tasks/types/task";
+import type { Dispatch, SetStateAction } from "react";
 
 interface TaskListProps {
   category: TaskCategory;
   inputShown: boolean;
+  setInputShown: Dispatch<SetStateAction<boolean>>;
   placeholder: string;
 }
 
-const TaskList = ({ category, inputShown, placeholder }: TaskListProps) => {
+const TaskList = ({
+  category,
+  inputShown,
+  setInputShown,
+  placeholder,
+}: TaskListProps) => {
   const allTasks = useTasks();
   const tasks = allTasks.filter((task) => task.category === category);
 
@@ -31,6 +38,7 @@ const TaskList = ({ category, inputShown, placeholder }: TaskListProps) => {
                 }
                 addTask(event.currentTarget.value, "", category);
                 event.currentTarget.value = "";
+                setInputShown(false);
               }
             }}
           />
