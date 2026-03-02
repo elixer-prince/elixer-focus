@@ -24,12 +24,12 @@ const TaskList = ({
 
   return (
     <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4">
-      <div className={tasks.length === 0 ? "mr-3 space-y-4" : "hidden"}>
-        {category !== "uncategorised" && inputShown && (
+      {category !== "uncategorised" && inputShown && (
+        <div className="mr-3">
           <input
             type="text"
             placeholder={placeholder}
-            className="task-input input border-primary-content/25 input-primary w-full placeholder:italic"
+            className="task-input input border-primary-content/25 input-primary w-full border placeholder:italic"
             onKeyDown={(event) => {
               if (event.key === "Enter") {
                 if (event.currentTarget.value.trim() === "") {
@@ -42,10 +42,10 @@ const TaskList = ({
               }
             }}
           />
-        )}
+        </div>
+      )}
 
-        {tasks.length === 0 && !inputShown && <Ghost />}
-      </div>
+      {tasks.length === 0 && !inputShown && <Ghost />}
 
       {tasks.map(
         (
