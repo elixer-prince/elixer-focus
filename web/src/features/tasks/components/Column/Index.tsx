@@ -8,9 +8,10 @@ import { useState } from "react";
 interface ColumnProps {
   title: string;
   category: TaskCategory;
+  inputPlaceholder: string;
 }
 
-const Column = ({ title, category }: ColumnProps) => {
+const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
   const { ref, isDropTarget } = useDroppable({
@@ -32,7 +33,11 @@ const Column = ({ title, category }: ColumnProps) => {
         setInputShown={setInputShown}
       />
 
-      <TaskList category={category} inputShown={inputShown} />
+      <TaskList
+        category={category}
+        inputShown={inputShown}
+        placeholder={inputPlaceholder}
+      />
     </div>
   );
 };

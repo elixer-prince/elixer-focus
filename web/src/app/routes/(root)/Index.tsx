@@ -13,7 +13,11 @@ const Home = () => {
     <div className="flex flex-col items-center justify-center gap-8 p-8">
       <CountdownTimerContainer />
 
-      <Column title="To-Do (In Progress)" category="urgent-important" />
+      <Column
+        title="To-Do (In Progress)"
+        category="urgent-important"
+        inputPlaceholder=""
+      />
     </div>
   );
 };

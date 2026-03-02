@@ -6,9 +6,10 @@ import type { TaskCategory } from "@/features/tasks/types/task";
 interface TaskListProps {
   category: TaskCategory;
   inputShown: boolean;
+  placeholder: string;
 }
 
-const TaskList = ({ category, inputShown }: TaskListProps) => {
+const TaskList = ({ category, inputShown, placeholder }: TaskListProps) => {
   const allTasks = useTasks();
   const tasks = allTasks.filter((task) => task.category === category);
 
@@ -18,6 +19,7 @@ const TaskList = ({ category, inputShown }: TaskListProps) => {
         {category !== "uncategorised" && inputShown && (
           <input
             type="text"
+            placeholder={placeholder}
             className="task-input input border-primary-content/25 input-primary w-full"
           />
         )}
