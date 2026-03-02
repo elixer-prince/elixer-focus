@@ -23,12 +23,23 @@ const ColumnHeader = ({
       </h2>
 
       {category !== "uncategorised" && location.pathname === "/tasks" && (
-        <button
-          className="btn btn-sm btn-soft text-primary-content btn-primary"
-          onClick={() => setInputShown(!inputShown)}
-        >
-          Add task
-        </button>
+        <>
+          {inputShown ? (
+            <button
+              className="btn btn-sm btn-soft text-primary-content btn-primary"
+              onClick={() => setInputShown(!inputShown)}
+            >
+              Add task
+            </button>
+          ) : (
+            <button
+              className="btn btn-sm btn-soft text-primary-content btn-primary"
+              onClick={() => setInputShown(!inputShown)}
+            >
+              Cancel
+            </button>
+          )}
+        </>
       )}
     </div>
   );
