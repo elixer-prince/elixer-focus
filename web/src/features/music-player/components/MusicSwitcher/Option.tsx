@@ -1,11 +1,18 @@
 interface OptionProps {
   id: number;
   title: string;
+  isRecommended: boolean;
   chosenSongId: number;
   setChosenSongId: (id: number) => void;
 }
 
-const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
+const Option = ({
+  id,
+  title,
+  isRecommended,
+  chosenSongId,
+  setChosenSongId,
+}: OptionProps) => {
   return (
     <li className="menu-item">
       <label>
@@ -16,7 +23,16 @@ const Option = ({ id, title, chosenSongId, setChosenSongId }: OptionProps) => {
           onChange={() => setChosenSongId(id)}
           checked={chosenSongId === id}
         />
-        <span className={chosenSongId === id ? "font-bold" : ""}>{title}</span>
+        <div
+          className={`flex flex-wrap items-center gap-2 ${chosenSongId === id ? "font-bold" : ""}`}
+        >
+          {isRecommended && (
+            <span className="badge badge-sm badge-secondary badge-soft">
+              Recommended
+            </span>
+          )}
+          <span className="w-34">{title}</span>
+        </div>
       </label>
     </li>
   );

@@ -13,13 +13,14 @@ const OptionsContainer = () => {
   return (
     <ul
       tabIndex={-1}
-      className="music-list dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-sm"
+      className="music-list dropdown-content menu bg-base-100 rounded-box p-2 shadow-sm"
     >
-      {songs.map(({ id, title }) => (
+      {songs.map(({ id, title, isRecommended }) => (
         <Option
           key={id}
           id={id}
           title={title}
+          isRecommended={isRecommended}
           chosenSongId={chosenSongId}
           setChosenSongId={setChosenSongId}
         />

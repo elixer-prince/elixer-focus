@@ -23,7 +23,7 @@ const defaultSongs = [
   },
   {
     id: 4,
-    title: "Chillstep Music for Programming / Cyber / Coding",
+    title: "Chillstep Music for Programming",
     src: "https://www.youtube.com/watch?v=M5QY2_8704o",
     isRecommended: false,
   },
