@@ -20,7 +20,7 @@ const TaskList = ({ category, inputShown, placeholder }: TaskListProps) => {
           <input
             type="text"
             placeholder={placeholder}
-            className="task-input input border-primary-content/25 input-primary w-full"
+            className="task-input input border-primary-content/25 input-primary w-full placeholder:italic"
           />
         )}
 
