@@ -25,7 +25,7 @@ const SessionCount = () => {
       <span className={isEndingSoon ? "text-error animate-pulse" : ""}>
         {currentSessionCount}
       </span>
-      <span className={"text-primary"}>/</span>
+      <span className="text-primary">/</span>
       <span className={isEndingSoon ? "text-error animate-pulse" : ""}>
         {sessionCountLimit}
       </span>
