@@ -29,14 +29,14 @@ const ColumnHeader = ({
               className="btn btn-sm btn-soft text-primary-content btn-primary"
               onClick={() => setInputShown(!inputShown)}
             >
-              Add task
+              Cancel
             </button>
           ) : (
             <button
               className="btn btn-sm btn-soft text-primary-content btn-primary"
               onClick={() => setInputShown(!inputShown)}
             >
-              Cancel
+              Add task
             </button>
           )}
         </>
