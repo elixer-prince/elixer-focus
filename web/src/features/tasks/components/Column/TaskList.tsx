@@ -18,7 +18,7 @@ const TaskList = ({ category, inputShown }: TaskListProps) => {
         {category !== "uncategorised" && inputShown && (
           <input
             type="text"
-            className="task-input input border-primary-content/25 input-primary mt-1 w-full"
+            className="task-input input border-primary-content/25 input-primary w-full"
           />
         )}
 
