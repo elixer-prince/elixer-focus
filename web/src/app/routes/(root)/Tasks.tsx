@@ -1,5 +1,5 @@
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
-import Column from "@/features/tasks/components/Column";
+import Column from "@/features/tasks/components/Column/Index";
 import TaskHeader from "@/features/tasks/components/TaskHeader";
 import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
