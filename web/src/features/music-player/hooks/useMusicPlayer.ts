@@ -41,6 +41,12 @@ const useMusicPlayer = ({
     const videoId = getVideoId(selectedSong.src);
 
     playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
+
+    // Respect paused state
+    if (musicPaused) {
+      playerInstanceRef.current.pauseVideo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenSongId, songs, playerInstanceRef]);
 
   // Effect for play/pause only
