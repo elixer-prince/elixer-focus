@@ -28,7 +28,6 @@ const useMusicPlayer = ({
   }, []);
 
   useEffect(() => {
-    // Only proceed if player exists
     if (!playerInstanceRef.current) return;
 
     const selectedSong = songs.find((song) => song.id === chosenSongId);
@@ -61,7 +60,7 @@ const useMusicPlayer = ({
           playerRef.current,
           {
             videoId: getVideoId(songs[chosenSongId].src),
-            playerVars: { autoplay: 1, playsinline: 1 },
+            playerVars: { autoplay: musicPaused ? 0 : 1, playsinline: 1 },
             events: {
               // onReady: (event: YTPlayerEvent) =>
               // onPlayerReady(event, musicPaused),
