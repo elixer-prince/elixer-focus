@@ -27,6 +27,7 @@ const useMusicPlayer = ({
     document.body.appendChild(tag);
   }, []);
 
+  // Effect for switching songs
   useEffect(() => {
     if (!playerInstanceRef.current) return;
 
@@ -38,19 +39,19 @@ const useMusicPlayer = ({
 
     const videoId = getVideoId(selectedSong.src);
 
-    // Load new video to play the song
-    playerInstanceRef.current.loadVideoById({
-      videoId: videoId,
-      startSeconds: 0,
-    });
+    playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
+  }, [chosenSongId, songs, playerInstanceRef]);
 
-    // If music should be paused, pause it after loading
+  // Effect for play/pause only
+  useEffect(() => {
+    if (!playerInstanceRef.current) return;
+
     if (musicPaused) {
-      setTimeout(() => {
-        playerInstanceRef.current?.pauseVideo();
-      }, 100);
+      playerInstanceRef.current.pauseVideo();
+    } else {
+      playerInstanceRef.current.playVideo();
     }
-  }, [chosenSongId, musicPaused, playerInstanceRef, songs]);
+  }, [musicPaused, playerInstanceRef]);
 
   useEffect(() => {
     const initialSong = songs.find((song) => song.id === chosenSongId);
