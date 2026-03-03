@@ -4,4 +4,4 @@ export type CountdownSession =
   | "Long Break"
   | "Custom";
 
-export type CustomSession = "Break" | "Focus";
+export type CustomSession = "Custom Break" | "Custom Focus";
