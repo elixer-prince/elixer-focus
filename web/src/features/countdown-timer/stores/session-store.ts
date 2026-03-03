@@ -11,6 +11,7 @@ type SessionState = {
   longBreakDuration: number;
   customSessionDuration: number;
   customSessionType: CustomSession;
+  customSessionInputShown: boolean;
   sessionCountLimit: number;
   currentSessionType: CountdownSession;
   previousSessionType: CountdownSession | null;
@@ -24,6 +25,7 @@ type SessionActions = {
   setLongBreakDuration: (duration: number) => void;
   setCustomSessionDuration: (duration: number) => void;
   setCustomSessionType: (type: CustomSession) => void;
+  setCustomSessionInputShown: (shown: boolean) => void;
   setSessionCountLimit: (limit: number) => void;
   setCurrentSessionType: (type: CountdownSession) => void;
   setPreviousSessionType: (type: CountdownSession) => void;
@@ -41,7 +43,8 @@ const useSessionStore = create<SessionStore>()(
       shortBreakDuration: 5,
       longBreakDuration: 15,
       customSessionDuration: 0,
-      customSessionType: "Focus",
+      customSessionType: "Custom Focus",
+      customSessionInputShown: false,
       sessionCountLimit: 4,
       currentSessionType: "Focus",
       previousSessionType: null,
@@ -59,6 +62,9 @@ const useSessionStore = create<SessionStore>()(
         set({ customSessionDuration: duration }),
 
       setCustomSessionType: (type) => set({ customSessionType: type }),
+
+      setCustomSessionInputShown: (shown) =>
+        set({ customSessionInputShown: shown }),
 
       setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
 
@@ -86,7 +92,7 @@ const useSessionStore = create<SessionStore>()(
 |
 */
 
-// STATES
+// States
 
 export const useFocusDuration = () =>
   useSessionStore((state) => state.focusDuration);
@@ -102,6 +108,9 @@ export const useCustomSessionDuration = () =>
 
 export const useCustomSessionType = () =>
   useSessionStore((state) => state.customSessionType);
+
+export const useCustomSessionInputShown = () =>
+  useSessionStore((state) => state.customSessionInputShown);
 
 export const useSessionCountLimit = () =>
   useSessionStore((state) => state.sessionCountLimit);
@@ -121,7 +130,7 @@ export const useResetCurrentSessionCount = () =>
 export const useTotalSessionsCompleted = () =>
   useSessionStore((state) => state.totalSessionsCompleted);
 
-// ACTIONS
+// Actions
 
 export const useSetFocusDuration = () =>
   useSessionStore((state) => state.setFocusDuration);
@@ -137,6 +146,9 @@ export const useSetCustomSessionDuration = () =>
 
 export const useSetCustomSessionType = () =>
   useSessionStore((state) => state.setCustomSessionType);
+
+export const useSetCustomSessionInputShown = () =>
+  useSessionStore((state) => state.setCustomSessionInputShown);
 
 export const useSetSessionCountLimit = () =>
   useSessionStore((state) => state.setSessionCountLimit);
