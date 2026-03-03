@@ -1,17 +1,21 @@
 import useHandleCountdownState from "@/features/countdown-timer/hooks/useHandleCountdownState";
+import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import { useRemainingTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
-import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 import {
   useCustomSessionInputShown,
+  useSetCustomSessionDuration,
   useSetCustomSessionInputShown,
 } from "@/features/countdown-timer/stores/session-store";
+import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
 
 const CountdownMinutesAndSeconds = () => {
   const remainingTimeInSeconds = useRemainingTimeInSeconds();
   const customSessionInputShown = useCustomSessionInputShown();
   const setCustomSessionInputShown = useSetCustomSessionInputShown();
+  const setCustomSessionDuration = useSetCustomSessionDuration();
 
   const { isEndingSoon } = useHandleCountdownState();
+  const { updateCustomDurationAndReset } = useSessionSwitch();
 
   const baseClasses = "z-10  text-7xl transition-colors duration-500";
 
@@ -27,7 +31,11 @@ const CountdownMinutesAndSeconds = () => {
               event.currentTarget.value = "";
               return;
             }
-            alert(event.currentTarget.value);
+
+            const value = Number(event.currentTarget.value);
+
+            setCustomSessionDuration(value);
+            updateCustomDurationAndReset(value);
             event.currentTarget.value = "";
             setCustomSessionInputShown(false);
           }

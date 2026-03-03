@@ -118,12 +118,19 @@ const useSessionSwitch = () => {
     }
   };
 
+  const updateCustomDurationAndReset = (value: number) => {
+    if (currentSessionType === "Custom") {
+      updateTimerDurationAndReset("Custom", value);
+    }
+  };
+
   return {
     autoSwitchSessionType,
     switchToFocus,
     switchToShortBreak,
     switchToLongBreak,
     switchToCustom,
+    updateCustomDurationAndReset,
   };
 };
 
