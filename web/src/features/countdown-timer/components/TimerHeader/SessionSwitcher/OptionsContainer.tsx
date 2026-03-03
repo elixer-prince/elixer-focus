@@ -10,7 +10,7 @@ const OptionsContainer = () => {
   return (
     <ul
       tabIndex={-1}
-      className="session-switcher__options-container dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+      className="session-switcher__options-container dropdown-content menu bg-base-100 rounded-box z-20 w-52 p-2 shadow-sm"
     >
       <li>
         <SessionOption
