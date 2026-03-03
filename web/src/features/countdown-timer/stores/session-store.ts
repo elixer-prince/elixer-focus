@@ -1,4 +1,7 @@
-import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import type {
+  CountdownSession,
+  CustomSession,
+} from "@/features/countdown-timer/types/session";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -6,6 +9,8 @@ type SessionState = {
   focusDuration: number;
   shortBreakDuration: number;
   longBreakDuration: number;
+  customSessionDuration: number;
+  customSessionType: CustomSession;
   sessionCountLimit: number;
   currentSessionType: CountdownSession;
   previousSessionType: CountdownSession | null;
@@ -17,6 +22,8 @@ type SessionActions = {
   setFocusDuration: (duration: number) => void;
   setShortBreakDuration: (duration: number) => void;
   setLongBreakDuration: (duration: number) => void;
+  setCustomSessionDuration: (duration: number) => void;
+  setCustomSessionType: (type: CustomSession) => void;
   setSessionCountLimit: (limit: number) => void;
   setCurrentSessionType: (type: CountdownSession) => void;
   setPreviousSessionType: (type: CountdownSession) => void;
@@ -33,6 +40,8 @@ const useSessionStore = create<SessionStore>()(
       focusDuration: 25,
       shortBreakDuration: 5,
       longBreakDuration: 15,
+      customSessionDuration: 0,
+      customSessionType: "Focus",
       sessionCountLimit: 4,
       currentSessionType: "Focus",
       previousSessionType: null,
@@ -45,6 +54,11 @@ const useSessionStore = create<SessionStore>()(
         set({ shortBreakDuration: duration }),
 
       setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
+
+      setCustomSessionDuration: (duration) =>
+        set({ customSessionDuration: duration }),
+
+      setCustomSessionType: (type) => set({ customSessionType: type }),
 
       setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
 
@@ -83,6 +97,12 @@ export const useShortBreakDuration = () =>
 export const useLongBreakDuration = () =>
   useSessionStore((state) => state.longBreakDuration);
 
+export const useCustomSessionDuration = () =>
+  useSessionStore((state) => state.customSessionDuration);
+
+export const useCustomSessionType = () =>
+  useSessionStore((state) => state.customSessionType);
+
 export const useSessionCountLimit = () =>
   useSessionStore((state) => state.sessionCountLimit);
 
@@ -111,6 +131,12 @@ export const useSetShortBreakDuration = () =>
 
 export const useSetLongBreakDuration = () =>
   useSessionStore((state) => state.setLongBreakDuration);
+
+export const useSetCustomSessionDuration = () =>
+  useSessionStore((state) => state.setCustomSessionDuration);
+
+export const useSetCustomSessionType = () =>
+  useSessionStore((state) => state.setCustomSessionType);
 
 export const useSetSessionCountLimit = () =>
   useSessionStore((state) => state.setSessionCountLimit);
