@@ -48,6 +48,7 @@ const OptionsContainer = () => {
           value="Custom Session"
           onChange={switchToCustom}
           checked={currentSessionType === "Custom"}
+          isCustomOption
         >
           Custom
         </SessionOption>
