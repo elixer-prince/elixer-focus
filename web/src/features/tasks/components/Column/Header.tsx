@@ -17,7 +17,7 @@ const ColumnHeader = ({
   const location = useLocation();
 
   return (
-    <header className="tasks-container__header flex items-center justify-center gap-2 border p-4">
+    <header className="tasks-container__header flex items-center justify-center gap-2 p-4">
       <h2 className="tasks-list__heading bg-base-200 sticky top-0 text-center text-2xl font-bold select-none">
         {title} Tasks
       </h2>
