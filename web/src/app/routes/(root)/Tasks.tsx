@@ -35,24 +35,24 @@ const Tasks = () => {
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
-              title="Urgent and Important (Do First)"
+              title="Urgent and Important"
               category="urgent-important"
               inputPlaceholder="Finish assignment due in an hour..."
             />
             <Column
-              title="Not Urgent but Important (Schedule)"
+              title="Not Urgent but Important"
               category="not-urgent-important"
               inputPlaceholder="Practice Spanish for 30 minutes..."
             />
           </div>
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
-              title="Urgent but Not Important (Delegate)"
+              title="Urgent but Not Important"
               category="urgent-not-important"
               inputPlaceholder="Wash the dishes..."
             />
             <Column
-              title="Not Urgent nor Important (Eliminate)"
+              title="Not Urgent nor Important"
               category="not-urgent-not-important"
               inputPlaceholder="Watch Netflix..."
             />
