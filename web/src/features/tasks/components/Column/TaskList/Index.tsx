@@ -22,7 +22,7 @@ const TaskList = ({
   const tasks = allTasks.filter((task) => task.category === columnCategory);
 
   return (
-    <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto border pt-1 pr-1 pb-4 pl-4">
+    <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4">
       {columnCategory !== "uncategorised" && inputShown && (
         <div className="mr-3">
           <NewTaskInput
