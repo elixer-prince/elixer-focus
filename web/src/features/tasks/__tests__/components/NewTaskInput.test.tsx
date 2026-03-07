@@ -1,5 +1,6 @@
 import NewTaskInput from "@/features/tasks/components/NewTaskInput";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 describe("Column.TaskList.NewTaskInput", () => {
   it("should render a text input", () => {
@@ -14,7 +15,7 @@ describe("Column.TaskList.NewTaskInput", () => {
     expect(screen.queryByRole("textbox")).toBeInTheDocument();
   });
 
-  it("should clear the input on enter", () => {
+  it("should clear the input on enter", async () => {
     render(
       <NewTaskInput
         columnCategory="urgent-important"
@@ -25,12 +26,8 @@ describe("Column.TaskList.NewTaskInput", () => {
 
     const input = screen.getByRole("textbox");
 
-    // Simulate typing
-    fireEvent.change(input, { target: { value: "Test task" } });
-    expect((input as HTMLInputElement).value).toBe("Test task");
-
-    // Simulate pressing enter
-    fireEvent.keyDown(input, { key: "Enter" });
+    await userEvent.type(input, "Test task...");
+    await userEvent.keyboard("{Enter}");
 
     expect((input as HTMLInputElement).value).toBe("");
   });
