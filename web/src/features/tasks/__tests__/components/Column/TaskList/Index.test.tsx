@@ -58,12 +58,12 @@ describe("Column.TaskList", () => {
     expect(screen.getByRole("list")).toBeInTheDocument();
   });
 
-  it("should render tasks when there are tasks and they belong to the column category", () => {
+  it("should only render tasks when they belong to the column category", () => {
     (useTasks as Mock).mockReturnValue([
       {
         id: "ExStr123f51",
         title: "The first random Task!",
-        category: "uncategorised",
+        category: "urgent-important",
         isCompleted: false,
       },
       {
@@ -83,10 +83,10 @@ describe("Column.TaskList", () => {
       />,
     );
 
-    expect(screen.getAllByRole("listitem").length).toBe(2);
+    expect(screen.getAllByRole("listitem").length).toBe(1);
   });
 
-  it("should render ghost task, but not tasks when there are no tasks", () => {
+  it("should render ghost task when there are no tasks", () => {
     (useTasks as Mock).mockReturnValue([]); // mocks an empty tasks array
 
     render(
