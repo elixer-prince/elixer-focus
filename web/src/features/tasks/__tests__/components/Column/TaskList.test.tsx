@@ -1,4 +1,4 @@
-import TaskList from "@/features/tasks/components/Column/TaskList/Index";
+import TaskList from "@/features/tasks/components/Column/TaskList";
 import { useTasks } from "@/features/tasks/stores/tasks-store";
 import { render, screen } from "@testing-library/react";
 import type { Mock } from "vitest";
