@@ -1,5 +1,6 @@
 import { useAddTask } from "@/features/tasks/stores/tasks-store";
 import type { TaskCategory } from "@/features/tasks/types/task";
+import { useState } from "react";
 
 type NewTaskInputProps = {
   placeholder?: string;
