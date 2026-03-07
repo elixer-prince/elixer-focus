@@ -1,4 +1,4 @@
-import NewTaskInput from "@/features/tasks/components/Column/TaskList/NewTaskInput";
+import NewTaskInput from "@/features/tasks/components/NewTaskInput";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("Column.TaskList.NewTaskInput", () => {
