@@ -5,10 +5,6 @@ import type { Mock } from "vitest";
 
 // Mocks
 
-vi.mock("@dnd-kit/react/sortable", () => ({
-  useSortable: () => ({ ref: vi.fn() }),
-}));
-
 vi.mock("@/features/tasks/stores/tasks-store", () => ({
   useAddTask: vi.fn(),
   useRemoveTask: vi.fn(),
