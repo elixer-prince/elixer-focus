@@ -1,13 +1,13 @@
 import { useAddTask } from "@/features/tasks/stores/tasks-store";
 import { useRef } from "react";
 
-const TaskHeader = () => {
+const TaskPageHeader = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const addTask = useAddTask();
 
   return (
-    <div className="task-header">
+    <div className="task-header debug-border">
       <h1 className="task-header__title mb-4 text-center text-4xl font-bold">
         Your Tasks
       </h1>
@@ -50,4 +50,4 @@ const TaskHeader = () => {
   );
 };
 
-export default TaskHeader;
+export default TaskPageHeader;
