@@ -1,5 +1,5 @@
 import ColumnHeader from "@/features/tasks/components/Column/Header";
-import TaskList from "@/features/tasks/components/Column/TaskList/Index";
+import TaskList from "@/features/tasks/components/Column/TaskList";
 import type { TaskCategory } from "@/features/tasks/types/task";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { useDroppable } from "@dnd-kit/react";

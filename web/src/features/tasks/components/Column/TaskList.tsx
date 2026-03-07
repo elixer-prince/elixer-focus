@@ -1,4 +1,4 @@
-import NewTaskInput from "@/features/tasks/components/Column/TaskList/NewTaskInput";
+import NewTaskInput from "@/features/tasks/components/NewTaskInput";
 import GhostTask from "@/features/tasks/components/Task/Ghost";
 import Task from "@/features/tasks/components/Task/Index";
 import { useTasks } from "@/features/tasks/stores/tasks-store";
