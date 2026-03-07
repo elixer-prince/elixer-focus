@@ -14,11 +14,15 @@ const NewTaskInput = ({
 }: NewTaskInputProps) => {
   const addTask = useAddTask();
 
+  const [value, setValue] = useState<string>("");
+
   return (
     <input
       type="text"
+      value={value}
       placeholder={placeholder}
       className="new-task-input input border-primary-content/25 input-primary w-full border placeholder:italic"
+      onChange={(event) => setValue(event.target.value)}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           if (event.currentTarget.value.trim() === "") {
