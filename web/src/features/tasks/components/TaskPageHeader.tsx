@@ -13,7 +13,7 @@ const TaskPageHeader = () => {
         Your Tasks
       </h1>
 
-      <div className="debug-border task-panel mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
+      <div className="task-panel mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
         <input
           ref={inputRef}
           value={value}
