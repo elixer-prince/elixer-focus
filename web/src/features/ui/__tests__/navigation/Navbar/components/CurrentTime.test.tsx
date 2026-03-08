@@ -13,9 +13,9 @@ vi.mock("@/stores/date", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-});
 
-currentTimeMock.mockReturnValue("10:45 AM");
+  currentTimeMock.mockReturnValue("10:45 AM");
+});
 
 // Tests
 
