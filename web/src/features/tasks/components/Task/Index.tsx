@@ -44,9 +44,11 @@ const Task = ({
           checked={isCompleted}
           onChange={() => toggleTaskCompletion(id, !isCompleted)}
         />
+
         <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
           {title}
         </p>
+
         {/* <div className="font-bold text-red-500">i: {index}</div> */}
         <p>{description}</p>
       </div>

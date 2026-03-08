@@ -17,23 +17,23 @@ const ColumnHeader = ({
   const location = useLocation();
 
   return (
-    <div className="tasks-container__header flex items-center justify-center gap-2 p-4">
+    <header className="tasks-container__header flex items-center justify-center gap-2 p-4">
       <h2 className="tasks-list__heading bg-base-200 sticky top-0 text-center text-2xl font-bold select-none">
-        {title}
+        {title} Tasks
       </h2>
 
       {category !== "uncategorised" && location.pathname === "/tasks" && (
         <>
           {inputShown ? (
             <button
-              className="btn btn-sm btn-soft text-primary-content btn-primary"
+              className="cancel-button btn btn-sm btn-soft text-primary-content btn-primary"
               onClick={() => setInputShown(!inputShown)}
             >
               Cancel
             </button>
           ) : (
             <button
-              className="btn btn-sm btn-soft text-primary-content btn-primary"
+              className="add-task-button btn btn-sm btn-soft text-primary-content btn-primary"
               onClick={() => setInputShown(!inputShown)}
             >
               Add task
@@ -41,7 +41,7 @@ const ColumnHeader = ({
           )}
         </>
       )}
-    </div>
+    </header>
   );
 };
 

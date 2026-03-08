@@ -1,6 +1,6 @@
 import Modal from "@/components/ui/Modal";
 import MusicPlayer from "@/features/music-player/components/Index";
-import Navbar from "@/features/ui/navigation/Navbar/Index";
+import Navbar from "@/features/ui/navigation/Navbar/components/Index";
 import Sidebar from "@/features/ui/navigation/Sidebar/Default/Index";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
