@@ -27,11 +27,11 @@ const NewTaskInput = ({
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           if (event.currentTarget.value.trim() === "") {
-            event.currentTarget.value = "";
+            setValue("");
             return;
           }
           addTask(event.currentTarget.value, "", columnCategory);
-          event.currentTarget.value = "";
+          setValue("");
           setInputShown(false);
         }
       }}

@@ -25,11 +25,11 @@ const TaskPageHeader = () => {
             if (event.key === "Enter") {
               const inputValue = event.currentTarget.value;
               if (inputValue.trim() === "") {
-                event.currentTarget.value = "";
+                setValue("");
                 return;
               }
               addTask(inputValue);
-              event.currentTarget.value = "";
+              setValue("");
             }
           }}
         />
