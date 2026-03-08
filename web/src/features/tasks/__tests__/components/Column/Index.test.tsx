@@ -43,8 +43,6 @@ describe("Column", () => {
       name: /add task/i,
     });
 
-    screen.debug(screen.getByRole("article"));
-
     expect(addTaskButton).toBeInTheDocument();
   });
 
