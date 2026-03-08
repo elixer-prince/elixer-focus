@@ -21,7 +21,7 @@ describe("Mobile Link", () => {
     expect(screen.getByRole("link")).toBeInTheDocument();
   });
 
-  it("should navigate to the login page when clicked", async () => {
+  it("should navigate to the specified path when clicked", async () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <MobileLink to="/pathname">Path Name</MobileLink>
