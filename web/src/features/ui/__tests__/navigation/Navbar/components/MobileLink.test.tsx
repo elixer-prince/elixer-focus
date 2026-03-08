@@ -8,6 +8,18 @@ const CurrentPath = () => {
   return <span data-testid="current-path">{location.pathname}</span>;
 };
 
+// Mocks
+
+const closeNavbarMock = vi.fn();
+
+vi.mock("@/features/ui/navigation/Navbar/stores/navbar-store", () => ({
+  useCloseNavbar: () => closeNavbarMock,
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
 // Tests
 
 describe("Mobile Link", () => {
@@ -36,5 +48,18 @@ describe("Mobile Link", () => {
 
     const currentPath = screen.getByTestId("current-path");
     expect(currentPath.textContent).toBe("/pathname");
+  });
+
+  it("should close the navbar when clicked", async () => {
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <MobileLink to="/pathname">Path Name</MobileLink>
+      </MemoryRouter>,
+    );
+
+    const link = screen.getByRole("link");
+    await userEvent.click(link);
+
+    expect(closeNavbarMock).toHaveBeenCalled();
   });
 });
