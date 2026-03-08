@@ -32,7 +32,7 @@ const links = [
 const Sidebar = () => {
   return (
     <nav className="sidebar">
-      <ul className="sidebar__list debug-border border-r-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col overflow-y-auto border-r px-3 pt-6 select-none md:flex">
+      <ul className="sidebar__list border-r-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col overflow-y-auto border-r px-3 pt-6 select-none md:flex">
         {links.map((link) => (
           <li key={link.to}>
             <SidebarLink to={link.to}>
