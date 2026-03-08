@@ -31,6 +31,13 @@ describe("TaskPageHeader", () => {
     expect((taskInput as HTMLInputElement).value).toBe("Test task");
   });
 
+  it("should have placeholder text", () => {
+    render(<TaskPageHeader />);
+
+    const taskInput = screen.getByRole("textbox");
+    expect(taskInput).toHaveAttribute("placeholder", "A random task...");
+  });
+
   it("should clear the task input when the create task button is clicked", async () => {
     render(<TaskPageHeader />);
 
@@ -48,7 +55,9 @@ describe("TaskPageHeader", () => {
   it("should clear the task input when the enter key is pressed", async () => {
     render(<TaskPageHeader />);
 
-    const taskInput = screen.getByRole("textbox");
+    const taskInput = screen.getByRole("textbox", {
+      name: /uncategorised task input/i,
+    });
 
     await userEvent.type(taskInput, "Test task");
     await userEvent.keyboard("{Enter}");
