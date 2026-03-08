@@ -6,16 +6,41 @@ import {
   MdTaskAlt,
 } from "react-icons/md";
 
+const links = [
+  {
+    to: "/",
+    icon: <MdHomeFilled size={20} />,
+    label: "Home",
+  },
+  // {
+  //   to: "/profile",
+  //   icon: <MdAccountCircle size={20} />,
+  //   label: "Profile",
+  // },
+  // {
+  //   to: "/journal",
+  //   icon: <MdLibraryBooks size={20} />,
+  //   label: "Journal",
+  // },
+  {
+    to: "/tasks",
+    icon: <MdTaskAlt size={20} />,
+    label: "Tasks",
+  },
+];
+
 const Sidebar = () => {
   return (
-    <nav className="sidebar border-r-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col border-r pl-1.5 select-none md:flex">
-      <ul className={"overflow-y-scroll pt-6 pl-2"}>
-        <li>
-          <SidebarLink to={"/"}>
-            <MdHomeFilled size={20} />
-            Home
-          </SidebarLink>
-        </li>
+    <nav className="sidebar">
+      <ul className="sidebar__list debug-border border-r-base-content/50 fixed top-(--navbar-height) bottom-0 hidden w-(--sidebar-width) flex-col overflow-y-auto border-r px-3 pt-6 select-none md:flex">
+        {links.map((link) => (
+          <li key={link.to}>
+            <SidebarLink to={link.to}>
+              {link.icon}
+              {link.label}
+            </SidebarLink>
+          </li>
+        ))}
         {/* <li>
           <SidebarLink to={"/profile"}>
             <MdAccountCircle size={20} />
@@ -28,15 +53,9 @@ const Sidebar = () => {
             Journal
           </SidebarLink>
         </li> */}
-        <li>
-          <SidebarLink to="/tasks">
-            <MdTaskAlt size={20} />
-            Tasks
-          </SidebarLink>
-        </li>
       </ul>
 
-      {/*<div className={"mt-auto px-4 py-2"}>(Profile)</div>*/}
+      {/*<div className="mt-auto px-4 py-2">(Profile)</div>*/}
     </nav>
   );
 };
