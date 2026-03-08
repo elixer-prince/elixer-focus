@@ -1,7 +1,7 @@
 import CurrentTime from "@/features/ui/navigation/Navbar/components/CurrentTime";
 import HamburgerMenu from "@/features/ui/navigation/Navbar/components/HamburgerMenu";
 import MobileLinkContainer from "@/features/ui/navigation/Navbar/components/MobileLinkContainer";
-import { useNavbarIsOpen } from "@/features/ui/navigation/Navbar/stores/NavbarStore";
+import { useNavbarIsOpen } from "@/features/ui/navigation/Navbar/stores/navbar-store";
 import NavLogo from "@/features/ui/navigation/NavLogo";
 
 const Navbar = () => {
