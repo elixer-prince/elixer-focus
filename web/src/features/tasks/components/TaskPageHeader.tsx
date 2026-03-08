@@ -38,13 +38,12 @@ const TaskPageHeader = () => {
         <button
           className="btn btn-primary"
           onClick={() => {
-            if (!inputRef.current) return;
-            if (inputRef.current.value.trim() === "") {
-              inputRef.current.value = "";
+            if (inputRef.current?.value.trim() === "") {
+              setValue("");
               return;
             }
-            addTask(inputRef.current?.value);
-            inputRef.current.value = "";
+            addTask(value);
+            setValue("");
           }}
         >
           Create task
