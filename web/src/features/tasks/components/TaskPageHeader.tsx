@@ -16,10 +16,11 @@ const TaskPageHeader = () => {
       <div className="task-panel mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
         <input
           ref={inputRef}
-          value={value}
+          aria-label="Uncategorised task input"
           type="text"
+          placeholder="A random task..."
+          value={value}
           className="new-task-input input input-primary placeholder:text-primary-content/75 border-primary-content/50 mx-auto block placeholder:italic"
-          placeholder="Do the laundry..."
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
