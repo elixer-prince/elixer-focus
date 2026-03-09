@@ -1,6 +1,5 @@
 import { useMusicPlayerStore } from "@/features/music-player/stores/store";
 import { act } from "@testing-library/react";
-import { use } from "react";
 
 const createSong = (id: number, title: string, isRecommended: boolean) => ({
   id,
