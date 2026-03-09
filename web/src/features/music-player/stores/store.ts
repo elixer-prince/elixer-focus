@@ -30,7 +30,7 @@ const defaultSongs = [
   },
 ];
 
-const useMusicPlayerStore = create<MusicPlayerStore>()(
+export const useMusicPlayerStore = create<MusicPlayerStore>()(
   persist(
     (set) => ({
       chosenSongId: defaultSongs[0].id,
@@ -56,7 +56,7 @@ const useMusicPlayerStore = create<MusicPlayerStore>()(
   ),
 );
 
-// STATES
+// States
 
 export const useChosenSongId = () =>
   useMusicPlayerStore((state) => state.chosenSongId);
@@ -71,7 +71,7 @@ export const useSongs = () => useMusicPlayerStore((state) => state.songs);
 
 export const useVolume = () => useMusicPlayerStore((state) => state.volume);
 
-// ACTIONS
+// Actions
 
 export const useSetChosenSongId = () =>
   useMusicPlayerStore((state) => state.setChosenSongId);
