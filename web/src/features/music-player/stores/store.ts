@@ -1,4 +1,5 @@
 import type { Song } from "@/features/music-player/types/song";
+import type { MusicPlayerStore } from "@/features/music-player/types/store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -29,25 +30,7 @@ const defaultSongs = [
   },
 ];
 
-type MusicPlayerState = {
-  chosenSongId: number;
-  musicPaused: boolean;
-  showVolumeSlider: boolean;
-  songs: Song[];
-  volume: number;
-};
-
-type MusicPlayerActions = {
-  setChosenSongId: (id: number) => void;
-  setMusicPaused: (paused: boolean) => void;
-  setShowVolumeSlider: (show: boolean) => void;
-  setSongs: (songs: Song[]) => void;
-  setVolume: (volume: number) => void;
-};
-
-type MusicPlayer = MusicPlayerState & MusicPlayerActions;
-
-const useMusicPlayerStore = create<MusicPlayer>()(
+const useMusicPlayerStore = create<MusicPlayerStore>()(
   persist(
     (set) => ({
       chosenSongId: defaultSongs[0].id,
