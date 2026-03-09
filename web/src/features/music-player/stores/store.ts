@@ -12,15 +12,15 @@ const defaultSongs = [
   },
   {
     id: 2,
-    title: "Lofi Radio (Lofi Girl)",
-    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+    title: "90's Chill Lofi Playlist",
+    src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
     isRecommended: true,
   },
   {
     id: 3,
-    title: "90's Chill Lofi Playlist",
-    src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
-    isRecommended: false,
+    title: "Lofi Radio (Lofi Girl)",
+    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+    isRecommended: true,
   },
   {
     id: 4,
