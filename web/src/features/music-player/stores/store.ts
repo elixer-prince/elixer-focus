@@ -39,7 +39,14 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
       songs: defaultSongs,
       volume: 50,
 
-      setChosenSongId: (id: number) => set(() => ({ chosenSongId: id })),
+      setChosenSongId: (id: number) =>
+        set(() => {
+          const songExists = defaultSongs.some((song) => song.id === id);
+          if (!songExists) {
+            throw new Error(`A song with id ${id} was not found`);
+          }
+          return { chosenSongId: id };
+        }),
 
       setMusicPaused: (paused: boolean) => set(() => ({ musicPaused: paused })),
 
@@ -48,7 +55,10 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
 
       setSongs: (songs: Song[]) => set(() => ({ songs })),
 
-      setVolume: (volume: number) => set(() => ({ volume })),
+      setVolume: (volume: number) =>
+        set(() => {
+          return { volume: Math.min(100, Math.max(0, volume)) };
+        }),
     }),
     {
       name: "music-player-storage",
