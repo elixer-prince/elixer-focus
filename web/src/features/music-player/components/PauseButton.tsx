@@ -16,7 +16,8 @@ const PauseButton = () => {
         setMusicPaused(true);
       }}
     >
-      <FaPause size={16} />
+      {/* Pause Icon */}
+      <FaPause role="img" aria-label="Pause music button" size={16} />
     </button>
   );
 };
