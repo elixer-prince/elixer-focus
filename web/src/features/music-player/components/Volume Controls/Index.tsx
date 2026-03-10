@@ -6,7 +6,7 @@ import {
   useVolume,
 } from "@/features/music-player/stores/store";
 import type { ChangeEvent } from "react";
-import { FaVolumeUp } from "react-icons/fa";
+import { MdVolumeUp } from "react-icons/md";
 
 const VolumeControls = () => {
   const volume = useVolume();
@@ -23,14 +23,22 @@ const VolumeControls = () => {
   };
 
   return (
-    <div className="volume-controls flex items-center gap-4">
+    // Volume Controls
+    <div className="debug-border flex items-center gap-4">
       <button onClick={() => setShowVolumeSlider(!showVolumeSlider)}>
-        <FaVolumeUp size={20} className={"cursor-pointer"} />
+        {/* Volume Toggle Icon */}
+        <MdVolumeUp
+          role="img"
+          aria-label="Toggle volume controls"
+          size={28}
+          className="cursor-pointer"
+        />
       </button>
 
       {showVolumeSlider && (
+        // Volume Slider
         <input
-          className="volume-slider range range-xs range-primary rounded-full"
+          className="range range-xs range-primary rounded-full"
           type="range"
           min="0"
           max="100"
