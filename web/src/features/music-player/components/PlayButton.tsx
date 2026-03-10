@@ -16,7 +16,8 @@ const PlayButton = () => {
         setMusicPaused(false);
       }}
     >
-      <FaPlay size={16} />
+      {/* Play Icon */}
+      <FaPlay role="img" aria-label="Play music button" size={16} />
     </button>
   );
 };
