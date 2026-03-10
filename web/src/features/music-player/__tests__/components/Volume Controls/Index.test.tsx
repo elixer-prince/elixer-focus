@@ -43,8 +43,6 @@ describe("Volume Controls", () => {
       name: /volume controls/i,
     });
 
-    screen.debug(sectionElement);
-
     expect(sectionElement).toBeInTheDocument();
   });
 
