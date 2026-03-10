@@ -86,7 +86,7 @@ export const useVolume = () => useMusicPlayerStore((state) => state.volume);
 export const useSetChosenSongId = () =>
   useMusicPlayerStore((state) => state.setChosenSongId);
 
-export const useSetPlaybackPaused = () =>
+export const useSetMusicPaused = () =>
   useMusicPlayerStore((state) => state.setMusicPaused);
 
 export const useSetShowVolumeSlider = () =>
