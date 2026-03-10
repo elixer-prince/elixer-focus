@@ -8,8 +8,9 @@ const PauseButton = () => {
   const { playerInstanceRef } = useMusicPlayerContext();
 
   return (
+    // Pause Button
     <button
-      className="pause-button flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
+      className="flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       onClick={() => {
         pauseVideo(playerInstanceRef);
         setMusicPaused(true);
