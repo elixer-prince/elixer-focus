@@ -8,8 +8,9 @@ const PlayButton = () => {
   const { playerInstanceRef } = useMusicPlayerContext();
 
   return (
+    // Play Button
     <button
-      className="play-button flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
+      className="flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       onClick={() => {
         playVideo(playerInstanceRef);
         setMusicPaused(false);
