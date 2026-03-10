@@ -1,18 +1,16 @@
+import ToggleButton from "@/features/music-player/components/Volume Controls/ToggleButton";
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import {
-  useSetShowVolumeSlider,
   useSetVolume,
   useShowVolumeSlider,
   useVolume,
 } from "@/features/music-player/stores/store";
 import type { ChangeEvent } from "react";
-import { MdVolumeUp } from "react-icons/md";
 
 const VolumeControls = () => {
   const volume = useVolume();
   const showVolumeSlider = useShowVolumeSlider();
   const setVolume = useSetVolume();
-  const setShowVolumeSlider = useSetShowVolumeSlider();
 
   const { playerInstanceRef } = useMusicPlayerContext();
 
@@ -25,15 +23,7 @@ const VolumeControls = () => {
   return (
     // Volume Controls
     <div className="debug-border flex items-center gap-4">
-      <button onClick={() => setShowVolumeSlider(!showVolumeSlider)}>
-        {/* Volume Toggle Icon */}
-        <MdVolumeUp
-          role="img"
-          aria-label="Toggle volume controls"
-          size={28}
-          className="cursor-pointer"
-        />
-      </button>
+      <ToggleButton />
 
       {showVolumeSlider && (
         // Volume Slider
