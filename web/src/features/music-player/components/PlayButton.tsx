@@ -1,7 +1,7 @@
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import { useSetMusicPaused } from "@/features/music-player/stores/store";
 import { playVideo } from "@/features/music-player/utils/playback";
-import { FaPlay } from "react-icons/fa6";
+import { MdPlayArrow } from "react-icons/md";
 
 const PlayButton = () => {
   const setMusicPaused = useSetMusicPaused();
@@ -17,7 +17,7 @@ const PlayButton = () => {
       }}
     >
       {/* Play Icon */}
-      <FaPlay role="img" aria-label="Play music button" size={16} />
+      <MdPlayArrow role="img" aria-label="Play music button" size={28} />
     </button>
   );
 };

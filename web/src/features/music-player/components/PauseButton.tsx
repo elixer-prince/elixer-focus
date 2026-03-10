@@ -1,7 +1,7 @@
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import { useSetMusicPaused } from "@/features/music-player/stores/store";
 import { pauseVideo } from "@/features/music-player/utils/playback";
-import { FaPause } from "react-icons/fa";
+import { MdPause } from "react-icons/md";
 
 const PauseButton = () => {
   const setMusicPaused = useSetMusicPaused();
@@ -17,7 +17,7 @@ const PauseButton = () => {
       }}
     >
       {/* Pause Icon */}
-      <FaPause role="img" aria-label="Pause music button" size={16} />
+      <MdPause role="img" aria-label="Pause music button" size={28} />
     </button>
   );
 };
