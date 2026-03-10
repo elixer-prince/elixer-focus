@@ -22,12 +22,13 @@ const VolumeControls = () => {
 
   return (
     // Volume Controls
-    <div className="debug-border flex items-center gap-4">
+    <section aria-label="Volume controls" className="flex items-center gap-4">
       <ToggleButton />
 
       {showVolumeSlider && (
         // Volume Slider
         <input
+          aria-label="Volume slider"
           className="range range-xs range-primary rounded-full"
           type="range"
           min="0"
@@ -36,7 +37,7 @@ const VolumeControls = () => {
           onChange={handleVolumeChange}
         />
       )}
-    </div>
+    </section>
   );
 };
 
