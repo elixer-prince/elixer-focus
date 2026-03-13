@@ -9,70 +9,86 @@ const mocks = vi.hoisted(() => ({
   setShowVolumeSlider: vi.fn(),
 }));
 
-vi.mock(
-  import("@/features/music-player/stores/store"),
-  async (importOriginal) => {
-    const original = await importOriginal();
-    return {
-      ...original,
-      useShowVolumeSlider: vi.fn(),
-      useSetShowVolumeSlider: () => setShowVolumeSliderMock,
-    };
-  },
-);
+vi.mock("@/features/music-player/stores/store", () => ({
+  useShowVolumeSlider: () => mocks.showVolumeSlider,
+  useVolume: () => mocks.volume,
+  useSetVolume: () => mocks.setVolume,
+  useSetShowVolumeSlider: () => mocks.setShowVolumeSlider,
+}));
 
-// Tests
+vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
+  default: () => ({
+    playerInstanceRef: {
+      current: {
+        setVolume: mocks.setVolumeOnPlayer,
+      },
+    },
+  }),
+}));
+
+import VolumeControls from "@/features/music-player/components/Volume Controls/Index";
 
 describe("Volume Controls", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.showVolumeSlider = false;
+    mocks.volume = 40;
   });
 
-  it("should render a section element", () => {
-    render(<VolumeControlsMock />);
+  it("should render the volume controls region", () => {
+    render(<VolumeControls />);
 
-    const sectionElement = screen.getByRole("region", {
-      name: /volume controls/i,
-    });
-
-    expect(sectionElement).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: /volume controls/i }),
+    ).toBeInTheDocument();
   });
 
-  it("should render a volume toggle button", () => {
-    render(<VolumeControlsMock />);
+  it("should always render the toggle button", () => {
+    render(<VolumeControls />);
 
-    const volumeToggle = screen.getByRole("button", {
-      name: /toggle volume controls/i,
-    });
-    expect(volumeToggle).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /toggle volume controls/i }),
+    ).toBeInTheDocument();
   });
 
-  it("should call the useSetShowVolumeSlider hook when the toggle button is clicked", async () => {
-    (useShowVolumeSlider as Mock).mockReturnValue(false);
+  it("should show the volume slider when enabled", () => {
+    mocks.showVolumeSlider = true;
 
-    render(<VolumeControlsMock />);
+    render(<VolumeControls />);
 
-    const toggleButton = screen.getByRole("button", {
-      name: /toggle volume controls/i,
-    });
-    await userEvent.click(toggleButton);
-
-    expect(setShowVolumeSliderMock).toHaveBeenCalled();
+    expect(screen.getByRole("slider", { name: /volume slider/i })).toBeVisible();
   });
 
-  it("should show a volume slider when showVolumeSlider is true", () => {
-    (useShowVolumeSlider as Mock).mockReturnValue(true);
+  it("should hide the volume slider when disabled", () => {
+    mocks.showVolumeSlider = false;
 
-    render(<VolumeControlsMock />);
+    render(<VolumeControls />);
 
-    expect(screen.getByRole("slider")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("slider", { name: /volume slider/i }),
+    ).not.toBeInTheDocument();
   });
 
-  it("should not show a volume slider when showVolumeSlider is false", () => {
-    (useShowVolumeSlider as Mock).mockReturnValue(false);
+  it("should update store volume and player volume on change", async () => {
+    mocks.showVolumeSlider = true;
+    mocks.volume = 20;
+    const user = userEvent.setup();
 
-    render(<VolumeControlsMock />);
+    render(<VolumeControls />);
 
-    expect(screen.queryByRole("slider")).not.toBeInTheDocument();
+    const slider = screen.getByRole("slider", { name: /volume slider/i });
+    expect(slider).toHaveValue("20");
+
+    await user.click(slider);
+    const setValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+    setValue?.call(slider, "75");
+    slider.dispatchEvent(new Event("input", { bubbles: true }));
+    slider.dispatchEvent(new Event("change", { bubbles: true }));
+
+    expect(mocks.setVolume).toHaveBeenLastCalledWith(75);
+    expect(mocks.setVolumeOnPlayer).toHaveBeenLastCalledWith(75);
   });
 });
