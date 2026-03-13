@@ -1,21 +1,13 @@
-import MusicProvider from "@/app/providers/Music";
-import VolumeControls from "@/features/music-player/components/Volume Controls/Index";
-import { useShowVolumeSlider } from "@/features/music-player/stores/store";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { Mock } from "vitest";
 
-// Mocks
-
-const VolumeControlsMock = () => {
-  return (
-    <MusicProvider>
-      <VolumeControls />
-    </MusicProvider>
-  );
-};
-
-const setShowVolumeSliderMock = vi.fn();
+const mocks = vi.hoisted(() => ({
+  showVolumeSlider: false,
+  volume: 40,
+  setVolume: vi.fn(),
+  setVolumeOnPlayer: vi.fn(),
+  setShowVolumeSlider: vi.fn(),
+}));
 
 vi.mock(
   import("@/features/music-player/stores/store"),
