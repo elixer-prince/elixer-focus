@@ -14,7 +14,10 @@ const MusicPlayer = () => {
 
   return (
     // Music Player
-    <article className="border-t-base-content/25 bg-base-100 hover:outline-primary/75 fixed right-4 bottom-5 z-30 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg outline-2 outline-transparent transition-all duration-300 select-none hover:-translate-y-0.5">
+    <article
+      aria-label="Music Player"
+      className="border-t-base-content/25 bg-base-100 hover:outline-primary/75 fixed right-4 bottom-5 z-30 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg outline-2 outline-transparent transition-all duration-300 select-none hover:-translate-y-0.5"
+    >
       {/* Invisible Player */}
       <div ref={playerRef} className="hidden"></div>
 
