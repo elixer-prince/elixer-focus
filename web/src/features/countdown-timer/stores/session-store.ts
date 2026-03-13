@@ -86,12 +86,6 @@ const useSessionStore = create<SessionStore>()(
   ),
 );
 
-/*-------------------------------------
-| SESSION STORE EXPORTS
-|--------------------------------------
-|
-*/
-
 // States
 
 export const useFocusDuration = () =>
