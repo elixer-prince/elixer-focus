@@ -42,6 +42,7 @@ const useSessionSwitch = () => {
         break;
       case "Long Break":
         updateTimerDurationAndReset("Focus", focusDuration);
+        resetCurrentSessionCount();
         break;
       case "Custom":
         updateTimerDurationAndReset("Focus", focusDuration);
