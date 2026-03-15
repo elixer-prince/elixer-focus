@@ -57,7 +57,7 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
 
 import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 
-describe.skip("useSessionSwitch", () => {
+describe("useSessionSwitch", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.useTimerRunning.mockReturnValue(false);
