@@ -1,10 +1,11 @@
 import { useAddTask } from "@/features/tasks/stores/tasks-store";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-const TaskHeader = () => {
+const TaskPageHeader = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const addTask = useAddTask();
+
+  const [value, setValue] = useState<string>("");
 
   return (
     <div className="task-header">
@@ -12,21 +13,24 @@ const TaskHeader = () => {
         Your Tasks
       </h1>
 
-      <div className="mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
+      <div className="task-panel mx-auto flex max-w-100 items-center justify-center gap-4 max-sm:flex-col">
         <input
           ref={inputRef}
+          aria-label="Uncategorised task input"
           type="text"
-          className="input input-primary placeholder:text-primary-content/75 border-primary-content/50 mx-auto block placeholder:italic"
-          placeholder="Do the laundry..."
+          placeholder="A random task..."
+          value={value}
+          className="new-task-input input input-primary placeholder:text-primary-content/75 border-primary-content/50 mx-auto block placeholder:italic"
+          onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               const inputValue = event.currentTarget.value;
               if (inputValue.trim() === "") {
-                event.currentTarget.value = "";
+                setValue("");
                 return;
               }
               addTask(inputValue);
-              event.currentTarget.value = "";
+              setValue("");
             }
           }}
         />
@@ -34,13 +38,12 @@ const TaskHeader = () => {
         <button
           className="btn btn-primary"
           onClick={() => {
-            if (!inputRef.current) return;
-            if (inputRef.current.value.trim() === "") {
-              inputRef.current.value = "";
+            if (inputRef.current?.value.trim() === "") {
+              setValue("");
               return;
             }
-            addTask(inputRef.current?.value);
-            inputRef.current.value = "";
+            addTask(value);
+            setValue("");
           }}
         >
           Create task
@@ -50,4 +53,4 @@ const TaskHeader = () => {
   );
 };
 
-export default TaskHeader;
+export default TaskPageHeader;

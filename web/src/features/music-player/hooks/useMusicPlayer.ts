@@ -60,6 +60,13 @@ const useMusicPlayer = ({
     }
   }, [musicPaused, playerInstanceRef]);
 
+  // Effect for volume changes
+  useEffect(() => {
+    if (!playerInstanceRef.current) return;
+
+    playerInstanceRef.current.setVolume(volume);
+  }, [volume, playerInstanceRef]);
+
   useEffect(() => {
     const initialSong = songs.find((song) => song.id === chosenSongId);
 

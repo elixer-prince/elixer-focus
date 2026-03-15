@@ -11,7 +11,7 @@ type NavbarActions = {
   closeNavbar: () => void;
 };
 
-const useNavbarStore = create<NavbarState & NavbarActions>()(
+export const useNavbarStore = create<NavbarState & NavbarActions>()(
   persist(
     (set) => ({
       navbarIsOpen: false,

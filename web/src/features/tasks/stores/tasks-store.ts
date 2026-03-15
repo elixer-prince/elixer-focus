@@ -18,7 +18,7 @@ type TaskActions = {
   toggleTaskCompletion: (id: string, completed: boolean) => void;
 };
 
-const useTasksStore = create<TaskState & TaskActions>()(
+export const useTasksStore = create<TaskState & TaskActions>()(
   persist(
     (set) => ({
       tasks: [],

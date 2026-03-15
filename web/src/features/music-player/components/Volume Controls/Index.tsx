@@ -1,18 +1,16 @@
+import ToggleButton from "@/features/music-player/components/Volume Controls/ToggleButton";
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import {
-  useSetShowVolumeSlider,
   useSetVolume,
   useShowVolumeSlider,
   useVolume,
 } from "@/features/music-player/stores/store";
 import type { ChangeEvent } from "react";
-import { FaVolumeUp } from "react-icons/fa";
 
 const VolumeControls = () => {
   const volume = useVolume();
   const showVolumeSlider = useShowVolumeSlider();
   const setVolume = useSetVolume();
-  const setShowVolumeSlider = useSetShowVolumeSlider();
 
   const { playerInstanceRef } = useMusicPlayerContext();
 
@@ -23,14 +21,15 @@ const VolumeControls = () => {
   };
 
   return (
-    <div className="volume-controls flex items-center gap-4">
-      <button onClick={() => setShowVolumeSlider(!showVolumeSlider)}>
-        <FaVolumeUp size={20} className={"cursor-pointer"} />
-      </button>
+    // Volume Controls
+    <section aria-label="Volume controls" className="flex items-center gap-4">
+      <ToggleButton />
 
       {showVolumeSlider && (
+        // Volume Slider
         <input
-          className="volume-slider range range-xs range-primary rounded-full"
+          aria-label="Volume slider"
+          className="range range-xs range-primary rounded-full"
           type="range"
           min="0"
           max="100"
@@ -38,7 +37,7 @@ const VolumeControls = () => {
           onChange={handleVolumeChange}
         />
       )}
-    </div>
+    </section>
   );
 };
 

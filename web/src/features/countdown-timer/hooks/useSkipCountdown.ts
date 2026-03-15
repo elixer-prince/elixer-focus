@@ -9,7 +9,6 @@ const useSkipCountdown = (): {
 
   const { resetTimerSoundEffectRef } = useCountdownContext();
 
-  // * Temp Locked * //
   const skipCountdown = () => {
     // TODO: Implement this as an overlay
     if (confirm("Are you sure you want to skip the countdown?")) {

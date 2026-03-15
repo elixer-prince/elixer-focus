@@ -1,4 +1,5 @@
 import type { Song } from "@/features/music-player/types/song";
+import type { MusicPlayerStore } from "@/features/music-player/types/store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -11,15 +12,15 @@ const defaultSongs = [
   },
   {
     id: 2,
-    title: "Lofi Radio (Lofi Girl)",
-    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+    title: "90's Chill Lofi Playlist",
+    src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
     isRecommended: true,
   },
   {
     id: 3,
-    title: "90's Chill Lofi Playlist",
-    src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
-    isRecommended: false,
+    title: "Lofi Radio (Lofi Girl)",
+    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+    isRecommended: true,
   },
   {
     id: 4,
@@ -29,25 +30,7 @@ const defaultSongs = [
   },
 ];
 
-type MusicPlayerState = {
-  chosenSongId: number;
-  musicPaused: boolean;
-  showVolumeSlider: boolean;
-  songs: Song[];
-  volume: number;
-};
-
-type MusicPlayerActions = {
-  setChosenSongId: (id: number) => void;
-  setMusicPaused: (paused: boolean) => void;
-  setShowVolumeSlider: (show: boolean) => void;
-  setSongs: (songs: Song[]) => void;
-  setVolume: (volume: number) => void;
-};
-
-type MusicPlayer = MusicPlayerState & MusicPlayerActions;
-
-const useMusicPlayerStore = create<MusicPlayer>()(
+export const useMusicPlayerStore = create<MusicPlayerStore>()(
   persist(
     (set) => ({
       chosenSongId: defaultSongs[0].id,
@@ -56,7 +39,14 @@ const useMusicPlayerStore = create<MusicPlayer>()(
       songs: defaultSongs,
       volume: 50,
 
-      setChosenSongId: (id: number) => set(() => ({ chosenSongId: id })),
+      setChosenSongId: (id: number) =>
+        set(() => {
+          const songExists = defaultSongs.some((song) => song.id === id);
+          if (!songExists) {
+            throw new Error(`A song with id ${id} was not found`);
+          }
+          return { chosenSongId: id };
+        }),
 
       setMusicPaused: (paused: boolean) => set(() => ({ musicPaused: paused })),
 
@@ -65,7 +55,10 @@ const useMusicPlayerStore = create<MusicPlayer>()(
 
       setSongs: (songs: Song[]) => set(() => ({ songs })),
 
-      setVolume: (volume: number) => set(() => ({ volume })),
+      setVolume: (volume: number) =>
+        set(() => {
+          return { volume: Math.min(100, Math.max(0, volume)) };
+        }),
     }),
     {
       name: "music-player-storage",
@@ -73,7 +66,7 @@ const useMusicPlayerStore = create<MusicPlayer>()(
   ),
 );
 
-// STATES
+// States
 
 export const useChosenSongId = () =>
   useMusicPlayerStore((state) => state.chosenSongId);
@@ -88,12 +81,12 @@ export const useSongs = () => useMusicPlayerStore((state) => state.songs);
 
 export const useVolume = () => useMusicPlayerStore((state) => state.volume);
 
-// ACTIONS
+// Actions
 
 export const useSetChosenSongId = () =>
   useMusicPlayerStore((state) => state.setChosenSongId);
 
-export const useSetPlaybackPaused = () =>
+export const useSetMusicPaused = () =>
   useMusicPlayerStore((state) => state.setMusicPaused);
 
 export const useSetShowVolumeSlider = () =>

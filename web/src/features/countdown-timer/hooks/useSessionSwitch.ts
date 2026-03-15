@@ -3,6 +3,7 @@ import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-sto
 import {
   useCurrentSessionCount,
   useCurrentSessionType,
+  useCustomSessionDuration,
   useFocusDuration,
   useIncrementCurrentSessionCount,
   useLongBreakDuration,
@@ -20,6 +21,7 @@ const useSessionSwitch = () => {
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
+  const customSessionDuration = useCustomSessionDuration();
   const currentSessionType = useCurrentSessionType();
   const currentSessionCount = useCurrentSessionCount();
   const sessionCountLimit = useSessionCountLimit();
@@ -39,6 +41,10 @@ const useSessionSwitch = () => {
         updateTimerDurationAndReset("Focus", focusDuration);
         break;
       case "Long Break":
+        updateTimerDurationAndReset("Focus", focusDuration);
+        resetCurrentSessionCount();
+        break;
+      case "Custom":
         updateTimerDurationAndReset("Focus", focusDuration);
         break;
       default:
@@ -101,11 +107,31 @@ const useSessionSwitch = () => {
     }
   };
 
+  const switchToCustom = () => {
+    if (currentSessionType === "Custom") return;
+
+    if (!timerRunning)
+      return updateTimerDurationAndReset("Custom", customSessionDuration);
+
+    if (confirm(confirmationMessage)) {
+      updateTimerDurationAndReset("Custom", customSessionDuration);
+      resetPageTitle();
+    }
+  };
+
+  const updateCustomDurationAndReset = (value: number) => {
+    if (currentSessionType === "Custom") {
+      updateTimerDurationAndReset("Custom", value);
+    }
+  };
+
   return {
     autoSwitchSessionType,
     switchToFocus,
     switchToShortBreak,
     switchToLongBreak,
+    switchToCustom,
+    updateCustomDurationAndReset,
   };
 };
 

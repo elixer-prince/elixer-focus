@@ -1,4 +1,4 @@
-import { useCloseNavbar } from "@/features/ui/navigation/Navbar/stores/NavbarStore";
+import { useCloseNavbar } from "@/features/ui/navigation/Navbar/stores/navbar-store";
 import type { PropsWithChildren } from "react";
 import { NavLink } from "react-router";
 
