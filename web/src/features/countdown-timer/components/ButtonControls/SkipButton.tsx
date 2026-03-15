@@ -1,4 +1,4 @@
-import useSkipCountdown from "@/hooks/countdown-timer/useSkipCountdown";
+import useSkipCountdown from "@/features/countdown-timer/hooks/useSkipCountdown";
 import { MdSkipNext } from "react-icons/md";
 
 const SkipButton = () => {

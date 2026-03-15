@@ -1,27 +1,24 @@
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
+import { useSetMusicPaused } from "@/features/music-player/stores/store";
 import { playVideo } from "@/features/music-player/utils/playback";
-import { useSetPlaybackPaused } from "@/stores/music-player";
-import type { YTPlayerRef } from "@/types/music-player/player";
-import { FaPlay } from "react-icons/fa6";
+import { MdPlayArrow } from "react-icons/md";
 
-interface PlayButtonProps {
-  playerInstanceRef: YTPlayerRef;
-}
-
-const PlayButton = ({ playerInstanceRef }: PlayButtonProps) => {
-  const setPlaybackPaused = useSetPlaybackPaused();
+const PlayButton = () => {
+  const setMusicPaused = useSetMusicPaused();
+  const { playerInstanceRef } = useMusicPlayerContext();
 
   return (
-    <div
-      className={
-        "flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
-      }
+    // Play Button
+    <button
+      className="flex aspect-square cursor-pointer items-center justify-center rounded-full p-2"
       onClick={() => {
         playVideo(playerInstanceRef);
-        setPlaybackPaused(false);
+        setMusicPaused(false);
       }}
     >
-      <FaPlay size={16} />
-    </div>
+      {/* Play Icon */}
+      <MdPlayArrow role="img" aria-label="Play music button" size={28} />
+    </button>
   );
 };
 

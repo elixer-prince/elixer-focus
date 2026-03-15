@@ -1,33 +1,67 @@
 <!doctype html>
 
-<html class="bg-base-300 not-motion-reduce:scroll-smooth" lang="en-JM">
+<html class="html bg-base-300 not-motion-reduce:scroll-smooth" lang="en-JM">
   <head>
     <meta charset="UTF-8" />
-    <meta content="Daniel J. Leith (Elixer Prince)" name="author" />
+    <meta name="author" content="Daniel J. Leith (Elixer Prince)" />
     <meta
-      content="Struggling to focus even after trying every method under the sun? Elixer Focus is here to save the day! Elixer Focus is a gamified system to make sense of it all, while allowing you to reach your full potential!😊"
       name="description"
+      content="Elixer Focus is a gamified productivity app that helps you achieve focus, track progress, and reach your full potential. Connect with friends, join global focus sessions, and get AI-powered guidance tailored to your life."
     />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Application Title -->
     <title>Elixer Focus</title>
 
     <!-- Favicon -->
-    <link href="src/assets/images/elixerfocus-favicon.png" rel="icon" />
+    <link href="/favicon.png" rel="icon" />
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap"
       rel="stylesheet"
+    />
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
+
+    <!-- TODO: I am going to implement this to follow the user's selected theme in React -->
+    <meta name="theme-color" content="#1F2937" />
+
+    <!-- Open Graph Tags (For Social Media) -->
+
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+    <meta property="og:title" content="Elixer Focus" />
+    <meta property="og:site_name" content="Elixer Focus" />
+    <meta
+      property="og:description"
+      content="Achieve focus, track progress, and reach your full potential with Elixer Focus."
+    />
+    <!-- Tells websites how to display the site -->
+    <meta property="og:type" content="website" />
+    <!-- TODO: Add an actual preview image -->
+    <meta
+      property="og:image"
+      content="%VITE_SITE_URL%/assets/images/elixerfocus-preview.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Elixer Focus" />
+    <meta
+      name="twitter:description"
+      content="Achieve focus, track progress, and reach your full potential with Elixer Focus."
+    />
+    <meta
+      name="twitter:image"
+      content="%VITE_SITE_URL%/assets/images/elixerfocus-preview.png"
     />
   </head>
 
-  <!-- Transition colors for smooth theme changes -->
-  <body class="font-roboto transition-colors duration-1000">
+  <!-- Transition body colours for smooth theme changes -->
+
+  <body class="body font-roboto transition-colors duration-1000">
     <div id="root"></div>
-    <script src="src/app/app.tsx" type="module"></script>
+    <script src="./src/app/app.tsx" type="module"></script>
   </body>
 </html>

@@ -1,0 +1,21 @@
+{
+  "name": "Elixer Focus",
+  "short_name": "EFS",
+  "description": "Elixer Focus is a gamified productivity app that helps you achieve focus, track progress, and reach your full potential. Connect with friends, join global focus sessions, and get AI-powered guidance tailored to your life.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "./favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,8 +1,7 @@
 import {
   timerHasEnded,
   timerIsAboutToEnd,
-} from "@/utils/countdown-timer/checks";
-import { describe, expect, it } from "vitest";
+} from "@/features/countdown-timer/utils/checks";
 
 describe("timerIsAboutToEnd", () => {
   it("should be true when the argument is greater than 10 but less than 0", () => {

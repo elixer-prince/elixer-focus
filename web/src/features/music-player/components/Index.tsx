@@ -1,36 +1,31 @@
+import MusicSwitcher from "@/features/music-player/components/MusicSwitcher/Index";
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
-import VolumeControls from "@/features/music-player/components/VolumeControls";
-import useMusicPlayer from "@/hooks/useMusicPlayer";
-import { usePlaybackPaused } from "@/stores/music-player";
-import type { YTPlayer } from "@/types/music-player/player";
-import { useRef } from "react";
+import VolumeControls from "@/features/music-player/components/Volume Controls/Index";
+import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
+import { useMusicPaused } from "@/features/music-player/stores/store";
 
 const MusicPlayer = () => {
-  const playbackPaused = usePlaybackPaused();
-
-  const playerRef = useRef<HTMLDivElement | null>(null);
-  const playerInstanceRef = useRef<YTPlayer | null>(null);
+  const musicPaused = useMusicPaused();
+  const { playerRef, playerInstanceRef } = useMusicPlayerContext();
 
   useMusicPlayer({ playerRef, playerInstanceRef });
 
   return (
+    // Music Player
     <article
-      className={
-        "border-t-base-content/25 bg-base-100 fixed right-4 bottom-5 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg select-none"
-      }
+      aria-label="Music Player"
+      className="border-t-base-content/25 bg-base-100 hover:outline-primary/75 fixed right-4 bottom-5 z-30 flex h-(--music-player-height) items-center gap-4 rounded-xl border-t-2 p-4 shadow-lg outline-2 outline-transparent transition-all duration-300 select-none hover:-translate-y-0.5"
     >
-      <div className={"hidden"} ref={playerRef}></div>
+      {/* Invisible Player */}
+      <div ref={playerRef} className="hidden"></div>
 
-      {playbackPaused ? (
-        <PlayButton playerInstanceRef={playerInstanceRef} />
-      ) : (
-        <PauseButton playerInstanceRef={playerInstanceRef} />
-      )}
+      <MusicSwitcher />
 
-      <VolumeControls playerInstanceRef={playerInstanceRef} />
+      {musicPaused ? <PlayButton /> : <PauseButton />}
 
-      {/*<MusicSwitcher />*/}
+      <VolumeControls />
     </article>
   );
 };

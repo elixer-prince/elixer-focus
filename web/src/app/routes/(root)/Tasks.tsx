@@ -1,5 +1,10 @@
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
+import Column from "@/features/tasks/components/Column/Index";
+import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
+import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useTimerRunning } from "@/stores/countdown-timer/store";
+import { move } from "@dnd-kit/helpers";
+import { DragDropProvider } from "@dnd-kit/react";
 
 const Tasks = () => {
   const { updatePageTitle } = usePageTitle();
@@ -7,7 +12,55 @@ const Tasks = () => {
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
-  return <>{/*<p>tasks Page...</p>*/}</>;
+  const tasks = useTasks();
+  const setTasks = useSetTasks();
+
+  const handleDragEnd: Parameters<typeof DragDropProvider>[0]["onDragEnd"] = (
+    event,
+  ) => {
+    const nextTasks = move(tasks, event);
+    setTasks(nextTasks);
+  };
+
+  return (
+    <div className="p-12 max-sm:px-4">
+      <TaskPageHeader />
+
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <div className="tasks-container mt-8 flex flex-col items-center gap-8">
+          <Column
+            title="Uncategorised"
+            category="uncategorised"
+            inputPlaceholder=""
+          />
+          <div className="tasks-row flex flex-wrap justify-center gap-8">
+            <Column
+              title="Urgent and Important"
+              category="urgent-important"
+              inputPlaceholder="Finish assignment due in an hour..."
+            />
+            <Column
+              title="Not Urgent but Important"
+              category="not-urgent-important"
+              inputPlaceholder="Practice Spanish for 30 minutes..."
+            />
+          </div>
+          <div className="tasks-row flex flex-wrap justify-center gap-8">
+            <Column
+              title="Urgent but Not Important"
+              category="urgent-not-important"
+              inputPlaceholder="Wash the dishes..."
+            />
+            <Column
+              title="Not Urgent nor Important"
+              category="not-urgent-not-important"
+              inputPlaceholder="Watch Netflix..."
+            />
+          </div>
+        </div>
+      </DragDropProvider>
+    </div>
+  );
 };
 
 export default Tasks;

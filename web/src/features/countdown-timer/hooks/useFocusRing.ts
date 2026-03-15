@@ -1,7 +1,7 @@
 import {
   useRemainingTimeInSeconds,
   useStartTimeInMinutes,
-} from "@/stores/countdown-timer/store";
+} from "@/features/countdown-timer/stores/countdown-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 
 const useFocusRing = () => {

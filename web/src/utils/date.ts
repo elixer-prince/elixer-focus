@@ -3,6 +3,4 @@
  *
  * @returns {number} The current date as a timestamp.
  */
-export function getCurrentTimestamp(): number {
-  return Date.now();
-}
+export const getCurrentTimestamp = (): number => Date.now();

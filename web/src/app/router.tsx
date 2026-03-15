@@ -1,3 +1,5 @@
+import AuthLayout from "@/app/layout/Auth";
+import DefaultLayout from "@/app/layout/Default";
 import Home from "@/app/routes/(root)/Index";
 import Journal from "@/app/routes/(root)/Journal";
 import Profile from "@/app/routes/(root)/Profile";
@@ -5,8 +7,6 @@ import Tasks from "@/app/routes/(root)/Tasks";
 import NotFound from "@/app/routes/404";
 import Login from "@/app/routes/auth/Login";
 import SignUp from "@/app/routes/auth/SignUp";
-import AuthLayout from "@/components/layout/Auth";
-import DefaultLayout from "@/components/layout/Default";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([

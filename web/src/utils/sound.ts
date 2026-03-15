@@ -1,9 +1,3 @@
-/**
- * Plays a sound effect by first pausing and restarting it from the start.
- *
- * @param {HTMLAudioElement} sound
- * @returns {void}
- */
 export function playSound(sound: HTMLAudioElement): void {
   if (!sound) return;
 
@@ -15,12 +9,6 @@ export function playSound(sound: HTMLAudioElement): void {
   }
 }
 
-/**
- * Pauses a sound effect.
- *
- * @param {HTMLAudioElement} sound
- * @returns {void}
- */
 export function stopSound(sound: HTMLAudioElement): void {
   if (!sound) return;
 

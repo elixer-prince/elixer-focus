@@ -1,14 +1,10 @@
 import ButtonControls from "@/features/countdown-timer/components/ButtonControls/Index";
-import CountdownHeader from "@/features/countdown-timer/components/SessionDisplay/Index";
 import CountdownDisplay from "@/features/countdown-timer/components/TimerDisplay/Index";
+import CountdownHeader from "@/features/countdown-timer/components/TimerHeader/Index";
 
 const CountdownTimerContainer = () => {
   return (
-    <section
-      className={
-        "flex w-150 flex-col items-center justify-center gap-4 rounded-xl p-4"
-      }
-    >
+    <section className="timer-container flex w-150 flex-col items-center justify-center gap-4 rounded-xl p-8">
       <CountdownHeader />
       <CountdownDisplay />
       <ButtonControls />

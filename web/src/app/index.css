@@ -6,11 +6,15 @@
 @import "@/app/themes/index.css";
 
 :root {
-  --navbar-height: 4.5rem;
+  --navbar-height: 5rem;
   --sidebar-width: 14rem;
   --music-player-height: 4rem;
 }
 
 @theme {
   --font-roboto: "Roboto", sans-serif;
+}
+
+@utility debug-border {
+  border: 1px solid red;
 }

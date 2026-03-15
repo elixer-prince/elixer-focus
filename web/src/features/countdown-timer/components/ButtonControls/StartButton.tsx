@@ -1,4 +1,4 @@
-import useStartCountdown from "@/hooks/countdown-timer/useStartCountdown";
+import useStartCountdown from "@/features/countdown-timer/hooks/useStartCountdown";
 import { MdPlayArrow } from "react-icons/md";
 
 const StartButton = () => {

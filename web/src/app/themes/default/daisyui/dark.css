@@ -2,5 +2,7 @@
   name: "dark";
 
   /* Colours */
-  --color-base-300: hsl(204, 20%, 6%);
+  --color-base-100: hsl(204, 20%, 4%);
+  --color-base-200: hsl(204, 20%, 4%);
+  --color-base-300: hsl(204, 20%, 4%);
 }
