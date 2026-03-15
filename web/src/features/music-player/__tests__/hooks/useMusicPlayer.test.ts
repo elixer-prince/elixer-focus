@@ -1,3 +1,4 @@
+import type { YTPlayer } from "@/features/music-player/types/player";
 import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
@@ -38,10 +39,17 @@ describe("useMusicPlayer", () => {
   const createPlayerInstanceRef = () => ({
     current: {
       loadVideoById: vi.fn(),
-      pauseVideo: vi.fn(),
+      cueVideoById: vi.fn(),
       playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
       setVolume: vi.fn(),
-    },
+      getVolume: vi.fn(() => 55),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer,
   });
 
   const createPlayerRef = () => ({
@@ -124,14 +132,28 @@ describe("useMusicPlayer", () => {
   it("should create a YouTube player on API ready and set volume", () => {
     mocks.musicPaused = true;
     mocks.volume = 80;
-    const playerInstanceRef = { current: null as null | { setVolume: () => void } };
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
     const playerRef = createPlayerRef();
-    const ytPlayerInstance = { setVolume: vi.fn() };
-    const playerConstructor = vi
-      .fn()
-      .mockImplementation(function Player(this: unknown) {
-        return ytPlayerInstance;
-      });
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 80),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
 
     (globalThis as { YT?: { Player: unknown } }).YT = {
       Player: playerConstructor,
@@ -156,10 +178,43 @@ describe("useMusicPlayer", () => {
       },
     });
 
-    const onReady = playerConstructor.mock.calls[0][1].events.onReady as () => void;
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
     onReady();
 
     expect(ytPlayerInstance.setVolume).toHaveBeenCalledWith(80);
     expect(playerInstanceRef.current).toBe(ytPlayerInstance);
+  });
+
+  it("should handle volume changes during playback", () => {
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    const { rerender } = renderHook(() =>
+      useMusicPlayer({ playerInstanceRef, playerRef }),
+    );
+
+    // Volume is set on initial render with the current volume
+    expect(playerInstanceRef.current.setVolume).toHaveBeenCalledWith(55);
+
+    mocks.volume = 75;
+
+    act(() => {
+      rerender();
+    });
+
+    expect(playerInstanceRef.current.setVolume).toHaveBeenCalledWith(75);
+  });
+
+  it("should log error when song is not found", () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.chosenSongId = 999;
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    expect(consoleSpy).toHaveBeenCalledWith("Song with id 999 not found");
+    consoleSpy.mockRestore();
   });
 });
