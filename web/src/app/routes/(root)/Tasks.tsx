@@ -1,6 +1,6 @@
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
-import TaskHeader from "@/features/tasks/components/TaskHeader";
+import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
 import { useSetTasks, useTasks } from "@/features/tasks/stores/tasks-store";
 import usePageTitle from "@/hooks/usePageTitle";
 import { move } from "@dnd-kit/helpers";
@@ -24,7 +24,7 @@ const Tasks = () => {
 
   return (
     <div className="p-12 max-sm:px-4">
-      <TaskHeader />
+      <TaskPageHeader />
 
       <DragDropProvider onDragEnd={handleDragEnd}>
         <div className="tasks-container mt-8 flex flex-col items-center gap-8">
@@ -35,24 +35,24 @@ const Tasks = () => {
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
-              title="Urgent and Important (Do First)"
+              title="Urgent and Important"
               category="urgent-important"
               inputPlaceholder="Finish assignment due in an hour..."
             />
             <Column
-              title="Not Urgent but Important (Schedule)"
+              title="Not Urgent but Important"
               category="not-urgent-important"
               inputPlaceholder="Practice Spanish for 30 minutes..."
             />
           </div>
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
-              title="Urgent but Not Important (Delegate)"
+              title="Urgent but Not Important"
               category="urgent-not-important"
               inputPlaceholder="Wash the dishes..."
             />
             <Column
-              title="Not Urgent nor Important (Eliminate)"
+              title="Not Urgent nor Important"
               category="not-urgent-not-important"
               inputPlaceholder="Watch Netflix..."
             />

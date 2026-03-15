@@ -1,4 +1,4 @@
-import MobileLink from "@/features/ui/navigation/Navbar/MobileLink";
+import MobileLink from "@/features/ui/navigation/Navbar/components/MobileLink";
 import { MdHomeFilled, MdTaskAlt } from "react-icons/md";
 
 const MobileLinkContainer = () => {

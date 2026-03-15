@@ -1,21 +1,21 @@
+import {
+  useChosenSongId,
+  useSetChosenSongId,
+} from "@/features/music-player/stores/store";
+
 interface OptionProps {
   id: number;
   title: string;
   isRecommended: boolean;
-  chosenSongId: number;
-  setChosenSongId: (id: number) => void;
 }
 
-const Option = ({
-  id,
-  title,
-  isRecommended,
-  chosenSongId,
-  setChosenSongId,
-}: OptionProps) => {
+const Option = ({ id, title, isRecommended }: OptionProps) => {
+  const chosenSongId = useChosenSongId();
+  const setChosenSongId = useSetChosenSongId();
+
   return (
     <li className="menu-item">
-      <label>
+      <label aria-label={`Switch to '${title}'`}>
         <input
           className="radio radio-primary radio-sm"
           name="song-choice"

@@ -6,11 +6,7 @@ import SessionCount from "@/features/countdown-timer/components/TimerDisplay/Ses
 
 const CountdownDisplay = () => {
   return (
-    <div
-      className={
-        "relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden p-10 outline-none select-none"
-      }
-    >
+    <div className="timer-display relative flex aspect-square w-70 max-w-full flex-col items-center justify-center overflow-hidden p-10 outline-none select-none">
       <ClickableArea />
       <FocusRing />
       <SessionCount />
