@@ -1,4 +1,4 @@
-const Calendar = () => {
+const CalendarRoute = () => {
   return (
     <>
       <p>Calendar Page...</p>
@@ -104,4 +104,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default CalendarRoute;

@@ -1,7 +1,7 @@
-import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
+import usePageTitle from "@/hooks/usePageTitle";
 
-const Journal = () => {
+const JournalRoute = () => {
   const { updatePageTitle } = usePageTitle();
   const timerRunning = useTimerRunning();
 
@@ -10,4 +10,4 @@ const Journal = () => {
   return <>{/*<p>My Journal</p>*/}</>;
 };
 
-export default Journal;
+export default JournalRoute;
