@@ -26,9 +26,10 @@ const Navbar = () => {
         </div>
 
         {/* Inner Right Container */}
-        <div className="flex items-center gap-4 border">
+        <div className="flex items-center gap-4">
           {/* <LoginLink /> */}
           <CurrentTime />
+          <SettingsLink />
         </div>
       </div>
 
