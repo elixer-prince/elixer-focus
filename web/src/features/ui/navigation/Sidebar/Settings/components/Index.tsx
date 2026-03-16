@@ -4,14 +4,15 @@ import { GoSidebarExpand } from "react-icons/go";
 
 const Sidebar = () => {
   return (
-    <nav className="sidebar sm:bg-base-100/25 fixed top-0 left-0 z-10 w-full items-center p-4 backdrop-blur-sm max-sm:h-(--navbar-height) max-sm:border-b-2 sm:bottom-0 sm:w-(--sidebar-width)">
-      <div className={"flex items-center justify-between"}>
+    // Settings Sidebar
+    <nav className="sm:bg-base-100/25 border-r-base-content/50 fixed top-0 left-0 z-10 w-full items-center border-r px-4 py-5.5 backdrop-blur-sm select-none max-sm:h-(--navbar-height) max-sm:border-b-2 sm:bottom-0 sm:w-(--sidebar-width)">
+      <header className="mb-6 flex items-center justify-between">
         <NavLogo />
 
-        <div className={"cursor-pointer max-sm:hidden"}>
+        <div className="cursor-pointer max-sm:hidden">
           <GoSidebarExpand size={24} />
         </div>
-      </div>
+      </header>
 
       <LinkContainer />
     </nav>
