@@ -1,35 +1,38 @@
 import AuthLayout from "@/app/layout/Auth";
 import DefaultLayout from "@/app/layout/Default";
-import Home from "@/app/routes/(root)/Index";
-import Journal from "@/app/routes/(root)/Journal";
-import Profile from "@/app/routes/(root)/Profile";
-import Tasks from "@/app/routes/(root)/Tasks";
-import NotFound from "@/app/routes/404";
-import Login from "@/app/routes/auth/Login";
-import SignUp from "@/app/routes/auth/SignUp";
+import SettingsLayout from "@/app/layout/Settings";
+import HomeRoute from "@/app/routes/(root)/Index";
+import JournalRoute from "@/app/routes/(root)/Journal";
+import ProfileRoute from "@/app/routes/(root)/Profile";
+import TasksRoute from "@/app/routes/(root)/Tasks";
+import NotFoundRoute from "@/app/routes/404";
+import LoginRoute from "@/app/routes/auth/Login";
+import SignUpRoute from "@/app/routes/auth/SignUp";
+import ThemeRoute from "@/app/routes/settings/Theme";
+import TimerRoute from "@/app/routes/settings/Timer";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <DefaultLayout />,
-    errorElement: <NotFound />,
+    errorElement: <NotFoundRoute />,
     children: [
       {
-        path: "/",
-        element: <Home />,
+        path: "",
+        element: <HomeRoute />,
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: <ProfileRoute />,
       },
       {
         path: "journal",
-        element: <Journal />,
+        element: <JournalRoute />,
       },
       {
         path: "tasks",
-        element: <Tasks />,
+        element: <TasksRoute />,
       },
     ],
   },
@@ -39,11 +42,29 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: <Login />,
+        element: <LoginRoute />,
       },
       {
         path: "signup",
-        element: <SignUp />,
+        element: <SignUpRoute />,
+      },
+    ],
+  },
+  {
+    path: "/settings",
+    element: <SettingsLayout />,
+    children: [
+      {
+        path: "",
+        element: <ProfileRoute />,
+      },
+      {
+        path: "themes",
+        element: <ThemeRoute />,
+      },
+      {
+        path: "timer",
+        element: <TimerRoute />,
       },
     ],
   },

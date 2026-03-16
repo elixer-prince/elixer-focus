@@ -1,7 +1,7 @@
-import usePageTitle from "@/hooks/usePageTitle";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
+import usePageTitle from "@/hooks/usePageTitle";
 
-const Profile = () => {
+const ProfileRoute = () => {
   const { updatePageTitle } = usePageTitle();
   const timerRunning = useTimerRunning();
 
@@ -10,4 +10,4 @@ const Profile = () => {
   return <div>{/*<p>Profile page...</p>*/}</div>;
 };
 
-export default Profile;
+export default ProfileRoute;

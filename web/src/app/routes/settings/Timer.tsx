@@ -1,7 +1,7 @@
 import TimerSettings from "@/features/settings/timer/Index";
 
-const Timer = () => {
+const TimerRoute = () => {
   return <TimerSettings />;
 };
 
-export default Timer;
+export default TimerRoute;
