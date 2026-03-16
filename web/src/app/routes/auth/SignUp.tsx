@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const SignUp = () => {
+const SignUpRoute = () => {
   return (
     <>
       <p>SignUp Page</p>
@@ -10,4 +10,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpRoute;
