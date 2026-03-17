@@ -2,21 +2,21 @@ import useCountdownAlerts from "@/features/countdown-timer/hooks/useCountdownAle
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
 import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
+import {
+  useResetElapsedTimeInSeconds,
+  useSetElapsedTimeInSeconds,
+  useSetRemainingTimeInSeconds,
+} from "@/features/countdown-timer/stores/countdown-store";
+import {
+  useCurrentSessionType,
+  useSetPreviousSessionType,
+} from "@/features/countdown-timer/stores/session-store";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
 import {
   timerHasEnded,
   timerIsAboutToEnd,
 } from "@/features/countdown-timer/utils/checks";
 import usePageTitle from "@/hooks/usePageTitle";
-import {
-  useCurrentSessionType,
-  useSetPreviousSessionType,
-} from "@/features/countdown-timer/stores/session-store";
-import {
-  useResetElapsedTimeInSeconds,
-  useSetElapsedTimeInSeconds,
-  useSetRemainingTimeInSeconds,
-} from "@/features/countdown-timer/stores/countdown-store";
 import { getCurrentTimestamp } from "@/utils/date";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
@@ -52,7 +52,7 @@ const useCountdownInterval = () => {
       const now = getCurrentTimestamp();
       const elapsedSeconds = Math.floor((now - startTime) / 1000);
       setElapsedTimeInSeconds(elapsedSeconds);
-    }, 250);
+    }, 100);
   }, [setElapsedTimeInSeconds, elapsedIntervalRef]);
 
   const createNewInterval = useCallback(
@@ -77,7 +77,7 @@ const useCountdownInterval = () => {
           resetElapsedTime();
           createElapsedInterval();
         }
-      }, 250);
+      }, 100);
     },
     [
       currentSessionType,
