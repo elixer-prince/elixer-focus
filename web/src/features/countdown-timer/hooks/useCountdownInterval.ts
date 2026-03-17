@@ -52,7 +52,7 @@ const useCountdownInterval = () => {
       const now = getCurrentTimestamp();
       const elapsedSeconds = Math.floor((now - startTime) / 1000);
       setElapsedTimeInSeconds(elapsedSeconds);
-    }, 1000);
+    }, 250);
   }, [setElapsedTimeInSeconds, elapsedIntervalRef]);
 
   const createNewInterval = useCallback(
@@ -77,7 +77,7 @@ const useCountdownInterval = () => {
           resetElapsedTime();
           createElapsedInterval();
         }
-      }, 1000);
+      }, 250);
     },
     [
       currentSessionType,
