@@ -72,7 +72,8 @@ describe("useResetCountdown", () => {
   });
 
   afterEach(() => {
-    delete (globalThis as unknown as { confirm?: typeof globalThis.confirm }).confirm;
+    delete (globalThis as unknown as { confirm?: typeof globalThis.confirm })
+      .confirm;
   });
 
   describe("resetCountdown", () => {

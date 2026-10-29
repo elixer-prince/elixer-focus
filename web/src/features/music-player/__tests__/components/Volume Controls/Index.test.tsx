@@ -56,7 +56,9 @@ describe("Volume Controls", () => {
 
     render(<VolumeControls />);
 
-    expect(screen.getByRole("slider", { name: /volume slider/i })).toBeVisible();
+    expect(
+      screen.getByRole("slider", { name: /volume slider/i }),
+    ).toBeVisible();
   });
 
   it("should hide the volume slider when disabled", () => {

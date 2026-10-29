@@ -27,9 +27,7 @@ describe("Date Store", () => {
     expect(renderHook(() => useCurrentTime()).result.current).toBe(
       "10:45:12 AM",
     );
-    expect(renderHook(() => useTimeFormat()).result.current).toBe(
-      "hh:mm:ss A",
-    );
+    expect(renderHook(() => useTimeFormat()).result.current).toBe("hh:mm:ss A");
     expect(dayjsMock).toHaveBeenCalledTimes(1);
     expect(formatMock).toHaveBeenCalledWith("hh:mm:ss A");
   });
