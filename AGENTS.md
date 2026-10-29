@@ -10,6 +10,10 @@ This is a monorepo with 3 distinct applications:
 - `app/` - Expo (React Native) mobile app
 - `backend/` - Laravel 12 PHP API
 
+## Build approach
+
+Skateboard (MVP first; ship the thinnest usable whole, then grow).
+
 ## Commands (Non-Standard)
 
 ### Web App
