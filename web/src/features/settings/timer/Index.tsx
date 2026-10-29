@@ -1,5 +1,6 @@
 import FocusContainer from "@/features/settings/timer/FocusContainer";
 import useHandleSave from "@/features/settings/timer/hooks/useHandleSave";
+import useTimerSettings from "@/features/settings/timer/hooks/useTimerSettings";
 import useValidation from "@/features/settings/timer/hooks/useValidation";
 import LongBreakContainer from "@/features/settings/timer/LongBreakContainer";
 import ShortBreakContainer from "@/features/settings/timer/ShortBreakContainer";
@@ -8,6 +9,7 @@ import TimerSettingsProvider from "@/features/settings/timer/stores/Provider";
 const TimerSettingsContent = () => {
   const { hasUnsavedChanges } = useValidation();
   const { handleSave } = useHandleSave();
+  useTimerSettings();
 
   return (
     <section className={"size-full h-full"}>

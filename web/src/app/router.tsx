@@ -4,6 +4,8 @@ import Home from "@/app/routes/(root)/Index";
 import Journal from "@/app/routes/(root)/Journal";
 import Profile from "@/app/routes/(root)/Profile";
 import Tasks from "@/app/routes/(root)/Tasks";
+import SettingsTimer from "@/app/routes/settings/Timer";
+import SettingsTheme from "@/app/routes/settings/Theme";
 import NotFound from "@/app/routes/404";
 import Login from "@/app/routes/auth/Login";
 import SignUp from "@/app/routes/auth/SignUp";
@@ -30,6 +32,14 @@ export const router = createBrowserRouter([
       {
         path: "tasks",
         element: <Tasks />,
+      },
+      {
+        path: "settings/timer",
+        element: <SettingsTimer />,
+      },
+      {
+        path: "settings/themes",
+        element: <SettingsTheme />,
       },
     ],
   },
