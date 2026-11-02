@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+coverage
+.next
+out
+vendor
+.agents
+docs
+*.min.js
+*.min.css
+
+# Generated daisyUI theme files
+web/src/app/themes/default/daisyui

@@ -34,6 +34,14 @@ export const router = createBrowserRouter([
         path: "tasks",
         element: <TasksRoute />,
       },
+      {
+        path: "settings/timer",
+        element: <SettingsTimer />,
+      },
+      {
+        path: "settings/themes",
+        element: <SettingsTheme />,
+      },
     ],
   },
   {

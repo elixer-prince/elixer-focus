@@ -3,7 +3,9 @@ import { act, renderHook } from "@testing-library/react";
 const mocks = vi.hoisted(() => ({
   timerBeepSoundEffectRef: { current: null as HTMLAudioElement | null },
   timerIntervalRef: { current: null as ReturnType<typeof setInterval> | null },
-  elapsedIntervalRef: { current: null as ReturnType<typeof setInterval> | null },
+  elapsedIntervalRef: {
+    current: null as ReturnType<typeof setInterval> | null,
+  },
   autoSwitchSessionType: vi.fn(),
   startEndTicking: vi.fn(),
   stopEndTicking: vi.fn(),
