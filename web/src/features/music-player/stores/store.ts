@@ -62,6 +62,27 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
     }),
     {
       name: "music-player-storage",
+      version: 4,
+      migrate: (state, version) => {
+        // Clear musicPaused from old stored states
+        if (version < 3) {
+          delete state.musicPaused;
+        }
+        // Clear showVolumeSlider from old stored states
+        if (version < 4) {
+          delete state.showVolumeSlider;
+        }
+        return state;
+      },
+      // Exclude musicPaused and showVolumeSlider from persistence so they
+      // always use their defaults on page load: music starts paused and the
+      // volume slider starts closed
+      partialize: (state) => {
+        const rest = { ...state };
+        delete rest.musicPaused;
+        delete rest.showVolumeSlider;
+        return rest;
+      },
     },
   ),
 );

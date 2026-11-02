@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
   chosenSongId: 1,
-  musicPaused: false,
+  musicPaused: true,
   volume: 55,
   songs: [
     {
@@ -27,6 +27,9 @@ vi.mock("@/features/music-player/stores/store", () => ({
   useMusicPaused: () => mocks.musicPaused,
   useVolume: () => mocks.volume,
   useSongs: () => mocks.songs,
+  useMusicPlayerStore: {
+    getState: () => ({ musicPaused: mocks.musicPaused }),
+  },
 }));
 
 vi.mock("@/features/music-player/utils/conversion", () => ({
@@ -59,7 +62,7 @@ describe("useMusicPlayer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.chosenSongId = 1;
-    mocks.musicPaused = false;
+    mocks.musicPaused = true;
     mocks.volume = 55;
     mocks.songs = [
       {
@@ -93,8 +96,7 @@ describe("useMusicPlayer", () => {
     expect(script).toBeTruthy();
   });
 
-  it("should load the selected song and respect the paused state", () => {
-    mocks.musicPaused = true;
+  it("should load the selected song and pause after loading", () => {
     const playerInstanceRef = createPlayerInstanceRef();
     const playerRef = createPlayerRef();
 
@@ -118,15 +120,16 @@ describe("useMusicPlayer", () => {
       useMusicPlayer({ playerInstanceRef, playerRef }),
     );
 
-    expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
+    // Initially paused, so pauseVideo should be called by the play/pause effect
+    expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
 
-    mocks.musicPaused = true;
+    mocks.musicPaused = false;
 
     act(() => {
       rerender();
     });
 
-    expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
+    expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
   });
 
   it("should create a YouTube player on API ready and set volume", () => {
@@ -184,6 +187,51 @@ describe("useMusicPlayer", () => {
 
     expect(ytPlayerInstance.setVolume).toHaveBeenCalledWith(80);
     expect(playerInstanceRef.current).toBe(ytPlayerInstance);
+  });
+
+  it("should play on ready if the user clicked play before the API loaded", () => {
+    mocks.musicPaused = false;
+    mocks.volume = 50;
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    // Since musicPaused is false in the store, onReady should call playVideo
+    expect(ytPlayerInstance.playVideo).toHaveBeenCalled();
+    expect(ytPlayerInstance.pauseVideo).not.toHaveBeenCalled();
   });
 
   it("should handle volume changes during playback", () => {

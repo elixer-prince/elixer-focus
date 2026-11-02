@@ -1,6 +1,7 @@
 import {
   useChosenSongId,
   useMusicPaused,
+  useMusicPlayerStore,
   useSongs,
   useVolume,
 } from "@/features/music-player/stores/store";
@@ -42,11 +43,8 @@ const useMusicPlayer = ({
 
     playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
 
-    // Respect paused state
-    if (musicPaused) {
-      playerInstanceRef.current.pauseVideo();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Pause after loading new song since we always start paused on mount
+    playerInstanceRef.current.pauseVideo();
   }, [chosenSongId, songs, playerInstanceRef]);
 
   // Effect for play/pause only
@@ -78,20 +76,35 @@ const useMusicPlayer = ({
           {
             videoId: getVideoId(initialSong?.src ?? songs[0].src ?? ""),
             playerVars: {
-              autoplay: musicPaused ? 0 : 1,
+              autoplay: 0,
               playsinline: 1,
             },
             events: {
               onReady: () => {
+                const player = playerInstanceRef.current;
+                if (!player) return;
+
                 // Set initial volume from store
-                playerInstanceRef.current?.setVolume(volume);
+                player.setVolume(volume);
+
+                // Read the current paused state from the store at this moment,
+                // not the closure value. This handles the case where the user
+                // clicked Play before the YouTube API finished loading.
+                const { musicPaused: isPaused } =
+                  useMusicPlayerStore.getState();
+
+                if (!isPaused) {
+                  player.playVideo();
+                } else {
+                  player.pauseVideo();
+                }
               },
             },
           },
         );
       }
     };
-  }, [songs, chosenSongId, musicPaused, playerInstanceRef, playerRef, volume]);
+  }, [songs, chosenSongId, playerInstanceRef, playerRef, volume]);
 };
 
 export default useMusicPlayer;

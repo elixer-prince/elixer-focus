@@ -1,7 +1,39 @@
 <!doctype html>
 
-<html class="html bg-base-300 not-motion-reduce:scroll-smooth" lang="en-JM">
+<html
+  class="html bg-base-300 not-motion-reduce:scroll-smooth"
+  data-theme="dark"
+  lang="en-JM"
+  style="background-color: hsl(204, 22%, 4%)"
+>
   <head>
+    <!-- Apply stored theme immediately to prevent flash of unstyled content -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme-storage");
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            var theme = parsed && parsed.state && parsed.state.currentTheme;
+            if (theme) {
+              document.documentElement.dataset.theme = theme;
+              // Set inline background color for the stored theme to prevent flash
+              // before CSS loads. Uses a dark default for most themes.
+              if (
+                theme === "light" ||
+                theme === "cupcake" ||
+                theme === "bumblebee"
+              ) {
+                document.documentElement.style.backgroundColor = "oklch(1 0 0)";
+              } else {
+                document.documentElement.style.backgroundColor =
+                  "hsl(204, 22%, 4%)";
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="author" content="Daniel J. Leith (Elixer Prince)" />
     <meta
