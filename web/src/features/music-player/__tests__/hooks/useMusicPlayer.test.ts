@@ -96,7 +96,8 @@ describe("useMusicPlayer", () => {
     expect(script).toBeTruthy();
   });
 
-  it("should load the selected song and pause after loading", () => {
+  it("should load the selected song and pause when music is paused", () => {
+    mocks.musicPaused = true;
     const playerInstanceRef = createPlayerInstanceRef();
     const playerRef = createPlayerRef();
 
@@ -110,6 +111,18 @@ describe("useMusicPlayer", () => {
       startSeconds: 0,
     });
     expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
+  });
+
+  it("should load the selected song and play when music is playing", () => {
+    mocks.musicPaused = false;
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    expect(playerInstanceRef.current.loadVideoById).toHaveBeenCalled();
+    expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
+    expect(playerInstanceRef.current.pauseVideo).not.toHaveBeenCalled();
   });
 
   it("should play or pause when the paused state changes", () => {
@@ -130,6 +143,42 @@ describe("useMusicPlayer", () => {
     });
 
     expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
+  });
+
+  it("should not reload the song when toggling play/pause", () => {
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    const { rerender } = renderHook(() =>
+      useMusicPlayer({ playerInstanceRef, playerRef }),
+    );
+
+    // Clear calls after initial render
+    (
+      playerInstanceRef.current.loadVideoById as ReturnType<typeof vi.fn>
+    ).mockClear();
+
+    // Toggle play
+    mocks.musicPaused = false;
+    act(() => {
+      rerender();
+    });
+
+    // loadVideoById should NOT be called when only toggling play/pause
+    expect(playerInstanceRef.current.loadVideoById).not.toHaveBeenCalled();
+    expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
+
+    // Toggle pause
+    (
+      playerInstanceRef.current.playVideo as ReturnType<typeof vi.fn>
+    ).mockClear();
+    mocks.musicPaused = true;
+    act(() => {
+      rerender();
+    });
+
+    expect(playerInstanceRef.current.loadVideoById).not.toHaveBeenCalled();
+    expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
   });
 
   it("should create a YouTube player on API ready and set volume", () => {

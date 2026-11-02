@@ -43,8 +43,15 @@ const useMusicPlayer = ({
 
     playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
 
-    // Pause after loading new song since we always start paused on mount
-    playerInstanceRef.current.pauseVideo();
+    // Respect the current play/pause state for seamless switching
+    if (musicPaused) {
+      playerInstanceRef.current.pauseVideo();
+    } else {
+      playerInstanceRef.current.playVideo();
+    }
+    // Intentionally excluding musicPaused: including it would reload the song
+    // when the user toggles play/pause, which is handled by the separate effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenSongId, songs, playerInstanceRef]);
 
   // Effect for play/pause only
