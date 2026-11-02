@@ -1,9 +1,7 @@
-import { Link } from "react-router"
+import { Link } from "react-router";
 
 const SettingsLink = () => {
-  return (
-    <Link to="/settings">Settings</Link>
-  )
-}
+  return <Link to="/settings">Settings</Link>;
+};
 
-export default SettingsLink
+export default SettingsLink;
