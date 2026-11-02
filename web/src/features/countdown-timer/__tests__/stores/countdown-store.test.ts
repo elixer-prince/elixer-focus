@@ -41,24 +41,24 @@ describe("Countdown Timer Store", () => {
 
     const timerRunning = renderHook(() => useTimerRunning()).result;
     const timerPaused = renderHook(() => useTimerPaused()).result;
-    const remainingTimeInSeconds = renderHook(
-      () => useRemainingTimeInSeconds(),
+    const remainingTimeInSeconds = renderHook(() =>
+      useRemainingTimeInSeconds(),
     ).result;
     const startTimeInMinutes = renderHook(() => useStartTimeInMinutes()).result;
-    const elapsedTimeInSeconds = renderHook(
-      () => useElapsedTimeInSeconds(),
+    const elapsedTimeInSeconds = renderHook(() =>
+      useElapsedTimeInSeconds(),
     ).result;
 
     const setTimerRunning = renderHook(() => useSetTimerRunning()).result;
     const setTimerPaused = renderHook(() => useSetTimerPaused()).result;
-    const setRemainingTimeInSeconds = renderHook(
-      () => useSetRemainingTimeInSeconds(),
+    const setRemainingTimeInSeconds = renderHook(() =>
+      useSetRemainingTimeInSeconds(),
     ).result;
-    const setStartTimeInMinutes = renderHook(
-      () => useSetStartTimeInMinutes(),
+    const setStartTimeInMinutes = renderHook(() =>
+      useSetStartTimeInMinutes(),
     ).result;
-    const setElapsedTimeInSeconds = renderHook(
-      () => useSetElapsedTimeInSeconds(),
+    const setElapsedTimeInSeconds = renderHook(() =>
+      useSetElapsedTimeInSeconds(),
     ).result;
 
     act(() => {
@@ -83,14 +83,14 @@ describe("Countdown Timer Store", () => {
       useResetElapsedTimeInSeconds,
     } = await loadStore();
 
-    const elapsedTimeInSeconds = renderHook(
-      () => useElapsedTimeInSeconds(),
+    const elapsedTimeInSeconds = renderHook(() =>
+      useElapsedTimeInSeconds(),
     ).result;
-    const setElapsedTimeInSeconds = renderHook(
-      () => useSetElapsedTimeInSeconds(),
+    const setElapsedTimeInSeconds = renderHook(() =>
+      useSetElapsedTimeInSeconds(),
     ).result;
-    const resetElapsedTimeInSeconds = renderHook(
-      () => useResetElapsedTimeInSeconds(),
+    const resetElapsedTimeInSeconds = renderHook(() =>
+      useResetElapsedTimeInSeconds(),
     ).result;
 
     act(() => {
