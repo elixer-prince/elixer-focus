@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const Forbidden = () => {
+const ForbiddenRoute = () => {
   return (
     <main>
       <p>Error 403: Forbidden</p>
@@ -10,4 +10,4 @@ const Forbidden = () => {
   );
 };
 
-export default Forbidden;
+export default ForbiddenRoute;

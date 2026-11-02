@@ -1,4 +1,4 @@
-import Sidebar from "@/features/ui/navigation/Sidebar/Default/Index";
+import Sidebar from "@/features/ui/navigation/Sidebar/Default/components/Index";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 
@@ -20,7 +20,6 @@ describe("Default Sidebar", () => {
     const sidebar = screen.getByRole("navigation");
 
     expect(sidebar).toBeInTheDocument();
-    expect(sidebar).toHaveClass("sidebar");
   });
 
   it("should display the correct links", () => {

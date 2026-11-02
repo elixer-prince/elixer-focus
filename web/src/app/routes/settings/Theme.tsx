@@ -1,11 +1,7 @@
 import ThemeSettings from "@/features/settings/theme/components/Index";
 
-const Theme = () => {
-  return (
-    <>
-      <ThemeSettings />
-    </>
-  );
+const ThemeRoute = () => {
+  return <ThemeSettings />;
 };
 
-export default Theme;
+export default ThemeRoute;

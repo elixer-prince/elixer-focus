@@ -1,5 +1,5 @@
-const Bin = () => {
+const BinRoute = () => {
   return <>{/* <p>This is the brain dump...</p> */}</>;
 };
 
-export default Bin;
+export default BinRoute;

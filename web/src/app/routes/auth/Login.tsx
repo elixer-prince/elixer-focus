@@ -1,12 +1,12 @@
 import { Link } from "react-router";
 
-const Login = () => {
+const LoginRoute = () => {
   return (
     <>
-      <p>Login Page...</p>
+      <p>Login Route...</p>
       <Link to="/">Back to home</Link>
     </>
   );
 };
 
-export default Login;
+export default LoginRoute;

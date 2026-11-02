@@ -22,7 +22,7 @@ function getActiveCategory(tasks: Task[]) {
   return "uncategorised";
 }
 
-const Home = () => {
+const HomeRoute = () => {
   const { updatePageTitle } = usePageTitle();
 
   const timerRunning = useTimerRunning();
@@ -44,4 +44,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeRoute;
