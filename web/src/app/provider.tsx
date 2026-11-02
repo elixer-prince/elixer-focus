@@ -1,4 +1,5 @@
 import CountdownProvider from "@/app/providers/Countdown";
+import MusicPlayer from "@/features/music-player/components/Index";
 import MusicProvider from "@/app/providers/Music";
 import useAutoSyncTimer from "@/features/countdown-timer/hooks/useAutoSyncTimer";
 import useCountdownTimer from "@/features/countdown-timer/hooks/useCountdownTimer";
@@ -9,6 +10,7 @@ import type { PropsWithChildren } from "react";
 const GlobalHooks = () => {
   useDate();
   useCountdownTimer();
+  useAutoSyncTimer();
   useAppTheme();
 
   return null;
@@ -20,6 +22,7 @@ const Provider = ({ children }: PropsWithChildren) => {
       <MusicProvider>
         <GlobalHooks />
         {children}
+        <MusicPlayer />
       </MusicProvider>
     </CountdownProvider>
   );
