@@ -2,8 +2,8 @@ import type { Song } from "@/features/music-player/types/song";
 
 export type MusicPlayerState = {
   chosenSongId: number;
-  musicPaused: boolean;
-  showVolumeSlider: boolean;
+  musicPaused?: boolean;
+  showVolumeSlider?: boolean;
   songs: Song[];
   volume: number;
 };

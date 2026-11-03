@@ -7,7 +7,7 @@ const ThemePreview = ({ theme, selected }: ThemePreviewProps) => {
   return (
     <div
       data-theme={theme}
-      className={`relative size-16 overflow-hidden rounded-full transition-all duration-300 ${
+      className={`relative size-16 overflow-hidden rounded-full transition-all duration-500 ${
         selected
           ? "border-primary ring-primary/50 ring-3"
           : "border-base-300 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_0_12px_rgba(var(--color-primary),0.25)]"

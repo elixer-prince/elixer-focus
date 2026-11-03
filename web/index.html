@@ -1,7 +1,35 @@
 <!doctype html>
 
-<html class="html bg-base-300 not-motion-reduce:scroll-smooth" lang="en-JM">
+<html class="html not-motion-reduce:scroll-smooth" lang="en-JM">
   <head>
+    <!-- Apply stored theme before CSS loads to prevent flash of unstyled content -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme-storage");
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            var theme = parsed && parsed.state && parsed.state.currentTheme;
+            if (theme) {
+              document.documentElement.dataset.theme = theme;
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Hide the page until CSS loads to prevent flash of unstyled content -->
+    <style>
+      html {
+        background-color: var(--color-base-300, #111827);
+        transition: background-color 500ms;
+      }
+      body {
+        opacity: 0;
+      }
+      body.app-ready {
+        opacity: 1;
+      }
+    </style>
     <meta charset="UTF-8" />
     <meta name="author" content="Daniel J. Leith (Elixer Prince)" />
     <meta
@@ -60,7 +88,7 @@
 
   <!-- Transition body colours for smooth theme changes -->
 
-  <body class="body font-roboto transition-colors duration-1000">
+  <body class="body font-roboto bg-base-300 transition-colors duration-500">
     <div id="root"></div>
     <script src="./src/app/app.tsx" type="module"></script>
   </body>

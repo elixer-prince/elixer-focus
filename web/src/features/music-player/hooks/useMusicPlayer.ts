@@ -1,17 +1,22 @@
 import {
   useChosenSongId,
   useMusicPaused,
+  useMusicPlayerStore,
   useSongs,
   useVolume,
 } from "@/features/music-player/stores/store";
 import type { YTPlayer } from "@/features/music-player/types/player";
 import { getVideoId } from "@/features/music-player/utils/conversion";
-import { type RefObject, useEffect } from "react";
+import { type RefObject, useCallback, useEffect } from "react";
 
 interface MusicPlayerContextType {
   playerInstanceRef: RefObject<YTPlayer | null>;
   playerRef: RefObject<HTMLDivElement | null>;
 }
+
+// YouTube player state constants
+const YT_PLAYER_STATE_PLAYING = 1;
+const YT_PLAYER_STATE_BUFFERING = 3;
 
 const useMusicPlayer = ({
   playerInstanceRef,
@@ -21,6 +26,23 @@ const useMusicPlayer = ({
   const musicPaused = useMusicPaused();
   const volume = useVolume();
   const songs = useSongs();
+
+  // Handle player state changes from external sources (e.g., another tab
+  // stopping the video). When the player leaves PLAYING/BUFFERING state,
+  // update the store so the UI reflects the change.
+  const handleStateChange = useCallback((eventData: number) => {
+    const isPlaying =
+      eventData === YT_PLAYER_STATE_PLAYING ||
+      eventData === YT_PLAYER_STATE_BUFFERING;
+    const { musicPaused: currentPaused } = useMusicPlayerStore.getState();
+    // Only update if the state actually changed to avoid unnecessary re-renders
+    // and to prevent the play/pause effect from fighting with the player
+    if (!isPlaying && !currentPaused) {
+      useMusicPlayerStore.getState().setMusicPaused(true);
+    } else if (isPlaying && currentPaused) {
+      useMusicPlayerStore.getState().setMusicPaused(false);
+    }
+  }, []);
 
   useEffect(() => {
     const tag = document.createElement("script");
@@ -42,10 +64,14 @@ const useMusicPlayer = ({
 
     playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
 
-    // Respect paused state
+    // Respect the current play/pause state for seamless switching
     if (musicPaused) {
       playerInstanceRef.current.pauseVideo();
+    } else {
+      playerInstanceRef.current.playVideo();
     }
+    // Intentionally excluding musicPaused: including it would reload the song
+    // when the user toggles play/pause, which is handled by the separate effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenSongId, songs, playerInstanceRef]);
 
@@ -78,20 +104,41 @@ const useMusicPlayer = ({
           {
             videoId: getVideoId(initialSong?.src ?? songs[0].src ?? ""),
             playerVars: {
-              autoplay: musicPaused ? 0 : 1,
+              autoplay: 0,
               playsinline: 1,
             },
             events: {
               onReady: () => {
+                const player = playerInstanceRef.current;
+                if (!player) return;
+
                 // Set initial volume from store
-                playerInstanceRef.current?.setVolume(volume);
+                player.setVolume(volume);
+
+                // Read the current paused state from the store at this moment,
+                // not the closure value. This handles the case where the user
+                // clicked Play before the YouTube API finished loading.
+                const { musicPaused: isPaused } =
+                  useMusicPlayerStore.getState();
+
+                if (!isPaused) {
+                  player.playVideo();
+                } else {
+                  player.pauseVideo();
+                }
+              },
+              onStateChange: (event: { data: number }) => {
+                handleStateChange(event.data);
               },
             },
           },
         );
       }
     };
-  }, [songs, chosenSongId, musicPaused, playerInstanceRef, playerRef, volume]);
+    // handleStateChange is stable (useCallback with empty deps) and used inside
+    // the closure, so it doesn't need to be a dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [songs, chosenSongId, playerInstanceRef, playerRef, volume]);
 };
 
 export default useMusicPlayer;

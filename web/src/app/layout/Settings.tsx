@@ -10,7 +10,9 @@ const SettingsLayout = () => {
       <Sidebar />
 
       <main
-        className={"p-8 max-sm:mt-(--navbar-height) sm:ml-(--sidebar-width)"}
+        className={
+          "mb-(--music-player-height) p-8 transition-colors duration-500 max-sm:mt-(--navbar-height) sm:ml-(--sidebar-width)"
+        }
       >
         <Outlet />
       </main>

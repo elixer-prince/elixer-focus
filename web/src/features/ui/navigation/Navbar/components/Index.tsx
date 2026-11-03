@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     // Navbar
     <nav
-      className={`border-b-base-content/50 fixed top-0 right-0 left-0 z-40 flex h-(--navbar-height) flex-col items-start border-b p-0 shadow-md backdrop-blur-sm transition-all duration-1000 ${navbarIsOpen ? "max-md:bg-base-300 max-md:h-screen" : ""}`.trim()}
+      className={`border-b-base-content/50 fixed top-0 right-0 left-0 z-40 flex h-(--navbar-height) flex-col items-start border-b p-0 shadow-md backdrop-blur-sm transition-all duration-500 ${navbarIsOpen ? "max-md:bg-base-300 max-md:h-screen" : ""}`.trim()}
     >
       {/* Wrapper Container */}
       <div className="flex min-h-19.5 w-full items-center justify-between p-4">
