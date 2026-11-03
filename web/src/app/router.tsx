@@ -8,8 +8,6 @@ import TasksRoute from "@/app/routes/(root)/Tasks";
 import NotFoundRoute from "@/app/routes/404";
 import LoginRoute from "@/app/routes/auth/Login";
 import SignUpRoute from "@/app/routes/auth/SignUp";
-import SettingsTheme from "@/app/routes/settings/Theme";
-import SettingsTimer from "@/app/routes/settings/Timer";
 import ThemeRoute from "@/app/routes/settings/Theme";
 import TimerRoute from "@/app/routes/settings/Timer";
 import { createBrowserRouter } from "react-router";
@@ -35,14 +33,6 @@ export const router = createBrowserRouter([
       {
         path: "tasks",
         element: <TasksRoute />,
-      },
-      {
-        path: "settings/timer",
-        element: <SettingsTimer />,
-      },
-      {
-        path: "settings/themes",
-        element: <SettingsTheme />,
       },
     ],
   },
