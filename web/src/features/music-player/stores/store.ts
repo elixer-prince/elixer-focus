@@ -1,5 +1,8 @@
 import type { Song } from "@/features/music-player/types/song";
-import type { MusicPlayerStore } from "@/features/music-player/types/store";
+import type {
+  MusicPlayerState,
+  MusicPlayerStore,
+} from "@/features/music-player/types/store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -64,15 +67,16 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
       name: "music-player-storage",
       version: 4,
       migrate: (state, version) => {
+        const persistedState = state as Partial<MusicPlayerState>;
         // Clear musicPaused from old stored states
         if (version < 3) {
-          delete state.musicPaused;
+          delete persistedState.musicPaused;
         }
         // Clear showVolumeSlider from old stored states
         if (version < 4) {
-          delete state.showVolumeSlider;
+          delete persistedState.showVolumeSlider;
         }
-        return state;
+        return persistedState as MusicPlayerState;
       },
       // Exclude musicPaused and showVolumeSlider from persistence so they
       // always use their defaults on page load: music starts paused and the
