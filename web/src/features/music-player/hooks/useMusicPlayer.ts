@@ -7,12 +7,16 @@ import {
 } from "@/features/music-player/stores/store";
 import type { YTPlayer } from "@/features/music-player/types/player";
 import { getVideoId } from "@/features/music-player/utils/conversion";
-import { type RefObject, useEffect } from "react";
+import { type RefObject, useCallback, useEffect } from "react";
 
 interface MusicPlayerContextType {
   playerInstanceRef: RefObject<YTPlayer | null>;
   playerRef: RefObject<HTMLDivElement | null>;
 }
+
+// YouTube player state constants
+const YT_PLAYER_STATE_PLAYING = 1;
+const YT_PLAYER_STATE_BUFFERING = 3;
 
 const useMusicPlayer = ({
   playerInstanceRef,
@@ -22,6 +26,23 @@ const useMusicPlayer = ({
   const musicPaused = useMusicPaused();
   const volume = useVolume();
   const songs = useSongs();
+
+  // Handle player state changes from external sources (e.g., another tab
+  // stopping the video). When the player leaves PLAYING/BUFFERING state,
+  // update the store so the UI reflects the change.
+  const handleStateChange = useCallback((eventData: number) => {
+    const isPlaying =
+      eventData === YT_PLAYER_STATE_PLAYING ||
+      eventData === YT_PLAYER_STATE_BUFFERING;
+    const { musicPaused: currentPaused } = useMusicPlayerStore.getState();
+    // Only update if the state actually changed to avoid unnecessary re-renders
+    // and to prevent the play/pause effect from fighting with the player
+    if (!isPlaying && !currentPaused) {
+      useMusicPlayerStore.getState().setMusicPaused(true);
+    } else if (isPlaying && currentPaused) {
+      useMusicPlayerStore.getState().setMusicPaused(false);
+    }
+  }, []);
 
   useEffect(() => {
     const tag = document.createElement("script");
@@ -106,11 +127,17 @@ const useMusicPlayer = ({
                   player.pauseVideo();
                 }
               },
+              onStateChange: (event: { data: number }) => {
+                handleStateChange(event.data);
+              },
             },
           },
         );
       }
     };
+    // handleStateChange is stable (useCallback with empty deps) and used inside
+    // the closure, so it doesn't need to be a dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songs, chosenSongId, playerInstanceRef, playerRef, volume]);
 };
 

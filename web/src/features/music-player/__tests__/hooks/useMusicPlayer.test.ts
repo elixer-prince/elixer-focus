@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   chosenSongId: 1,
   musicPaused: true,
   volume: 55,
+  setMusicPaused: vi.fn(),
   songs: [
     {
       id: 1,
@@ -28,7 +29,10 @@ vi.mock("@/features/music-player/stores/store", () => ({
   useVolume: () => mocks.volume,
   useSongs: () => mocks.songs,
   useMusicPlayerStore: {
-    getState: () => ({ musicPaused: mocks.musicPaused }),
+    getState: () => ({
+      musicPaused: mocks.musicPaused,
+      setMusicPaused: mocks.setMusicPaused,
+    }),
   },
 }));
 
@@ -64,6 +68,7 @@ describe("useMusicPlayer", () => {
     mocks.chosenSongId = 1;
     mocks.musicPaused = true;
     mocks.volume = 55;
+    mocks.setMusicPaused = vi.fn();
     mocks.songs = [
       {
         id: 1,
@@ -227,6 +232,7 @@ describe("useMusicPlayer", () => {
       },
       events: {
         onReady: expect.any(Function),
+        onStateChange: expect.any(Function),
       },
     });
 
@@ -313,5 +319,110 @@ describe("useMusicPlayer", () => {
 
     expect(consoleSpy).toHaveBeenCalledWith("Song with id 999 not found");
     consoleSpy.mockRestore();
+  });
+
+  it("should update the store when the player is stopped externally", () => {
+    mocks.musicPaused = false;
+
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    // Trigger onReady first
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    // Simulate the player being stopped externally (state 0 = ENDED)
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
+
+    act(() => {
+      onStateChange({ data: 0 }); // ENDED state
+    });
+
+    // The store's setMusicPaused should be called with true since the player
+    // is no longer playing and the store said it was playing
+    expect(mocks.setMusicPaused).toHaveBeenCalledWith(true);
+  });
+
+  it("should not update the store when state change matches current state", () => {
+    mocks.musicPaused = true;
+
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 2),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
+
+    // Player reports PAUSED (2), store already says paused -> no change needed
+    act(() => {
+      onStateChange({ data: 2 }); // PAUSED state
+    });
+
+    expect(mocks.setMusicPaused).not.toHaveBeenCalled();
   });
 });
