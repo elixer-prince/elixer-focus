@@ -15,7 +15,7 @@ const DefaultLayout = () => {
 
       <Modal />
 
-      <main className="main mt-(--navbar-height) mb-(--music-player-height) md:ml-(--sidebar-width)">
+      <main className="main mt-(--navbar-height) mb-(--music-player-height) transition-colors duration-500 md:ml-(--sidebar-width)">
         <Outlet />
       </main>
     </>

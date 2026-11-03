@@ -1,5 +1,5 @@
 import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 // List of valid DaisyUI themes for validation
 const VALID_THEMES = new Set<string>([
@@ -56,7 +56,7 @@ const useAppTheme = (): UseAppThemeResult => {
   const isValidTheme = Array.from(VALID_THEMES).includes(storeTheme);
 
   // Apply theme to HTML element when store theme changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Skip during SSR - document doesn't exist on server
     if (typeof document === "undefined") {
       return;
