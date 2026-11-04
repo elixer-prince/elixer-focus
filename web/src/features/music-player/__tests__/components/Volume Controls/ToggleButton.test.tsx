@@ -11,6 +11,7 @@ const mockSetShowVolumeSlider = vi.fn();
 vi.mock("@/features/music-player/stores/store", () => ({
   useShowVolumeSlider: vi.fn(),
   useSetShowVolumeSlider: () => mockSetShowVolumeSlider,
+  useVolume: () => 50,
 }));
 
 // Tests

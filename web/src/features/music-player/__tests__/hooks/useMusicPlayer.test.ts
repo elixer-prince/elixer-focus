@@ -225,7 +225,6 @@ describe("useMusicPlayer", () => {
     });
 
     expect(playerConstructor).toHaveBeenCalledWith(playerRef.current, {
-      videoId: "id:https://www.youtube.com/watch?v=alpha",
       playerVars: {
         autoplay: 0,
         playsinline: 1,
@@ -233,6 +232,7 @@ describe("useMusicPlayer", () => {
       events: {
         onReady: expect.any(Function),
         onStateChange: expect.any(Function),
+        onVolumeChange: expect.any(Function),
       },
     });
 
@@ -244,7 +244,7 @@ describe("useMusicPlayer", () => {
     expect(playerInstanceRef.current).toBe(ytPlayerInstance);
   });
 
-  it("should play on ready if the user clicked play before the API loaded", () => {
+  it("should not call play/pause on ready since the effect handles it", () => {
     mocks.musicPaused = false;
     mocks.volume = 50;
     const playerInstanceRef = {
@@ -284,12 +284,14 @@ describe("useMusicPlayer", () => {
       .onReady as () => void;
     onReady();
 
-    // Since musicPaused is false in the store, onReady should call playVideo
-    expect(ytPlayerInstance.playVideo).toHaveBeenCalled();
+    // onReady no longer calls play/pause to avoid conflicting with the
+    // dedicated play/pause effect; it only sets the initial volume
+    expect(ytPlayerInstance.setVolume).toHaveBeenCalledWith(50);
+    expect(ytPlayerInstance.playVideo).not.toHaveBeenCalled();
     expect(ytPlayerInstance.pauseVideo).not.toHaveBeenCalled();
   });
 
-  it("should handle volume changes during playback", () => {
+  it("should not set player volume on store volume changes", () => {
     const playerInstanceRef = createPlayerInstanceRef();
     const playerRef = createPlayerRef();
 
@@ -297,8 +299,10 @@ describe("useMusicPlayer", () => {
       useMusicPlayer({ playerInstanceRef, playerRef }),
     );
 
-    // Volume is set on initial render with the current volume
-    expect(playerInstanceRef.current.setVolume).toHaveBeenCalledWith(55);
+    // Clear calls after initial render
+    (
+      playerInstanceRef.current.setVolume as ReturnType<typeof vi.fn>
+    ).mockClear();
 
     mocks.volume = 75;
 
@@ -306,7 +310,9 @@ describe("useMusicPlayer", () => {
       rerender();
     });
 
-    expect(playerInstanceRef.current.setVolume).toHaveBeenCalledWith(75);
+    // The hook no longer sets player volume on store changes; the slider
+    // component handles that directly to avoid feedback loops
+    expect(playerInstanceRef.current.setVolume).not.toHaveBeenCalled();
   });
 
   it("should log error when song is not found", () => {
@@ -421,6 +427,207 @@ describe("useMusicPlayer", () => {
     // Player reports PAUSED (2), store already says paused -> no change needed
     act(() => {
       onStateChange({ data: 2 }); // PAUSED state
+    });
+
+    expect(mocks.setMusicPaused).not.toHaveBeenCalled();
+  });
+
+  // Regression tests for the play button flicker fix.
+  // The bug: YouTube fires a sequence of transient states (UNSTARTED, BUFFERING)
+  // during play/pause transitions. If the guard resets too early, a transient
+  // state slips through, sees isPlaying=false with currentPaused=false, and
+  // incorrectly sets the store back to paused -- causing the button to flicker.
+  //
+  // Strategy: use a pre-populated player so the unified effect runs on mount
+  // and sets the guard. The onStateChange callback from the player constructor
+  // is captured, then we verify that after the effect runs (guard active),
+  // transient states are ignored and only stable states reset the guard.
+  // We also test that without the guard (player created after mount), external
+  // state changes are properly detected.
+
+  it("should not update store during effect run even though playVideo is called", () => {
+    // This test verifies the core guard behavior: when the unified effect
+    // calls playVideo, the guard prevents any onStateChange from updating
+    // the store. With a pre-populated player, the effect runs on mount.
+    mocks.musicPaused = false;
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    // The effect runs, sets the guard, and calls playVideo.
+    expect(playerInstanceRef.current.playVideo).toHaveBeenCalled();
+
+    // The guard prevents the store from being updated during the effect's
+    // own player calls. Without the guard, the onStateChange events fired
+    // by playVideo would set the store back to paused, causing the flicker.
+    expect(mocks.setMusicPaused).not.toHaveBeenCalled();
+  });
+
+  it("should not update store during effect run when pausing", () => {
+    mocks.musicPaused = true;
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
+    expect(mocks.setMusicPaused).not.toHaveBeenCalled();
+  });
+
+  it("should detect external state change when guard is not active", () => {
+    // When the guard is not active (player created after mount, effect never
+    // ran with a non-null player), external state changes should be detected.
+    // This is the existing behavior verified by "should update the store when
+    // the player is stopped externally".
+    mocks.musicPaused = false;
+
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
+
+    // Without the guard, an ENDED state should update the store
+    act(() => {
+      onStateChange({ data: 0 }); // ENDED
+    });
+
+    expect(mocks.setMusicPaused).toHaveBeenCalledWith(true);
+  });
+
+  it("should detect external pause when guard is not active", () => {
+    mocks.musicPaused = false;
+
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 1),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
+
+    // Without the guard, a PAUSED state when store says playing should update
+    act(() => {
+      onStateChange({ data: 2 }); // PAUSED
+    });
+
+    expect(mocks.setMusicPaused).toHaveBeenCalledWith(true);
+  });
+
+  it("should not update store when external state matches current state", () => {
+    // Without the guard, if the player state matches the store state, no update.
+    mocks.musicPaused = true;
+
+    const playerInstanceRef = {
+      current: null as YTPlayer | null,
+    };
+    const playerRef = createPlayerRef();
+    const ytPlayerInstance = {
+      loadVideoById: vi.fn(),
+      cueVideoById: vi.fn(),
+      playVideo: vi.fn(),
+      pauseVideo: vi.fn(),
+      stopVideo: vi.fn(),
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      isMuted: vi.fn(() => false),
+      setVolume: vi.fn(),
+      getVolume: vi.fn(() => 50),
+      getPlayerState: vi.fn(() => 2),
+    } as unknown as YTPlayer;
+    const playerConstructor = vi.fn().mockImplementation(function Player(
+      this: unknown,
+    ) {
+      return ytPlayerInstance;
+    });
+
+    (globalThis as { YT?: { Player: unknown } }).YT = {
+      Player: playerConstructor,
+    };
+
+    renderHook(() => useMusicPlayer({ playerInstanceRef, playerRef }));
+
+    act(() => {
+      globalThis.onYouTubeIframeAPIReady?.();
+    });
+
+    const onReady = playerConstructor.mock.calls[0][1].events
+      .onReady as () => void;
+    onReady();
+
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
+
+    // PAUSED state, store already says paused -> no update
+    act(() => {
+      onStateChange({ data: 2 });
     });
 
     expect(mocks.setMusicPaused).not.toHaveBeenCalled();

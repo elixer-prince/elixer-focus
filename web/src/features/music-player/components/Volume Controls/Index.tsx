@@ -11,7 +11,6 @@ const VolumeControls = () => {
   const volume = useVolume();
   const showVolumeSlider = useShowVolumeSlider();
   const setVolume = useSetVolume();
-
   const { playerInstanceRef } = useMusicPlayerContext();
 
   const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {

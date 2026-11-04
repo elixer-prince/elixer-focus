@@ -1,6 +1,5 @@
 import MusicProvider from "@/app/providers/Music";
 import PlayButton from "@/features/music-player/components/PlayButton";
-import { playVideo } from "@/features/music-player/utils/playback";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -17,10 +16,6 @@ const MockPlayButton = () => {
     </MusicProvider>
   );
 };
-
-vi.mock("@/features/music-player/utils/playback", () => ({
-  playVideo: vi.fn(),
-}));
 
 const mockSetMusicPaused = vi.fn();
 
@@ -56,7 +51,6 @@ describe("playButton", () => {
     });
     await userEvent.click(playButton);
 
-    expect(playVideo).toHaveBeenCalled();
     expect(mockSetMusicPaused).toHaveBeenCalledWith(false);
   });
 });
