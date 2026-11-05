@@ -5,23 +5,22 @@ import {
   useSongs,
   useVolume,
 } from "@/features/music-player/stores/store";
-import type { YTPlayer } from "@/features/music-player/types/player";
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
 import { getVideoId } from "@/features/music-player/utils/conversion";
-import { type RefObject, useCallback, useEffect, useRef } from "react";
-
-interface MusicPlayerContextType {
-  playerInstanceRef: RefObject<YTPlayer | null>;
-  playerRef: RefObject<HTMLDivElement | null>;
-}
+import { useCallback, useEffect, useRef } from "react";
 
 // YouTube player state constants
 const YT_PLAYER_STATE_PLAYING = 1;
 const YT_PLAYER_STATE_BUFFERING = 3;
+const YT_PLAYER_STATE_CUED = 5;
 
-const useMusicPlayer = ({
-  playerInstanceRef,
-  playerRef,
-}: MusicPlayerContextType) => {
+const useMusicPlayer = () => {
+  const {
+    playerInstanceRef,
+    playerRef,
+    isControllingPlayerRef,
+  } = useMusicPlayerContext();
+
   const chosenSongId = useChosenSongId();
   const musicPaused = useMusicPaused();
   const volume = useVolume();
@@ -32,14 +31,16 @@ const useMusicPlayer = ({
   const lastChosenSongIdRef = useRef<number | null>(null);
   const lastMusicPausedRef = useRef<boolean | null>(null);
 
-  // Flag to distinguish our own player calls from external state changes.
-  // When the unified effect calls loadVideoById/playVideo/pauseVideo, this
-  // flag is true so handleStateChange ignores the resulting onStateChange
-  // events and avoids a feedback loop that causes button flicker. The guard
-  // stays active until the player reaches a stable state (PLAYING, PAUSED,
-  // or ENDED), because YouTube fires transient states like UNSTARTED and
-  // BUFFERING multiple times before settling.
-  const isControllingPlayerRef = useRef(false);
+  // Track whether the next CUED state should trigger playVideo().
+  // Set to true when cueVideoById is called in a click handler and the
+  // music should be playing, so handleStateChange can play once the
+  // video finishes cueing.
+  const shouldPlayAfterCueRef = useRef(false);
+
+  // Track whether Play was clicked while the YouTube player instance was not
+  // ready yet. When the player is created in onReady we load the song so the
+  // user isn't left with a "paused" button and no sound on the first click.
+  const playOnReadyRef = useRef(false);
 
   // Handle player state changes from external sources (e.g., another tab
   // stopping the video). When the player leaves PLAYING/BUFFERING state,
@@ -47,13 +48,25 @@ const useMusicPlayer = ({
   // controlling the player to avoid a feedback loop. The guard resets only
   // when the player reaches a stable state, not on every event.
   const handleStateChange = useCallback((eventData: number) => {
+    // If a video was just cued and should play, trigger playback now.
+    // This runs inside the onStateChange callback which is still part of
+    // the user gesture event chain from the original click, so the browser
+    // allows autoplay.
+    if (shouldPlayAfterCueRef.current && eventData === YT_PLAYER_STATE_CUED) {
+      shouldPlayAfterCueRef.current = false;
+      isControllingPlayerRef.current = true;
+      playerInstanceRef.current?.playVideo();
+      return;
+    }
+
     if (isControllingPlayerRef.current) {
-      // Reset the guard only when the player reaches a stable state.
-      // Transient states like UNSTARTED (-1) and BUFFERING (3) fire multiple
-      // times during play/pause transitions and should all be ignored.
+      // Only reset the guard once the player reaches the intended stable state
+      // (PLAYING or ENDED). Resetting on PAUSED is too early: YouTube fires
+      // PAUSED(2) as a transient state while loadVideoById() is still loading,
+      // which would let a later transient state slip through and flip the store
+      // back to paused -- causing the play button to flicker.
       const isStable =
         eventData === YT_PLAYER_STATE_PLAYING ||
-        eventData === 2 || // PAUSED
         eventData === 0; // ENDED
       if (isStable) {
         isControllingPlayerRef.current = false;
@@ -95,8 +108,6 @@ const useMusicPlayer = ({
   // Uses isControllingPlayerRef to prevent onStateChange from overwriting
   // the store during our own player calls, which causes button flicker.
   useEffect(() => {
-    if (!playerInstanceRef.current) return;
-
     const player = playerInstanceRef.current;
     const songChanged = chosenSongId !== lastChosenSongIdRef.current;
     const pauseStateChanged = musicPaused !== lastMusicPausedRef.current;
@@ -105,31 +116,53 @@ const useMusicPlayer = ({
     // always act the first time the player is available.
     if (!songChanged && !pauseStateChanged) return;
 
-    // Set the flag before any player call so onStateChange events are ignored
-    isControllingPlayerRef.current = true;
+    // If the player isn't ready yet we can't control it, but we can still
+    // record the intent. If Play was clicked (paused → not paused) while the
+    // player wasn't ready, remember it so onReady loads the song once the
+    // player is created (fixes the first click being lost when Play is
+    // clicked before the YouTube API finishes loading).
+    if (!player) {
+      if (lastMusicPausedRef.current === true && !musicPaused) {
+        playOnReadyRef.current = true;
+      }
+      lastMusicPausedRef.current = musicPaused;
+      return;
+    }
 
-    // If the song changed, load the new video first
+    // If the song changed, load the new video
     if (songChanged) {
       const selectedSong = songs.find((song) => song.id === chosenSongId);
 
       if (!selectedSong) {
         console.error(`Song with id ${chosenSongId} not found`);
-        isControllingPlayerRef.current = false;
         return;
       }
 
       const videoId = getVideoId(selectedSong.src);
-      player.loadVideoById({ videoId, startSeconds: 0 });
-      lastChosenSongIdRef.current = chosenSongId;
-    }
 
-    // Play or pause if the pause state changed, or if the song changed
-    // (so the new song starts in the correct state)
-    if (pauseStateChanged || songChanged) {
+      // When music is playing, the Option component calls cueVideoById in the
+      // click handler. The effect sets shouldPlayAfterCueRef so handleStateChange
+      // can call playVideo() when the CUED state arrives. If music is paused,
+      // the effect cues and pauses explicitly.
       if (musicPaused) {
+        isControllingPlayerRef.current = true;
+        player.cueVideoById({ videoId, startSeconds: 0 });
         player.pauseVideo();
       } else {
-        player.playVideo();
+        // Signal handleStateChange to play when CUED state arrives
+        shouldPlayAfterCueRef.current = true;
+      }
+      lastChosenSongIdRef.current = chosenSongId;
+      lastMusicPausedRef.current = musicPaused;
+    } else if (pauseStateChanged) {
+      // Only play/pause state changed, no song switch. PlayButton calls
+      // loadVideoById() directly in the click handler (within the user
+      // gesture) so the browser allows autoplay. Calling playVideo() from
+      // this effect runs outside the gesture and is blocked by the browser's
+      // autoplay policy, so we only handle pausing here.
+      if (musicPaused) {
+        isControllingPlayerRef.current = true;
+        player.pauseVideo();
       }
       lastMusicPausedRef.current = musicPaused;
     }
@@ -163,9 +196,21 @@ const useMusicPlayer = ({
                 // Set initial volume from store
                 player.setVolume(volume);
 
-                // Play/pause and song loading are handled by the unified
-                // effect, which will run when this callback returns and
-                // playerInstanceRef.current is non-null.
+                // If Play was clicked while the player wasn't ready yet,
+                // load the song now so playback starts and the first click
+                // isn't lost. Otherwise the player is left paused to match
+                // the store (playback is started by PlayButton's gesture-based
+                // loadVideoById once the player is ready).
+                if (playOnReadyRef.current) {
+                  playOnReadyRef.current = false;
+                  const selectedSong = songs.find(
+                    (song) => song.id === chosenSongId,
+                  );
+                  if (selectedSong) {
+                    const videoId = getVideoId(selectedSong.src);
+                    player.loadVideoById({ videoId, startSeconds: 0 });
+                  }
+                }
               },
               onStateChange: (event: { data: number }) => {
                 handleStateChange(event.data);
