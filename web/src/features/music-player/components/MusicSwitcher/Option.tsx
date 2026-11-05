@@ -1,7 +1,11 @@
 import {
   useChosenSongId,
+  useMusicPaused,
   useSetChosenSongId,
+  useSongs,
 } from "@/features/music-player/stores/store";
+import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
+import { getVideoId } from "@/features/music-player/utils/conversion";
 
 interface OptionProps {
   id: number;
@@ -12,6 +16,27 @@ interface OptionProps {
 const Option = ({ id, title, isRecommended }: OptionProps) => {
   const chosenSongId = useChosenSongId();
   const setChosenSongId = useSetChosenSongId();
+  const musicPaused = useMusicPaused();
+  const songs = useSongs();
+  const { playerInstanceRef } = useMusicPlayerContext();
+
+  const handleSwitch = () => {
+    setChosenSongId(id);
+
+    // When music is playing, cue the new video synchronously in the click
+    // handler to preserve the browser user gesture context. The cue operation
+    // is asynchronous, so we cannot call playVideo() immediately. Instead,
+    // the onStateChange listener in useMusicPlayer detects when the video
+    // enters the CUED state and calls playVideo() from within the event
+    // chain, which the browser still treats as user-initiated.
+    if (!musicPaused && playerInstanceRef.current) {
+      const selectedSong = songs.find((song) => song.id === id);
+      if (selectedSong) {
+        const videoId = getVideoId(selectedSong.src);
+        playerInstanceRef.current.cueVideoById({ videoId, startSeconds: 0 });
+      }
+    }
+  };
 
   return (
     <li className="menu-item">
@@ -20,7 +45,7 @@ const Option = ({ id, title, isRecommended }: OptionProps) => {
           className="radio radio-primary radio-sm"
           name="song-choice"
           type="radio"
-          onChange={() => setChosenSongId(id)}
+          onChange={handleSwitch}
           checked={chosenSongId === id}
         />
         <div

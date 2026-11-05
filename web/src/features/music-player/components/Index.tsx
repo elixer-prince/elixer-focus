@@ -8,9 +8,9 @@ import { useMusicPaused } from "@/features/music-player/stores/store";
 
 const MusicPlayer = () => {
   const musicPaused = useMusicPaused();
-  const { playerRef, playerInstanceRef } = useMusicPlayerContext();
+  const { playerRef } = useMusicPlayerContext();
 
-  useMusicPlayer({ playerRef, playerInstanceRef });
+  useMusicPlayer();
 
   return (
     // Music Player

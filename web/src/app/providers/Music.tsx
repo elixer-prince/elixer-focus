@@ -6,9 +6,10 @@ import { useMemo, useRef, type PropsWithChildren } from "react";
 const MusicProvider = ({ children }: PropsWithChildren) => {
   const playerRef = useRef<HTMLDivElement | null>(null);
   const playerInstanceRef = useRef<YTPlayer | null>(null);
+  const isControllingPlayerRef = useRef(false);
 
   const contextValues: MusicPlayerContextType = useMemo(
-    () => ({ playerRef, playerInstanceRef }),
+    () => ({ playerRef, playerInstanceRef, isControllingPlayerRef }),
     [],
   );
 

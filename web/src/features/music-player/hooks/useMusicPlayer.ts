@@ -52,10 +52,16 @@ const useMusicPlayer = () => {
     // This runs inside the onStateChange callback which is still part of
     // the user gesture event chain from the original click, so the browser
     // allows autoplay.
-    if (shouldPlayAfterCueRef.current && eventData === YT_PLAYER_STATE_CUED) {
-      shouldPlayAfterCueRef.current = false;
-      isControllingPlayerRef.current = true;
-      playerInstanceRef.current?.playVideo();
+    if (shouldPlayAfterCueRef.current) {
+      // While waiting for the CUED state after a song switch, ignore all
+      // non-CUED states. Transient states (UNSTARTED, PAUSED, etc.) that fire
+      // during cueing must not flip the store to paused, which would cause
+      // the play/pause button to show the wrong state.
+      if (eventData === YT_PLAYER_STATE_CUED) {
+        shouldPlayAfterCueRef.current = false;
+        isControllingPlayerRef.current = true;
+        playerInstanceRef.current?.playVideo();
+      }
       return;
     }
 
@@ -160,6 +166,13 @@ const useMusicPlayer = () => {
       // gesture) so the browser allows autoplay. Calling playVideo() from
       // this effect runs outside the gesture and is blocked by the browser's
       // autoplay policy, so we only handle pausing here.
+      //
+      // If we're waiting for CUED to play after a song switch, but the user
+      // paused before CUED arrived, cancel the pending play so playVideo()
+      // isn't called when CUED eventually fires.
+      if (shouldPlayAfterCueRef.current && musicPaused) {
+        shouldPlayAfterCueRef.current = false;
+      }
       if (musicPaused) {
         isControllingPlayerRef.current = true;
         player.pauseVideo();
