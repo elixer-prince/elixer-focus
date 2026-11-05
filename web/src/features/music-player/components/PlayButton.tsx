@@ -20,17 +20,22 @@ const PlayButton = () => {
       onClick={() => {
         setMusicPaused(false);
 
-        // loadVideoById() is called directly in the click handler so the
-        // browser treats it as a user gesture and allows autoplay. Calling
-        // playVideo() from a React effect runs outside the gesture and is
-        // blocked by the browser's autoplay policy, which caused the play
-        // button to toggle back to "paused" with no sound on the first click.
         if (playerInstanceRef.current) {
           const selectedSong = songs.find((song) => song.id === chosenSongId);
           if (selectedSong) {
             isControllingPlayerRef.current = true;
             const videoId = getVideoId(selectedSong.src);
-            playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
+            const player = playerInstanceRef.current;
+            // Resume an already-loaded video with playVideo() instead of
+            // restarting from the beginning with loadVideoById(). Only load
+            // fresh when the player hasn't loaded any video yet (UNSTARTED).
+            // Called directly in the click handler so the browser treats it
+            // as a user gesture and allows autoplay.
+            if (player.getPlayerState() !== -1) {
+              player.playVideo();
+            } else {
+              player.loadVideoById({ videoId, startSeconds: 0 });
+            }
           }
         }
       }}

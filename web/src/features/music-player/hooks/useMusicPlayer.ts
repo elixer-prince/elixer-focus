@@ -15,11 +15,8 @@ const YT_PLAYER_STATE_BUFFERING = 3;
 const YT_PLAYER_STATE_CUED = 5;
 
 const useMusicPlayer = () => {
-  const {
-    playerInstanceRef,
-    playerRef,
-    isControllingPlayerRef,
-  } = useMusicPlayerContext();
+  const { playerInstanceRef, playerRef, isControllingPlayerRef } =
+    useMusicPlayerContext();
 
   const chosenSongId = useChosenSongId();
   const musicPaused = useMusicPaused();
@@ -71,9 +68,7 @@ const useMusicPlayer = () => {
       // PAUSED(2) as a transient state while loadVideoById() is still loading,
       // which would let a later transient state slip through and flip the store
       // back to paused -- causing the play button to flicker.
-      const isStable =
-        eventData === YT_PLAYER_STATE_PLAYING ||
-        eventData === 0; // ENDED
+      const isStable = eventData === YT_PLAYER_STATE_PLAYING || eventData === 0; // ENDED
       if (isStable) {
         isControllingPlayerRef.current = false;
       }

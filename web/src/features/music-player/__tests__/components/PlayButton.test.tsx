@@ -73,7 +73,7 @@ describe("playButton", () => {
     expect(playIcon).toBeInTheDocument();
   });
 
-  it("should play the song when clicked", async () => {
+  it("should resume the song with playVideo when already loaded", async () => {
     render(<MockPlayButton />);
 
     const playButton = screen.getByRole("button", {
@@ -82,11 +82,26 @@ describe("playButton", () => {
     await userEvent.click(playButton);
 
     expect(mockSetMusicPaused).toHaveBeenCalledWith(false);
-    // loadVideoById is called directly in the click handler (within the user
-    // gesture) so the browser allows autoplay.
+    // Player state is PAUSED (2), so playVideo() resumes instead of
+    // loadVideoById() restarting from the beginning.
+    expect(mockPlayerInstance.playVideo).toHaveBeenCalled();
+    expect(mockPlayerInstance.loadVideoById).not.toHaveBeenCalled();
+  });
+
+  it("should load the song with loadVideoById when player is unstarted", async () => {
+    mockPlayerInstance.getPlayerState.mockReturnValue(-1); // UNSTARTED
+    render(<MockPlayButton />);
+
+    const playButton = screen.getByRole("button", {
+      name: /play music button/i,
+    });
+    await userEvent.click(playButton);
+
+    expect(mockSetMusicPaused).toHaveBeenCalledWith(false);
     expect(mockPlayerInstance.loadVideoById).toHaveBeenCalledWith({
       videoId: "yLOM8R6lbzg",
       startSeconds: 0,
     });
+    expect(mockPlayerInstance.playVideo).not.toHaveBeenCalled();
   });
 });
