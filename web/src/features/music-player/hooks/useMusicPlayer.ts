@@ -15,8 +15,12 @@ const YT_PLAYER_STATE_BUFFERING = 3;
 const YT_PLAYER_STATE_CUED = 5;
 
 const useMusicPlayer = () => {
-  const { playerInstanceRef, playerRef, isControllingPlayerRef, lastLoadedVideoIdRef } =
-    useMusicPlayerContext();
+  const {
+    playerInstanceRef,
+    playerRef,
+    isControllingPlayerRef,
+    lastLoadedVideoIdRef,
+  } = useMusicPlayerContext();
 
   const chosenSongId = useChosenSongId();
   const musicPaused = useMusicPaused();

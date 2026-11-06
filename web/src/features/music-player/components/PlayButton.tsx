@@ -11,11 +11,8 @@ const PlayButton = () => {
   const setMusicPaused = useSetMusicPaused();
   const chosenSongId = useChosenSongId();
   const songs = useSongs();
-  const {
-    playerInstanceRef,
-    isControllingPlayerRef,
-    lastLoadedVideoIdRef,
-  } = useMusicPlayerContext();
+  const { playerInstanceRef, isControllingPlayerRef, lastLoadedVideoIdRef } =
+    useMusicPlayerContext();
 
   return (
     // Play Button

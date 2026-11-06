@@ -45,15 +45,17 @@ import type { MusicPlayerContextType } from "@/features/music-player/types/conte
 import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
 
 // Mutable context values that tests can update
-const mockPlayerInstanceRef = { current: null };
-const mockPlayerRef = { current: null };
+const mockPlayerInstanceRef: { current: YTPlayer | null } = { current: null };
+const mockPlayerRef: { current: HTMLDivElement | null } = { current: null };
 const mockIsControllingPlayerRef = { current: false };
+const mockLastLoadedVideoIdRef = { current: null };
 
 function ContextWrapper({ children }: { children: React.ReactNode }) {
   const contextValue: MusicPlayerContextType = {
     playerInstanceRef: mockPlayerInstanceRef,
     playerRef: mockPlayerRef,
     isControllingPlayerRef: mockIsControllingPlayerRef,
+    lastLoadedVideoIdRef: mockLastLoadedVideoIdRef,
   };
   return (
     <MusicPlayerContext.Provider value={contextValue}>
@@ -170,7 +172,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     // Initially paused, so pauseVideo should be called by the effect
     expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
@@ -210,7 +214,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     // Clear calls after initial render
     (
@@ -367,7 +373,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     // Clear calls after initial render
     (
@@ -740,7 +748,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     // Initial render: effect should not call loadVideoById (Option component does it)
     expect(playerInstanceRef.current.loadVideoById).not.toHaveBeenCalled();
@@ -804,7 +814,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     act(() => {
       globalThis.onYouTubeIframeAPIReady?.();
@@ -843,7 +855,9 @@ describe("useMusicPlayer", () => {
     mockPlayerRef.current = playerRef.current;
     mockIsControllingPlayerRef.current = false;
 
-    const { rerender } = renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
 
     // Clear calls after initial render
     (
@@ -908,10 +922,8 @@ describe("useMusicPlayer", () => {
 
     // Simulate the transient state sequence YouTube fires during loadVideoById().
     // PAUSED(2) here is transient (video still loading), NOT the final state.
-    const onStateChange =
-      playerConstructor.mock.calls[0][1].events.onStateChange as (
-        event: { data: number },
-      ) => void;
+    const onStateChange = playerConstructor.mock.calls[0][1].events
+      .onStateChange as (event: { data: number }) => void;
 
     act(() => {
       onStateChange({ data: -1 }); // UNSTARTED

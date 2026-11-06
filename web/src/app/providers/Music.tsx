@@ -10,7 +10,12 @@ const MusicProvider = ({ children }: PropsWithChildren) => {
   const lastLoadedVideoIdRef = useRef<string | null>(null);
 
   const contextValues: MusicPlayerContextType = useMemo(
-    () => ({ playerRef, playerInstanceRef, isControllingPlayerRef, lastLoadedVideoIdRef }),
+    () => ({
+      playerRef,
+      playerInstanceRef,
+      isControllingPlayerRef,
+      lastLoadedVideoIdRef,
+    }),
     [],
   );
 

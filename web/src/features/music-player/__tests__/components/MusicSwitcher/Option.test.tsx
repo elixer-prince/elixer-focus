@@ -12,8 +12,18 @@ vi.mock("@/features/music-player/stores/store", () => ({
   useSetChosenSongId: () => mockSetChosenSongId,
   useMusicPaused: vi.fn().mockReturnValue(true),
   useSongs: vi.fn().mockReturnValue([
-    { id: 1, title: "Song One", src: "https://www.youtube.com/watch?v=alpha", isRecommended: true },
-    { id: 2, title: "Song Two", src: "https://www.youtube.com/watch?v=beta", isRecommended: false },
+    {
+      id: 1,
+      title: "Song One",
+      src: "https://www.youtube.com/watch?v=alpha",
+      isRecommended: true,
+    },
+    {
+      id: 2,
+      title: "Song Two",
+      src: "https://www.youtube.com/watch?v=beta",
+      isRecommended: false,
+    },
   ]),
 }));
 
@@ -29,6 +39,7 @@ vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
     playerInstanceRef: { current: mockPlayerInstance },
     playerRef: { current: null },
     isControllingPlayerRef: { current: false },
+    lastLoadedVideoIdRef: { current: null },
   }),
 }));
 

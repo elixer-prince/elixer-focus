@@ -53,6 +53,7 @@ cd app && npm run web           # Run web version
 - **Theme Transitions**: All theme-related color transitions use `duration-500` (500ms) across layout areas. Timer animations retain `duration-1000`.
 - **API Client**: Axios instance in `web/src/config/axios.ts` with automatic Bearer token injection from localStorage
 - **Testing Setup**: `web/src/testing/setup.ts` includes ResizeObserver mock (required for component tests)
+- **Mock Refs in Tests**: When mocking React refs in TypeScript tests, always annotate the mock ref type explicitly (e.g., `{ current: null as YTPlayer | null }` or `{ current: null as HTMLDivElement | null }`). Without explicit typing, TypeScript infers `{ current: null }` as type `null`, which rejects any later assignment of non-null values. When mocking context providers, ensure all properties defined in the context type are present in the mock value.
 
 ## Code Style
 
