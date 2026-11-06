@@ -15,7 +15,7 @@ const YT_PLAYER_STATE_BUFFERING = 3;
 const YT_PLAYER_STATE_CUED = 5;
 
 const useMusicPlayer = () => {
-  const { playerInstanceRef, playerRef, isControllingPlayerRef } =
+  const { playerInstanceRef, playerRef, isControllingPlayerRef, lastLoadedVideoIdRef } =
     useMusicPlayerContext();
 
   const chosenSongId = useChosenSongId();
@@ -149,6 +149,7 @@ const useMusicPlayer = () => {
         isControllingPlayerRef.current = true;
         player.cueVideoById({ videoId, startSeconds: 0 });
         player.pauseVideo();
+        lastLoadedVideoIdRef.current = videoId;
       } else {
         // Signal handleStateChange to play when CUED state arrives
         shouldPlayAfterCueRef.current = true;
@@ -217,6 +218,7 @@ const useMusicPlayer = () => {
                   if (selectedSong) {
                     const videoId = getVideoId(selectedSong.src);
                     player.loadVideoById({ videoId, startSeconds: 0 });
+                    lastLoadedVideoIdRef.current = videoId;
                   }
                 }
               },

@@ -18,7 +18,7 @@ const Option = ({ id, title, isRecommended }: OptionProps) => {
   const setChosenSongId = useSetChosenSongId();
   const musicPaused = useMusicPaused();
   const songs = useSongs();
-  const { playerInstanceRef } = useMusicPlayerContext();
+  const { playerInstanceRef, lastLoadedVideoIdRef } = useMusicPlayerContext();
 
   const handleSwitch = () => {
     setChosenSongId(id);
@@ -33,6 +33,7 @@ const Option = ({ id, title, isRecommended }: OptionProps) => {
       const selectedSong = songs.find((song) => song.id === id);
       if (selectedSong) {
         const videoId = getVideoId(selectedSong.src);
+        lastLoadedVideoIdRef.current = videoId;
         playerInstanceRef.current.cueVideoById({ videoId, startSeconds: 0 });
       }
     }

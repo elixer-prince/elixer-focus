@@ -5,4 +5,5 @@ export type MusicPlayerContextType = {
   playerRef: RefObject<HTMLDivElement | null>;
   playerInstanceRef: RefObject<YTPlayer | null>;
   isControllingPlayerRef: MutableRefObject<boolean>;
+  lastLoadedVideoIdRef: MutableRefObject<string | null>;
 };

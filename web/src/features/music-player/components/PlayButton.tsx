@@ -11,7 +11,11 @@ const PlayButton = () => {
   const setMusicPaused = useSetMusicPaused();
   const chosenSongId = useChosenSongId();
   const songs = useSongs();
-  const { playerInstanceRef, isControllingPlayerRef } = useMusicPlayerContext();
+  const {
+    playerInstanceRef,
+    isControllingPlayerRef,
+    lastLoadedVideoIdRef,
+  } = useMusicPlayerContext();
 
   return (
     // Play Button
@@ -30,7 +34,16 @@ const PlayButton = () => {
           if (selectedSong) {
             isControllingPlayerRef.current = true;
             const videoId = getVideoId(selectedSong.src);
-            playerInstanceRef.current.loadVideoById({ videoId, startSeconds: 0 });
+            const player = playerInstanceRef.current;
+            // Resume the same video with playVideo() instead of restarting
+            // from the beginning with loadVideoById(). Only load fresh when
+            // it's a different video or no video has been loaded yet.
+            if (lastLoadedVideoIdRef.current === videoId) {
+              player.playVideo();
+            } else {
+              player.loadVideoById({ videoId, startSeconds: 0 });
+              lastLoadedVideoIdRef.current = videoId;
+            }
           }
         }
       }}
