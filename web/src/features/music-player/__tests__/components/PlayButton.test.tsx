@@ -1,6 +1,5 @@
 import MusicProvider from "@/app/providers/Music";
 import PlayButton from "@/features/music-player/components/PlayButton";
-import { playVideo } from "@/features/music-player/utils/playback";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -18,14 +17,41 @@ const MockPlayButton = () => {
   );
 };
 
-vi.mock("@/features/music-player/utils/playback", () => ({
-  playVideo: vi.fn(),
-}));
-
 const mockSetMusicPaused = vi.fn();
+const mockPlayerInstance = {
+  loadVideoById: vi.fn(),
+  playVideo: vi.fn(),
+  pauseVideo: vi.fn(),
+  cueVideoById: vi.fn(),
+  stopVideo: vi.fn(),
+  mute: vi.fn(),
+  unMute: vi.fn(),
+  isMuted: vi.fn(() => false),
+  setVolume: vi.fn(),
+  getVolume: vi.fn(() => 50),
+  getPlayerState: vi.fn(() => 2),
+};
 
 vi.mock("@/features/music-player/stores/store", () => ({
   useSetMusicPaused: () => mockSetMusicPaused,
+  useChosenSongId: () => 1,
+  useSongs: () => [
+    {
+      id: 1,
+      title: "Calming White Noise",
+      src: "https://www.youtube.com/watch?v=yLOM8R6lbzg",
+      isRecommended: true,
+    },
+  ],
+}));
+
+vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
+  default: () => ({
+    playerInstanceRef: { current: mockPlayerInstance },
+    playerRef: { current: null },
+    isControllingPlayerRef: { current: false },
+    lastLoadedVideoIdRef: { current: null },
+  }),
 }));
 
 // Tests
@@ -56,7 +82,12 @@ describe("playButton", () => {
     });
     await userEvent.click(playButton);
 
-    expect(playVideo).toHaveBeenCalled();
     expect(mockSetMusicPaused).toHaveBeenCalledWith(false);
+    // loadVideoById is called directly in the click handler (within the user
+    // gesture) so the browser allows autoplay.
+    expect(mockPlayerInstance.loadVideoById).toHaveBeenCalledWith({
+      videoId: "yLOM8R6lbzg",
+      startSeconds: 0,
+    });
   });
 });

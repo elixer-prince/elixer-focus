@@ -23,6 +23,7 @@ vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
         setVolume: mocks.setVolumeOnPlayer,
       },
     },
+    isControllingPlayerRef: { current: false },
   }),
 }));
 

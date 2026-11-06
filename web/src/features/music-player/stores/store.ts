@@ -68,12 +68,9 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
       version: 4,
       migrate: (state, version) => {
         const persistedState = state as Partial<MusicPlayerState>;
-        // Clear musicPaused from old stored states
-        if (version < 3) {
-          delete persistedState.musicPaused;
-        }
-        // Clear showVolumeSlider from old stored states
+        // Clear musicPaused from old stored states so player always starts paused
         if (version < 4) {
+          delete persistedState.musicPaused;
           delete persistedState.showVolumeSlider;
         }
         return persistedState as MusicPlayerState;

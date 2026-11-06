@@ -1,4 +1,5 @@
 import Option from "@/features/music-player/components/MusicSwitcher/Option";
+import { useMusicPaused } from "@/features/music-player/stores/store";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -9,6 +10,37 @@ const mockSetChosenSongId = vi.fn();
 vi.mock("@/features/music-player/stores/store", () => ({
   useChosenSongId: vi.fn().mockReturnValue(2),
   useSetChosenSongId: () => mockSetChosenSongId,
+  useMusicPaused: vi.fn().mockReturnValue(true),
+  useSongs: vi.fn().mockReturnValue([
+    {
+      id: 1,
+      title: "Song One",
+      src: "https://www.youtube.com/watch?v=alpha",
+      isRecommended: true,
+    },
+    {
+      id: 2,
+      title: "Song Two",
+      src: "https://www.youtube.com/watch?v=beta",
+      isRecommended: false,
+    },
+  ]),
+}));
+
+const mockPlayerInstance = {
+  cueVideoById: vi.fn(),
+  loadVideoById: vi.fn(),
+  playVideo: vi.fn(),
+  pauseVideo: vi.fn(),
+};
+
+vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
+  default: () => ({
+    playerInstanceRef: { current: mockPlayerInstance },
+    playerRef: { current: null },
+    isControllingPlayerRef: { current: false },
+    lastLoadedVideoIdRef: { current: null },
+  }),
 }));
 
 // Tests
@@ -55,5 +87,30 @@ describe("Music Dropdown Option", () => {
     render(<Option id={2} title="My Song Title" isRecommended={false} />);
 
     expect(screen.getByRole("radio")).toBeChecked();
+  });
+
+  it("should cue the new video when switching songs while playing", async () => {
+    vi.mocked(useMusicPaused).mockReturnValue(false);
+
+    render(<Option id={1} title="My Song Title" isRecommended={false} />);
+
+    const songLabel = screen.getByLabelText("Switch to 'My Song Title'");
+    await userEvent.click(songLabel);
+
+    expect(mockPlayerInstance.cueVideoById).toHaveBeenCalledWith({
+      videoId: "alpha",
+      startSeconds: 0,
+    });
+  });
+
+  it("should not cue the video when switching songs while paused", async () => {
+    vi.mocked(useMusicPaused).mockReturnValue(true);
+
+    render(<Option id={1} title="My Song Title" isRecommended={false} />);
+
+    const songLabel = screen.getByLabelText("Switch to 'My Song Title'");
+    await userEvent.click(songLabel);
+
+    expect(mockPlayerInstance.cueVideoById).not.toHaveBeenCalled();
   });
 });
