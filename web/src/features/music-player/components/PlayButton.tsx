@@ -38,7 +38,11 @@ const PlayButton = () => {
             // Resume the same video with playVideo() instead of restarting
             // from the beginning with loadVideoById(). Only load fresh when
             // it's a different video or no video has been loaded yet.
-            if (lastLoadedVideoIdRef.current === videoId) {
+            const state = player.getPlayerState();
+            // Resume same video with playVideo() instead of restarting from
+            // the beginning with loadVideoById(). Only load fresh when no
+            // video is loaded (UNSTARTED) or it's a different video.
+            if (state !== -1 && lastLoadedVideoIdRef.current === videoId) {
               player.playVideo();
             } else {
               player.loadVideoById({ videoId, startSeconds: 0 });

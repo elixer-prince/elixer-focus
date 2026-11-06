@@ -50,6 +50,7 @@ vi.mock("@/features/music-player/hooks/useMusicPlayerContext", () => ({
     playerInstanceRef: { current: mockPlayerInstance },
     playerRef: { current: null },
     isControllingPlayerRef: { current: false },
+    lastLoadedVideoIdRef: { current: null },
   }),
 }));
 
