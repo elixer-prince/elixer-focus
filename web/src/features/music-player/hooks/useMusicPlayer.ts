@@ -30,7 +30,7 @@ const useMusicPlayer = () => {
   // Track the last processed song and paused state so the unified effect
   // knows whether to act.
   const lastChosenSongIdRef = useRef<number | null>(null);
-  const lastMusicPausedRef = useRef<boolean | null>(null);
+  const lastMusicPausedRef = useRef<boolean | undefined>(undefined);
 
   // Track whether the next CUED state should trigger playVideo().
   // Set to true when cueVideoById is called in a click handler and the
