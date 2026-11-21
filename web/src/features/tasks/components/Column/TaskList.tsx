@@ -25,7 +25,7 @@ const TaskList = ({
 
   return (
     <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4">
-      {columnCategory !== "uncategorised" && inputShown && !isDragging && (
+      {columnCategory !== "uncategorised" && inputShown && (
         <div className="mr-3">
           <NewTaskInput
             columnCategory={columnCategory}

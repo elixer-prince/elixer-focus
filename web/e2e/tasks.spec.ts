@@ -87,8 +87,13 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
 
   // Drag the task from the urgent-important column to the uncategorised column
   const taskElement = page.locator("li.task").first();
-  const uncategorisedColumn = page.getByText("Uncategorised").first();
-  const dropTarget = uncategorisedColumn.locator("..").locator("ul").first();
+  const urgentArticle = page.locator("article").filter({
+    has: page.getByText("Urgent and Important"),
+  });
+  const uncategorisedArticle = page.locator("article").filter({
+    has: page.getByText("Uncategorised"),
+  });
+  const dropTarget = uncategorisedArticle.locator("ul").first();
 
   await taskElement.hover();
   await page.mouse.down();
@@ -96,9 +101,7 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
   await page.mouse.up();
 
   // Verify the task is no longer in the source column and is present in the destination
-  const urgentArticle = urgentColumn.locator("..");
   await expect(urgentArticle.getByText("Draggable task")).not.toBeVisible();
-  const uncategorisedArticle = uncategorisedColumn.locator("..");
   await expect(uncategorisedArticle.getByText("Draggable task")).toBeVisible();
 });
 
