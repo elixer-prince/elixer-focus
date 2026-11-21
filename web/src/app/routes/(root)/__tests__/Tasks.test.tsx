@@ -47,16 +47,16 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
 });
 
 vi.mock("@dnd-kit/react", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
-    DragDropProvider: ({ children }) => children,
+    DragDropProvider: ({ children }: { children: React.ReactNode }) => children,
     PointerSensor: vi.fn(),
   };
 });
 
 vi.mock("@dnd-kit/react/sortable", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
     isSortable: vi.fn(() => true),

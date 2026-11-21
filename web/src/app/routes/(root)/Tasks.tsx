@@ -9,7 +9,7 @@ import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import type { DragOverEvent, DragEndEvent } from "@dnd-kit/abstract";
+import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useCallback, useRef } from "react";
 
@@ -55,7 +55,7 @@ const Tasks = () => {
   }, []);
 
   const handleDragOver = useCallback(
-    (event: DragOverEvent) => {
+    (event: Parameters<DragOverEvent>[0]) => {
       try {
         const { source } = event.operation;
         if (!isSortable(source)) return;
@@ -86,7 +86,7 @@ const Tasks = () => {
   );
 
   const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
+    (event: Parameters<DragEndEvent>[0]) => {
       if (event.canceled) {
         setTasks(previousTasks.current);
       }
