@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   saveToLocalStorage: vi.fn(),
   clearIntervalIfItExists: vi.fn(),
   calculateEndTime: vi.fn(),
+  requestNotificationPermission: vi.fn(),
   timerPausedValue: true,
   remainingTimeInSecondsValue: 1500,
   timerOnClickSoundEffectRef: { current: "timer-on-sound" as string | null },
@@ -78,6 +79,12 @@ vi.mock("@/utils/storage", () => ({
   saveToLocalStorage: mocks.saveToLocalStorage,
 }));
 
+vi.mock("@/features/countdown-timer/hooks/useNotification", () => ({
+  default: () => ({
+    requestNotificationPermission: mocks.requestNotificationPermission,
+  }),
+}));
+
 import useStartCountdown from "@/features/countdown-timer/hooks/useStartCountdown";
 
 describe("useStartCountdown", () => {
@@ -107,6 +114,7 @@ describe("useStartCountdown", () => {
         "timerEndTime",
         999999,
       );
+      expect(mocks.requestNotificationPermission).toHaveBeenCalled();
       expect(mocks.runInterval).toHaveBeenCalledWith(999999);
     });
   });
@@ -204,6 +212,7 @@ describe("useStartCountdown", () => {
       );
       expect(mocks.startEndTicking).toHaveBeenCalled();
       expect(mocks.setRemainingTimeInSeconds).toHaveBeenCalledWith(8);
+      expect(mocks.requestNotificationPermission).toHaveBeenCalled();
       expect(mocks.runInterval).toHaveBeenCalledWith(3333);
     });
   });

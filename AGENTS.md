@@ -58,6 +58,7 @@ cd app && npm run web           # Run web version
 - **Drag and Drop**: Uses `@dnd-kit/react` v9 with `@dnd-kit/helpers`. Import event types from `@dnd-kit/dom` (not `@dnd-kit/abstract`) and use `Parameters<DragOverEvent>[0]` / `Parameters<DragEndEvent>[0]` for handler signatures. Task reordering uses `groupByCategory` + `move` + `flattenTasks` pattern in `Tasks.tsx`.
 - **E2E Testing**: Playwright runs against `localhost:5173` with Firefox browser. Config in `web/playwright.config.ts`. E2E tests in `web/e2e/` are excluded from Vitest via `vite.config.ts`. On CI, `page.evaluate()` requires `page.goto("/")` before accessing localStorage in Firefox.
 - **Browser Throttle Prevention**: The countdown timer uses Web Audio API (`usePreventTabThrottling` hook) to play a nearly silent oscillator (0.001 volume, 220 Hz) while the timer runs. This keeps the tab exempt from browser throttling in background tabs and power-saving modes, so `setInterval` fires normally and the end beep plays automatically.
+- **Desktop Notifications**: The countdown timer sends OS-level notifications when it ends via the Web Notification API (`useNotification` hook). Permission is requested on timer start. The `tag` option deduplicates notifications, and `onclick` focuses the window. Works across virtual desktops.
 
 ## Code Style
 
