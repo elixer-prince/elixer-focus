@@ -11,7 +11,9 @@ test.beforeEach(async ({ page }) => {
 test("tasks page renders all five columns", async ({ page }) => {
   await page.goto("/tasks");
 
-  const columns = page.getByRole("article");
+  // Scope to the tasks container to avoid counting articles from other page components
+  const tasksContainer = page.locator(".tasks-container");
+  const columns = tasksContainer.locator("article");
   await expect(columns).toHaveCount(5);
 
   await expect(page.getByText("Uncategorised")).toBeVisible();
@@ -91,6 +93,6 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
 test("task page header is visible", async ({ page }) => {
   await page.goto("/tasks");
 
-  // The task page should render the header component
-  await expect(page.getByRole("heading")).toBeVisible();
+  // The task page should render the header with the "Your Tasks" title
+  await expect(page.getByRole("heading", { name: "Your Tasks" })).toBeVisible();
 });
