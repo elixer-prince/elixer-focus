@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // Clear persisted tasks storage before each test to ensure isolation
 test.beforeEach(async ({ page }) => {
+  await page.goto("/");
   await page.evaluate(() => {
     localStorage.removeItem("tasks-storage");
   });
