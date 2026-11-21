@@ -6,6 +6,7 @@ interface ColumnHeaderProps {
   category: string;
   inputShown: boolean;
   setInputShown: Dispatch<SetStateAction<boolean>>;
+  isDragging?: boolean;
 }
 
 const ColumnHeader = ({
@@ -13,6 +14,7 @@ const ColumnHeader = ({
   category,
   inputShown,
   setInputShown,
+  isDragging = false,
 }: ColumnHeaderProps) => {
   const location = useLocation();
 
@@ -34,7 +36,11 @@ const ColumnHeader = ({
           ) : (
             <button
               className="add-task-button btn btn-sm btn-soft text-primary-content btn-primary"
-              onClick={() => setInputShown(!inputShown)}
+              disabled={isDragging}
+              onClick={() => {
+                if (isDragging) return;
+                setInputShown(!inputShown);
+              }}
             >
               Add task
             </button>

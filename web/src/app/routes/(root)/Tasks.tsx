@@ -7,7 +7,11 @@ import {
 } from "@/features/tasks/stores/tasks-store";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
-import { DragDropProvider } from "@dnd-kit/react";
+import {
+  DragDropProvider,
+  KeyboardSensor,
+  PointerSensor,
+} from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
@@ -48,8 +52,8 @@ const Tasks = () => {
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
   const setTasks = useSetTasks();
-  const [isDragging, setIsDragging] = useState(false);
   const previousTasks = useRef<Task[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = useCallback(() => {
     previousTasks.current = useTasksStore.getState().tasks;
@@ -89,19 +93,20 @@ const Tasks = () => {
 
   const handleDragEnd = useCallback(
     (event: Parameters<DragEndEvent>[0]) => {
+      setIsDragging(false);
       if (event.canceled) {
         setTasks(previousTasks.current);
       }
-      setIsDragging(false);
     },
     [setTasks],
   );
 
   return (
     <div className="p-12 max-sm:px-4">
-      <TaskPageHeader disabled={isDragging} />
+      <TaskPageHeader isDragging={isDragging} />
 
       <DragDropProvider
+        sensors={[PointerSensor, KeyboardSensor]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
@@ -111,33 +116,34 @@ const Tasks = () => {
             title="Uncategorised"
             category="uncategorised"
             inputPlaceholder=""
+            isDragging={isDragging}
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
               title="Urgent and Important"
               category="urgent-important"
-              creationDisabled={isDragging}
               inputPlaceholder="Finish assignment due in an hour..."
+              isDragging={isDragging}
             />
             <Column
               title="Not Urgent but Important"
               category="not-urgent-important"
-              creationDisabled={isDragging}
               inputPlaceholder="Practice Spanish for 30 minutes..."
+              isDragging={isDragging}
             />
           </div>
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
               title="Urgent but Not Important"
               category="urgent-not-important"
-              creationDisabled={isDragging}
               inputPlaceholder="Wash the dishes..."
+              isDragging={isDragging}
             />
             <Column
               title="Not Urgent nor Important"
               category="not-urgent-not-important"
-              creationDisabled={isDragging}
               inputPlaceholder="Watch Netflix..."
+              isDragging={isDragging}
             />
           </div>
         </div>

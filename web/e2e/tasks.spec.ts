@@ -85,9 +85,21 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
 
   await expect(page.getByText("Draggable task")).toBeVisible();
 
-  // Verify the task element has cursor-grab class (indicating it is draggable)
+  // Drag the task from the urgent-important column to the uncategorised column
   const taskElement = page.locator("li.task").first();
-  await expect(taskElement).toHaveClass(/cursor-grab/);
+  const uncategorisedColumn = page.getByText("Uncategorised").first();
+  const dropTarget = uncategorisedColumn.locator("..").locator("ul").first();
+
+  await taskElement.hover();
+  await page.mouse.down();
+  await dropTarget.hover();
+  await page.mouse.up();
+
+  // Verify the task is no longer in the source column and is present in the destination
+  const urgentArticle = urgentColumn.locator("..");
+  await expect(urgentArticle.getByText("Draggable task")).not.toBeVisible();
+  const uncategorisedArticle = uncategorisedColumn.locator("..");
+  await expect(uncategorisedArticle.getByText("Draggable task")).toBeVisible();
 });
 
 test("task page header is visible", async ({ page }) => {

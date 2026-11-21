@@ -9,14 +9,14 @@ interface ColumnProps {
   title: string;
   category: TaskCategory;
   inputPlaceholder: string;
-  creationDisabled?: boolean;
+  isDragging?: boolean;
 }
 
 const Column = ({
   title,
   category,
   inputPlaceholder,
-  creationDisabled,
+  isDragging = false,
 }: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
@@ -37,6 +37,7 @@ const Column = ({
         category={category}
         inputShown={inputShown}
         setInputShown={setInputShown}
+        isDragging={isDragging}
       />
 
       <TaskList
@@ -44,7 +45,7 @@ const Column = ({
         inputShown={inputShown}
         setInputShown={setInputShown}
         placeholder={inputPlaceholder}
-        creationDisabled={creationDisabled}
+        isDragging={isDragging}
       />
     </article>
   );

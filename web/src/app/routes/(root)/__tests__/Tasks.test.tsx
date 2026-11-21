@@ -1,5 +1,5 @@
 import Tasks from "@/app/routes/(root)/Tasks";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 
 // Mocks
@@ -159,8 +159,23 @@ describe("Tasks page", () => {
     );
 
     // Task One is uncategorised, Task Two is urgent-important
-    // Both should be visible somewhere on the page
-    expect(screen.getByText("Task One")).toBeInTheDocument();
-    expect(screen.getByText("Task Two")).toBeInTheDocument();
+    // Verify each task appears in its expected column
+    const columns = screen.getAllByRole("article");
+    const uncategorisedColumn = columns.find((col) =>
+      within(col).queryByText(/uncategorised/i),
+    );
+    const urgentImportantColumn = columns.find((col) =>
+      within(col).queryByText(/urgent and important/i),
+    );
+
+    expect(uncategorisedColumn).not.toBeNull();
+    expect(urgentImportantColumn).not.toBeNull();
+
+    expect(
+      within(uncategorisedColumn!).getByText("Task One"),
+    ).toBeInTheDocument();
+    expect(
+      within(urgentImportantColumn!).getByText("Task Two"),
+    ).toBeInTheDocument();
   });
 });
