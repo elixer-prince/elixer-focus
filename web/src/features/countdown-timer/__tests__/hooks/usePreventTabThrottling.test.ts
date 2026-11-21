@@ -269,6 +269,7 @@ describe("usePreventTabThrottling", () => {
     mocks.useTimerRunning = true;
 
     const callOrder: string[] = [];
+    let storedGainValue = 0;
     const originalGainValueSetter = Object.getOwnPropertyDescriptor(
       mocks.gainNode.gain,
       "value",
@@ -276,15 +277,14 @@ describe("usePreventTabThrottling", () => {
     // Track when gain value is set
     Object.defineProperty(mocks.gainNode.gain, "value", {
       set(value) {
-        mocks.gainNode.gain._storedValue = value;
+        storedGainValue = value;
         callOrder.push("gain.value.set");
       },
       get() {
-        return mocks.gainNode.gain._storedValue;
+        return storedGainValue;
       },
       configurable: true,
     });
-    mocks.gainNode.gain._storedValue = 0;
 
     mocks.oscillator.connect.mockImplementation(() => {
       callOrder.push("oscillator.connect");
