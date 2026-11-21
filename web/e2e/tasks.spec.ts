@@ -95,9 +95,20 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
   });
   const dropTarget = uncategorisedArticle.locator("ul").first();
 
-  await taskElement.hover();
+  const sourceBox = (await taskElement.boundingBox())!;
+  const targetBox = (await dropTarget.boundingBox())!;
+  await page.mouse.move(
+    sourceBox.x + sourceBox.width / 2,
+    sourceBox.y + sourceBox.height / 2,
+  );
   await page.mouse.down();
-  await dropTarget.hover();
+  await page.mouse.move(
+    targetBox.x + targetBox.width / 2,
+    targetBox.y + targetBox.height / 2,
+    {
+      steps: 12,
+    },
+  );
   await page.mouse.up();
 
   // Verify the task is no longer in the source column and is present in the destination
