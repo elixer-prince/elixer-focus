@@ -57,6 +57,7 @@ cd app && npm run web           # Run web version
 - **Mock Refs in Tests**: When mocking React refs in TypeScript tests, always annotate the mock ref type explicitly (e.g., `{ current: null as YTPlayer | null }` or `{ current: null as HTMLDivElement | null }`). Without explicit typing, TypeScript infers `{ current: null }` as type `null`, which rejects any later assignment of non-null values. When mocking context providers, ensure all properties defined in the context type are present in the mock value.
 - **Drag and Drop**: Uses `@dnd-kit/react` v9 with `@dnd-kit/helpers`. Import event types from `@dnd-kit/dom` (not `@dnd-kit/abstract`) and use `Parameters<DragOverEvent>[0]` / `Parameters<DragEndEvent>[0]` for handler signatures. Task reordering uses `groupByCategory` + `move` + `flattenTasks` pattern in `Tasks.tsx`.
 - **E2E Testing**: Playwright runs against `localhost:5173` with Firefox browser. Config in `web/playwright.config.ts`. E2E tests in `web/e2e/` are excluded from Vitest via `vite.config.ts`. On CI, `page.evaluate()` requires `page.goto("/")` before accessing localStorage in Firefox.
+- **Browser Throttle Prevention**: The countdown timer uses Web Audio API (`usePreventTabThrottling` hook) to play a nearly silent oscillator (0.001 volume, 220 Hz) while the timer runs. This keeps the tab exempt from browser throttling in background tabs and power-saving modes, so `setInterval` fires normally and the end beep plays automatically.
 
 ## Code Style
 
