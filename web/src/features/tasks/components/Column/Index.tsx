@@ -9,9 +9,15 @@ interface ColumnProps {
   title: string;
   category: TaskCategory;
   inputPlaceholder: string;
+  creationDisabled?: boolean;
 }
 
-const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
+const Column = ({
+  title,
+  category,
+  inputPlaceholder,
+  creationDisabled,
+}: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
   const { ref, isDropTarget } = useDroppable({
@@ -38,6 +44,7 @@ const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
         inputShown={inputShown}
         setInputShown={setInputShown}
         placeholder={inputPlaceholder}
+        creationDisabled={creationDisabled}
       />
     </article>
   );

@@ -10,6 +10,7 @@ interface TaskListProps {
   inputShown: boolean;
   setInputShown: Dispatch<SetStateAction<boolean>>;
   placeholder: string;
+  creationDisabled?: boolean;
 }
 
 const TaskList = ({
@@ -17,6 +18,7 @@ const TaskList = ({
   inputShown,
   setInputShown,
   placeholder,
+  creationDisabled,
 }: TaskListProps) => {
   const allTasks = useTasks();
   const tasks = allTasks.filter((task) => task.category === columnCategory);
@@ -29,6 +31,7 @@ const TaskList = ({
             columnCategory={columnCategory}
             setInputShown={setInputShown}
             placeholder={placeholder}
+            disabled={creationDisabled}
           />
         </div>
       )}

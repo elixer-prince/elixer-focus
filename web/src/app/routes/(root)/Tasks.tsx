@@ -7,11 +7,11 @@ import {
 } from "@/features/tasks/stores/tasks-store";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
-import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
+import { DragDropProvider } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 type GroupedTasks = Record<TaskCategory, Task[]>;
 
@@ -48,10 +48,12 @@ const Tasks = () => {
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
   const setTasks = useSetTasks();
+  const [isDragging, setIsDragging] = useState(false);
   const previousTasks = useRef<Task[]>([]);
 
   const handleDragStart = useCallback(() => {
     previousTasks.current = useTasksStore.getState().tasks;
+    setIsDragging(true);
   }, []);
 
   const handleDragOver = useCallback(
@@ -90,16 +92,16 @@ const Tasks = () => {
       if (event.canceled) {
         setTasks(previousTasks.current);
       }
+      setIsDragging(false);
     },
     [setTasks],
   );
 
   return (
     <div className="p-12 max-sm:px-4">
-      <TaskPageHeader />
+      <TaskPageHeader disabled={isDragging} />
 
       <DragDropProvider
-        sensors={[PointerSensor]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
@@ -114,11 +116,13 @@ const Tasks = () => {
             <Column
               title="Urgent and Important"
               category="urgent-important"
+              creationDisabled={isDragging}
               inputPlaceholder="Finish assignment due in an hour..."
             />
             <Column
               title="Not Urgent but Important"
               category="not-urgent-important"
+              creationDisabled={isDragging}
               inputPlaceholder="Practice Spanish for 30 minutes..."
             />
           </div>
@@ -126,11 +130,13 @@ const Tasks = () => {
             <Column
               title="Urgent but Not Important"
               category="urgent-not-important"
+              creationDisabled={isDragging}
               inputPlaceholder="Wash the dishes..."
             />
             <Column
               title="Not Urgent nor Important"
               category="not-urgent-not-important"
+              creationDisabled={isDragging}
               inputPlaceholder="Watch Netflix..."
             />
           </div>

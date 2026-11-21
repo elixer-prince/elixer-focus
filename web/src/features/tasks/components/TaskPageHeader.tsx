@@ -1,7 +1,7 @@
 import { useAddTask } from "@/features/tasks/stores/tasks-store";
 import { useRef, useState } from "react";
 
-const TaskPageHeader = () => {
+const TaskPageHeader = ({ disabled }: { disabled?: boolean }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const addTask = useAddTask();
 
@@ -20,10 +20,11 @@ const TaskPageHeader = () => {
           type="text"
           placeholder="A random task..."
           value={value}
+          disabled={disabled}
           className="new-task-input input input-primary placeholder:text-primary-content/75 border-primary-content/50 mx-auto block placeholder:italic"
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter") {
+            if (!disabled && event.key === "Enter") {
               const inputValue = event.currentTarget.value;
               if (inputValue.trim() === "") {
                 setValue("");
@@ -37,7 +38,9 @@ const TaskPageHeader = () => {
 
         <button
           className="btn btn-primary"
+          disabled={disabled}
           onClick={() => {
+            if (disabled) return;
             if (inputRef.current?.value.trim() === "") {
               setValue("");
               return;

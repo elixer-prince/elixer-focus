@@ -96,3 +96,84 @@ test("task page header is visible", async ({ page }) => {
   // The task page should render the header with the "Your Tasks" title
   await expect(page.getByRole("heading", { name: "Your Tasks" })).toBeVisible();
 });
+
+test("task creation stays disabled during a pointer drag and resumes after cancel", async ({
+  page,
+}) => {
+  await page.goto("/tasks");
+  const header = page.getByRole("textbox", {
+    name: "Uncategorised task input",
+  });
+  const create = page.getByRole("button", { name: "Create task" });
+  await header.fill("First task");
+  await header.press("Enter");
+  await header.fill("Second task");
+  await create.click();
+  await header.fill("Header draft");
+
+  const urgentColumn = page.locator("article").filter({
+    has: page.getByRole("heading", { name: "Urgent and Important Tasks" }),
+  });
+  await urgentColumn.getByRole("button", { name: "Add task" }).click();
+  const columnInput = urgentColumn.getByRole("textbox");
+  await columnInput.fill("Column draft");
+
+  const tasks = page.locator("li.task:not([aria-hidden=true])");
+  const source = tasks.filter({ hasText: "Second task" });
+  const target = tasks.filter({ hasText: "First task" });
+  const start = (await source.boundingBox())!;
+  const end = (await target.boundingBox())!;
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2, {
+    steps: 12,
+  });
+
+  await expect(source).toHaveAttribute("data-dragging", "true");
+  await expect(tasks.first()).toContainText("First task");
+  await expect(header).toBeDisabled();
+  await expect(create).toBeDisabled();
+  await expect(columnInput).toBeDisabled();
+  await expect(tasks).toHaveCount(2);
+
+  await page.keyboard.press("Escape");
+  await page.mouse.up();
+
+  await expect(tasks.first()).toContainText("Second task");
+  await expect(header).toBeEnabled();
+  await expect(create).toBeEnabled();
+  await expect(columnInput).toBeEnabled();
+  await expect(header).toHaveValue("Header draft");
+  await expect(columnInput).toHaveValue("Column draft");
+  await create.click();
+  await columnInput.press("Enter");
+  await expect(tasks).toHaveCount(4);
+});
+
+for (const key of ["Space", "Enter"]) {
+  test(`can reorder tasks with ${key} and the arrow keys`, async ({ page }) => {
+    await page.goto("/tasks");
+    const header = page.getByRole("textbox", {
+      name: "Uncategorised task input",
+    });
+    await header.fill("First task");
+    await header.press("Enter");
+    await header.fill("Second task");
+    await header.press("Enter");
+
+    const tasks = page.locator("li.task:not([aria-hidden=true])");
+    const source = tasks.filter({ hasText: "Second task" });
+    await header.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(source).toBeFocused();
+    await page.keyboard.press(key);
+    await expect(source).toHaveAttribute("data-dragging", "true");
+    await page.keyboard.press("Shift+ArrowDown");
+    await expect(tasks.first()).toContainText("First task");
+    await page.keyboard.press(key);
+
+    await expect(source).toHaveAttribute("data-dragging", "false");
+    await expect(tasks.last()).toContainText("Second task");
+    await expect(header).toBeEnabled();
+  });
+}
