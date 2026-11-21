@@ -1,0 +1,42 @@
+# Run Playwright e2e tests on push
+
+name: Playwright
+
+on:
+  push:
+    branches: ["main", "alpha", "beta"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+      - name: Install dependencies
+        run: npm clean-install
+        working-directory: web
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: web
+      - name: Run Playwright tests
+        run: npx playwright test
+        working-directory: web
+        env:
+          VITE_SITE_URL: http://localhost:5173
+          VITE_BASE_API_URL: http://localhost:3000
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: web/test-results/
