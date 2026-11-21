@@ -1,7 +1,7 @@
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
 import { usePreviousSessionType } from "@/features/countdown-timer/stores/session-store";
 import { useElapsedTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
-import { formatTimeInMinutesAndSeconds } from "@/utils/formatting";
+import { formatElapsedTime } from "@/utils/formatting";
 
 const Modal = () => {
   const { modalRef } = useCountdownContext();
@@ -21,9 +21,9 @@ const Modal = () => {
           <p className="elapsed-paragraph mt-2 mb-3 font-bold">
             You went over by{" "}
             <span className="elapsed-time text-error text-2xl">
-              {formatTimeInMinutesAndSeconds(elapsedTimeInSeconds)}
-            </span>{" "}
-            minutes.
+              {formatElapsedTime(elapsedTimeInSeconds)}
+            </span>
+            .
           </p>
         </div>
 
