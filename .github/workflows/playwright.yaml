@@ -34,9 +34,17 @@ jobs:
         env:
           VITE_SITE_URL: http://localhost:5173
           VITE_BASE_API_URL: http://localhost:3000
-      - name: Upload results
+      - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: playwright-results
+          name: playwright-test-results
           path: web/test-results/
+          if-no-files-found: warn
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-html-report
+          path: web/playwright-report/
+          if-no-files-found: warn
