@@ -9,9 +9,15 @@ interface ColumnProps {
   title: string;
   category: TaskCategory;
   inputPlaceholder: string;
+  isDragging?: boolean;
 }
 
-const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
+const Column = ({
+  title,
+  category,
+  inputPlaceholder,
+  isDragging = false,
+}: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
   const { ref, isDropTarget } = useDroppable({
@@ -31,6 +37,7 @@ const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
         category={category}
         inputShown={inputShown}
         setInputShown={setInputShown}
+        isDragging={isDragging}
       />
 
       <TaskList
@@ -38,6 +45,7 @@ const Column = ({ title, category, inputPlaceholder }: ColumnProps) => {
         inputShown={inputShown}
         setInputShown={setInputShown}
         placeholder={inputPlaceholder}
+        isDragging={isDragging}
       />
     </article>
   );
