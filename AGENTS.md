@@ -59,6 +59,7 @@ cd app && npm run web           # Run web version
 - **E2E Testing**: Playwright runs against `localhost:5173` with Firefox browser. Config in `web/playwright.config.ts`. E2E tests in `web/e2e/` are excluded from Vitest via `vite.config.ts`. On CI, `page.evaluate()` requires `page.goto("/")` before accessing localStorage in Firefox.
 - **Browser Throttle Prevention**: The countdown timer uses Web Audio API (`usePreventTabThrottling` hook) to play a nearly silent oscillator (0.001 volume, 220 Hz) while the timer runs. This keeps the tab exempt from browser throttling in background tabs and power-saving modes, so `setInterval` fires normally and the end beep plays automatically.
 - **Desktop Notifications**: The countdown timer sends OS-level notifications when it ends via the Web Notification API (`useNotification` hook). Permission is requested on timer start. The `tag` option deduplicates notifications, and `onclick` focuses the window. Works across virtual desktops.
+- **Focus Ring Pulse**: The countdown timer focus ring pulses via a CSS `@keyframes` animation (`focus-ring-pulse` in `index.css`) while the timer runs. Components conditionally apply the `focus-ring-pulse` class and omit the inline `filter` style using spread (`...(isPulsing ? {} : { filter: "..." })`) so CSS animations take over. Setting `filter: undefined` in React still renders the property, blocking animations.
 
 ## Code Style
 
