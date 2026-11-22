@@ -13,7 +13,7 @@ const useEndTicking = () => {
     const sound = timerTickingSoundEffectRef.current;
 
     try {
-      sound.loop = false;
+      sound.loop = true;
     } catch (error) {
       console.error(`Error setting loop for sound: ${sound.src}`, error);
     }

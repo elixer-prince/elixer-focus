@@ -1,6 +1,7 @@
 import ButtonControls from "@/features/countdown-timer/components/ButtonControls/Index";
 import CountdownDisplay from "@/features/countdown-timer/components/TimerDisplay/Index";
 import CountdownHeader from "@/features/countdown-timer/components/TimerHeader/Index";
+import NotificationStatus from "@/features/countdown-timer/components/NotificationStatus";
 
 const CountdownTimerContainer = () => {
   return (
@@ -8,6 +9,7 @@ const CountdownTimerContainer = () => {
       <CountdownHeader />
       <CountdownDisplay />
       <ButtonControls />
+      <NotificationStatus />
     </section>
   );
 };

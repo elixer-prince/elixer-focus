@@ -28,8 +28,12 @@ const useCountdownInterval = () => {
   const { displayRemainingTimeInPageTitle } = usePageTitle();
   const { alertUserOfTimerEnd } = useCountdownAlerts();
 
-  const { timerBeepSoundEffectRef, timerIntervalRef, elapsedIntervalRef } =
-    useCountdownContext();
+  const {
+    timerBeepSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerIntervalRef,
+    elapsedIntervalRef,
+  } = useCountdownContext();
 
   const currentSessionType = useCurrentSessionType();
   const setPreviousSessionType = useSetPreviousSessionType();
@@ -70,7 +74,10 @@ const useCountdownInterval = () => {
         if (timerHasEnded(remainingSeconds)) {
           clearIntervalIfItExists(timerIntervalRef);
           stopEndTicking();
-          playSound(timerBeepSoundEffectRef.current);
+          if (!hasPlayedEndBeepRef.current) {
+            hasPlayedEndBeepRef.current = true;
+            playSound(timerBeepSoundEffectRef.current);
+          }
           setPreviousSessionType(currentSessionType);
           alertUserOfTimerEnd();
           autoSwitchSessionType();
@@ -82,6 +89,7 @@ const useCountdownInterval = () => {
     [
       currentSessionType,
       timerBeepSoundEffectRef,
+      hasPlayedEndBeepRef,
       timerIntervalRef,
       autoSwitchSessionType,
       startEndTicking,

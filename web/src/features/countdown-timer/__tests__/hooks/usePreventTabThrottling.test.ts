@@ -308,4 +308,174 @@ describe("usePreventTabThrottling", () => {
       );
     }
   });
+
+  it("should add visibility change listener when timer starts", () => {
+    mocks.useTimerRunning = true;
+
+    const addEventListenerSpy = vi.spyOn(document, "addEventListener");
+
+    renderHook(() => usePreventTabThrottling());
+
+    expect(addEventListenerSpy).toHaveBeenCalledWith(
+      "visibilitychange",
+      expect.any(Function),
+    );
+
+    addEventListenerSpy.mockRestore();
+  });
+
+  it("should remove visibility change listener on cleanup", () => {
+    mocks.useTimerRunning = true;
+
+    const removeEventListenerSpy = vi.spyOn(document, "removeEventListener");
+
+    const { unmount } = renderHook(() => usePreventTabThrottling());
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "visibilitychange",
+      expect.any(Function),
+    );
+
+    removeEventListenerSpy.mockRestore();
+  });
+
+  it("should resume audio context when tab becomes visible and context is suspended", async () => {
+    mocks.useTimerRunning = true;
+
+    const resumeMock = vi.fn().mockResolvedValue(undefined);
+
+    // Override the MockAudioContext to track state
+    const originalMockAudioContext = window.AudioContext;
+    class SuspendedMockAudioContext {
+      state = "suspended";
+      resume = resumeMock;
+      createOscillator = () => mocks.oscillator;
+      createGain = () => mocks.gainNode;
+      close = vi.fn();
+      destination = {};
+    }
+    // @ts-expect-error - replacing AudioContext for test
+    window.AudioContext = SuspendedMockAudioContext;
+
+    renderHook(() => usePreventTabThrottling());
+
+    // Simulate tab becoming visible
+    Object.defineProperty(document, "visibilityState", {
+      value: "visible",
+      writable: true,
+    });
+
+    // Dispatch visibilitychange event
+    document.dispatchEvent(new Event("visibilitychange"));
+
+    // Wait for the async resume call
+    await vi.waitFor(() => {
+      expect(resumeMock).toHaveBeenCalled();
+    });
+
+    // Restore
+    window.AudioContext = originalMockAudioContext;
+  });
+
+  it("should not resume audio context when context is already running", async () => {
+    mocks.useTimerRunning = true;
+
+    const resumeMock = vi.fn().mockResolvedValue(undefined);
+
+    class RunningMockAudioContext {
+      state = "running";
+      resume = resumeMock;
+      createOscillator = () => mocks.oscillator;
+      createGain = () => mocks.gainNode;
+      close = vi.fn();
+      destination = {};
+    }
+    const originalMockAudioContext = window.AudioContext;
+    // @ts-expect-error - replacing AudioContext for test
+    window.AudioContext = RunningMockAudioContext;
+
+    renderHook(() => usePreventTabThrottling());
+
+    // Simulate tab becoming visible
+    Object.defineProperty(document, "visibilityState", {
+      value: "visible",
+      writable: true,
+    });
+
+    document.dispatchEvent(new Event("visibilitychange"));
+
+    await vi.waitFor(() => {
+      expect(resumeMock).not.toHaveBeenCalled();
+    });
+
+    window.AudioContext = originalMockAudioContext;
+  });
+
+  it("should not resume audio context when tab is hidden", async () => {
+    mocks.useTimerRunning = true;
+
+    const resumeMock = vi.fn().mockResolvedValue(undefined);
+
+    class SuspendedMockAudioContext {
+      state = "suspended";
+      resume = resumeMock;
+      createOscillator = () => mocks.oscillator;
+      createGain = () => mocks.gainNode;
+      close = vi.fn();
+      destination = {};
+    }
+    const originalMockAudioContext = window.AudioContext;
+    // @ts-expect-error - replacing AudioContext for test
+    window.AudioContext = SuspendedMockAudioContext;
+
+    renderHook(() => usePreventTabThrottling());
+
+    // Simulate tab still hidden
+    Object.defineProperty(document, "visibilityState", {
+      value: "hidden",
+      writable: true,
+    });
+
+    document.dispatchEvent(new Event("visibilitychange"));
+
+    await vi.waitFor(() => {
+      expect(resumeMock).not.toHaveBeenCalled();
+    });
+
+    window.AudioContext = originalMockAudioContext;
+  });
+
+  it("should handle resume failure gracefully when context is closed", async () => {
+    mocks.useTimerRunning = true;
+
+    const resumeMock = vi.fn().mockRejectedValue(new Error("Already closed"));
+
+    class SuspendedMockAudioContext {
+      state = "suspended";
+      resume = resumeMock;
+      createOscillator = () => mocks.oscillator;
+      createGain = () => mocks.gainNode;
+      close = vi.fn();
+      destination = {};
+    }
+    const originalMockAudioContext = window.AudioContext;
+    // @ts-expect-error - replacing AudioContext for test
+    window.AudioContext = SuspendedMockAudioContext;
+
+    renderHook(() => usePreventTabThrottling());
+
+    Object.defineProperty(document, "visibilityState", {
+      value: "visible",
+      writable: true,
+    });
+
+    // Should not throw even if resume fails
+    expect(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    }).not.toThrow();
+
+    window.AudioContext = originalMockAudioContext;
+  });
 });

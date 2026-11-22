@@ -1,5 +1,13 @@
 import { act, renderHook } from "@testing-library/react";
 
+function createMockAudio() {
+  return {
+    currentTime: 0,
+    play: vi.fn().mockResolvedValue(undefined),
+    pause: vi.fn(),
+  };
+}
+
 const mocks = vi.hoisted(() => ({
   startEndTicking: vi.fn(),
   stopEndTicking: vi.fn(),
@@ -20,6 +28,8 @@ const mocks = vi.hoisted(() => ({
   timerPausedValue: true,
   remainingTimeInSecondsValue: 1500,
   timerOnClickSoundEffectRef: { current: "timer-on-sound" as string | null },
+  timerBeepSoundEffectRef: { current: createMockAudio() },
+  hasPlayedEndBeepRef: { current: false },
   timerEndTimeRef: { current: null as number | null },
   timerIntervalRef: { current: 123 as number | null },
 }));
@@ -50,6 +60,8 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownHelpers", () => ({
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
   default: () => ({
     timerOnClickSoundEffectRef: mocks.timerOnClickSoundEffectRef,
+    timerBeepSoundEffectRef: mocks.timerBeepSoundEffectRef,
+    hasPlayedEndBeepRef: mocks.hasPlayedEndBeepRef,
     timerEndTimeRef: mocks.timerEndTimeRef,
     timerIntervalRef: mocks.timerIntervalRef,
   }),

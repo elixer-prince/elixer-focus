@@ -44,7 +44,7 @@ describe("useEndTicking", () => {
     });
 
     expect(mocks.isEndTickingRef.current).toBe(true);
-    expect(mocks.timerTickingSoundEffectRef.current.loop).toBe(false);
+    expect(mocks.timerTickingSoundEffectRef.current.loop).toBe(true);
     expect(mocks.playSound).toHaveBeenCalledWith(
       mocks.timerTickingSoundEffectRef.current,
     );

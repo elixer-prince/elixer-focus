@@ -3,6 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 const mocks = vi.hoisted(() => ({
   timerIntervalRef: { current: null as ReturnType<typeof setInterval> | null },
   resetTimerSoundEffectRef: { current: null as HTMLAudioElement | null },
+  hasPlayedEndBeepRef: { current: false },
   resetTimerStorage: vi.fn(),
   resetPageTitle: vi.fn(),
   clearIntervalIfItExists: vi.fn(),
@@ -21,6 +22,7 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
   default: () => ({
     timerIntervalRef: mocks.timerIntervalRef,
     resetTimerSoundEffectRef: mocks.resetTimerSoundEffectRef,
+    hasPlayedEndBeepRef: mocks.hasPlayedEndBeepRef,
   }),
 }));
 

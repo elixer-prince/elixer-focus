@@ -56,7 +56,28 @@ const usePreventTabThrottling = () => {
     oscillatorRef.current = oscillator;
     gainNodeRef.current = gainNode;
 
+    // When the tab becomes visible again, resume the audio context if it was
+    // suspended by the browser while the tab was backgrounded. This prevents
+    // the ticking sound from stopping and restarting when switching virtual
+    // desktops, and ensures the end beep plays without delay.
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === "visible" && audioContextRef.current) {
+        const ctx = audioContextRef.current;
+        if (ctx.state === "suspended") {
+          try {
+            await ctx.resume();
+          } catch {
+            // Resume may fail if the context is already closed
+          }
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
       // Stop and clean up when timer stops or component unmounts
       try {
         oscillator.stop();

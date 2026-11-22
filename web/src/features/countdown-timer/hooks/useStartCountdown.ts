@@ -34,11 +34,19 @@ const useStartCountdown = () => {
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const { timerOnClickSoundEffectRef, timerEndTimeRef, timerIntervalRef } =
-    useCountdownContext();
+  const {
+    timerOnClickSoundEffectRef,
+    timerBeepSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerEndTimeRef,
+    timerIntervalRef,
+  } = useCountdownContext();
 
   const startCountdown = useCallback(() => {
     stopEndTicking();
+
+    // Reset the beep flag so it can play again when this session ends
+    hasPlayedEndBeepRef.current = false;
 
     setTimerPaused(false);
     setTimerRunning(true);
@@ -57,6 +65,8 @@ const useStartCountdown = () => {
     runInterval(endTime);
   }, [
     timerEndTimeRef,
+    timerBeepSoundEffectRef,
+    hasPlayedEndBeepRef,
     remainingTimeInSeconds,
     runInterval,
     setTimerPaused,

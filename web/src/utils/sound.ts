@@ -3,7 +3,13 @@ export function playSound(sound: HTMLAudioElement): void {
 
   try {
     stopSound(sound);
-    sound.play();
+    sound.play().catch((error) => {
+      // The play() promise rejects with AbortError if pause() is called
+      // before playback starts. This is expected when the user skips or
+      // resets the timer while a sound is starting.
+      if (error.name === "AbortError") return;
+      console.error(`Error playing sound: ${sound.src}`, error);
+    });
   } catch (error) {
     console.error(`Error playing sound: ${sound.src}`, error);
   }

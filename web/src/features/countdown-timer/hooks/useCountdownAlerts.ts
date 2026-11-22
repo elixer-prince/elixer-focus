@@ -7,7 +7,8 @@ const useCountdownAlerts = () => {
 
   const alertUserOfTimerEnd = () => {
     modalRef.current?.showModal();
-    sendTimerEndNotification();
+    // Fire-and-forget: the notification may re-request permission asynchronously.
+    void sendTimerEndNotification();
   };
 
   return { alertUserOfTimerEnd };
