@@ -10,7 +10,6 @@ const mocks = vi.hoisted(() => ({
   useFocusDuration: vi.fn(() => 25),
   useShortBreakDuration: vi.fn(() => 5),
   useLongBreakDuration: vi.fn(() => 15),
-  useCustomSessionDuration: vi.fn(() => 30),
   useCurrentSessionType: vi.fn(() => "Focus"),
   useCurrentSessionCount: vi.fn(() => 0),
   useSessionCountLimit: vi.fn(() => 4),
@@ -46,7 +45,6 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useFocusDuration: mocks.useFocusDuration,
   useShortBreakDuration: mocks.useShortBreakDuration,
   useLongBreakDuration: mocks.useLongBreakDuration,
-  useCustomSessionDuration: mocks.useCustomSessionDuration,
   useCurrentSessionType: mocks.useCurrentSessionType,
   useCurrentSessionCount: mocks.useCurrentSessionCount,
   useSessionCountLimit: mocks.useSessionCountLimit,
@@ -99,19 +97,6 @@ describe("useSessionSwitch", () => {
       expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
       expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
       expect(mocks.resetCurrentSessionCountMock).toHaveBeenCalled();
-    });
-
-    it("should switch from Custom to Focus", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Custom");
-
-      const { result } = renderHook(() => useSessionSwitch());
-
-      act(() => {
-        result.current.autoSwitchSessionType();
-      });
-
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
     });
 
     it("should switch to Long Break when session count reaches limit", () => {
@@ -282,61 +267,6 @@ describe("useSessionSwitch", () => {
         "Long Break",
       );
       expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15);
-    });
-  });
-
-  describe("switchToCustom", () => {
-    it("should do nothing if already on Custom session", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Custom");
-
-      const { result } = renderHook(() => useSessionSwitch());
-
-      act(() => {
-        result.current.switchToCustom();
-      });
-
-      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
-    });
-
-    it("should switch immediately when timer is not running", () => {
-      mocks.useTimerRunning.mockReturnValue(false);
-      mocks.useCurrentSessionType.mockReturnValue("Focus");
-
-      const { result } = renderHook(() => useSessionSwitch());
-
-      act(() => {
-        result.current.switchToCustom();
-      });
-
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Custom");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(30);
-    });
-  });
-
-  describe("updateCustomDurationAndReset", () => {
-    it("should update duration and reset when current session is Custom", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Custom");
-
-      const { result } = renderHook(() => useSessionSwitch());
-
-      act(() => {
-        result.current.updateCustomDurationAndReset(45);
-      });
-
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Custom");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(45);
-    });
-
-    it("should do nothing when current session is not Custom", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Focus");
-
-      const { result } = renderHook(() => useSessionSwitch());
-
-      act(() => {
-        result.current.updateCustomDurationAndReset(45);
-      });
-
-      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
     });
   });
 });

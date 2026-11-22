@@ -14,7 +14,6 @@ const mocks = vi.hoisted(() => ({
   useFocusDuration: vi.fn(() => 25),
   useShortBreakDuration: vi.fn(() => 5),
   useLongBreakDuration: vi.fn(() => 15),
-  useCustomSessionDuration: vi.fn(() => 30),
   useTimerRunning: vi.fn(() => false),
 }));
 
@@ -46,7 +45,6 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useFocusDuration: mocks.useFocusDuration,
   useShortBreakDuration: mocks.useShortBreakDuration,
   useLongBreakDuration: mocks.useLongBreakDuration,
-  useCustomSessionDuration: mocks.useCustomSessionDuration,
   useCurrentSessionType: mocks.useCurrentSessionType,
 }));
 
@@ -125,18 +123,6 @@ describe("useResetCountdown", () => {
       });
 
       expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15);
-    });
-
-    it("should reset timer storage with Custom duration when session type is Custom", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Custom");
-
-      const { result } = renderHook(() => useResetCountdown());
-
-      act(() => {
-        result.current.resetCountdown();
-      });
-
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(30);
     });
 
     it("should reset the page title", () => {

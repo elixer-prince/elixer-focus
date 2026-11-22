@@ -3,7 +3,6 @@ import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountd
 import usePageTitle from "@/hooks/usePageTitle";
 import {
   useCurrentSessionType,
-  useCustomSessionDuration,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
@@ -23,7 +22,6 @@ const useResetCountdown = () => {
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
-  const customSessionDuration = useCustomSessionDuration();
   const currentSessionType = useCurrentSessionType();
 
   const calculateInitialTime = (): number => {
@@ -34,8 +32,6 @@ const useResetCountdown = () => {
         return shortBreakDuration;
       case "Long Break":
         return longBreakDuration;
-      case "Custom":
-        return customSessionDuration;
     }
   };
 
