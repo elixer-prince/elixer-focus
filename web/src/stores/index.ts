@@ -91,6 +91,19 @@ export {
   useSetVolume,
 } from "@/features/music-player/stores/store";
 
+// Journal stores
+export {
+  useEntries,
+  useNotes,
+  useGetEntryByDate,
+  useSaveEntry,
+  useGetNotesByDate,
+  useCreateNote,
+  useUpdateNote,
+  useDeleteNote,
+  useGetStreak,
+} from "@/features/journal/stores/journal-store";
+
 // UI stores
 export {
   useNavbarIsOpen,

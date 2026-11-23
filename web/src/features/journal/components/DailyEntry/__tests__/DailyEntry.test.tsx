@@ -1,0 +1,168 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { render, screen, waitFor } from "@testing-library/react";
+
+import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
+
+vi.mock("@/features/journal/stores/journal-store", () => {
+  const entry = {
+    id: "entry-1",
+    date: "2026-01-15",
+    userId: null,
+    content: "",
+    createdAt: 1000,
+    updatedAt: 1000,
+  };
+  return {
+    useGetEntryByDate: () => (date) =>
+      date === "2026-01-15" ? entry : undefined,
+    useJournalStore: {
+      getState: () => ({
+        saveEntry: vi.fn((date, content) => ({ ...entry, date, content })),
+      }),
+    },
+    useSaveEntry: () => vi.fn(),
+  };
+});
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  getSessionsByDay: vi.fn(() => []),
+  getTotalFocusTime: vi.fn(() => 0),
+  getSessionCountsByType: vi.fn(() => ({
+    Focus: 0,
+    "Short Break": 0,
+    "Long Break": 0,
+  })),
+}));
+
+vi.mock("@/utils/formatting", () => ({
+  formatElapsedTime: vi.fn(() => "0s"),
+}));
+
+vi.mock("@/components/ui", () => ({
+  Badge: ({ children, color, size }) => (
+    <span className={`badge-${color} badge-${size}`}>{children}</span>
+  ),
+  Button: ({ children, size, color, onClick, disabled }) => (
+    <button
+      type="button"
+      className={`btn btn-${color} btn-${size}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  ),
+}));
+
+vi.mock("@tiptap/react", () => {
+  const mockEditor = {
+    getMarkdown: vi.fn(() => ""),
+    commands: { setContent: vi.fn() },
+    isFocused: false,
+    options: { extensions: [] },
+    storage: {},
+    on: vi.fn(),
+    off: vi.fn(),
+    destroy: vi.fn(),
+  };
+  return {
+    useEditor: () => mockEditor,
+    EditorContent: () => <div data-testid="editor-content">Editor</div>,
+  };
+});
+
+vi.mock("@tiptap/starter-kit", () => ({
+  default: {},
+}));
+
+vi.mock("@tiptap/extension-placeholder", () => ({
+  default: { configure: () => ({}) },
+}));
+
+vi.mock("@tiptap/markdown", () => ({
+  Markdown: {},
+}));
+
+vi.mock("react-icons/md", () => ({
+  MdExpandLess: () => <span>▼</span>,
+  MdExpandMore: () => <span>▶</span>,
+  MdNoteAdd: () => <span>+</span>,
+}));
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("DailyEntry component", () => {
+  it("renders the formatted date", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Thursday, January 15, 2026")).toBeInTheDocument();
+  });
+
+  it("renders the New Note button", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("New Note")).toBeInTheDocument();
+  });
+
+  it("renders the collapsible stats section", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Today's Focus Stats")).toBeInTheDocument();
+  });
+
+  it("shows no sessions message when there are no sessions", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText("No sessions completed today yet."),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the TipTap editor", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId("editor-content")).toBeInTheDocument();
+  });
+
+  it("renders the stats toggle button", () => {
+    render(
+      <DailyEntryView
+        selectedDate={new Date(2026, 0, 15)}
+        onNewNote={vi.fn()}
+      />,
+    );
+
+    const statsButton = screen
+      .getByText("Today's Focus Stats")
+      .closest("button");
+    expect(statsButton).toBeInTheDocument();
+  });
+});

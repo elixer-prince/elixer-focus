@@ -1,7 +1,7 @@
 # 0003. Journal
 
 **Date**: 2026-11-23
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
@@ -189,15 +189,15 @@ None. No new environment variables or third party credentials are needed.
 
 ## Build plan
 
-1. Create the journal store with DailyEntry and JournalNote types, Zustand persist middleware, and core actions (getEntryByDate, saveEntry, getNotesByDate, createNote, deleteNote), satisfies **AC-2**, **AC-3**, **AC-10**, **AC-11**
-2. Build the calendar view component using react-day-picker with month navigation, day marking for entries and notes, and click to open day, satisfies **AC-1**
-3. Build the daily entry view with collapsible stats section wired to session history queries and TipTap Markdown editor below, satisfies **AC-2**, **AC-4**, **AC-5**
-4. Implement auto save with 1 second debounce and draft indicator in the journal store, satisfies **AC-3**
-5. Build the quick note creation and editing flow with title input, Markdown body, inline edit and delete actions, and note list under daily entry, satisfies **AC-6**
-6. Build the session reflection prompt, triggered when a focus session completes, that creates a JournalNote linked to the session, satisfies **AC-7**
-7. Build the focus time bar chart component using Chart.js with colors derived from CSS variables to match the active DaisyUI theme, showing weekly data derived from session history, satisfies **AC-8**
-8. Build the streak counter component that computes consecutive days from entries and sessions, satisfies **AC-9**
-9. Wire the Journal route to replace the placeholder, integrate all components, satisfies **AC-1**, **AC-2**
+1. [x] Create the journal store with DailyEntry and JournalNote types, Zustand persist middleware, and core actions (getEntryByDate, saveEntry, getNotesByDate, createNote, deleteNote), satisfies **AC-2**, **AC-3**, **AC-10**, **AC-11**
+2. [x] Build the calendar view component using react-day-picker with month navigation, day marking for entries and notes, and click to open day, satisfies **AC-1**
+3. [x] Build the daily entry view with collapsible stats section wired to session history queries and TipTap Markdown editor below, satisfies **AC-2**, **AC-4**, **AC-5**
+4. [x] Implement auto save with 1 second debounce and draft indicator in the journal store, satisfies **AC-3**
+5. [x] Build the quick note creation and editing flow with title input, Markdown body, inline edit and delete actions, and note list under daily entry, satisfies **AC-6**
+6. [x] Build the session reflection prompt, triggered when a focus session completes, that creates a JournalNote linked to the session, satisfies **AC-7**
+7. [x] Build the focus time bar chart component using Chart.js with colors derived from CSS variables to match the active DaisyUI theme, showing weekly data derived from session history, satisfies **AC-8**
+8. [x] Build the streak counter component that computes consecutive days from entries and sessions, satisfies **AC-9**
+9. [x] Wire the Journal route to replace the placeholder, integrate all components, satisfies **AC-1**, **AC-2**
 
 ## Consequences
 

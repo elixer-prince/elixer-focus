@@ -42,7 +42,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 42  | Music player live stream fix       | Slice 2 (settings)    | done        |
 | 43  | Music player duplicate songs fix   | Slice 2 (settings)    | done        |
 | 44  | Music player dedup migration fix   | Slice 2 (settings)    | done        |
-| 10  | Journal                            | Slice 3 (pages)       | in-progress |
+| 10  | Journal                            | Slice 3 (pages)       | done        |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
@@ -369,25 +369,26 @@ code in `web/src/features/music-player/`
 
 ## Slice 3: placeholder pages
 
-### 10. Journal · in-progress
+### 10. Journal · done
 
 Daily writing space with Markdown editor, session stats, calendar navigation, and free form notes. Spec: [0003](../specs/web/0003-journal.md)
 
 **Done when:** journal page renders daily entries with Markdown editing, shows session stats, persists to localStorage, and displays focus time charts and streaks.
 
 - [x] Design it (spec): `/architect journal`
-- [ ] Build it: `/develop journal`
-  - [ ] Journal store with DailyEntry and JournalNote types, Zustand persist, core CRUD actions (AC-2, AC-3, AC-10, AC-11)
-  - [ ] Calendar view with react-day-picker, day marking, click to open (AC-1)
-  - [ ] Daily entry view with collapsible stats and TipTap editor (AC-2, AC-4, AC-5)
-  - [ ] Auto save with debounce and draft indicator (AC-3)
-  - [ ] Quick note creation and editing flow (AC-6)
-  - [ ] Session reflection modal prompt on session end (AC-7)
-  - [ ] Focus time chart with Chart.js and theme-aware colors (AC-8)
-  - [ ] Streak counter component (AC-9)
-  - [ ] Wire Journal route, integrate all components (AC-1, AC-2)
-- [ ] Verify it: `/check verify journal`
-- [ ] Test it: `/test journal`
+- [x] Build it: `/develop journal`
+  - [x] Journal store with DailyEntry and JournalNote types, Zustand persist, core CRUD actions (AC-2, AC-3, AC-10, AC-11)
+  - [x] Calendar view with react-day-picker, day marking, click to open (AC-1)
+  - [x] Daily entry view with collapsible stats and TipTap Markdown editor (AC-2, AC-4, AC-5)
+  - [x] Auto save with debounce and draft indicator (AC-3)
+  - [x] Quick note creation and editing flow (AC-6)
+  - [x] Session reflection modal triggered by session completion event (AC-7)
+  - [x] Focus time chart with Chart.js and theme-aware colors (AC-8)
+  - [x] Streak counter component (AC-9)
+  - [x] Wire Journal route, integrate all components (AC-1, AC-2)
+- [x] Verify it: `/check verify journal`
+- [x] Test it: `/test journal`
+- [x] Sync (record conventions): `/sync`
 
 code in `web/src/app/routes/(root)/Journal.tsx`
 

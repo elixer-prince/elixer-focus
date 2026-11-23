@@ -6,6 +6,7 @@ import { immer } from "zustand/middleware/immer";
 
 type SessionHistoryState = {
   sessions: CompletedSession[];
+  lastCompletedSession: CompletedSession | null;
 };
 
 type SessionHistoryActions = {
@@ -15,6 +16,7 @@ type SessionHistoryActions = {
   ) => void;
   removeSession: (id: string) => void;
   clearSessions: () => void;
+  clearLastCompletedSession: () => void;
 };
 
 type SessionHistoryStore = SessionHistoryState & SessionHistoryActions;
@@ -23,15 +25,18 @@ const useSessionHistoryStore = create<SessionHistoryStore>()(
   persist(
     immer((set) => ({
       sessions: [],
+      lastCompletedSession: null,
 
       addSession: (sessionType, durationInSeconds) =>
         set((state) => {
-          state.sessions.push({
+          const newSession: CompletedSession = {
             id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             sessionType,
             durationInSeconds,
             completedAt: Date.now(),
-          });
+          };
+          state.sessions.push(newSession);
+          state.lastCompletedSession = newSession;
         }),
 
       removeSession: (id) =>
@@ -42,6 +47,12 @@ const useSessionHistoryStore = create<SessionHistoryStore>()(
       clearSessions: () =>
         set((state) => {
           state.sessions = [];
+          state.lastCompletedSession = null;
+        }),
+
+      clearLastCompletedSession: () =>
+        set((state) => {
+          state.lastCompletedSession = null;
         }),
     })),
     createPersistOptions<SessionHistoryStore>({
@@ -144,6 +155,9 @@ export const getSessionCountsByType = (
 export const useSessions = () =>
   useSessionHistoryStore((state) => state.sessions);
 
+export const useLastCompletedSession = () =>
+  useSessionHistoryStore((state) => state.lastCompletedSession);
+
 // ACTIONS
 
 export const useAddSession = () =>
@@ -154,3 +168,6 @@ export const useRemoveSession = () =>
 
 export const useClearSessions = () =>
   useSessionHistoryStore((state) => state.clearSessions);
+
+export const useClearLastCompletedSession = () =>
+  useSessionHistoryStore((state) => state.clearLastCompletedSession);
