@@ -34,6 +34,11 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 21  | API response types                 | Foundation            | planned     |
 | 22  | Error handling and loading         | Foundation            | planned     |
 | 23  | Performance audit                  | Foundation            | planned     |
+| 24  | Theme validation fix               | Foundation            | planned     |
+| 25  | Reusable Modal component           | Foundation            | planned     |
+| 26  | Shared UI primitives               | Foundation            | planned     |
+| 27  | Design documentation               | Foundation            | planned     |
+| 28  | Console log cleanup                | Foundation            | planned     |
 
 ## Foundations
 
@@ -92,6 +97,46 @@ Analyze the bundle size and performance of large dependencies. The web app uses 
 **Done when:** bundle analysis is run, GSAP contribution is measured, and lazy loading or CSS alternatives are implemented for components that do not need GSAP eagerly.
 
 - [ ] Build it: `/develop performance audit`
+
+### 24. Theme validation fix · planned
+
+The `useAppTheme` hook validates themes against a hardcoded `VALID_THEMES` set that includes only the 36 DaisyUI themes. The custom `elixer` theme and premium themes (anime, BR characters, effects) defined in `web/src/app/themes/` are not included, so setting them programmatically is rejected as invalid.
+
+**Done when:** all custom and premium themes are accepted by the validator, and the list stays in sync with the actual theme files.
+
+- [ ] Build it: `/develop theme validation fix`
+
+### 25. Reusable Modal component · planned
+
+The current `Modal.tsx` imports from the countdown timer stores and displays timer specific content. It is not a reusable shared component. A generic modal that accepts title, children, and onClose props would serve settings confirmations, task deletion, onboarding, and any future need.
+
+**Done when:** a generic Modal component exists, the timer modal consumes it, and the component handles focus trapping and escape key dismissal.
+
+- [ ] Build it: `/develop reusable modal component`
+
+### 26. Shared UI primitives · planned
+
+There are no reusable base components like Button, Input, Card, Badge, Avatar, or Spinner. Every feature builds its own UI from raw DaisyUI classes. As the app grows, having typed React wrappers for commonly used patterns would reduce duplication and make design changes easier.
+
+**Done when:** core primitives (Button, Input, Badge, Spinner) exist as typed components with consistent variants, and at least one feature migrates to use them.
+
+- [ ] Build it: `/develop shared UI primitives`
+
+### 27. Design documentation · planned
+
+There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
+
+**Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
+
+- [ ] Build it: `/develop design documentation`
+
+### 28. Console log cleanup · planned
+
+The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The project has `no-console` set to warn in ESLint, but for a production hook these should be replaced with a proper logging utility or removed.
+
+**Done when:** no console statements remain in `useAppTheme.ts` and the hook works correctly without them.
+
+- [ ] Build it: `/develop console log cleanup`
 
 ## Slice 1: core focus loop (MVP)
 
