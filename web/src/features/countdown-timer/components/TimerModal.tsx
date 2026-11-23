@@ -17,7 +17,9 @@ const TimerModal = () => {
     if (!dialog) return;
 
     function checkOpen() {
-      setIsOpen(dialog.open);
+      if (dialog) {
+        setIsOpen(dialog.open);
+      }
     }
 
     checkOpen();

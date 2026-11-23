@@ -21,7 +21,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 33  | Session history and statistics     | Foundation            | done        |
 | 20  | Zustand store improvements         | Foundation            | done        |
 | 25  | Reusable Modal component           | Foundation            | done        |
-| 26  | Shared UI primitives               | Foundation            | planned     |
+| 26  | Shared UI primitives               | Foundation            | done        |
 | 24  | Theme validation fix               | Foundation            | planned     |
 | 28  | Console log cleanup                | Foundation            | planned     |
 | 22  | Error handling and loading         | Foundation            | planned     |
@@ -138,13 +138,22 @@ code in `web/src/components/ui/Modal.tsx`, `web/src/features/countdown-timer/com
 
 - [x] Build it: `/develop reusable modal component`
 
-### 26. Shared UI primitives · planned
+### 26. Shared UI primitives · done
 
 There are no reusable base components like Button, Input, Card, Badge, Avatar, or Spinner. Every feature builds its own UI from raw DaisyUI classes. As the app grows, having typed React wrappers for commonly used patterns would reduce duplication and make design changes easier.
 
 **Done when:** core primitives (Button, Input, Badge, Spinner) exist as typed components with consistent variants, and at least one feature migrates to use them.
 
-- [ ] Build it: `/develop shared UI primitives`
+- [x] Design it (spec): `/architect shared UI primitives`
+- [x] Build it: `/develop shared UI primitives`
+  - [x] Spinner component with size and color variants
+  - [x] Button component with size, color, loading, and disabled variants
+  - [x] Input component with size, error, disabled, readonly, label, and helperText props
+  - [x] Badge component with size, color, and style variants
+  - [x] Barrel export at ui/index.ts
+  - [x] Migrate Timer settings to use Input and Button
+
+      Spec [0002](../specs/web/0002-shared-ui-primitives.md)
 
 ### 24. Theme validation fix · planned
 

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui";
 import FocusContainer from "@/features/settings/timer/FocusContainer";
 import useHandleReset from "@/features/settings/timer/hooks/useHandleReset";
 import useHandleSave from "@/features/settings/timer/hooks/useHandleSave";
@@ -59,22 +60,18 @@ const TimerSettingsContent = () => {
 
       <div className={"flex flex-col gap-3 sm:flex-row sm:items-center"}>
         <div className={"flex gap-3"}>
-          <button
-            type={"button"}
-            className={"btn btn-primary"}
+          <Button
+            type="button"
+            color="primary"
             onClick={handleSave}
             disabled={!hasUnsavedChanges}
           >
             Save changes
-          </button>
+          </Button>
           {hasUnsavedChanges && (
-            <button
-              type={"button"}
-              className={"btn btn-ghost"}
-              onClick={handleReset}
-            >
+            <Button type="button" color="ghost" onClick={handleReset}>
               Reset
-            </button>
+            </Button>
           )}
         </div>
         {hasUnsavedChanges && (
