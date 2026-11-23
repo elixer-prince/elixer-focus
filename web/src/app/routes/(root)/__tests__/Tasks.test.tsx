@@ -43,17 +43,32 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
     useAddTask: () => vi.fn(),
     useRemoveTask: () => vi.fn(),
     useToggleTaskCompletion: () => vi.fn(),
+    useUpdateTask: () => vi.fn(),
   };
 });
 
 vi.mock("@dnd-kit/react", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
+  const PointerSensor = {
+    configure: () => PointerSensor,
+  };
   return {
     ...actual,
     DragDropProvider: ({ children }: { children: React.ReactNode }) => children,
-    PointerSensor: vi.fn(),
+    PointerSensor,
   };
 });
+
+vi.mock("@dnd-kit/dom", () => ({
+  PointerActivationConstraints: {
+    Distance: class {
+      constructor() {}
+    },
+    Delay: class {
+      constructor() {}
+    },
+  },
+}));
 
 vi.mock("@dnd-kit/react/sortable", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;

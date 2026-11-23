@@ -28,6 +28,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
+| 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 
 ## Foundations
 
@@ -74,6 +75,23 @@ code in `web/src/features/music-player/`
 Drag-and-drop tasks across the Eisenhower categories with a persisted store.
 
 code in `web/src/features/tasks/`
+
+### 18. Task editing (inline) · done
+
+Double-click a task in the matrix to edit title and description inline on the card. Drag-and-drop is paused while editing so the two interactions do not conflict.
+
+**Done when:** user can double-click a task, edit its fields inline, and save changes that persist.
+
+- [x] Design it (spec): `/architect task editing`
+- [x] Build it: `/develop task editing`
+  - [x] Add updateTask store action and hook (AC-2, AC-7)
+  - [x] Inline editor UI with double-click trigger (AC-1, AC-6)
+  - [x] Save, cancel, and validation logic (AC-2, AC-3, AC-5)
+  - [x] Disable drag during edit (AC-4)
+  - [x] Co-located tests (AC-1 through AC-7)
+- [x] Verify it: `/check verify task editing`
+      Spec [0001](../specs/web/0001-inline-task-editing.md)
+
 ## Slice 2: settings & themes
 
 ### 8. Timer settings · in-progress

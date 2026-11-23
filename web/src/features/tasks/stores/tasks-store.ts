@@ -16,6 +16,10 @@ type TaskActions = {
   ) => void;
   removeTask: (id: string) => void;
   toggleTaskCompletion: (id: string, completed: boolean) => void;
+  updateTask: (
+    id: string,
+    updates: Partial<Pick<Task, "title" | "description">>,
+  ) => void;
 };
 
 export const useTasksStore = create<TaskState & TaskActions>()(
@@ -56,6 +60,14 @@ export const useTasksStore = create<TaskState & TaskActions>()(
           ),
         }));
       },
+
+      updateTask: (id, updates) => {
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === id ? { ...t, ...updates } : t,
+          ),
+        }));
+      },
     }),
     {
       name: "tasks-storage",
@@ -77,3 +89,5 @@ export const useRemoveTask = () => useTasksStore((state) => state.removeTask);
 
 export const useToggleTaskCompletion = () =>
   useTasksStore((state) => state.toggleTaskCompletion);
+
+export const useUpdateTask = () => useTasksStore((state) => state.updateTask);

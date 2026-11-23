@@ -7,11 +7,8 @@ import {
 } from "@/features/tasks/stores/tasks-store";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
-import {
-  DragDropProvider,
-  KeyboardSensor,
-  PointerSensor,
-} from "@dnd-kit/react";
+import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
+import { PointerActivationConstraints } from "@dnd-kit/dom";
 import { isSortable } from "@dnd-kit/react/sortable";
 import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
@@ -106,7 +103,17 @@ const Tasks = () => {
       <TaskPageHeader isDragging={isDragging} />
 
       <DragDropProvider
-        sensors={[PointerSensor, KeyboardSensor]}
+        sensors={[
+          PointerSensor.configure({
+            activationConstraints: [
+              new PointerActivationConstraints.Distance({ value: 5 }),
+              new PointerActivationConstraints.Delay({
+                value: 200,
+                tolerance: 10,
+              }),
+            ],
+          }),
+        ]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
