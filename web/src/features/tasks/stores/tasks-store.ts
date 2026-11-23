@@ -32,6 +32,7 @@ export const useTasksStore = create<TaskState & TaskActions>()(
       },
 
       addTask: (title, description, category = "uncategorised") => {
+        const now = getCurrentTimestamp();
         set((state) => ({
           tasks: [
             {
@@ -41,7 +42,8 @@ export const useTasksStore = create<TaskState & TaskActions>()(
               category: category,
               isCompleted: false,
               isSelected: false,
-              createdAt: getCurrentTimestamp(),
+              createdAt: now,
+              updatedAt: now,
             },
             ...state.tasks,
           ],
@@ -56,7 +58,13 @@ export const useTasksStore = create<TaskState & TaskActions>()(
       toggleTaskCompletion: (id, completed) => {
         set((state) => ({
           tasks: state.tasks.map((t) =>
-            t.id === id ? { ...t, isCompleted: completed } : t,
+            t.id === id
+              ? {
+                  ...t,
+                  isCompleted: completed,
+                  updatedAt: getCurrentTimestamp(),
+                }
+              : t,
           ),
         }));
       },
@@ -64,16 +72,25 @@ export const useTasksStore = create<TaskState & TaskActions>()(
       updateTask: (id, updates) => {
         set((state) => ({
           tasks: state.tasks.map((t) =>
-            t.id === id ? { ...t, ...updates } : t,
+            t.id === id
+              ? { ...t, ...updates, updatedAt: getCurrentTimestamp() }
+              : t,
           ),
         }));
       },
     }),
     {
       name: "tasks-storage",
-      version: 1,
-      migrate: (state, _version) => {
-        const persistedState = state as Partial<TaskState>;
+      version: 2,
+      migrate: (state, version) => {
+        const persistedState = state as { tasks?: Task[] };
+        if (version === 1) {
+          const migratedTasks = (persistedState.tasks || []).map((task) => ({
+            ...task,
+            updatedAt: (task as any).updatedAt ?? task.createdAt,
+          }));
+          return { tasks: migratedTasks };
+        }
         return persistedState as TaskState;
       },
     },

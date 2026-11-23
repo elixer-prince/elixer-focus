@@ -3,6 +3,7 @@ import {
   useToggleTaskCompletion,
   useUpdateTask,
 } from "@/features/tasks/stores/tasks-store";
+import { formatRelativeTime } from "@/utils/date";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -16,6 +17,7 @@ interface TaskProps {
   description?: string;
   isCompleted: boolean;
   isSelected: boolean;
+  updatedAt: number;
 }
 
 const Task = ({
@@ -26,6 +28,7 @@ const Task = ({
   description,
   isCompleted,
   isSelected,
+  updatedAt,
 }: TaskProps) => {
   const toggleTaskCompletion = useToggleTaskCompletion();
   const updateTask = useUpdateTask();
@@ -261,7 +264,15 @@ const Task = ({
         {description && <p className="text-sm opacity-70">{description}</p>}
       </div>
 
-      <DeleteButton id={id} isCompleted={isCompleted} />
+      <div className="flex items-center gap-2">
+        <span
+          className="text-xs opacity-40"
+          title={new Date(updatedAt).toLocaleString()}
+        >
+          {formatRelativeTime(updatedAt)}
+        </span>
+        <DeleteButton id={id} isCompleted={isCompleted} />
+      </div>
     </li>
   );
 };

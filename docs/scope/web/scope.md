@@ -17,7 +17,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 4   | Data model & local persistence     | Foundation            | existing    |
 | 29  | Store persist versioning           | Foundation            | done        |
 | 30  | Countdown volatile state cleanup   | Foundation            | done        |
-| 31  | Task updatedAt tracking            | Foundation            | planned     |
+| 31  | Task updatedAt tracking            | Foundation            | done        |
 | 33  | Session history and statistics     | Foundation            | planned     |
 | 20  | Zustand store improvements         | Foundation            | planned     |
 | 25  | Reusable Modal component           | Foundation            | planned     |
@@ -98,13 +98,15 @@ code in `web/src/features/countdown-timer/stores/countdown-store.ts`
 
 - [x] Build it: `/develop countdown volatile state cleanup`
 
-### 31. Task updatedAt tracking · planned
+### 31. Task updatedAt tracking · done
 
 The Task type has createdAt but no updatedAt. With inline editing (feature 18) and planned subtasks (feature 19), tracking when a task was last modified is useful for sync, audit, or sorting purposes.
 
 **Done when:** Task type includes updatedAt, the store updates it on every mutation, and the matrix displays or sorts by it where appropriate.
 
-- [ ] Build it: `/develop task updatedAt tracking`
+code in `web/src/features/tasks/types/task.ts`, `web/src/features/tasks/stores/tasks-store.ts`, `web/src/features/tasks/components/Task/Index.tsx`, `web/src/utils/date.ts`
+
+- [x] Build it: `/develop task updatedAt tracking`
 
 ### 33. Session history and statistics · planned
 

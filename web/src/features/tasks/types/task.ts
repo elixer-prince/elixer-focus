@@ -6,6 +6,7 @@ export type Task = {
   isCompleted: boolean;
   isSelected: boolean;
   createdAt: number;
+  updatedAt: number;
 };
 
 export type TaskCategory =

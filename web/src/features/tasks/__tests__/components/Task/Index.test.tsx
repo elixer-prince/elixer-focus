@@ -10,6 +10,10 @@ vi.mock("@dnd-kit/react/sortable", () => ({
   }),
 }));
 
+vi.mock("@/utils/date", () => ({
+  formatRelativeTime: vi.fn(() => "just now"),
+}));
+
 const mockUpdateTask = vi.fn();
 const mockToggleTaskCompletion = vi.fn();
 const mockRemoveTask = vi.fn();
@@ -44,6 +48,7 @@ describe("Task", () => {
         category=""
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -61,6 +66,7 @@ describe("Task", () => {
         category=""
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -78,6 +84,7 @@ describe("Task", () => {
         category=""
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -96,6 +103,7 @@ describe("Task", () => {
         category=""
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -113,6 +121,7 @@ describe("Task", () => {
         category=""
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -130,6 +139,7 @@ describe("Task", () => {
         category="urgent-important"
         isCompleted={false}
         isSelected={false}
+        updatedAt={Date.now()}
       />,
     );
 
@@ -151,6 +161,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -172,6 +183,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -193,6 +205,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -213,6 +226,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -233,6 +247,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -252,6 +267,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -276,6 +292,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -304,6 +321,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -330,6 +348,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -355,6 +374,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -378,6 +398,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -393,6 +414,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 
@@ -435,6 +457,7 @@ describe("Task", () => {
             category="urgent-important"
             isCompleted={false}
             isSelected={false}
+            updatedAt={Date.now()}
           />
         );
       }
@@ -470,6 +493,7 @@ describe("Task", () => {
           category="urgent-important"
           isCompleted={false}
           isSelected={false}
+          updatedAt={Date.now()}
         />,
       );
 

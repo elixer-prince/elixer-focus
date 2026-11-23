@@ -16,6 +16,7 @@ const createTask = (id: string, title: string, category?: TaskCategory) => ({
   isCompleted: false,
   isSelected: false,
   createdAt: 0,
+  updatedAt: 0,
 });
 
 const randomUUIDMock = vi.fn();
@@ -81,6 +82,7 @@ describe("Tasks Store", () => {
         isCompleted: false,
         isSelected: false,
         createdAt: 123456,
+        updatedAt: 123456,
       });
     });
 
@@ -240,14 +242,77 @@ describe("Tasks Store", () => {
 
       expect(getTasks()).toEqual(originalTasks);
     });
+
+    it("should update the updatedAt timestamp", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+      getCurrentTimestampMock.mockReturnValue(99999);
+
+      act(() => {
+        updateTask("1", { title: "Updated Title" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.updatedAt).toBe(99999);
+    });
+  });
+
+  describe("toggleTaskCompletion updatedAt", () => {
+    it("should update the updatedAt timestamp when toggling completion", () => {
+      const toggleTaskCompletion =
+        useTasksStore.getState().toggleTaskCompletion;
+      getCurrentTimestampMock.mockReturnValue(88888);
+
+      act(() => {
+        toggleTaskCompletion("1", true);
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.updatedAt).toBe(88888);
+    });
+  });
+
+  describe("migration", () => {
+    it("should backfill updatedAt with createdAt for v1 data", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      // Simulate v1 data without updatedAt
+      const v1Data = JSON.stringify({
+        state: {
+          tasks: [
+            {
+              id: "1",
+              title: "Old Task",
+              category: "uncategorised",
+              isCompleted: false,
+              isSelected: false,
+              createdAt: 12345,
+            },
+          ],
+        },
+        version: 1,
+      });
+      localStorage.setItem("tasks-storage", v1Data);
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const tasks = ReloadedStore.getState().tasks;
+      expect(tasks.length).toBe(1);
+      expect(tasks[0].updatedAt).toBe(12345);
+    });
   });
 
   describe("persist configuration", () => {
-    it("should declare version 1 in the persist config", () => {
+    it("should declare version 2 in the persist config", () => {
       const stored = localStorage.getItem("tasks-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(1);
+      expect(parsed.version).toBe(2);
     });
 
     it("should include the tasks state in the persisted data", () => {
