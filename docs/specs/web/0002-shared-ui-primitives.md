@@ -1,7 +1,7 @@
 # 0002 · Shared UI primitives
 
 **Date**: 2026-11-23
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

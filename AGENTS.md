@@ -61,6 +61,7 @@ cd app && npm run web           # Run web version
 
 - **Path Aliases**: Both `web/` and `app/` use `@/*` alias. In web, `@/*` maps to `web/src/*`. In app, `@/*` maps to `app/*`.
 - **Co-located Tests**: Test files in `web/src/features/*/` are in `__tests__/` subdirectories next to source files (not separate test folder)
+- **Shared UI Primitives**: Typed React wrappers for Button, Input, Badge, and Spinner at `web/src/components/ui/`. Import from the barrel `@/components/ui`. All use `forwardRef` and `displayName`. Input uses `inputSize` prop instead of `size` to avoid conflict with native `InputHTMLAttributes.size`. Spec [0002](docs/specs/web/0002-shared-ui-primitives.md).
 - **TailwindCSS v4**: Uses `@import "tailwindcss"` in CSS, NOT `@tailwind` directives
 - **Zustand Stores**: Use `persist` middleware with `createPersistOptions()` from `@/stores/persist-config`; import stores from the central barrel `@/stores`. Stores with nested array state (tasks, session history) use `immer` middleware for direct draft mutations.
 - **Theme System**: Themes located in `web/src/app/themes/` with DaisyUI themes in `default/daisyui/`
