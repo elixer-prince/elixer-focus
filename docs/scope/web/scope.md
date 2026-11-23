@@ -19,7 +19,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 30  | Countdown volatile state cleanup   | Foundation            | done        |
 | 31  | Task updatedAt tracking            | Foundation            | done        |
 | 33  | Session history and statistics     | Foundation            | done        |
-| 20  | Zustand store improvements         | Foundation            | planned     |
+| 20  | Zustand store improvements         | Foundation            | done        |
 | 25  | Reusable Modal component           | Foundation            | planned     |
 | 26  | Shared UI primitives               | Foundation            | planned     |
 | 24  | Theme validation fix               | Foundation            | planned     |
@@ -118,13 +118,15 @@ code in `web/src/features/countdown-timer/types/completed-session.ts`, `web/src/
 
 - [x] Build it: `/develop session history and statistics`
 
-### 20. Zustand store improvements · planned
+### 20. Zustand store improvements · done
 
 Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks. Default songs are hardcoded inside the music player store, coupling data to state management.
 
 **Done when:** all stores re export from a central index, use a shared persist configuration helper, apply Immer middleware for cleaner immutable updates, and default song data is decoupled from the store.
 
-- [ ] Build it: `/develop zustand store improvements`
+code in `web/src/stores/`, `web/src/features/*/stores/`
+
+- [x] Build it: `/develop zustand store improvements`
 
 ### 25. Reusable Modal component · planned
 

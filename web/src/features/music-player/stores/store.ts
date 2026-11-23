@@ -3,35 +3,9 @@ import type {
   MusicPlayerState,
   MusicPlayerStore,
 } from "@/features/music-player/types/store";
+import { defaultSongs } from "@/features/music-player/data/default-songs";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-const defaultSongs = [
-  {
-    id: 1,
-    title: "Calming White Noise",
-    src: "https://www.youtube.com/watch?v=yLOM8R6lbzg",
-    isRecommended: true,
-  },
-  {
-    id: 2,
-    title: "90's Chill Lofi Playlist",
-    src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
-    isRecommended: true,
-  },
-  {
-    id: 3,
-    title: "Lofi Radio (Lofi Girl)",
-    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
-    isRecommended: true,
-  },
-  {
-    id: 4,
-    title: "Chillstep Music for Programming",
-    src: "https://www.youtube.com/watch?v=M5QY2_8704o",
-    isRecommended: false,
-  },
-];
+import { createPersistOptions, persist } from "@/stores/persist-config";
 
 export const useMusicPlayerStore = create<MusicPlayerStore>()(
   persist(
@@ -43,8 +17,8 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
       volume: 50,
 
       setChosenSongId: (id: number) =>
-        set(() => {
-          const songExists = defaultSongs.some((song) => song.id === id);
+        set((state) => {
+          const songExists = state.songs.some((song) => song.id === id);
           if (!songExists) {
             throw new Error(`A song with id ${id} was not found`);
           }
@@ -63,7 +37,7 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
           return { volume: Math.min(100, Math.max(0, volume)) };
         }),
     }),
-    {
+    createPersistOptions<MusicPlayerStore>({
       name: "music-player-storage",
       version: 4,
       migrate: (state, version) => {
@@ -73,7 +47,7 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
           delete persistedState.musicPaused;
           delete persistedState.showVolumeSlider;
         }
-        return persistedState as MusicPlayerState;
+        return persistedState as MusicPlayerStore;
       },
       // Exclude musicPaused and showVolumeSlider from persistence so they
       // always use their defaults on page load: music starts paused and the
@@ -84,7 +58,7 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
         delete rest.showVolumeSlider;
         return rest;
       },
-    },
+    }),
   ),
 );
 

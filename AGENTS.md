@@ -62,7 +62,7 @@ cd app && npm run web           # Run web version
 - **Path Aliases**: Both `web/` and `app/` use `@/*` alias. In web, `@/*` maps to `web/src/*`. In app, `@/*` maps to `app/*`.
 - **Co-located Tests**: Test files in `web/src/features/*/` are in `__tests__/` subdirectories next to source files (not separate test folder)
 - **TailwindCSS v4**: Uses `@import "tailwindcss"` in CSS, NOT `@tailwind` directives
-- **Zustand Stores**: Use `persist` middleware; import stores from `stores/` directory
+- **Zustand Stores**: Use `persist` middleware with `createPersistOptions()` from `@/stores/persist-config`; import stores from the central barrel `@/stores`. Stores with nested array state (tasks, session history) use `immer` middleware for direct draft mutations.
 - **Theme System**: Themes located in `web/src/app/themes/` with DaisyUI themes in `default/daisyui/`
 - **FOUC Prevention**: `index.html` inline CSS hides the body (`opacity: 0`) until React mounts and adds `app-ready` class in `app.tsx`. Theme is set synchronously via `useLayoutEffect` in `useAppTheme.ts` (not `useEffect`). An inline script in `<head>` reads the stored theme from localStorage before CSS loads.
 - **Theme Transitions**: All theme-related color transitions use `duration-500` (500ms) across layout areas. Timer animations retain `duration-1000`.

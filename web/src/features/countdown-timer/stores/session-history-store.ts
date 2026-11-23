@@ -1,7 +1,8 @@
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import { createPersistOptions, persist } from "@/stores/persist-config";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 type SessionHistoryState = {
   sessions: CompletedSession[];
@@ -20,33 +21,33 @@ type SessionHistoryStore = SessionHistoryState & SessionHistoryActions;
 
 const useSessionHistoryStore = create<SessionHistoryStore>()(
   persist(
-    (set) => ({
+    immer((set) => ({
       sessions: [],
 
       addSession: (sessionType, durationInSeconds) =>
-        set((state) => ({
-          sessions: [
-            ...state.sessions,
-            {
-              id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-              sessionType,
-              durationInSeconds,
-              completedAt: Date.now(),
-            },
-          ],
-        })),
+        set((state) => {
+          state.sessions.push({
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            sessionType,
+            durationInSeconds,
+            completedAt: Date.now(),
+          });
+        }),
 
       removeSession: (id) =>
-        set((state) => ({
-          sessions: state.sessions.filter((s) => s.id !== id),
-        })),
+        set((state) => {
+          state.sessions = state.sessions.filter((s) => s.id !== id);
+        }),
 
-      clearSessions: () => set({ sessions: [] }),
-    }),
-    {
+      clearSessions: () =>
+        set((state) => {
+          state.sessions = [];
+        }),
+    })),
+    createPersistOptions<SessionHistoryStore>({
       name: "session-history-storage",
       version: 1,
-    },
+    }),
   ),
 );
 

@@ -1,6 +1,10 @@
 import { convertMinutesToSeconds } from "@/utils/conversion";
+import {
+  createPersistOptions,
+  persist,
+  simpleMigrate,
+} from "@/stores/persist-config";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type CountdownTimerState = {
   timerRunning: boolean;
@@ -47,17 +51,14 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
 
       resetElapsedTimeInSeconds: () => set({ elapsedTimeInSeconds: 0 }),
     }),
-    {
+    createPersistOptions<CountdownTimerStore>({
       name: "countdown-timer-storage",
       version: 2,
       partialize: (state) => ({
         startTimeInMinutes: state.startTimeInMinutes,
       }),
-      migrate: (state, _version) => {
-        const persistedState = state as Partial<CountdownTimerState>;
-        return persistedState as CountdownTimerState;
-      },
-    },
+      migrate: simpleMigrate<CountdownTimerStore>,
+    }),
   ),
 );
 

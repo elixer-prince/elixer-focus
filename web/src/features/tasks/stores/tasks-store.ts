@@ -1,7 +1,8 @@
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { getCurrentTimestamp } from "@/utils/date";
+import { createPersistOptions, persist } from "@/stores/persist-config";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 type TaskState = {
   tasks: Task[];
@@ -24,7 +25,7 @@ type TaskActions = {
 
 export const useTasksStore = create<TaskState & TaskActions>()(
   persist(
-    (set) => ({
+    immer((set) => ({
       tasks: [],
 
       setTasks: (tasks: Task[]) => {
@@ -33,53 +34,46 @@ export const useTasksStore = create<TaskState & TaskActions>()(
 
       addTask: (title, description, category = "uncategorised") => {
         const now = getCurrentTimestamp();
-        set((state) => ({
-          tasks: [
-            {
-              id: crypto.randomUUID(),
-              title,
-              description,
-              category: category,
-              isCompleted: false,
-              isSelected: false,
-              createdAt: now,
-              updatedAt: now,
-            },
-            ...state.tasks,
-          ],
-        }));
+        set((state) => {
+          state.tasks.unshift({
+            id: crypto.randomUUID(),
+            title,
+            description,
+            category: category,
+            isCompleted: false,
+            isSelected: false,
+            createdAt: now,
+            updatedAt: now,
+          });
+        });
       },
 
       removeTask: (id) => {
-        set((state) => ({
-          tasks: state.tasks.filter((task) => task.id !== id),
-        }));
+        set((state) => {
+          state.tasks = state.tasks.filter((task) => task.id !== id);
+        });
       },
       toggleTaskCompletion: (id, completed) => {
-        set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id
-              ? {
-                  ...t,
-                  isCompleted: completed,
-                  updatedAt: getCurrentTimestamp(),
-                }
-              : t,
-          ),
-        }));
+        set((state) => {
+          const task = state.tasks.find((t) => t.id === id);
+          if (task) {
+            task.isCompleted = completed;
+            task.updatedAt = getCurrentTimestamp();
+          }
+        });
       },
 
       updateTask: (id, updates) => {
-        set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id
-              ? { ...t, ...updates, updatedAt: getCurrentTimestamp() }
-              : t,
-          ),
-        }));
+        set((state) => {
+          const task = state.tasks.find((t) => t.id === id);
+          if (task) {
+            Object.assign(task, updates);
+            task.updatedAt = getCurrentTimestamp();
+          }
+        });
       },
-    }),
-    {
+    })),
+    createPersistOptions<TaskState & TaskActions>({
       name: "tasks-storage",
       version: 2,
       migrate: (state, version) => {
@@ -89,11 +83,11 @@ export const useTasksStore = create<TaskState & TaskActions>()(
             ...task,
             updatedAt: (task as any).updatedAt ?? task.createdAt,
           }));
-          return { tasks: migratedTasks };
+          return { tasks: migratedTasks } as TaskState & TaskActions;
         }
-        return persistedState as TaskState;
+        return persistedState as TaskState & TaskActions;
       },
-    },
+    }),
   ),
 );
 

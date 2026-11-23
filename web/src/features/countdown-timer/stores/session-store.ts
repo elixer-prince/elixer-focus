@@ -1,6 +1,10 @@
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import {
+  createPersistOptions,
+  persist,
+  simpleMigrate,
+} from "@/stores/persist-config";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type SessionState = {
   focusDuration: number;
@@ -62,14 +66,11 @@ const useSessionStore = create<SessionStore>()(
       setTotalSessionsCompleted: (count) =>
         set({ totalSessionsCompleted: count }),
     }),
-    {
+    createPersistOptions<SessionStore>({
       name: "session-storage",
       version: 1,
-      migrate: (state, _version) => {
-        const persistedState = state as Partial<SessionState>;
-        return persistedState as SessionState;
-      },
-    },
+      migrate: simpleMigrate<SessionStore>,
+    }),
   ),
 );
 
