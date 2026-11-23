@@ -85,8 +85,8 @@ const Tasks = () => {
           }));
         }
         setTasks(flattenTasks(result));
-      } catch (error) {
-        console.error("Drag over handler error:", error);
+      } catch {
+        // Drag over handler error; revert to previous state
       }
     },
     [setTasks],

@@ -8,10 +8,9 @@ export function playSound(sound: HTMLAudioElement): void {
       // before playback starts. This is expected when the user skips or
       // resets the timer while a sound is starting.
       if (error.name === "AbortError") return;
-      console.error(`Error playing sound: ${sound.src}`, error);
     });
-  } catch (error) {
-    console.error(`Error playing sound: ${sound.src}`, error);
+  } catch {
+    // Failed to play sound
   }
 }
 
@@ -21,7 +20,7 @@ export function stopSound(sound: HTMLAudioElement): void {
   try {
     sound.pause();
     sound.currentTime = 0;
-  } catch (error) {
-    console.error(`Error pausing sound: ${sound.src}`, error);
+  } catch {
+    // Failed to pause sound
   }
 }

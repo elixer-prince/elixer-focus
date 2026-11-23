@@ -108,8 +108,7 @@ describe("Countdown Timer Store", () => {
 
   describe("persist configuration", () => {
     it("should declare version 1 in the persist config", async () => {
-      const { useStartTimeInMinutes, useSetStartTimeInMinutes } =
-        await loadStore();
+      const { useSetStartTimeInMinutes } = await loadStore();
 
       const setStartTimeInMinutes = renderHook(() =>
         useSetStartTimeInMinutes(),
@@ -126,8 +125,7 @@ describe("Countdown Timer Store", () => {
     });
 
     it("should include the countdown state in the persisted data", async () => {
-      const { useStartTimeInMinutes, useSetStartTimeInMinutes } =
-        await loadStore();
+      const { useSetStartTimeInMinutes } = await loadStore();
 
       const setStartTimeInMinutes = renderHook(() =>
         useSetStartTimeInMinutes(),

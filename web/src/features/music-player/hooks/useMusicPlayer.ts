@@ -48,47 +48,51 @@ const useMusicPlayer = () => {
   // update the store so the UI reflects the change. Skip if we are the ones
   // controlling the player to avoid a feedback loop. The guard resets only
   // when the player reaches a stable state, not on every event.
-  const handleStateChange = useCallback((eventData: number) => {
-    // If a video was just cued and should play, trigger playback now.
-    // This runs inside the onStateChange callback which is still part of
-    // the user gesture event chain from the original click, so the browser
-    // allows autoplay.
-    if (shouldPlayAfterCueRef.current) {
-      // While waiting for the CUED state after a song switch, ignore all
-      // non-CUED states. Transient states (UNSTARTED, PAUSED, etc.) that fire
-      // during cueing must not flip the store to paused, which would cause
-      // the play/pause button to show the wrong state.
-      if (eventData === YT_PLAYER_STATE_CUED) {
-        shouldPlayAfterCueRef.current = false;
-        isControllingPlayerRef.current = true;
-        playerInstanceRef.current?.playVideo();
+  const handleStateChange = useCallback(
+    (eventData: number) => {
+      // If a video was just cued and should play, trigger playback now.
+      // This runs inside the onStateChange callback which is still part of
+      // the user gesture event chain from the original click, so the browser
+      // allows autoplay.
+      if (shouldPlayAfterCueRef.current) {
+        // While waiting for the CUED state after a song switch, ignore all
+        // non-CUED states. Transient states (UNSTARTED, PAUSED, etc.) that fire
+        // during cueing must not flip the store to paused, which would cause
+        // the play/pause button to show the wrong state.
+        if (eventData === YT_PLAYER_STATE_CUED) {
+          shouldPlayAfterCueRef.current = false;
+          isControllingPlayerRef.current = true;
+          playerInstanceRef.current?.playVideo();
+        }
+        return;
       }
-      return;
-    }
 
-    if (isControllingPlayerRef.current) {
-      // Only reset the guard once the player reaches the intended stable state
-      // (PLAYING or ENDED). Resetting on PAUSED is too early: YouTube fires
-      // PAUSED(2) as a transient state while loadVideoById() is still loading,
-      // which would let a later transient state slip through and flip the store
-      // back to paused -- causing the play button to flicker.
-      const isStable = eventData === YT_PLAYER_STATE_PLAYING || eventData === 0; // ENDED
-      if (isStable) {
-        isControllingPlayerRef.current = false;
+      if (isControllingPlayerRef.current) {
+        // Only reset the guard once the player reaches the intended stable state
+        // (PLAYING or ENDED). Resetting on PAUSED is too early: YouTube fires
+        // PAUSED(2) as a transient state while loadVideoById() is still loading,
+        // which would let a later transient state slip through and flip the store
+        // back to paused -- causing the play button to flicker.
+        const isStable =
+          eventData === YT_PLAYER_STATE_PLAYING || eventData === 0; // ENDED
+        if (isStable) {
+          isControllingPlayerRef.current = false;
+        }
+        return;
       }
-      return;
-    }
-    const isPlaying =
-      eventData === YT_PLAYER_STATE_PLAYING ||
-      eventData === YT_PLAYER_STATE_BUFFERING;
-    const { musicPaused: currentPaused } = useMusicPlayerStore.getState();
-    // Only update if the state actually changed to avoid unnecessary re-renders
-    if (!isPlaying && !currentPaused) {
-      useMusicPlayerStore.getState().setMusicPaused(true);
-    } else if (isPlaying && currentPaused) {
-      useMusicPlayerStore.getState().setMusicPaused(false);
-    }
-  }, []);
+      const isPlaying =
+        eventData === YT_PLAYER_STATE_PLAYING ||
+        eventData === YT_PLAYER_STATE_BUFFERING;
+      const { musicPaused: currentPaused } = useMusicPlayerStore.getState();
+      // Only update if the state actually changed to avoid unnecessary re-renders
+      if (!isPlaying && !currentPaused) {
+        useMusicPlayerStore.getState().setMusicPaused(true);
+      } else if (isPlaying && currentPaused) {
+        useMusicPlayerStore.getState().setMusicPaused(false);
+      }
+    },
+    [isControllingPlayerRef, playerInstanceRef],
+  );
 
   // Handle volume changes from external sources (e.g., system mute,
   // browser controls, or another tab). Sync the player volume back to the
@@ -139,7 +143,6 @@ const useMusicPlayer = () => {
       const selectedSong = songs.find((song) => song.id === chosenSongId);
 
       if (!selectedSong) {
-        console.error(`Song with id ${chosenSongId} not found`);
         return;
       }
 
@@ -183,7 +186,14 @@ const useMusicPlayer = () => {
     // The guard flag is reset by handleStateChange after it ignores the first
     // onStateChange event, so the guard stays active until the player actually
     // reports a state change, not based on a timer that may fire too early.
-  }, [chosenSongId, musicPaused, songs, playerInstanceRef]);
+  }, [
+    chosenSongId,
+    musicPaused,
+    songs,
+    playerInstanceRef,
+    isControllingPlayerRef,
+    lastLoadedVideoIdRef,
+  ]);
 
   useEffect(() => {
     globalThis.onYouTubeIframeAPIReady = () => {

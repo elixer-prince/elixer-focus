@@ -1,5 +1,4 @@
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
-import { getNotificationSettingsInstruction } from "@/utils/browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const APP_NAME = "Elixer Focus";
@@ -36,14 +35,7 @@ const useNotification = () => {
 
   const sendTimerEndNotification = useCallback(
     async (sessionType: CountdownSession = "Focus") => {
-      console.log(
-        `[${APP_NAME}] sendTimerEndNotification called with session type: ${sessionType}`,
-      );
-
       if (!isNotificationSupported()) {
-        console.warn(
-          `[${APP_NAME}] Notification API not supported in this browser`,
-        );
         setNotificationFailed(true);
         return;
       }
@@ -51,40 +43,25 @@ const useNotification = () => {
       // Check the live permission at send time rather than relying on the ref,
       // because the browser may have granted/denied permission after the ref was set.
       let currentPermission = Notification.permission;
-      console.log(
-        `[${APP_NAME}] Live notification permission: "${currentPermission}"`,
-      );
 
       // If permission is still "default" when the timer ends, try requesting it one
       // more time as a last resort. This handles the case where the initial request
       // was silently suppressed by the browser (e.g. Edge adaptive notifications).
       if (currentPermission === "default") {
-        console.log(`[${APP_NAME}] Permission is "default", re-requesting...`);
         try {
           currentPermission = await requestPermission();
           permissionRef.current = currentPermission;
-          console.log(
-            `[${APP_NAME}] Re-requested permission result: "${currentPermission}"`,
-          );
-        } catch (error) {
-          console.error(`[${APP_NAME}] Error re-requesting permission:`, error);
+        } catch {
+          // Permission request failed; continue with current permission state
         }
       }
 
       if (currentPermission !== "granted") {
         setNotificationFailed(true);
-        const settingsPath = getNotificationSettingsInstruction();
-        console.warn(
-          `[${APP_NAME}] Notification permission is "${currentPermission}", not "granted". ` +
-            "The timer end notification was not sent. To enable notifications: " +
-            `1. Allow notifications in your browser settings for this site. ` +
-            `2. Enable notifications for your browser in ${settingsPath}.`,
-        );
         return;
       }
 
       try {
-        console.log(`[${APP_NAME}] Creating notification...`);
         const notification = new Notification(
           `${APP_NAME} — ${sessionType} ended`,
           {
@@ -94,17 +71,13 @@ const useNotification = () => {
           },
         );
 
-        console.log(`[${APP_NAME}] Notification created successfully`);
-
         let showed = false;
 
         notification.onshow = () => {
           showed = true;
-          console.log(`[${APP_NAME}] Notification showed successfully`);
         };
 
         notification.onclick = () => {
-          console.log(`[${APP_NAME}] Notification clicked`);
           window.focus();
           notification.close();
         };
@@ -118,16 +91,10 @@ const useNotification = () => {
             (notification as { closed: boolean }).closed;
           if (!showed && !notifClosed) {
             setNotificationFailed(true);
-            console.warn(
-              `[${APP_NAME}] Notification was created but never showed within 2 seconds. ` +
-                "This may be a browser limitation (e.g. Edge on macOS). " +
-                "The audio beep should still play as a fallback alert.",
-            );
           }
         }, 2000);
-      } catch (error) {
+      } catch {
         setNotificationFailed(true);
-        console.error(`[${APP_NAME}] Failed to create notification:`, error);
       }
     },
     [],

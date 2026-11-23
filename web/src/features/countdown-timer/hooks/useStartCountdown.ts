@@ -36,7 +36,6 @@ const useStartCountdown = () => {
 
   const {
     timerOnClickSoundEffectRef,
-    timerBeepSoundEffectRef,
     hasPlayedEndBeepRef,
     timerEndTimeRef,
     timerIntervalRef,
@@ -65,7 +64,6 @@ const useStartCountdown = () => {
     runInterval(endTime);
   }, [
     timerEndTimeRef,
-    timerBeepSoundEffectRef,
     hasPlayedEndBeepRef,
     remainingTimeInSeconds,
     runInterval,

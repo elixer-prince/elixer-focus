@@ -1,5 +1,4 @@
-import type { PersistStorage } from "zustand/middleware";
-import { persist } from "zustand/middleware";
+import { persist, type PersistStorage } from "zustand/middleware";
 
 /**
  * Default localStorage backend for Zustand persist middleware.

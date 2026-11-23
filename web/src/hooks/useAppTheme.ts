@@ -77,12 +77,10 @@ const useAppTheme = (): UseAppThemeResult => {
       // Only update if theme actually changed
       if (previousTheme !== themeToApply) {
         htmlElement.dataset.theme = themeToApply;
-        console.log(`[Theme] Applied theme: ${themeToApply}`);
         setError(null);
       }
     } catch (err) {
       const errorMsg = `[Theme] Failed to apply theme: ${err}`;
-      console.error(errorMsg);
       setError(errorMsg);
     }
   }, [storeTheme, setStoreTheme]);
@@ -91,7 +89,6 @@ const useAppTheme = (): UseAppThemeResult => {
   const setTheme = (theme: string) => {
     if (!VALID_THEMES.has(theme)) {
       const errorMsg = `Invalid theme: ${theme}`;
-      console.error(`[Theme] ${errorMsg}`);
       setError(errorMsg);
       return;
     }

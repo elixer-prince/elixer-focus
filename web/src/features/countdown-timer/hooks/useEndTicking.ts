@@ -14,8 +14,8 @@ const useEndTicking = () => {
 
     try {
       sound.loop = true;
-    } catch (error) {
-      console.error(`Error setting loop for sound: ${sound.src}`, error);
+    } catch {
+      // Failed to set loop property; continue playback anyway
     }
 
     playSound(sound);

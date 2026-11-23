@@ -153,7 +153,7 @@ describe("Session Store", () => {
 
   describe("persist configuration", () => {
     it("should declare version 1 in the persist config", async () => {
-      const { useFocusDuration, useSetFocusDuration } = await loadStore();
+      const { useSetFocusDuration } = await loadStore();
 
       const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
 
@@ -168,7 +168,7 @@ describe("Session Store", () => {
     });
 
     it("should include the session state in the persisted data", async () => {
-      const { useFocusDuration, useSetFocusDuration } = await loadStore();
+      const { useSetFocusDuration } = await loadStore();
 
       const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
 

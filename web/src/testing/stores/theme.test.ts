@@ -42,7 +42,7 @@ describe("Theme Store", () => {
 
   describe("persist configuration", () => {
     it("should declare version 1 in the persist config", async () => {
-      const { useCurrentTheme, useSetCurrentTheme } = await loadStore();
+      const { useSetCurrentTheme } = await loadStore();
 
       const setCurrentTheme = renderHook(() => useSetCurrentTheme()).result;
 

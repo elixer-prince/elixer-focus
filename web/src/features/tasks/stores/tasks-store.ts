@@ -81,7 +81,7 @@ export const useTasksStore = create<TaskState & TaskActions>()(
         if (version === 1) {
           const migratedTasks = (persistedState.tasks || []).map((task) => ({
             ...task,
-            updatedAt: (task as any).updatedAt ?? task.createdAt,
+            updatedAt: (task as Task).updatedAt ?? task.createdAt,
           }));
           return { tasks: migratedTasks } as TaskState & TaskActions;
         }
