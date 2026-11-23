@@ -151,4 +151,84 @@ describe("Modal", () => {
     const modalBox = document.querySelector(".modal-box");
     expect(modalBox?.classList.contains("max-w-2xl")).toBe(true);
   });
+
+  it("should forward ref to the dialog element", () => {
+    const ref = { current: null as HTMLDialogElement | null };
+
+    render(
+      <Modal ref={ref} isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(ref.current).toBeInstanceOf(HTMLDialogElement);
+  });
+
+  it("should sync externalRef to the dialog element", () => {
+    const externalRef = { current: null as HTMLDialogElement | null };
+
+    render(
+      <Modal isOpen={true} onClose={() => {}} externalRef={externalRef}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(externalRef.current).toBeInstanceOf(HTMLDialogElement);
+  });
+
+  it("should open the dialog when isOpen becomes true", () => {
+    const handleClose = vi.fn();
+
+    const { rerender } = render(
+      <Modal isOpen={false} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    expect(dialog?.open).toBe(false);
+
+    rerender(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(dialog?.open).toBe(true);
+  });
+
+  it("should close the dialog when isOpen becomes false", () => {
+    const handleClose = vi.fn();
+
+    const { rerender } = render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    expect(dialog?.open).toBe(true);
+
+    rerender(
+      <Modal isOpen={false} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(dialog?.open).toBe(false);
+  });
+
+  it("should not call onClose when non-Escape key is pressed", () => {
+    const handleClose = vi.fn();
+
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    fireEvent.keyDown(dialog!, { key: "Enter" });
+    expect(handleClose).not.toHaveBeenCalled();
+  });
 });

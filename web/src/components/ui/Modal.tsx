@@ -85,15 +85,13 @@ const Modal = forwardRef<HTMLDialogElement, PropsWithChildren<ModalProps>>(
 
           {showCloseButton && (
             <div className="modal-action">
-              <form method="dialog">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-ghost normal-case"
-                  onClick={onClose}
-                >
-                  Close
-                </button>
-              </form>
+              <button
+                type="button"
+                className="btn btn-sm btn-ghost normal-case"
+                onClick={onClose}
+              >
+                Close
+              </button>
             </div>
           )}
         </div>

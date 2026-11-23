@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -78,5 +78,37 @@ describe("TimerModal", () => {
 
     const closeButton = screen.getByText("Close");
     expect(closeButton).toBeInTheDocument();
+  });
+
+  it("should sync isOpen state when dialog toggle event fires", () => {
+    const dialogElement = document.createElement("dialog");
+    document.body.appendChild(dialogElement);
+    mocks.modalRef.current = dialogElement;
+
+    render(<TimerModal />);
+
+    // Trigger the toggle event to simulate dialog opening
+    dialogElement.showModal();
+    fireEvent(dialogElement, new Event("toggle"));
+
+    expect(screen.getByText(/Session has ended/)).toBeInTheDocument();
+
+    document.body.removeChild(dialogElement);
+  });
+
+  it("should display formatted elapsed time", () => {
+    mocks.elapsedTimeInSeconds = 150;
+
+    render(<TimerModal />);
+
+    expect(screen.getByText(/2 minutes and 30 seconds/)).toBeInTheDocument();
+  });
+
+  it("should display zero elapsed time", () => {
+    mocks.elapsedTimeInSeconds = 0;
+
+    render(<TimerModal />);
+
+    expect(screen.getByText(/0 seconds/)).toBeInTheDocument();
   });
 });

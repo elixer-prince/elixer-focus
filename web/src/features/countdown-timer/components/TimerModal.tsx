@@ -3,7 +3,7 @@ import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownCo
 import { usePreviousSessionType } from "@/features/countdown-timer/stores/session-store";
 import { useElapsedTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
 import { formatElapsedTime } from "@/utils/formatting";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const TimerModal = () => {
   const { modalRef } = useCountdownContext();
@@ -12,18 +12,27 @@ const TimerModal = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const closeModal = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-
   useEffect(() => {
-    if (modalRef.current?.open && !isOpen) {
-      setIsOpen(true);
+    const dialog = modalRef.current;
+    if (!dialog) return;
+
+    function checkOpen() {
+      setIsOpen(dialog.open);
     }
-  }, [modalRef, isOpen]);
+
+    checkOpen();
+    dialog.addEventListener("toggle", checkOpen);
+    return () => {
+      dialog.removeEventListener("toggle", checkOpen);
+    };
+  }, [modalRef]);
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal} externalRef={modalRef}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => modalRef.current?.close()}
+      ref={modalRef}
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold">
           Your <span className="text-primary">{previousSessionType}</span>{" "}
