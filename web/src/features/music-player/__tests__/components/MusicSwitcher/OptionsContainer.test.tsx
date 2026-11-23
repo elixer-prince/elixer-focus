@@ -80,29 +80,6 @@ describe("OptionsContainer", () => {
     });
 
     it("should not mutate the original songs array", () => {
-      const _originalSongs = [
-        {
-          id: "custom-1",
-          title: "My Custom Song",
-          src: "https://www.youtube.com/watch?v=custom-1",
-          isRecommended: false,
-          isCustom: true,
-        },
-        {
-          id: "rec-1",
-          title: "Recommended Song",
-          src: "https://www.youtube.com/watch?v=rec-1",
-          isRecommended: true,
-        },
-        {
-          id: "custom-2",
-          title: "Another Custom Song",
-          src: "https://www.youtube.com/watch?v=custom-2",
-          isRecommended: false,
-          isCustom: true,
-        },
-      ];
-
       render(<OptionsContainer />);
 
       // The component uses [...songs].sort() which should not mutate the store

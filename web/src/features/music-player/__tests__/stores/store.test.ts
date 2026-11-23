@@ -5,11 +5,17 @@ import {
 import { defaultSongs } from "@/features/music-player/data/default-songs";
 import { act, renderHook } from "@testing-library/react";
 
-const createSong = (id: string, title: string, isRecommended: boolean) => ({
+const createSong = (
+  id: string,
+  title: string,
+  isRecommended: boolean,
+  isCustom = false,
+) => ({
   id,
   title,
   src: `https://www.youtube.com/watch?v=${id}`,
   isRecommended,
+  isCustom,
 });
 
 beforeEach(() => {

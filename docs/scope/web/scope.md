@@ -369,13 +369,25 @@ code in `web/src/features/music-player/`
 
 ## Slice 3: placeholder pages
 
-### 10. Journal · in-progress · needs a decision
+### 10. Journal · in-progress
 
-Placeholder route; implement a journaling surface for daily reflections.
+Daily writing space with Markdown editor, session stats, calendar navigation, and free form notes. Spec: [0003](../specs/web/0003-journal.md)
 
-**Done when:** journal page renders entries and persists them locally.
+**Done when:** journal page renders daily entries with Markdown editing, shows session stats, persists to localStorage, and displays focus time charts and streaks.
 
-- [ ] Design it (spec): `/architect journal`
+- [x] Design it (spec): `/architect journal`
+- [ ] Build it: `/develop journal`
+  - [ ] Journal store with DailyEntry and JournalNote types, Zustand persist, core CRUD actions (AC-2, AC-3, AC-10, AC-11)
+  - [ ] Calendar view with react-day-picker, day marking, click to open (AC-1)
+  - [ ] Daily entry view with collapsible stats and TipTap editor (AC-2, AC-4, AC-5)
+  - [ ] Auto save with debounce and draft indicator (AC-3)
+  - [ ] Quick note creation and editing flow (AC-6)
+  - [ ] Session reflection modal prompt on session end (AC-7)
+  - [ ] Focus time chart with Chart.js and theme-aware colors (AC-8)
+  - [ ] Streak counter component (AC-9)
+  - [ ] Wire Journal route, integrate all components (AC-1, AC-2)
+- [ ] Verify it: `/check verify journal`
+- [ ] Test it: `/test journal`
 
 code in `web/src/app/routes/(root)/Journal.tsx`
 

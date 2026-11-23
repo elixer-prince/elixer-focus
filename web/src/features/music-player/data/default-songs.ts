@@ -25,8 +25,14 @@ export const defaultSongs: Song[] = [
   },
   {
     id: "2ojMshIhLmw",
-    title: "Linkin Park Lofi",
+    title: "Linkin Park Lofi Mix",
     src: "https://www.youtube.com/watch?v=2ojMshIhLmw",
+    isRecommended: true,
+  },
+  {
+    id: "ihe1QbeGt7U",
+    title: "Linkin Park Lofi Mix VOL 2",
+    src: "https://www.youtube.com/watch?v=ihe1QbeGt7U",
     isRecommended: true,
   },
   {
