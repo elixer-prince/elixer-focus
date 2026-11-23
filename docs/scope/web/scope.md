@@ -25,7 +25,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 24  | Theme validation fix               | Foundation            | done        |
 | 28  | Console log cleanup                | Foundation            | done        |
 | 22  | Error handling and loading         | Foundation            | done        |
-| 23  | Performance audit                  | Foundation            | planned     |
+| 23  | Performance audit                  | Foundation            | done        |
 | 27  | Design documentation               | Foundation            | planned     |
 | 21  | API response types                 | Foundation            | planned     |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
@@ -183,13 +183,17 @@ code in `web/src/components/ui/ErrorBoundary.tsx`, `web/src/components/ui/Skelet
 
 - [x] Build it: `/develop error handling and loading`
 
-### 23. Performance audit · planned
+### 23. Performance audit · done
 
 Analyze the bundle size and performance of large dependencies. The web app uses GSAP with ScrollTrigger and SplitText (both registered globally in app.tsx). GSAP is a large dependency; if animations are only used in a few components, lazy loading GSAP or using CSS animations for simple cases could reduce the initial bundle. SplitText is a Club GSAP plugin that may not be necessary for the current UI.
 
 **Done when:** bundle analysis is run, GSAP contribution is measured, and lazy loading or CSS alternatives are implemented for components that do not need GSAP eagerly.
 
-- [ ] Build it: `/develop performance audit`
+Results: GSAP was registered globally in app.tsx but not used anywhere in the codebase. Removing it reduced the JS bundle from 620 kB to 497 kB (gzip: 211 kB to 162 kB, a 23 percent reduction). The 500 kB chunk size warning is now cleared. Dependencies `gsap` and `@gsap/react` are removed from package.json.
+
+code in `web/src/app/app.tsx`, `web/package.json`
+
+- [x] Build it: `/develop performance audit`
 
 ### 27. Design documentation · planned
 
