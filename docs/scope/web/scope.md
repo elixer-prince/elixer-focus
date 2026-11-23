@@ -20,7 +20,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 31  | Task updatedAt tracking            | Foundation            | done        |
 | 33  | Session history and statistics     | Foundation            | done        |
 | 20  | Zustand store improvements         | Foundation            | done        |
-| 25  | Reusable Modal component           | Foundation            | planned     |
+| 25  | Reusable Modal component           | Foundation            | done        |
 | 26  | Shared UI primitives               | Foundation            | planned     |
 | 24  | Theme validation fix               | Foundation            | planned     |
 | 28  | Console log cleanup                | Foundation            | planned     |
@@ -128,13 +128,15 @@ code in `web/src/stores/`, `web/src/features/*/stores/`
 
 - [x] Build it: `/develop zustand store improvements`
 
-### 25. Reusable Modal component · planned
+### 25. Reusable Modal component · done
 
 The current `Modal.tsx` imports from the countdown timer stores and displays timer specific content. It is not a reusable shared component. A generic modal that accepts title, children, and onClose props would serve settings confirmations, task deletion, onboarding, and any future need.
 
 **Done when:** a generic Modal component exists, the timer modal consumes it, and the component handles focus trapping and escape key dismissal.
 
-- [ ] Build it: `/develop reusable modal component`
+code in `web/src/components/ui/Modal.tsx`, `web/src/features/countdown-timer/components/TimerModal.tsx`
+
+- [x] Build it: `/develop reusable modal component`
 
 ### 26. Shared UI primitives · planned
 

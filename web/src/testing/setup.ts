@@ -7,3 +7,15 @@ class ResizeObserver {
 }
 
 globalThis.ResizeObserver = ResizeObserver;
+
+// Mock HTMLDialogElement methods not supported by jsdom
+HTMLDialogElement.prototype.showModal = vi.fn(function (
+  this: HTMLDialogElement,
+) {
+  this.style.display = "block";
+  this.open = true;
+});
+HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+  this.style.display = "none";
+  this.open = false;
+});
