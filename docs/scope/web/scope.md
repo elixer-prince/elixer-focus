@@ -26,7 +26,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 28  | Console log cleanup                | Foundation            | done        |
 | 22  | Error handling and loading         | Foundation            | done        |
 | 23  | Performance audit                  | Foundation            | done        |
-| 27  | Design documentation               | Foundation            | planned     |
+| 27  | Design documentation               | Foundation            | done        |
 | 21  | API response types                 | Foundation            | planned     |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
@@ -195,13 +195,13 @@ code in `web/src/app/app.tsx`, `web/package.json`
 
 - [x] Build it: `/develop performance audit`
 
-### 27. Design documentation · planned
+### 27. Design documentation · done
 
 There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
 
 **Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
 
-- [ ] Build it: `/develop design documentation`
+- [x] Build it: `/develop design documentation`
 
 ### 21. API response types · planned · needs a decision
 
