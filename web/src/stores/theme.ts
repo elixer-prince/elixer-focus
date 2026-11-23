@@ -15,7 +15,14 @@ const useThemeStore = create<ThemeState & ThemeActions>()(
       currentTheme: "dark",
       setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
     }),
-    { name: "theme-storage" },
+    {
+      name: "theme-storage",
+      version: 1,
+      migrate: (state, _version) => {
+        const persistedState = state as Partial<ThemeState>;
+        return persistedState as ThemeState;
+      },
+    },
   ),
 );
 

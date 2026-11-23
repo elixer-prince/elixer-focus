@@ -47,7 +47,14 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
 
       resetElapsedTimeInSeconds: () => set({ elapsedTimeInSeconds: 0 }),
     }),
-    { name: "countdown-timer-storage" },
+    {
+      name: "countdown-timer-storage",
+      version: 1,
+      migrate: (state, _version) => {
+        const persistedState = state as Partial<CountdownTimerState>;
+        return persistedState as CountdownTimerState;
+      },
+    },
   ),
 );
 

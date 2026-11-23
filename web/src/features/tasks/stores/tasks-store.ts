@@ -71,6 +71,11 @@ export const useTasksStore = create<TaskState & TaskActions>()(
     }),
     {
       name: "tasks-storage",
+      version: 1,
+      migrate: (state, _version) => {
+        const persistedState = state as Partial<TaskState>;
+        return persistedState as TaskState;
+      },
     },
   ),
 );

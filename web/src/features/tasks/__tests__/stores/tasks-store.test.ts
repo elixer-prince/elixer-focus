@@ -241,4 +241,49 @@ describe("Tasks Store", () => {
       expect(getTasks()).toEqual(originalTasks);
     });
   });
+
+  describe("persist configuration", () => {
+    it("should declare version 1 in the persist config", () => {
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(1);
+    });
+
+    it("should include the tasks state in the persisted data", () => {
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("tasks");
+    });
+
+    it("should restore tasks from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const { useTasksStore: FreshStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      act(() => {
+        FreshStore.getState().addTask(
+          "Persisted Task",
+          "Test",
+          "urgent-important",
+        );
+      });
+
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const tasks = ReloadedStore.getState().tasks;
+      expect(tasks.length).toBe(1);
+      expect(tasks[0].title).toBe("Persisted Task");
+    });
+  });
 });

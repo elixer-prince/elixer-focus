@@ -62,7 +62,14 @@ const useSessionStore = create<SessionStore>()(
       setTotalSessionsCompleted: (count) =>
         set({ totalSessionsCompleted: count }),
     }),
-    { name: "session-storage" },
+    {
+      name: "session-storage",
+      version: 1,
+      migrate: (state, _version) => {
+        const persistedState = state as Partial<SessionState>;
+        return persistedState as SessionState;
+      },
+    },
   ),
 );
 

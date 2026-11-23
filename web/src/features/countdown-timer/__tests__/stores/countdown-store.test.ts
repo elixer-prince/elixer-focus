@@ -105,4 +105,72 @@ describe("Countdown Timer Store", () => {
 
     expect(elapsedTimeInSeconds.current).toBe(0);
   });
+
+  describe("persist configuration", () => {
+    it("should declare version 1 in the persist config", async () => {
+      const { useStartTimeInMinutes, useSetStartTimeInMinutes } =
+        await loadStore();
+
+      const setStartTimeInMinutes = renderHook(() =>
+        useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTimeInMinutes.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(1);
+    });
+
+    it("should include the countdown state in the persisted data", async () => {
+      const { useStartTimeInMinutes, useSetStartTimeInMinutes } =
+        await loadStore();
+
+      const setStartTimeInMinutes = renderHook(() =>
+        useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTimeInMinutes.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("timerRunning");
+      expect(parsed.state).toHaveProperty("remainingTimeInSeconds");
+    });
+
+    it("should restore countdown state from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const firstStore = await import(
+        "@/features/countdown-timer/stores/countdown-store"
+      );
+
+      const setStartTime = renderHook(() =>
+        firstStore.useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTime.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const reloadedStore = await import(
+        "@/features/countdown-timer/stores/countdown-store"
+      );
+
+      expect(
+        renderHook(() => reloadedStore.useStartTimeInMinutes()).result.current,
+      ).toBe(20);
+    });
+  });
 });

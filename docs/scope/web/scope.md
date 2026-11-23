@@ -15,7 +15,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 2   | Coding standards & tooling         | Foundation            | existing    |
 | 3   | Design system & UI foundation      | Foundation            | existing    |
 | 4   | Data model & local persistence     | Foundation            | existing    |
-| 29  | Store persist versioning           | Foundation            | planned     |
+| 29  | Store persist versioning           | Foundation            | done        |
 | 30  | Countdown volatile state cleanup   | Foundation            | planned     |
 | 31  | Task updatedAt tracking            | Foundation            | planned     |
 | 33  | Session history and statistics     | Foundation            | planned     |
@@ -77,13 +77,16 @@ Zustand stores with persist middleware for tasks, countdown state, settings, and
 
 code in `web/src/stores/`, `web/src/features/*/stores/`
 
-### 29. Store persist versioning · planned
+### 29. Store persist versioning · done
 
 Six of seven persisted stores have no version or migration handler. If the data model changes (e.g., adding a field to Task), old localStorage data will deserialize without migration, potentially producing undefined values. Only the music player store uses version and migrate.
 
 **Done when:** all persisted stores declare a version number and provide a migrate function so model changes do not corrupt existing data.
 
-- [ ] Build it: `/develop store persist versioning`
+code in `web/src/stores/`, `web/src/features/*/stores/`
+
+- [x] Build it: `/develop store persist versioning`
+- [x] Test it: `/test store persist versioning`
 
 ### 30. Countdown volatile state cleanup · planned
 

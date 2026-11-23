@@ -150,4 +150,66 @@ describe("Session Store", () => {
 
     expect(totalSessionsCompleted.current).toBe(9);
   });
+
+  describe("persist configuration", () => {
+    it("should declare version 1 in the persist config", async () => {
+      const { useFocusDuration, useSetFocusDuration } = await loadStore();
+
+      const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
+
+      act(() => {
+        setFocusDuration.current(30);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(1);
+    });
+
+    it("should include the session state in the persisted data", async () => {
+      const { useFocusDuration, useSetFocusDuration } = await loadStore();
+
+      const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
+
+      act(() => {
+        setFocusDuration.current(30);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("focusDuration");
+      expect(parsed.state).toHaveProperty("currentSessionType");
+    });
+
+    it("should restore session state from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const firstStore = await import(
+        "@/features/countdown-timer/stores/session-store"
+      );
+
+      const setFocusDuration = renderHook(() =>
+        firstStore.useSetFocusDuration(),
+      ).result;
+
+      act(() => {
+        setFocusDuration.current(45);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const reloadedStore = await import(
+        "@/features/countdown-timer/stores/session-store"
+      );
+
+      expect(
+        renderHook(() => reloadedStore.useFocusDuration()).result.current,
+      ).toBe(45);
+    });
+  });
 });
