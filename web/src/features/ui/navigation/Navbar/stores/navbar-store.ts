@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type NavbarState = {
   navbarIsOpen: boolean;
@@ -11,23 +10,15 @@ type NavbarActions = {
   closeNavbar: () => void;
 };
 
-export const useNavbarStore = create<NavbarState & NavbarActions>()(
-  persist(
-    (set) => ({
-      navbarIsOpen: false,
+export const useNavbarStore = create<NavbarState & NavbarActions>()((set) => ({
+  navbarIsOpen: false,
 
-      toggleNavbar: () =>
-        set((state) => ({ navbarIsOpen: !state.navbarIsOpen })),
+  toggleNavbar: () => set((state) => ({ navbarIsOpen: !state.navbarIsOpen })),
 
-      openNavbar: () => set({ navbarIsOpen: true }),
+  openNavbar: () => set({ navbarIsOpen: true }),
 
-      closeNavbar: () => set({ navbarIsOpen: false }),
-    }),
-    {
-      name: "navbar-storage",
-    },
-  ),
-);
+  closeNavbar: () => set({ navbarIsOpen: false }),
+}));
 
 // State
 

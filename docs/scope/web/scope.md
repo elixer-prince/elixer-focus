@@ -39,6 +39,9 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 26  | Shared UI primitives               | Foundation            | planned     |
 | 27  | Design documentation               | Foundation            | planned     |
 | 28  | Console log cleanup                | Foundation            | planned     |
+| 29  | Store persist versioning           | Foundation            | planned     |
+| 30  | Countdown volatile state cleanup   | Foundation            | planned     |
+| 31  | Task updatedAt tracking            | Foundation            | planned     |
 
 ## Foundations
 
@@ -68,9 +71,9 @@ code in `web/src/stores/`, `web/src/features/*/stores/`
 
 ### 20. Zustand store improvements · planned
 
-Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks.
+Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks. Default songs are hardcoded inside the music player store, coupling data to state management.
 
-**Done when:** all stores re export from a central index, use a shared persist configuration helper, and apply Immer middleware for cleaner immutable updates.
+**Done when:** all stores re export from a central index, use a shared persist configuration helper, apply Immer middleware for cleaner immutable updates, and default song data is decoupled from the store.
 
 - [ ] Build it: `/develop zustand store improvements`
 
@@ -137,6 +140,30 @@ The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The
 **Done when:** no console statements remain in `useAppTheme.ts` and the hook works correctly without them.
 
 - [ ] Build it: `/develop console log cleanup`
+
+### 29. Store persist versioning · planned
+
+Six of seven persisted stores have no version or migration handler. If the data model changes (e.g., adding a field to Task), old localStorage data will deserialize without migration, potentially producing undefined values. Only the music player store uses version and migrate.
+
+**Done when:** all persisted stores declare a version number and provide a migrate function so model changes do not corrupt existing data.
+
+- [ ] Build it: `/develop store persist versioning`
+
+### 30. Countdown volatile state cleanup · planned
+
+The countdown store persists timerRunning, timerPaused, remainingTimeInSeconds, and elapsedTimeInSeconds. These are volatile runtime values that can produce an inconsistent state on page reload (e.g., timerRunning is true but the interval is not actually running). The Countdown provider already saves timerEndTime to localStorage separately for tab throttle resilience.
+
+**Done when:** the countdown store excludes volatile runtime fields from persistence using partialize, so only stable configuration data is persisted.
+
+- [ ] Build it: `/develop countdown volatile state cleanup`
+
+### 31. Task updatedAt tracking · planned
+
+The Task type has createdAt but no updatedAt. With inline editing (feature 18) and planned subtasks (feature 19), tracking when a task was last modified is useful for sync, audit, or sorting purposes.
+
+**Done when:** Task type includes updatedAt, the store updates it on every mutation, and the matrix displays or sorts by it where appropriate.
+
+- [ ] Build it: `/develop task updatedAt tracking`
 
 ## Slice 1: core focus loop (MVP)
 

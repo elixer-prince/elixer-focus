@@ -18,7 +18,7 @@ const useDateStore = create<DateState & DateActions>((set) => ({
   timeFormat: defaultTimeFormat,
 
   updateCurrentTime: () =>
-    set({ currentTime: dayjs().format(defaultTimeFormat) }),
+    set((state) => ({ currentTime: dayjs().format(state.timeFormat) })),
 
   setTimeFormat: (format: string) => set({ timeFormat: format }),
 }));
