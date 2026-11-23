@@ -29,7 +29,7 @@ const useMusicPlayer = () => {
 
   // Track the last processed song and paused state so the unified effect
   // knows whether to act.
-  const lastChosenSongIdRef = useRef<number | null>(null);
+  const lastChosenSongIdRef = useRef<string | null>(null);
   const lastMusicPausedRef = useRef<boolean | undefined>(undefined);
 
   // Track whether the next CUED state should trigger playVideo().
@@ -140,6 +140,16 @@ const useMusicPlayer = () => {
 
     // If the song changed, load the new video
     if (songChanged) {
+      const previousSongId = lastChosenSongIdRef.current;
+
+      // If the previous song was removed from the list (deleted while playing),
+      // pause immediately to prevent the deleted song from continuing to play.
+      if (previousSongId && !songs.some((s) => s.id === previousSongId)) {
+        isControllingPlayerRef.current = true;
+        player.pauseVideo();
+        useMusicPlayerStore.getState().setMusicPaused(true);
+      }
+
       const selectedSong = songs.find((song) => song.id === chosenSongId);
 
       if (!selectedSong) {

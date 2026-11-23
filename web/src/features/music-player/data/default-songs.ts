@@ -6,25 +6,25 @@ import type { Song } from "@/features/music-player/types/song";
  */
 export const defaultSongs: Song[] = [
   {
-    id: 1,
+    id: "yLOM8R6lbzg",
     title: "Calming White Noise",
     src: "https://www.youtube.com/watch?v=yLOM8R6lbzg",
     isRecommended: true,
   },
   {
-    id: 2,
+    id: "sF80I-TQiW0",
     title: "90's Chill Lofi Playlist",
     src: "https://www.youtube.com/watch?v=sF80I-TQiW0",
     isRecommended: true,
   },
   {
-    id: 3,
+    id: "jfKfPfyJRdk",
     title: "Lofi Radio (Lofi Girl)",
     src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
     isRecommended: true,
   },
   {
-    id: 4,
+    id: "M5QY2_8704o",
     title: "Chillstep Music for Programming",
     src: "https://www.youtube.com/watch?v=M5QY2_8704o",
     isRecommended: false,

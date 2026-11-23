@@ -35,7 +35,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
-| 35  | Music player custom playlist       | Slice 2 (settings)    | planned     |
+| 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
 | 36  | Music player progress display      | Slice 2 (settings)    | planned     |
 | 10  | Journal                            | Slice 3 (pages)       | in-progress |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
@@ -294,13 +294,15 @@ Pick and preview a theme; persist the choice across sessions. The page displays 
 
 code in `web/src/features/settings/theme/`
 
-### 35. Music player custom playlist · planned
+### 35. Music player custom playlist · done
 
 Let users add their own YouTube links as favorites. A text input in the MusicSwitcher dropdown accepts a YouTube URL, extracts the video ID, and appends it to the songs array in localStorage.
 
 **Done when:** user can add, remove, and play custom YouTube songs alongside default songs.
 
-- [ ] Build it: `/develop music player custom playlist`
+- [x] Build it: `/develop music player custom playlist`
+
+code in `web/src/features/music-player/`
 
 ### 36. Music player progress display · planned
 

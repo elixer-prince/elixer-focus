@@ -1,6 +1,7 @@
 export type Song = {
-  id: number;
+  id: string;
   title: string;
   src: string;
   isRecommended: boolean;
+  isCustom?: boolean;
 };
