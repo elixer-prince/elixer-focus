@@ -15,41 +15,41 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 2   | Coding standards & tooling         | Foundation            | existing    |
 | 3   | Design system & UI foundation      | Foundation            | existing    |
 | 4   | Data model & local persistence     | Foundation            | existing    |
+| 29  | Store persist versioning           | Foundation            | planned     |
+| 30  | Countdown volatile state cleanup   | Foundation            | planned     |
+| 31  | Task updatedAt tracking            | Foundation            | planned     |
+| 33  | Session history and statistics     | Foundation            | planned     |
+| 20  | Zustand store improvements         | Foundation            | planned     |
+| 25  | Reusable Modal component           | Foundation            | planned     |
+| 26  | Shared UI primitives               | Foundation            | planned     |
+| 24  | Theme validation fix               | Foundation            | planned     |
+| 28  | Console log cleanup                | Foundation            | planned     |
+| 22  | Error handling and loading         | Foundation            | planned     |
+| 23  | Performance audit                  | Foundation            | planned     |
+| 27  | Design documentation               | Foundation            | planned     |
+| 21  | API response types                 | Foundation            | planned     |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
+| 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
+| 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | planned     |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
+| 35  | Music player custom playlist       | Slice 2 (settings)    | planned     |
+| 36  | Music player progress display      | Slice 2 (settings)    | planned     |
 | 10  | Journal                            | Slice 3 (pages)       | in-progress |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
+| 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
+| 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
+| 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
+| 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
+| 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
 | 14  | Auth (login/signup)                | Slice 4 (auth)        | in-progress |
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
-| 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
-| 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
-| 20  | Zustand store improvements         | Foundation            | planned     |
-| 21  | API response types                 | Foundation            | planned     |
-| 22  | Error handling and loading         | Foundation            | planned     |
-| 23  | Performance audit                  | Foundation            | planned     |
-| 24  | Theme validation fix               | Foundation            | planned     |
-| 25  | Reusable Modal component           | Foundation            | planned     |
-| 26  | Shared UI primitives               | Foundation            | planned     |
-| 27  | Design documentation               | Foundation            | planned     |
-| 28  | Console log cleanup                | Foundation            | planned     |
-| 29  | Store persist versioning           | Foundation            | planned     |
-| 30  | Countdown volatile state cleanup   | Foundation            | planned     |
-| 31  | Task updatedAt tracking            | Foundation            | planned     |
-| 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | planned     |
-| 33  | Session history and statistics     | Foundation            | planned     |
-| 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
-| 35  | Music player custom playlist       | Slice 2 (settings)    | planned     |
-| 36  | Music player progress display      | Slice 2 (settings)    | planned     |
-| 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
-| 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
-| 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
 
 ## Foundations
 
