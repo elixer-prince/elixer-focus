@@ -51,7 +51,6 @@ const Task = ({
     accept: "task",
     group: category,
     disabled: isEditing,
-    handle: handleRef,
   });
 
   const startEditing = useCallback(() => {

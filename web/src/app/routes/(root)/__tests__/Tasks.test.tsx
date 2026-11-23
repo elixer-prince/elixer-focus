@@ -60,9 +60,7 @@ vi.mock("@dnd-kit/react", async (importOriginal) => {
 });
 
 vi.mock("@dnd-kit/dom", () => {
-  const KeyboardSensor = {
-    configure: () => KeyboardSensor,
-  };
+  const KeyboardSensor = {};
   return {
     PointerActivationConstraints: {
       Distance: class {

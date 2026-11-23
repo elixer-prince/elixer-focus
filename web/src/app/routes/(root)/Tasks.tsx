@@ -112,23 +112,20 @@ const Tasks = () => {
                 tolerance: 10,
               }),
             ],
-          }),
-          KeyboardSensor.configure({
             preventActivation: (event, source) => {
-              const target = source.handle ?? source.element;
-              if (!target) {
-                return true;
+              // Only allow pointer drag to start from the drag handle
+              const handle = source.element?.querySelector(
+                '[aria-label="Drag to reorder"]',
+              );
+              if (!handle) {
+                return false;
               }
-              // Allow activation from the handle or any element within the source element
-              return (
-                event.target !== target &&
-                !(
-                  source.element &&
-                  source.element.contains(event.target as Node)
-                )
+              return !(
+                event.target instanceof Node && handle.contains(event.target)
               );
             },
           }),
+          KeyboardSensor,
         ]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
