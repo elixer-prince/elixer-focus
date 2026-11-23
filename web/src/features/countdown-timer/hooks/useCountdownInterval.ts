@@ -6,11 +6,13 @@ import {
   useResetElapsedTimeInSeconds,
   useSetElapsedTimeInSeconds,
   useSetRemainingTimeInSeconds,
+  useElapsedTimeInSeconds,
 } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionType,
   useSetPreviousSessionType,
 } from "@/features/countdown-timer/stores/session-store";
+import { useAddSession } from "@/features/countdown-timer/stores/session-history-store";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
 import {
   timerHasEnded,
@@ -39,6 +41,8 @@ const useCountdownInterval = () => {
   const setPreviousSessionType = useSetPreviousSessionType();
   const setElapsedTimeInSeconds = useSetElapsedTimeInSeconds();
   const resetElapsedTimeInSeconds = useResetElapsedTimeInSeconds();
+  const elapsedTimeInSeconds = useElapsedTimeInSeconds();
+  const addSession = useAddSession();
 
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
@@ -79,6 +83,7 @@ const useCountdownInterval = () => {
             playSound(timerBeepSoundEffectRef.current);
           }
           setPreviousSessionType(currentSessionType);
+          addSession(currentSessionType, elapsedTimeInSeconds);
           alertUserOfTimerEnd(currentSessionType);
           autoSwitchSessionType();
           resetElapsedTime();
@@ -88,9 +93,11 @@ const useCountdownInterval = () => {
     },
     [
       currentSessionType,
+      elapsedTimeInSeconds,
       timerBeepSoundEffectRef,
       hasPlayedEndBeepRef,
       timerIntervalRef,
+      addSession,
       autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,

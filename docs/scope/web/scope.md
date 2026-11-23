@@ -18,7 +18,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 29  | Store persist versioning           | Foundation            | done        |
 | 30  | Countdown volatile state cleanup   | Foundation            | done        |
 | 31  | Task updatedAt tracking            | Foundation            | done        |
-| 33  | Session history and statistics     | Foundation            | planned     |
+| 33  | Session history and statistics     | Foundation            | done        |
 | 20  | Zustand store improvements         | Foundation            | planned     |
 | 25  | Reusable Modal component           | Foundation            | planned     |
 | 26  | Shared UI primitives               | Foundation            | planned     |
@@ -108,13 +108,15 @@ code in `web/src/features/tasks/types/task.ts`, `web/src/features/tasks/stores/t
 
 - [x] Build it: `/develop task updatedAt tracking`
 
-### 33. Session history and statistics · planned
+### 33. Session history and statistics · done
 
 Store completed sessions with timestamp, type, and duration in the session store. This enables the Journal feature to display daily focus stats and feeds into Gamification later.
 
 **Done when:** completed sessions are recorded with metadata and can be queried by date range.
 
-- [ ] Build it: `/develop session history and statistics`
+code in `web/src/features/countdown-timer/types/completed-session.ts`, `web/src/features/countdown-timer/stores/session-history-store.ts`, `web/src/features/countdown-timer/hooks/useCountdownInterval.ts`
+
+- [x] Build it: `/develop session history and statistics`
 
 ### 20. Zustand store improvements · planned
 
