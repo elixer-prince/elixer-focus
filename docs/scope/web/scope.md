@@ -19,7 +19,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
-| 9   | Theme settings                     | Slice 2 (settings)    | in-progress |
+| 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 10  | Journal                            | Slice 3 (pages)       | in-progress |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
@@ -90,6 +90,7 @@ Double-click a task in the matrix to edit title and description inline on the ca
   - [x] Save, cancel, and validation logic (AC-2, AC-3, AC-5)
   - [x] Disable drag during edit (AC-4)
   - [x] Co-located tests (AC-1 through AC-7)
+- [x] Test it: `/test task editing`
 - [x] Verify it: `/check verify task editing`
       Spec [0001](../specs/web/0001-inline-task-editing.md)
 
@@ -117,17 +118,24 @@ Configure focus, short break, and long break durations with validation. Card-bas
   - [x] Improve UI with card-based layout
   - [x] Clean up container component styling
   - [x] Co-located tests (47 tests across 7 files)
+- [x] Test it: `/test timer settings`
 - [x] Verify it: `/check verify timer settings`
 
 code in `web/src/features/settings/timer/`
 
-### 9. Theme settings · in-progress
+### 9. Theme settings · done
 
-Pick and preview a theme; persist the choice across sessions.
+Pick and preview a theme; persist the choice across sessions. The page displays all 36 DaisyUI themes as circular color previews with a search filter. Selection is saved automatically via Zustand persist middleware and applied app-wide with smooth 500ms transitions.
 
 **Done when:** theme selection persists and applies app-wide.
 
-- [ ] Finish remaining pieces: `/develop theme settings`
+- [x] Finish remaining pieces: `/develop theme settings`
+  - [x] Theme settings page with header, description, and search filter
+  - [x] Theme grid with all 36 DaisyUI themes as visual previews
+  - [x] Toast notification on theme change
+  - [x] Theme persistence via Zustand store (already existed)
+  - [x] Co-located tests (18 tests across 3 files)
+- [x] Test it: `/test theme settings`
 
 code in `web/src/features/settings/theme/`
 
