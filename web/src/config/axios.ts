@@ -1,6 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
+import type { ApiErrorResponse } from "@/types/api";
+
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL + "/api",
 });
@@ -15,6 +17,10 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use(
   (response) => {
+    const envelope = response.data;
+    if (envelope.success === false) {
+      return Promise.reject(new Error(envelope.message));
+    }
     return response;
   },
   (error) => {
@@ -22,7 +28,8 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem("ACCESS_TOKEN");
       toast.error("Session expired. Please log in again.", { duration: 4000 });
     } else if (error.response?.data?.message) {
-      toast.error(error.response.data.message, { duration: 4000 });
+      const errorData = error.response.data as ApiErrorResponse;
+      toast.error(errorData.message, { duration: 4000 });
     } else if (error.response?.status) {
       toast.error(`Server error: ${error.response.status}`, { duration: 4000 });
     } else if (error.message) {
