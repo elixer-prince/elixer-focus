@@ -16,7 +16,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 3   | Design system & UI foundation      | Foundation            | existing    |
 | 4   | Data model & local persistence     | Foundation            | existing    |
 | 29  | Store persist versioning           | Foundation            | done        |
-| 30  | Countdown volatile state cleanup   | Foundation            | planned     |
+| 30  | Countdown volatile state cleanup   | Foundation            | done        |
 | 31  | Task updatedAt tracking            | Foundation            | planned     |
 | 33  | Session history and statistics     | Foundation            | planned     |
 | 20  | Zustand store improvements         | Foundation            | planned     |
@@ -88,13 +88,15 @@ code in `web/src/stores/`, `web/src/features/*/stores/`
 - [x] Build it: `/develop store persist versioning`
 - [x] Test it: `/test store persist versioning`
 
-### 30. Countdown volatile state cleanup · planned
+### 30. Countdown volatile state cleanup · done
 
 The countdown store persists timerRunning, timerPaused, remainingTimeInSeconds, and elapsedTimeInSeconds. These are volatile runtime values that can produce an inconsistent state on page reload (e.g., timerRunning is true but the interval is not actually running). The Countdown provider already saves timerEndTime to localStorage separately for tab throttle resilience.
 
 **Done when:** the countdown store excludes volatile runtime fields from persistence using partialize, so only stable configuration data is persisted.
 
-- [ ] Build it: `/develop countdown volatile state cleanup`
+code in `web/src/features/countdown-timer/stores/countdown-store.ts`
+
+- [x] Build it: `/develop countdown volatile state cleanup`
 
 ### 31. Task updatedAt tracking · planned
 

@@ -49,7 +49,10 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
     }),
     {
       name: "countdown-timer-storage",
-      version: 1,
+      version: 2,
+      partialize: (state) => ({
+        startTimeInMinutes: state.startTimeInMinutes,
+      }),
       migrate: (state, _version) => {
         const persistedState = state as Partial<CountdownTimerState>;
         return persistedState as CountdownTimerState;
