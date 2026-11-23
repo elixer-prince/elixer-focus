@@ -22,7 +22,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 20  | Zustand store improvements         | Foundation            | done        |
 | 25  | Reusable Modal component           | Foundation            | done        |
 | 26  | Shared UI primitives               | Foundation            | done        |
-| 24  | Theme validation fix               | Foundation            | planned     |
+| 24  | Theme validation fix               | Foundation            | done        |
 | 28  | Console log cleanup                | Foundation            | planned     |
 | 22  | Error handling and loading         | Foundation            | planned     |
 | 23  | Performance audit                  | Foundation            | planned     |
@@ -155,13 +155,15 @@ There are no reusable base components like Button, Input, Card, Badge, Avatar, o
 
       Spec [0002](../specs/web/0002-shared-ui-primitives.md)
 
-### 24. Theme validation fix · planned
+### 24. Theme validation fix · done
 
 The `useAppTheme` hook validates themes against a hardcoded `VALID_THEMES` set that includes only the 36 DaisyUI themes. The custom `elixer` theme and premium themes (anime, BR characters, effects) defined in `web/src/app/themes/` are not included, so setting them programmatically is rejected as invalid.
 
 **Done when:** all custom and premium themes are accepted by the validator, and the list stays in sync with the actual theme files.
 
-- [ ] Build it: `/develop theme validation fix`
+code in `web/src/config/themes.ts`, `web/src/hooks/useAppTheme.ts`, `web/src/features/settings/theme/components/Index.tsx`
+
+- [x] Build it: `/develop theme validation fix`
 
 ### 28. Console log cleanup · planned
 

@@ -1,44 +1,6 @@
+import { validThemeNames } from "@/config/themes";
 import { useCurrentTheme, useSetCurrentTheme } from "@/stores/theme";
 import { useLayoutEffect, useState } from "react";
-
-// List of valid DaisyUI themes for validation
-const VALID_THEMES = new Set<string>([
-  "light",
-  "dark",
-  "cupcake",
-  "bumblebee",
-  "emerald",
-  "corporate",
-  "synthwave",
-  "retro",
-  "cyberpunk",
-  "valentine",
-  "halloween",
-  "garden",
-  "forest",
-  "aqua",
-  "lofi",
-  "pastel",
-  "fantasy",
-  "wireframe",
-  "black",
-  "luxury",
-  "dracula",
-  "cmyk",
-  "autumn",
-  "business",
-  "acid",
-  "lemonade",
-  "night",
-  "coffee",
-  "winter",
-  "dim",
-  "nord",
-  "sunset",
-  "caramellatte",
-  "abyss",
-  "silk",
-]);
 
 interface UseAppThemeResult {
   currentTheme: string;
@@ -53,7 +15,7 @@ const useAppTheme = (): UseAppThemeResult => {
   const [error, setError] = useState<string | null>(null);
 
   // Validate theme is in the list of valid themes
-  const isValidTheme = Array.from(VALID_THEMES).includes(storeTheme);
+  const isValidTheme = validThemeNames.has(storeTheme);
 
   // Apply theme to HTML element when store theme changes
   useLayoutEffect(() => {
@@ -65,7 +27,7 @@ const useAppTheme = (): UseAppThemeResult => {
     const themeToApply = storeTheme || "dark";
 
     // Validate theme before applying
-    if (storeTheme && !Array.from(VALID_THEMES).includes(storeTheme)) {
+    if (storeTheme && !validThemeNames.has(storeTheme)) {
       setStoreTheme("dark");
       return;
     }
@@ -87,7 +49,7 @@ const useAppTheme = (): UseAppThemeResult => {
 
   // Wrapper function with validation
   const setTheme = (theme: string) => {
-    if (!VALID_THEMES.has(theme)) {
+    if (!validThemeNames.has(theme)) {
       const errorMsg = `Invalid theme: ${theme}`;
       setError(errorMsg);
       return;

@@ -64,7 +64,7 @@ cd app && npm run web           # Run web version
 - **Shared UI Primitives**: Typed React wrappers for Button, Input, Badge, and Spinner at `web/src/components/ui/`. Import from the barrel `@/components/ui`. All use `forwardRef` and `displayName`. Input uses `inputSize` prop instead of `size` to avoid conflict with native `InputHTMLAttributes.size`. Spec [0002](docs/specs/web/0002-shared-ui-primitives.md).
 - **TailwindCSS v4**: Uses `@import "tailwindcss"` in CSS, NOT `@tailwind` directives
 - **Zustand Stores**: Use `persist` middleware with `createPersistOptions()` from `@/stores/persist-config`; import stores from the central barrel `@/stores`. Stores with nested array state (tasks, session history) use `immer` middleware for direct draft mutations.
-- **Theme System**: Themes located in `web/src/app/themes/` with DaisyUI themes in `default/daisyui/`
+- **Theme System**: Themes located in `web/src/app/themes/` with DaisyUI themes in `default/daisyui/`. Central theme registry in `web/src/config/themes.ts` exports `allThemes` (array of ThemeInfo with value, label, and category) and `validThemeNames` (Set). Import from there instead of hardcoding theme lists.
 - **FOUC Prevention**: `index.html` inline CSS hides the body (`opacity: 0`) until React mounts and adds `app-ready` class in `app.tsx`. Theme is set synchronously via `useLayoutEffect` in `useAppTheme.ts` (not `useEffect`). An inline script in `<head>` reads the stored theme from localStorage before CSS loads.
 - **Theme Transitions**: All theme-related color transitions use `duration-500` (500ms) across layout areas. Timer animations retain `duration-1000`.
 - **API Client**: Axios instance in `web/src/config/axios.ts` with automatic Bearer token injection from localStorage
