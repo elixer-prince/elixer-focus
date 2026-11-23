@@ -3,7 +3,7 @@
 A focus and productivity web app: an adaptive pomodoro timer, an Eisenhower task matrix, and a music player, built to entice the user to complete tasks. Solo dev learning project, free, no deadline; the gamified and social vision is deferred to later slices.
 
 **Build approach:** Skateboard (MVP first; ship the thinnest usable whole, then grow).
-**Workflow:** Alpha (run /check verify after /develop). Project default level of rigor.
+**Workflow:** Prototype (just /develop, no separate verify or test steps). Fastest path for infrastructure work. Project default level of rigor.
 
 _These are recommendations to keep your build orderly, not requirements. Skip anything that does not fit: if you already know how to build a feature, use /develop and skip /architect. You decide when a feature is done._
 
@@ -30,6 +30,10 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 17  | Social features                    | Slice 5 (future)      | planned     |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
+| 20  | Zustand store improvements         | Foundation            | planned     |
+| 21  | API response types                 | Foundation            | planned     |
+| 22  | Error handling and loading         | Foundation            | planned     |
+| 23  | Performance audit                  | Foundation            | planned     |
 
 ## Foundations
 
@@ -56,6 +60,38 @@ code in `web/src/features/ui/`, `web/src/app/themes/`
 Zustand stores with persist middleware for tasks, countdown state, settings, and theme.
 
 code in `web/src/stores/`, `web/src/features/*/stores/`
+
+### 20. Zustand store improvements · planned
+
+Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks.
+
+**Done when:** all stores re export from a central index, use a shared persist configuration helper, and apply Immer middleware for cleaner immutable updates.
+
+- [ ] Build it: `/develop zustand store improvements`
+
+### 21. API response types · planned · needs a decision
+
+Define TypeScript response types for the axios client at web/src/config/axios.ts. Currently all API calls will return any until contracts are defined. When the backend starts serving real endpoints, this becomes a maintenance risk without typed responses.
+
+**Done when:** API response types exist in a shared location, the axios client returns a consistent Result type with data, error, and status, and a response interceptor normalizes Laravel responses.
+
+- [ ] Design it (spec): `/architect api response types`
+
+### 22. Error handling and loading · planned
+
+Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
+
+**Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
+
+- [ ] Build it: `/develop error handling and loading`
+
+### 23. Performance audit · planned
+
+Analyze the bundle size and performance of large dependencies. The web app uses GSAP with ScrollTrigger and SplitText (both registered globally in app.tsx). GSAP is a large dependency; if animations are only used in a few components, lazy loading GSAP or using CSS animations for simple cases could reduce the initial bundle. SplitText is a Club GSAP plugin that may not be necessary for the current UI.
+
+**Done when:** bundle analysis is run, GSAP contribution is measured, and lazy loading or CSS alternatives are implemented for components that do not need GSAP eagerly.
+
+- [ ] Build it: `/develop performance audit`
 
 ## Slice 1: core focus loop (MVP)
 
