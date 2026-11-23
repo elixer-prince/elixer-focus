@@ -79,7 +79,7 @@ const useCountdownInterval = () => {
             playSound(timerBeepSoundEffectRef.current);
           }
           setPreviousSessionType(currentSessionType);
-          alertUserOfTimerEnd();
+          alertUserOfTimerEnd(currentSessionType);
           autoSwitchSessionType();
           resetElapsedTime();
           createElapsedInterval();

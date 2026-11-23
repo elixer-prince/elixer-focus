@@ -146,7 +146,7 @@ describe("useNotification", () => {
   });
 
   describe("sendTimerEndNotification", () => {
-    it("should create a notification when permission is granted", async () => {
+    it("should create a notification when permission is granted with default session type", async () => {
       mocks.permissionValue = "granted";
 
       const { result } = renderHook(() => useNotification());
@@ -157,11 +157,55 @@ describe("useNotification", () => {
 
       expect(mocks.notificationInstances.length).toBe(1);
       expect(mocks.notificationInstances[0].title).toBe(
-        "Elixer Focus — Timer ended",
+        "Elixer Focus — Focus ended",
       );
       expect(mocks.notificationInstances[0].options).toEqual(
         expect.objectContaining({
-          body: "Your focus session has ended. Time to take a break!",
+          body: "Your focus session has ended.",
+          icon: "/favicon.png",
+          tag: "timer-ended",
+        }),
+      );
+    });
+
+    it("should create a notification with the correct session type", async () => {
+      mocks.permissionValue = "granted";
+
+      const { result } = renderHook(() => useNotification());
+
+      await act(async () => {
+        await result.current.sendTimerEndNotification("Short Break");
+      });
+
+      expect(mocks.notificationInstances.length).toBe(1);
+      expect(mocks.notificationInstances[0].title).toBe(
+        "Elixer Focus — Short Break ended",
+      );
+      expect(mocks.notificationInstances[0].options).toEqual(
+        expect.objectContaining({
+          body: "Your short break session has ended.",
+          icon: "/favicon.png",
+          tag: "timer-ended",
+        }),
+      );
+    });
+
+    it("should create a notification for Long Break session type", async () => {
+      mocks.permissionValue = "granted";
+
+      const { result } = renderHook(() => useNotification());
+
+      await act(async () => {
+        await result.current.sendTimerEndNotification("Long Break");
+      });
+
+      expect(mocks.notificationInstances.length).toBe(1);
+      expect(mocks.notificationInstances[0].title).toBe(
+        "Elixer Focus — Long Break ended",
+      );
+      expect(mocks.notificationInstances[0].options).toEqual(
+        expect.objectContaining({
+          body: "Your long break session has ended.",
           icon: "/favicon.png",
           tag: "timer-ended",
         }),

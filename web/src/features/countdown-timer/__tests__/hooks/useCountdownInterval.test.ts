@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   elapsedIntervalRef: {
     current: null as ReturnType<typeof setInterval> | null,
   },
+  hasPlayedEndBeepRef: { current: false },
   autoSwitchSessionType: vi.fn(),
   startEndTicking: vi.fn(),
   stopEndTicking: vi.fn(),
@@ -41,6 +42,7 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
     timerBeepSoundEffectRef: mocks.timerBeepSoundEffectRef,
     timerIntervalRef: mocks.timerIntervalRef,
     elapsedIntervalRef: mocks.elapsedIntervalRef,
+    hasPlayedEndBeepRef: mocks.hasPlayedEndBeepRef,
   }),
 }));
 
@@ -95,6 +97,7 @@ describe("useCountdownInterval", () => {
     vi.clearAllMocks();
     mocks.timerIntervalRef.current = null;
     mocks.elapsedIntervalRef.current = null;
+    mocks.hasPlayedEndBeepRef.current = false;
     mocks.timerIsAboutToEnd.mockReturnValue(false);
     mocks.timerHasEnded.mockReturnValue(false);
     mocks.calculateRemainingSeconds.mockReturnValue(100);
@@ -162,6 +165,84 @@ describe("useCountdownInterval", () => {
 
       // Verify the interval ref is set
       expect(mocks.timerIntervalRef.current).toBeDefined();
+    });
+  });
+
+  describe("timer end behavior", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should call alertUserOfTimerEnd with the current session type when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.alertUserOfTimerEnd).toHaveBeenCalledWith("Focus");
+    });
+
+    it("should set previous session type when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.setPreviousSessionType).toHaveBeenCalledWith("Focus");
+    });
+
+    it("should auto switch session type when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.autoSwitchSessionType).toHaveBeenCalled();
+    });
+
+    it("should clear the timer interval when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.clearIntervalIfItExists).toHaveBeenCalledWith(
+        mocks.timerIntervalRef,
+      );
+    });
+
+    it("should play the end beep sound when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+      mocks.timerBeepSoundEffectRef.current = new Audio();
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.playSound).toHaveBeenCalled();
     });
   });
 });

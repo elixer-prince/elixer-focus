@@ -33,31 +33,33 @@ describe("useCountdownAlerts", () => {
       const { result } = renderHook(() => useCountdownAlerts());
 
       act(() => {
-        result.current.alertUserOfTimerEnd();
+        result.current.alertUserOfTimerEnd("Focus");
       });
 
       expect(mocks.mockDialog.showModal).toHaveBeenCalled();
     });
 
-    it("should send a desktop notification", () => {
+    it("should send a desktop notification with session type", () => {
       const { result } = renderHook(() => useCountdownAlerts());
 
       act(() => {
-        result.current.alertUserOfTimerEnd();
+        result.current.alertUserOfTimerEnd("Focus");
       });
 
-      expect(mocks.sendTimerEndNotification).toHaveBeenCalled();
+      expect(mocks.sendTimerEndNotification).toHaveBeenCalledWith("Focus");
     });
 
     it("should show modal and send notification together", () => {
       const { result } = renderHook(() => useCountdownAlerts());
 
       act(() => {
-        result.current.alertUserOfTimerEnd();
+        result.current.alertUserOfTimerEnd("Short Break");
       });
 
       expect(mocks.mockDialog.showModal).toHaveBeenCalledTimes(1);
-      expect(mocks.sendTimerEndNotification).toHaveBeenCalledTimes(1);
+      expect(mocks.sendTimerEndNotification).toHaveBeenCalledWith(
+        "Short Break",
+      );
     });
 
     it("should handle modal ref being null gracefully", () => {
@@ -66,7 +68,7 @@ describe("useCountdownAlerts", () => {
       const { result } = renderHook(() => useCountdownAlerts());
 
       act(() => {
-        result.current.alertUserOfTimerEnd();
+        result.current.alertUserOfTimerEnd("Focus");
       });
 
       expect(mocks.sendTimerEndNotification).toHaveBeenCalled();
