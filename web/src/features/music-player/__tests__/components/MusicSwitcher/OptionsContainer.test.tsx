@@ -80,7 +80,7 @@ describe("OptionsContainer", () => {
     });
 
     it("should not mutate the original songs array", () => {
-      const originalSongs = [
+      const _originalSongs = [
         {
           id: "custom-1",
           title: "My Custom Song",

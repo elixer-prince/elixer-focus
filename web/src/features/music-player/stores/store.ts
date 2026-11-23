@@ -128,7 +128,6 @@ export const useMusicPlayerStore = create<MusicPlayerStore>()(
           // Ensure chosenSongId is valid after filtering
           const mergedIds = new Set(mergedSongs.map((s) => s.id));
           if (chosenSongId && !mergedIds.has(chosenSongId as string)) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             chosenSongId = mergedSongs[0]?.id ?? currentState.chosenSongId;
           }
         }
