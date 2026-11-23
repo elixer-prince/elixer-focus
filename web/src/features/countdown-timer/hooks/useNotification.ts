@@ -113,7 +113,10 @@ const useNotification = () => {
         // without actually displaying it. Wait for the onshow event; if it
         // never fires within 2 seconds, treat the notification as failed.
         setTimeout(() => {
-          if (!showed && !notification.closed) {
+          const notifClosed =
+            "closed" in notification &&
+            (notification as { closed: boolean }).closed;
+          if (!showed && !notifClosed) {
             setNotificationFailed(true);
             console.warn(
               `[${APP_NAME}] Notification was created but never showed within 2 seconds. ` +

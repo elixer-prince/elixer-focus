@@ -11,6 +11,8 @@ const mocks = vi.hoisted(() => ({
     onclick: (() => void) | null;
     onshow: (() => void) | null;
     tag: string;
+    title: string;
+    options: NotificationOptions | undefined;
   }>,
 }));
 

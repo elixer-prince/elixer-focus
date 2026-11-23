@@ -71,7 +71,8 @@ const Task = ({
       }
       if (
         handleRef.current &&
-        (e.target === handleRef.current || handleRef.current.contains(e.target))
+        (e.target === handleRef.current ||
+          (e.target instanceof Node && handleRef.current.contains(e.target)))
       ) {
         return;
       }
@@ -131,7 +132,8 @@ const Task = ({
     const handleMouseDown = (e: MouseEvent) => {
       if (
         wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
+        e.target instanceof Node &&
+        !wrapperRef.current.contains(e.target)
       ) {
         cancelEditRef.current();
       }
@@ -161,7 +163,9 @@ const Task = ({
     return (
       <li
         ref={(node) => {
-          ref.current = node;
+          (
+            ref as unknown as React.MutableRefObject<HTMLLIElement | null>
+          ).current = node;
           wrapperRef.current = node;
         }}
         className={`task bg-base-100 border-primary mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
@@ -217,6 +221,7 @@ const Task = ({
   return (
     <li
       ref={ref}
+      tabIndex={0}
       data-dragging={isDragging}
       onClick={handleClick}
       className={`task bg-base-100 mr-3 flex items-center justify-between gap-1 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}

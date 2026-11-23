@@ -95,13 +95,14 @@ test("tasks are draggable (drag handles present)", async ({ page }) => {
   const taskElement = urgentArticle.locator("li.task").filter({
     hasText: "Draggable task",
   });
+  const dragHandle = taskElement.locator('[aria-label="Drag to reorder"]');
   const dropTarget = uncategorisedArticle.locator("ul").first();
 
-  const sourceBox = (await taskElement.boundingBox())!;
+  const handleBox = (await dragHandle.boundingBox())!;
   const targetBox = (await dropTarget.boundingBox())!;
   await page.mouse.move(
-    sourceBox.x + sourceBox.width / 2,
-    sourceBox.y + sourceBox.height / 2,
+    handleBox.x + handleBox.width / 2,
+    handleBox.y + handleBox.height / 2,
   );
   await page.mouse.down();
   await page.mouse.move(
@@ -151,7 +152,8 @@ test("task creation stays disabled during a pointer drag and resumes after cance
   const tasks = page.locator("li.task:not([aria-hidden=true])");
   const source = tasks.filter({ hasText: "Second task" });
   const target = tasks.filter({ hasText: "First task" });
-  const start = (await source.boundingBox())!;
+  const sourceHandle = source.locator('[aria-label="Drag to reorder"]');
+  const start = (await sourceHandle.boundingBox())!;
   const end = (await target.boundingBox())!;
   await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
   await page.mouse.down();

@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 const mocks = vi.hoisted(() => ({
   showModal: vi.fn(),
   sendTimerEndNotification: vi.fn(),
-  mockDialog: { showModal: vi.fn() } as HTMLDialogElement,
+  mockDialog: { showModal: vi.fn() } as unknown as HTMLDialogElement,
   modalRef: { current: null as HTMLDialogElement | null },
 }));
 

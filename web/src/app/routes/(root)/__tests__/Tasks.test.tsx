@@ -68,6 +68,7 @@ vi.mock("@dnd-kit/dom", () => ({
       constructor() {}
     },
   },
+  KeyboardSensor: {},
 }));
 
 vi.mock("@dnd-kit/react/sortable", async (importOriginal) => {

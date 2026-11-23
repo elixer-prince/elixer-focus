@@ -26,6 +26,7 @@ cd web && npm run lint         # ESLint check
 cd web && npm run format       # Prettier write
 cd web && npm run format:check # Prettier check
 cd web && npx playwright test  # Run E2E tests with Playwright
+cd web && npm run build        # Full build with forced type check (tsc -b --force)
 ```
 
 ### Backend
@@ -75,6 +76,9 @@ cd app && npm run web           # Run web version
 - Web vitest requires globals: true and jsdom environment
 - E2E tests in `web/e2e/` are excluded from Vitest; run them with `npx playwright test`
 - Playwright e2e tests run on GitHub Actions (Ubuntu) via `.github/workflows/playwright.yaml` on push to main/alpha/beta
+- **Playwright does not run locally on macOS 12** — Playwright dropped support for macOS 12 (Monterey). Do not attempt to install Playwright browsers or run E2E tests locally. E2E tests only run on CI. Once the local macOS version is upgraded, local Playwright will work again.
+- **TypeScript incremental build cache hides errors** — `tsc -b` uses `.tsbuildinfo` cache files and may skip type-checking files it considers unchanged. The build script uses `tsc -b --force` to always check all files. If you run `tsc -b` without `--force` locally, you may miss type errors that Vercel catches on fresh builds.
+- **Mock type assertions in tests** — When mocking DOM types like `HTMLDialogElement` in tests, use `as unknown as Type` instead of `as Type` to satisfy strict TypeScript checking. Follow the pattern in `web/src/testing/setup.ts` and existing test files.
 - Laravel backend requires `composer install` and `php artisan key:generate` before first run
 - App uses expo-router with file-based routing in `app/app/` directory
 

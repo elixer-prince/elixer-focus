@@ -80,7 +80,7 @@ describe("sound utilities", () => {
     it("should log synchronous errors from play()", () => {
       const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      (mockAudio.play as jest.Mock).mockImplementation(() => {
+      (mockAudio.play as ReturnType<typeof vi.fn>).mockImplementation(() => {
         throw new Error("Sync error");
       });
 
@@ -108,7 +108,7 @@ describe("sound utilities", () => {
     it("should log errors from pause()", () => {
       const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      (mockAudio.pause as jest.Mock).mockImplementation(() => {
+      (mockAudio.pause as ReturnType<typeof vi.fn>).mockImplementation(() => {
         throw new Error("Pause error");
       });
 

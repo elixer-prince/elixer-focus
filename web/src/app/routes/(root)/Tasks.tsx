@@ -8,7 +8,7 @@ import {
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
-import { PointerActivationConstraints } from "@dnd-kit/dom";
+import { KeyboardSensor, PointerActivationConstraints } from "@dnd-kit/dom";
 import { isSortable } from "@dnd-kit/react/sortable";
 import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
@@ -113,6 +113,7 @@ const Tasks = () => {
               }),
             ],
           }),
+          KeyboardSensor,
         ]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}

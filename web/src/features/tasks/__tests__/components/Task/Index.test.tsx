@@ -423,7 +423,7 @@ describe("Task", () => {
             mockUpdateTask(id, patch);
           },
           [],
-        );
+        ) as typeof mockUpdateTask;
 
         mockedStore.useUpdateTask.mockImplementation(() => wrappedUpdateTask);
 
