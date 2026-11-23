@@ -6,12 +6,13 @@ import userEvent from "@testing-library/user-event";
 // Mocks
 
 const mockSetChosenSongId = vi.fn();
+const mockRemoveSong = vi.fn();
 
 vi.mock("@/features/music-player/stores/store", () => ({
   useChosenSongId: vi.fn().mockReturnValue("beta"),
   useSetChosenSongId: () => mockSetChosenSongId,
   useMusicPaused: vi.fn().mockReturnValue(true),
-  useRemoveSong: vi.fn().mockReturnValue(vi.fn()),
+  useRemoveSong: () => mockRemoveSong,
   useSongs: vi.fn().mockReturnValue([
     {
       id: "alpha",
@@ -24,6 +25,13 @@ vi.mock("@/features/music-player/stores/store", () => ({
       title: "Song Two",
       src: "https://www.youtube.com/watch?v=beta",
       isRecommended: false,
+    },
+    {
+      id: "custom1",
+      title: "Custom Song",
+      src: "https://www.youtube.com/watch?v=custom1",
+      isRecommended: false,
+      isCustom: true,
     },
   ]),
 }));
@@ -127,5 +135,59 @@ describe("Music Dropdown Option", () => {
     await userEvent.click(songLabel);
 
     expect(mockPlayerInstance.cueVideoById).not.toHaveBeenCalled();
+  });
+
+  it("should show a remove button for custom songs", () => {
+    render(
+      <Option
+        id="custom1"
+        title="My Custom Song"
+        isRecommended={false}
+        isCustom
+      />,
+    );
+
+    const removeButton = screen.getByLabelText("Remove 'My Custom Song'");
+    expect(removeButton).toBeInTheDocument();
+  });
+
+  it("should not show a remove button for default songs", () => {
+    render(<Option id="alpha" title="My Song Title" isRecommended={false} />);
+
+    expect(
+      screen.queryByRole("button", { name: /remove/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("should call removeSong when the remove button is clicked", async () => {
+    render(
+      <Option
+        id="custom1"
+        title="My Custom Song"
+        isRecommended={false}
+        isCustom
+      />,
+    );
+
+    const removeButton = screen.getByLabelText("Remove 'My Custom Song'");
+    await userEvent.click(removeButton);
+
+    expect(mockRemoveSong).toHaveBeenCalledWith("custom1");
+  });
+
+  it("should not change the song when the remove button is clicked", async () => {
+    render(
+      <Option
+        id="custom1"
+        title="My Custom Song"
+        isRecommended={false}
+        isCustom
+      />,
+    );
+
+    const removeButton = screen.getByLabelText("Remove 'My Custom Song'");
+    await userEvent.click(removeButton);
+
+    expect(mockSetChosenSongId).not.toHaveBeenCalled();
   });
 });

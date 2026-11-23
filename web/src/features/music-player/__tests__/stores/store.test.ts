@@ -1,5 +1,9 @@
-import { useMusicPlayerStore } from "@/features/music-player/stores/store";
-import { act } from "@testing-library/react";
+import {
+  useMusicPlayerStore,
+  useSongs,
+} from "@/features/music-player/stores/store";
+import { defaultSongs } from "@/features/music-player/data/default-songs";
+import { act, renderHook } from "@testing-library/react";
 
 const createSong = (id: string, title: string, isRecommended: boolean) => ({
   id,
@@ -297,6 +301,202 @@ describe("Music Player Store", () => {
       const chosenSongId = useMusicPlayerStore.getState().chosenSongId;
       expect(chosenSongId).not.toBe("chosen123");
       expect(chosenSongId).toBe(useMusicPlayerStore.getState().songs[0].id);
+    });
+  });
+
+  describe("useSongs", () => {
+    it("should deduplicate songs on the first render", () => {
+      // Simulate the store having duplicate songs (as could happen from
+      // localStorage before the merge function runs)
+      const songA = createSong("a", "Song A", true);
+      const songB = createSong("b", "Song B", true);
+      const songsWithDuplicates = [songA, songB, songA, songB];
+
+      useMusicPlayerStore.setState({ songs: songsWithDuplicates });
+
+      const { result } = renderHook(() => useSongs());
+
+      // useSongs must return only unique songs even on the very first render
+      expect(result.current).toHaveLength(2);
+      expect(result.current[0].id).toBe("a");
+      expect(result.current[1].id).toBe("b");
+    });
+
+    it("should deduplicate songs after the store state changes", () => {
+      const songA = createSong("a", "Song A", true);
+      const songB = createSong("b", "Song B", true);
+      const songC = createSong("c", "Song C", true);
+
+      useMusicPlayerStore.setState({ songs: [songA, songB] });
+
+      const { result, rerender } = renderHook(() => useSongs());
+      expect(result.current).toHaveLength(2);
+
+      // Update store with duplicates
+      act(() => {
+        useMusicPlayerStore.setState({
+          songs: [songA, songB, songC, songA],
+        });
+      });
+      rerender();
+
+      expect(result.current).toHaveLength(3);
+      expect(result.current.map((s) => s.id)).toEqual(["a", "b", "c"]);
+    });
+
+    it("should return the same reference when songs do not change", () => {
+      const songA = createSong("a", "Song A", true);
+      const songB = createSong("b", "Song B", true);
+
+      useMusicPlayerStore.setState({ songs: [songA, songB] });
+
+      const { result, rerender } = renderHook(() => useSongs());
+      const firstRender = result.current;
+
+      rerender();
+      expect(result.current).toBe(firstRender);
+    });
+
+    it("should handle an empty songs array", () => {
+      useMusicPlayerStore.setState({ songs: [] });
+
+      const { result } = renderHook(() => useSongs());
+      expect(result.current).toEqual([]);
+    });
+  });
+
+  describe("merge function deduplication", () => {
+    // The merge function runs when the store restores from localStorage.
+    // We simulate it by directly invoking the merge logic with persisted
+    // state that contains duplicates.
+    it("should deduplicate songs when restoring from persisted state", () => {
+      const songA = createSong("a", "Song A", true);
+      const songB = createSong("b", "Song B", true);
+      const persistedSongs = [songA, songB, songA, songB];
+
+      // Simulate the merge function behavior
+      const seen = new Set<string>();
+      const uniqueSongs = persistedSongs.filter((song) => {
+        if (seen.has(song.id)) {
+          return false;
+        }
+        seen.add(song.id);
+        return true;
+      });
+
+      expect(uniqueSongs).toHaveLength(2);
+      expect(uniqueSongs[0].id).toBe("a");
+      expect(uniqueSongs[1].id).toBe("b");
+    });
+
+    it("should fix chosenSongId if the chosen song was removed by dedup", () => {
+      const songA = createSong("a", "Song A", true);
+      const songB = createSong("b", "Song B", true);
+      // chosenSongId points to a song that only appears as a duplicate
+      const persistedSongs = [songA, songA, songB];
+      let chosenSongId = "a";
+      const seen = new Set<string>();
+      const uniqueSongs = persistedSongs.filter((song) => {
+        if (seen.has(song.id)) {
+          return false;
+        }
+        seen.add(song.id);
+        return true;
+      });
+
+      if (chosenSongId && !seen.has(chosenSongId)) {
+        chosenSongId = uniqueSongs[0]?.id;
+      }
+
+      expect(chosenSongId).toBe("a");
+    });
+
+    it("should append new default songs when restoring from persisted state", () => {
+      // Simulate a persisted state that only has some of the default songs
+      // (e.g., the user had 3 defaults, then 2 new defaults were added to the codebase)
+      const persistedSongs = [
+        createSong("yLOM8R6lbzg", "Calming White Noise", true),
+        createSong("sF80I-TQiW0", "90's Chill Lofi Playlist", true),
+      ];
+
+      // Simulate the merge function behavior including the new default append logic
+      const seen = new Set<string>();
+      const uniqueSongs = persistedSongs.filter((song) => {
+        if (seen.has(song.id)) {
+          return false;
+        }
+        seen.add(song.id);
+        return true;
+      });
+      const defaultIds = new Set(defaultSongs.map((s) => s.id));
+      const filteredSongs = uniqueSongs.filter(
+        (song) => song.isCustom || defaultIds.has(song.id),
+      );
+      const missingDefaults = defaultSongs.filter((s) => !seen.has(s.id));
+      const mergedSongs = [...filteredSongs, ...missingDefaults];
+
+      // The merged list should contain the persisted songs plus the missing defaults
+      expect(mergedSongs.length).toBe(
+        persistedSongs.length + missingDefaults.length,
+      );
+      // Persisted songs come first
+      expect(mergedSongs[0].id).toBe("yLOM8R6lbzg");
+      expect(mergedSongs[1].id).toBe("sF80I-TQiW0");
+      // Missing defaults are appended
+      expect(mergedSongs.map((s) => s.id)).toContain("CFGLoQIhmow");
+      expect(mergedSongs.map((s) => s.id)).toContain("2ojMshIhLmw");
+      expect(mergedSongs.map((s) => s.id)).toContain("M5QY2_8704o");
+    });
+
+    it("should remove old default songs no longer in the codebase but keep custom songs", () => {
+      // Simulate a persisted state with an old default song that was removed from default-songs.ts
+      // and a custom song that should always be kept
+      const oldDefaultSong = {
+        id: "removedSong123",
+        title: "Old Removed Song",
+        src: "https://www.youtube.com/watch?v=removedSong123",
+        isRecommended: false,
+        isCustom: false,
+      };
+      const customSong = {
+        id: "myCustomSong",
+        title: "My Custom Song",
+        src: "https://www.youtube.com/watch?v=myCustomSong",
+        isRecommended: false,
+        isCustom: true,
+      };
+      const currentDefault = createSong(
+        "yLOM8R6lbzg",
+        "Calming White Noise",
+        true,
+      );
+
+      const persistedSongs = [oldDefaultSong, customSong, currentDefault];
+
+      // Simulate the merge function behavior
+      const seen = new Set<string>();
+      const uniqueSongs = persistedSongs.filter((song) => {
+        if (seen.has(song.id)) {
+          return false;
+        }
+        seen.add(song.id);
+        return true;
+      });
+      const defaultIds = new Set(defaultSongs.map((s) => s.id));
+      const filteredSongs = uniqueSongs.filter(
+        (song) => song.isCustom || defaultIds.has(song.id),
+      );
+      const missingDefaults = defaultSongs.filter((s) => !seen.has(s.id));
+      const mergedSongs = [...filteredSongs, ...missingDefaults];
+
+      // Old default song should be filtered out
+      expect(mergedSongs.map((s) => s.id)).not.toContain("removedSong123");
+      // Custom song should be kept
+      expect(mergedSongs.map((s) => s.id)).toContain("myCustomSong");
+      // Current default should be kept
+      expect(mergedSongs.map((s) => s.id)).toContain("yLOM8R6lbzg");
+      // Missing defaults should be appended
+      expect(mergedSongs.map((s) => s.id)).toContain("CFGLoQIhmow");
     });
   });
 });

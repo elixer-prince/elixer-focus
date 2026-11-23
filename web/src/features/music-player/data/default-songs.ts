@@ -18,9 +18,15 @@ export const defaultSongs: Song[] = [
     isRecommended: true,
   },
   {
-    id: "jfKfPfyJRdk",
+    id: "CFGLoQIhmow",
     title: "Lofi Radio (Lofi Girl)",
-    src: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+    src: "https://www.youtube.com/watch?v=CFGLoQIhmow",
+    isRecommended: true,
+  },
+  {
+    id: "2ojMshIhLmw",
+    title: "Linkin Park Lofi",
+    src: "https://www.youtube.com/watch?v=2ojMshIhLmw",
     isRecommended: true,
   },
   {

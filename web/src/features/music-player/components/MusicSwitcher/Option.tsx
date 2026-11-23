@@ -43,7 +43,7 @@ const Option = ({ id, title, isRecommended, isCustom }: OptionProps) => {
   };
 
   return (
-    <li className="menu-item relative">
+    <li className="menu-item relative min-w-0">
       <label aria-label={`Switch to '${title}'`}>
         <input
           className="radio radio-primary radio-sm"
@@ -53,7 +53,7 @@ const Option = ({ id, title, isRecommended, isCustom }: OptionProps) => {
           checked={chosenSongId === id}
         />
         <div
-          className={`flex flex-wrap items-center gap-2 ${chosenSongId === id ? "font-bold" : ""}`}
+          className={`flex flex-wrap items-center gap-1 ${chosenSongId === id ? "font-bold" : ""}`}
         >
           {isRecommended && (
             <span className="badge badge-sm badge-secondary badge-soft">
@@ -65,7 +65,7 @@ const Option = ({ id, title, isRecommended, isCustom }: OptionProps) => {
               Custom
             </span>
           )}
-          <span className="w-34">{title}</span>
+          <span className="min-w-0 break-words">{title}</span>
         </div>
       </label>
       {isCustom && (

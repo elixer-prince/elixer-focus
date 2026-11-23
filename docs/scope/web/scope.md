@@ -36,7 +36,12 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
-| 36  | Music player progress display      | Slice 2 (settings)    | planned     |
+| 36  | Music player progress display      | Slice 2 (settings)    | done        |
+| 40  | Music player song validation       | Slice 2 (settings)    | done        |
+| 41  | Music player default song fix      | Slice 2 (settings)    | done        |
+| 42  | Music player live stream fix       | Slice 2 (settings)    | done        |
+| 43  | Music player duplicate songs fix   | Slice 2 (settings)    | done        |
+| 44  | Music player dedup migration fix   | Slice 2 (settings)    | done        |
 | 10  | Journal                            | Slice 3 (pages)       | in-progress |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
@@ -304,13 +309,63 @@ Let users add their own YouTube links as favorites. A text input in the MusicSwi
 
 code in `web/src/features/music-player/`
 
-### 36. Music player progress display · planned
+### 36. Music player progress display · done
 
 Add a thin progress bar to the floating player that reads currentTime and duration from the YouTube player. Shows current position and time remaining.
 
 **Done when:** floating player displays a progress bar with current time and duration.
 
-- [ ] Build it: `/develop music player progress display`
+- [x] Build it: `/develop music player progress display`
+
+### 40. Music player song validation · done
+
+When adding a custom YouTube song, the player has no way to know if the video still exists. Users can add broken links that silently fail to play. Also, the default Lofi Girl song (jfKfPfyJRdk) was removed from YouTube and no longer plays.
+
+**Done when:** adding a custom song checks via YouTube oEmbed API that the video exists before adding it, and the default Lofi Girl song is updated to the current stream.
+
+- [x] Build it: `/develop music player song validation`
+
+code in `web/src/features/music-player/`
+
+### 41. Music player default song fix · done
+
+The default Lofi Girl song (jfKfPfyJRdk) was removed from YouTube and no longer plays. Even after updating the default song file, existing users still see the broken video because the store persists the songs array to localStorage. Additionally, a new Linkin Park lofi song was requested as a default.
+
+**Done when:** the store migrates away the defunct video ID from persisted state, and the Linkin Park lofi song is added as a recommended default.
+
+- [x] Build it: `/debug lofi girl not playing`
+
+code in `web/src/features/music-player/`
+
+### 42. Music player live stream fix · done
+
+The default Lofi Girl song was replaced with a 24/7 live stream (rFZHOHl-L8A) which reports an enormous duration, breaking the progress bar. Additionally, the store migration did not merge new default songs (like Linkin Park) into existing persisted playlists, so users never saw newly added defaults.
+
+**Done when:** the live stream is replaced with a regular video with finite duration, and the store migration merges missing default songs into persisted state.
+
+- [x] Build it: `/debug lofi girl still not playing`
+
+code in `web/src/features/music-player/`
+
+### 43. Music player duplicate songs fix · done
+
+The store migration for version 7 merged missing default songs into the persisted playlist, but some users ended up with duplicate entries in the dropdown. Songs appeared twice because the migration combined persisted state with defaults without deduplicating.
+
+**Done when:** the store migration deduplicates the songs array by ID so each song appears only once.
+
+- [x] Build it: `/debug duplicate songs in dropdown`
+
+code in `web/src/features/music-player/`
+
+### 44. Music player dedup migration fix · done
+
+The version 8 deduplication migration was added after some users were already at version 8 in their localStorage, so the migration never ran for them. Their song list still contained duplicates from the version 7 migration.
+
+**Done when:** the store version is bumped to 9 with a deduplication migration that runs for users whose localStorage was already at version 8.
+
+- [x] Build it: `/debug duplicate songs still showing`
+
+code in `web/src/features/music-player/`
 
 ## Slice 3: placeholder pages
 
