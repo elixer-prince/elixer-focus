@@ -18,7 +18,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
-| 8   | Timer settings                     | Slice 2 (settings)    | in-progress |
+| 8   | Timer settings                     | Slice 2 (settings)    | done        |
 | 9   | Theme settings                     | Slice 2 (settings)    | in-progress |
 | 10  | Journal                            | Slice 3 (pages)       | in-progress |
 | 11  | Profile                            | Slice 3 (pages)       | in-progress |
@@ -29,6 +29,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
+| 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
 
 ## Foundations
 
@@ -92,15 +93,31 @@ Double-click a task in the matrix to edit title and description inline on the ca
 - [x] Verify it: `/check verify task editing`
       Spec [0001](../specs/web/0001-inline-task-editing.md)
 
+### 19. Subtasks (nested) · planned
+
+Tasks can contain subtasks, and subtasks can contain their own subtasks, forming a tree. Each subtask has a title, a done state, and an order position. The parent task shows a progress indicator based on completed subtasks.
+
+**Done when:** user can add, edit, delete, and reorder subtasks within any task, with unlimited nesting depth and progress tracking on parent tasks.
+
+- [ ] Design it (spec): `/architect subtasks`
+
 ## Slice 2: settings & themes
 
-### 8. Timer settings · in-progress
+### 8. Timer settings · done
 
-Configure focus, short break, and long break durations with validation.
+Configure focus, short break, and long break durations with validation. Card-based UI with save and reset functionality, toast notifications, and auto-sync with the countdown timer.
 
 **Done when:** timer settings persist and drive the countdown timer.
 
-- [ ] Finish remaining pieces: `/develop timer settings`
+- [x] Finish remaining pieces: `/develop timer settings`
+  - [x] Add Toaster to Settings layout
+  - [x] Replace alert() with react-hot-toast notifications
+  - [x] Remove redundant localStorage saves (session store persists automatically)
+  - [x] Add reset button to discard unsaved changes
+  - [x] Improve UI with card-based layout
+  - [x] Clean up container component styling
+  - [x] Co-located tests (47 tests across 7 files)
+- [x] Verify it: `/check verify timer settings`
 
 code in `web/src/features/settings/timer/`
 

@@ -7,8 +7,8 @@ const FocusContainer = () => {
 
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium">
-        Focus Duration (minutes)
+      <label className="label">
+        <span className="label-text text-sm font-medium">Minutes</span>
       </label>
       <input
         type="number"
@@ -16,12 +16,12 @@ const FocusContainer = () => {
         onChange={(e) => {
           validateAndSet(e.target.value, setDraftFocus, 1);
         }}
-        className="input input-primary"
+        className="input input-primary input-lg"
         min={1}
         placeholder="25"
       />
       {draftFocus && Number(draftFocus) < 1 && (
-        <p className="mt-1 text-sm text-red-500">Must be at least 1 minute</p>
+        <p className="text-error mt-1 text-sm">Must be at least 1 minute</p>
       )}
     </div>
   );

@@ -7,21 +7,21 @@ const ShortBreakContainer = () => {
 
   return (
     <div>
-      <label className={"mb-2 block text-sm font-medium"}>
-        Short Break (minutes)
+      <label className="label">
+        <span className="label-text text-sm font-medium">Minutes</span>
       </label>
       <input
-        type={"number"}
+        type="number"
         value={draftShortBreak}
         onChange={(e) => {
           validateAndSet(e.target.value, setDraftShortBreak, 1);
         }}
-        className={"input input-primary"}
+        className="input input-primary input-lg"
         min={1}
-        placeholder={"5"}
+        placeholder="5"
       />
       {draftShortBreak && Number(draftShortBreak) < 1 && (
-        <p className={"mt-1 text-sm text-red-500"}>Must be at least 1 minute</p>
+        <p className="text-error mt-1 text-sm">Must be at least 1 minute</p>
       )}
     </div>
   );

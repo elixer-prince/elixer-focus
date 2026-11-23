@@ -1,11 +1,14 @@
 import Modal from "@/components/ui/Modal";
 import Sidebar from "@/features/ui/navigation/Sidebar/Settings/components/Index";
+import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 
 const SettingsLayout = () => {
   return (
     <>
       <Sidebar />
+
+      <Toaster />
 
       <Modal />
 

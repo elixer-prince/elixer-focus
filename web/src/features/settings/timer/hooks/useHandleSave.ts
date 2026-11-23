@@ -13,7 +13,7 @@ import {
   useSetShortBreakDuration,
 } from "@/features/countdown-timer/stores/session-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
-import { saveToLocalStorage } from "@/utils/storage";
+import toast from "react-hot-toast";
 import { useCallback } from "react";
 
 const useHandleSave = () => {
@@ -52,34 +52,29 @@ const useHandleSave = () => {
 
     // Check for validation errors
     if (focusNum === null || focusNum < 1) {
-      alert("Focus duration must be at least 1 minute");
+      toast.error("Focus duration must be at least 1 minute");
       setDraftFocus("25");
       hasError = true;
     }
 
     if (shortBreakNum === null || shortBreakNum < 1) {
-      alert("Short break must be at least 1 minute");
+      toast.error("Short break must be at least 1 minute");
       setDraftShortBreak("5");
       hasError = true;
     }
 
     if (longBreakNum === null || longBreakNum < 5) {
-      alert("Long break must be at least 5 minutes");
+      toast.error("Long break must be at least 5 minutes");
       setDraftLongBreak("15");
       hasError = true;
     }
 
     if (hasError) return;
 
-    // All valid - update session stores
+    // All valid - update session stores (persist middleware handles localStorage)
     setFocusDuration(focusNum!);
     setShortBreakDuration(shortBreakNum!);
     setLongBreakDuration(longBreakNum!);
-
-    // Save session durations to localStorage
-    saveToLocalStorage("focusDuration", focusNum!);
-    saveToLocalStorage("shortBreakDuration", shortBreakNum!);
-    saveToLocalStorage("longBreakDuration", longBreakNum!);
 
     // AUTO-UPDATE TIMER if it's not running
     const isTimerIdle = !timerRunning || timerPaused;
@@ -93,16 +88,9 @@ const useHandleSave = () => {
       // Update timer stores
       setStartTimeInMinutes(newDuration);
       setRemainingTimeInSeconds(convertMinutesToSeconds(newDuration));
-
-      // Save timer state too
-      saveToLocalStorage("startTimeInMinutes", newDuration);
-      saveToLocalStorage(
-        "remainingTimeInSeconds",
-        convertMinutesToSeconds(newDuration),
-      );
     }
 
-    alert("Timer settings saved successfully!");
+    toast.success("Timer settings saved successfully!");
   }, [
     currentSessionType,
     draftFocus,
