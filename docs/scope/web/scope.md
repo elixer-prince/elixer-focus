@@ -45,9 +45,9 @@ code in `web/`
 
 ### 2. Coding standards & tooling · existing
 
-ESLint, Prettier, Husky, commitlint, and Vitest wired up for the web app.
+ESLint, Prettier, Husky, commitlint, and Vitest wired up for the web app. Improved with lint-staged for pre-commit formatting, stricter ESLint rules (no-console warnings, no-duplicate-imports, unused-vars with underscore ignore), type-aware parsing for e2e files, root-level scripts covering web and app linting, Prettier config for app/, and a CI workflow for lint and type-check on push and PR.
 
-code in `web/`
+code in `web/`, `.husky/`, `.github/workflows/`
 
 ### 3. Design system & UI foundation · existing
 

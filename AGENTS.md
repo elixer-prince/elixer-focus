@@ -79,8 +79,8 @@ cd app && npm run web           # Run web version
 
 - Tab width: 2 spaces
 - TypeScript strict mode enabled
-- ESLint: react-hooks + react-refresh plugins
-- Prettier with tailwindcss plugin
+- ESLint: react-hooks + react-refresh plugins, plus no-console (warn), no-duplicate-imports (error), unused-vars with underscore ignore pattern
+- Prettier with tailwindcss plugin (root config at `.prettierrc.json`, app config at `app/.prettierrc.json`)
 - Commit messages: conventional commit format (enforced by husky + commitlint)
 - Pre-commit hook runs `lint-staged` (Prettier on staged files only)
 
