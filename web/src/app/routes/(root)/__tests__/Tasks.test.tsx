@@ -59,17 +59,22 @@ vi.mock("@dnd-kit/react", async (importOriginal) => {
   };
 });
 
-vi.mock("@dnd-kit/dom", () => ({
-  PointerActivationConstraints: {
-    Distance: class {
-      constructor() {}
+vi.mock("@dnd-kit/dom", () => {
+  const KeyboardSensor = {
+    configure: () => KeyboardSensor,
+  };
+  return {
+    PointerActivationConstraints: {
+      Distance: class {
+        constructor() {}
+      },
+      Delay: class {
+        constructor() {}
+      },
     },
-    Delay: class {
-      constructor() {}
-    },
-  },
-  KeyboardSensor: {},
-}));
+    KeyboardSensor,
+  };
+});
 
 vi.mock("@dnd-kit/react/sortable", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;

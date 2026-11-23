@@ -113,7 +113,22 @@ const Tasks = () => {
               }),
             ],
           }),
-          KeyboardSensor,
+          KeyboardSensor.configure({
+            preventActivation: (event, source) => {
+              const target = source.handle ?? source.element;
+              if (!target) {
+                return true;
+              }
+              // Allow activation from the handle or any element within the source element
+              return (
+                event.target !== target &&
+                !(
+                  source.element &&
+                  source.element.contains(event.target as Node)
+                )
+              );
+            },
+          }),
         ]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
