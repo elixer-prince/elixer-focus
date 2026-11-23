@@ -42,6 +42,14 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 29  | Store persist versioning           | Foundation            | planned     |
 | 30  | Countdown volatile state cleanup   | Foundation            | planned     |
 | 31  | Task updatedAt tracking            | Foundation            | planned     |
+| 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | planned     |
+| 33  | Session history and statistics     | Foundation            | planned     |
+| 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
+| 35  | Music player custom playlist       | Slice 2 (settings)    | planned     |
+| 36  | Music player progress display      | Slice 2 (settings)    | planned     |
+| 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
+| 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
+| 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
 
 ## Foundations
 
@@ -69,78 +77,6 @@ Zustand stores with persist middleware for tasks, countdown state, settings, and
 
 code in `web/src/stores/`, `web/src/features/*/stores/`
 
-### 20. Zustand store improvements · planned
-
-Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks. Default songs are hardcoded inside the music player store, coupling data to state management.
-
-**Done when:** all stores re export from a central index, use a shared persist configuration helper, apply Immer middleware for cleaner immutable updates, and default song data is decoupled from the store.
-
-- [ ] Build it: `/develop zustand store improvements`
-
-### 21. API response types · planned · needs a decision
-
-Define TypeScript response types for the axios client at web/src/config/axios.ts. Currently all API calls will return any until contracts are defined. When the backend starts serving real endpoints, this becomes a maintenance risk without typed responses.
-
-**Done when:** API response types exist in a shared location, the axios client returns a consistent Result type with data, error, and status, and a response interceptor normalizes Laravel responses.
-
-- [ ] Design it (spec): `/architect api response types`
-
-### 22. Error handling and loading · planned
-
-Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
-
-**Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
-
-- [ ] Build it: `/develop error handling and loading`
-
-### 23. Performance audit · planned
-
-Analyze the bundle size and performance of large dependencies. The web app uses GSAP with ScrollTrigger and SplitText (both registered globally in app.tsx). GSAP is a large dependency; if animations are only used in a few components, lazy loading GSAP or using CSS animations for simple cases could reduce the initial bundle. SplitText is a Club GSAP plugin that may not be necessary for the current UI.
-
-**Done when:** bundle analysis is run, GSAP contribution is measured, and lazy loading or CSS alternatives are implemented for components that do not need GSAP eagerly.
-
-- [ ] Build it: `/develop performance audit`
-
-### 24. Theme validation fix · planned
-
-The `useAppTheme` hook validates themes against a hardcoded `VALID_THEMES` set that includes only the 36 DaisyUI themes. The custom `elixer` theme and premium themes (anime, BR characters, effects) defined in `web/src/app/themes/` are not included, so setting them programmatically is rejected as invalid.
-
-**Done when:** all custom and premium themes are accepted by the validator, and the list stays in sync with the actual theme files.
-
-- [ ] Build it: `/develop theme validation fix`
-
-### 25. Reusable Modal component · planned
-
-The current `Modal.tsx` imports from the countdown timer stores and displays timer specific content. It is not a reusable shared component. A generic modal that accepts title, children, and onClose props would serve settings confirmations, task deletion, onboarding, and any future need.
-
-**Done when:** a generic Modal component exists, the timer modal consumes it, and the component handles focus trapping and escape key dismissal.
-
-- [ ] Build it: `/develop reusable modal component`
-
-### 26. Shared UI primitives · planned
-
-There are no reusable base components like Button, Input, Card, Badge, Avatar, or Spinner. Every feature builds its own UI from raw DaisyUI classes. As the app grows, having typed React wrappers for commonly used patterns would reduce duplication and make design changes easier.
-
-**Done when:** core primitives (Button, Input, Badge, Spinner) exist as typed components with consistent variants, and at least one feature migrates to use them.
-
-- [ ] Build it: `/develop shared UI primitives`
-
-### 27. Design documentation · planned
-
-There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
-
-**Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
-
-- [ ] Build it: `/develop design documentation`
-
-### 28. Console log cleanup · planned
-
-The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The project has `no-console` set to warn in ESLint, but for a production hook these should be replaced with a proper logging utility or removed.
-
-**Done when:** no console statements remain in `useAppTheme.ts` and the hook works correctly without them.
-
-- [ ] Build it: `/develop console log cleanup`
-
 ### 29. Store persist versioning · planned
 
 Six of seven persisted stores have no version or migration handler. If the data model changes (e.g., adding a field to Task), old localStorage data will deserialize without migration, potentially producing undefined values. Only the music player store uses version and migrate.
@@ -164,6 +100,86 @@ The Task type has createdAt but no updatedAt. With inline editing (feature 18) a
 **Done when:** Task type includes updatedAt, the store updates it on every mutation, and the matrix displays or sorts by it where appropriate.
 
 - [ ] Build it: `/develop task updatedAt tracking`
+
+### 33. Session history and statistics · planned
+
+Store completed sessions with timestamp, type, and duration in the session store. This enables the Journal feature to display daily focus stats and feeds into Gamification later.
+
+**Done when:** completed sessions are recorded with metadata and can be queried by date range.
+
+- [ ] Build it: `/develop session history and statistics`
+
+### 20. Zustand store improvements · planned
+
+Organize the Zustand stores which are split between web/src/stores/ (theme, date) and feature level stores (countdown-timer/stores/, tasks/stores/, music-player/stores/, ui/navigation/Navbar/stores/). There is no central index or barrel export, and the store configuration (persist key naming, storage engine) is repeated across stores. Immer is installed but not used in any store, which would make immutable updates cleaner for nested state like tasks with subtasks. Default songs are hardcoded inside the music player store, coupling data to state management.
+
+**Done when:** all stores re export from a central index, use a shared persist configuration helper, apply Immer middleware for cleaner immutable updates, and default song data is decoupled from the store.
+
+- [ ] Build it: `/develop zustand store improvements`
+
+### 25. Reusable Modal component · planned
+
+The current `Modal.tsx` imports from the countdown timer stores and displays timer specific content. It is not a reusable shared component. A generic modal that accepts title, children, and onClose props would serve settings confirmations, task deletion, onboarding, and any future need.
+
+**Done when:** a generic Modal component exists, the timer modal consumes it, and the component handles focus trapping and escape key dismissal.
+
+- [ ] Build it: `/develop reusable modal component`
+
+### 26. Shared UI primitives · planned
+
+There are no reusable base components like Button, Input, Card, Badge, Avatar, or Spinner. Every feature builds its own UI from raw DaisyUI classes. As the app grows, having typed React wrappers for commonly used patterns would reduce duplication and make design changes easier.
+
+**Done when:** core primitives (Button, Input, Badge, Spinner) exist as typed components with consistent variants, and at least one feature migrates to use them.
+
+- [ ] Build it: `/develop shared UI primitives`
+
+### 24. Theme validation fix · planned
+
+The `useAppTheme` hook validates themes against a hardcoded `VALID_THEMES` set that includes only the 36 DaisyUI themes. The custom `elixer` theme and premium themes (anime, BR characters, effects) defined in `web/src/app/themes/` are not included, so setting them programmatically is rejected as invalid.
+
+**Done when:** all custom and premium themes are accepted by the validator, and the list stays in sync with the actual theme files.
+
+- [ ] Build it: `/develop theme validation fix`
+
+### 28. Console log cleanup · planned
+
+The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The project has `no-console` set to warn in ESLint, but for a production hook these should be replaced with a proper logging utility or removed.
+
+**Done when:** no console statements remain in `useAppTheme.ts` and the hook works correctly without them.
+
+- [ ] Build it: `/develop console log cleanup`
+
+### 27. Design documentation · planned
+
+There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
+
+**Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
+
+- [ ] Build it: `/develop design documentation`
+
+### 23. Performance audit · planned
+
+Analyze the bundle size and performance of large dependencies. The web app uses GSAP with ScrollTrigger and SplitText (both registered globally in app.tsx). GSAP is a large dependency; if animations are only used in a few components, lazy loading GSAP or using CSS animations for simple cases could reduce the initial bundle. SplitText is a Club GSAP plugin that may not be necessary for the current UI.
+
+**Done when:** bundle analysis is run, GSAP contribution is measured, and lazy loading or CSS alternatives are implemented for components that do not need GSAP eagerly.
+
+- [ ] Build it: `/develop performance audit`
+
+### 22. Error handling and loading · planned
+
+Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
+
+**Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
+
+- [ ] Build it: `/develop error handling and loading`
+
+### 21. API response types · planned · needs a decision
+
+Define TypeScript response types for the axios client at web/src/config/axios.ts. Currently all API calls will return any until contracts are defined. When the backend starts serving real endpoints, this becomes a maintenance risk without typed responses.
+
+**Done when:** API response types exist in a shared location, the axios client returns a consistent Result type with data, error, and status, and a response interceptor normalizes Laravel responses.
+
+- [ ] Design it (spec): `/architect api response types`
 
 ## Slice 1: core focus loop (MVP)
 
@@ -202,14 +218,6 @@ Double-click a task in the matrix to edit title and description inline on the ca
 - [x] Verify it: `/check verify task editing`
       Spec [0001](../specs/web/0001-inline-task-editing.md)
 
-### 19. Subtasks (nested) · planned
-
-Tasks can contain subtasks, and subtasks can contain their own subtasks, forming a tree. Each subtask has a title, a done state, and an order position. The parent task shows a progress indicator based on completed subtasks.
-
-**Done when:** user can add, edit, delete, and reorder subtasks within any task, with unlimited nesting depth and progress tracking on parent tasks.
-
-- [ ] Design it (spec): `/architect subtasks`
-
 ## Slice 2: settings & themes
 
 ### 8. Timer settings · done
@@ -231,6 +239,14 @@ Configure focus, short break, and long break durations with validation. Card-bas
 
 code in `web/src/features/settings/timer/`
 
+### 32. Timer keyboard shortcuts · planned
+
+Add keyboard shortcuts to control the countdown timer without clicking. Space to start or pause, R to reset, and S to skip to the next session.
+
+**Done when:** user can control the timer with keyboard shortcuts and the shortcuts are documented in the UI.
+
+- [ ] Build it: `/develop timer keyboard shortcuts`
+
 ### 9. Theme settings · done
 
 Pick and preview a theme; persist the choice across sessions. The page displays all 36 DaisyUI themes as circular color previews with a search filter. Selection is saved automatically via Zustand persist middleware and applied app-wide with smooth 500ms transitions.
@@ -246,6 +262,22 @@ Pick and preview a theme; persist the choice across sessions. The page displays 
 - [x] Test it: `/test theme settings`
 
 code in `web/src/features/settings/theme/`
+
+### 35. Music player custom playlist · planned
+
+Let users add their own YouTube links as favorites. A text input in the MusicSwitcher dropdown accepts a YouTube URL, extracts the video ID, and appends it to the songs array in localStorage.
+
+**Done when:** user can add, remove, and play custom YouTube songs alongside default songs.
+
+- [ ] Build it: `/develop music player custom playlist`
+
+### 36. Music player progress display · planned
+
+Add a thin progress bar to the floating player that reads currentTime and duration from the YouTube player. Shows current position and time remaining.
+
+**Done when:** floating player displays a progress bar with current time and duration.
+
+- [ ] Build it: `/develop music player progress display`
 
 ## Slice 3: placeholder pages
 
@@ -288,6 +320,46 @@ Placeholder route; implement a brain dump inbox for quick capture.
 - [ ] Design it (spec): `/architect brain dump`
 
 code in `web/src/app/routes/(root)/Bin.tsx`
+
+### 19. Subtasks (nested) · planned
+
+Tasks can contain subtasks, and subtasks can contain their own subtasks, forming a tree. Each subtask has a title, a done state, and an order position. The parent task shows a progress indicator based on completed subtasks.
+
+**Done when:** user can add, edit, delete, and reorder subtasks within any task, with unlimited nesting depth and progress tracking on parent tasks.
+
+- [ ] Design it (spec): `/architect subtasks`
+
+### 37. Task search and filtering · planned
+
+Add a search input in the TaskPageHeader that filters tasks by title or description across all quadrants. Helps users find specific tasks as the matrix grows.
+
+**Done when:** user can type a search query and see only matching tasks across all columns.
+
+- [ ] Build it: `/develop task search and filtering`
+
+### 38. Task completion animation and archive · planned
+
+Add a slide out animation when a task is completed. Move completed tasks to a collapsed archive section to keep the matrix clean.
+
+**Done when:** completed tasks animate out and move to an archive section that can be expanded.
+
+- [ ] Build it: `/develop task completion animation and archive`
+
+### 39. Task due dates and priority · planned
+
+Add an optional due date field to the Task type with visual indicators (e.g., red border for overdue). Makes the Eisenhower matrix more actionable.
+
+**Done when:** tasks can have due dates, overdue tasks are visually highlighted, and tasks can be sorted by due date.
+
+- [ ] Build it: `/develop task due dates and priority`
+
+### 34. Adaptive duration logic · planned
+
+Make the timer truly adaptive by adjusting break or focus duration based on user patterns. If a user consistently skips breaks, suggest shorter breaks. If they complete many sessions in a row, suggest a longer break.
+
+**Done when:** timer suggests adjusted durations based on skip frequency and consecutive session count.
+
+- [ ] Build it: `/develop adaptive duration logic`
 
 ## Slice 4: auth & onboarding
 
