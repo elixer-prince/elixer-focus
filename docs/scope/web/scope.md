@@ -33,7 +33,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
-| 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | planned     |
+| 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | planned     |
 | 36  | Music player progress display      | Slice 2 (settings)    | planned     |
@@ -274,13 +274,9 @@ Configure focus, short break, and long break durations with validation. Card-bas
 
 code in `web/src/features/settings/timer/`
 
-### 32. Timer keyboard shortcuts · planned
+### 32. Timer keyboard shortcuts · cancelled
 
-Add keyboard shortcuts to control the countdown timer without clicking. Space to start or pause, R to reset, and S to skip to the next session.
-
-**Done when:** user can control the timer with keyboard shortcuts and the shortcuts are documented in the UI.
-
-- [ ] Build it: `/develop timer keyboard shortcuts`
+Keyboard shortcuts were removed because they conflict with typing on the tasks page and will conflict with future social media features (comments, chats, friend requests). Shortcuts like Space, R, and S fire while the user is trying to type normally.
 
 ### 9. Theme settings · done
 
