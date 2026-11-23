@@ -12,3 +12,8 @@ export type { SpinnerProps } from "./Spinner";
 
 export { default as Modal } from "./Modal";
 export type { ModalProps } from "./Modal";
+
+export { default as ErrorBoundary } from "./ErrorBoundary";
+
+export { default as Skeleton } from "./Skeleton";
+export type { SkeletonProps } from "./Skeleton";

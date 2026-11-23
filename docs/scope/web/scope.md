@@ -23,8 +23,8 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 25  | Reusable Modal component           | Foundation            | done        |
 | 26  | Shared UI primitives               | Foundation            | done        |
 | 24  | Theme validation fix               | Foundation            | done        |
-| 28  | Console log cleanup                | Foundation            | planned     |
-| 22  | Error handling and loading         | Foundation            | planned     |
+| 28  | Console log cleanup                | Foundation            | done        |
+| 22  | Error handling and loading         | Foundation            | done        |
 | 23  | Performance audit                  | Foundation            | planned     |
 | 27  | Design documentation               | Foundation            | planned     |
 | 21  | API response types                 | Foundation            | planned     |
@@ -165,21 +165,23 @@ code in `web/src/config/themes.ts`, `web/src/hooks/useAppTheme.ts`, `web/src/fea
 
 - [x] Build it: `/develop theme validation fix`
 
-### 28. Console log cleanup · planned
+### 28. Console log cleanup · done
 
 The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The project has `no-console` set to warn in ESLint, but for a production hook these should be replaced with a proper logging utility or removed.
 
 **Done when:** no console statements remain in `useAppTheme.ts` and the hook works correctly without them.
 
-- [ ] Build it: `/develop console log cleanup`
+- [x] Build it: `/develop console log cleanup`
 
-### 22. Error handling and loading · planned
+### 22. Error handling and loading · done
 
 Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
 
 **Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
 
-- [ ] Build it: `/develop error handling and loading`
+code in `web/src/components/ui/ErrorBoundary.tsx`, `web/src/components/ui/Skeleton.tsx`, `web/src/hooks/useErrorToast.ts`, `web/src/config/axios.ts`, `web/src/app/router.tsx`
+
+- [x] Build it: `/develop error handling and loading`
 
 ### 23. Performance audit · planned
 
