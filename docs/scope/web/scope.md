@@ -149,13 +149,13 @@ The `useAppTheme` hook uses `console.log` and `console.error` for debugging. The
 
 - [ ] Build it: `/develop console log cleanup`
 
-### 27. Design documentation · planned
+### 22. Error handling and loading · planned
 
-There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
+Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
 
-**Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
+**Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
 
-- [ ] Build it: `/develop design documentation`
+- [ ] Build it: `/develop error handling and loading`
 
 ### 23. Performance audit · planned
 
@@ -165,13 +165,13 @@ Analyze the bundle size and performance of large dependencies. The web app uses 
 
 - [ ] Build it: `/develop performance audit`
 
-### 22. Error handling and loading · planned
+### 27. Design documentation · planned
 
-Add a global error boundary component that catches React render errors and shows a fallback UI. Create a unified error toast hook that both the axios interceptor and components can use. Add loading skeleton patterns in the shared UI feature for async routes (auth, settings). The router has a 404 page but no global error boundary beyond the layout level error element.
+There is no `design.md` recording design system decisions, component inventory, or visual direction. The design system exists only as code. Future contributors would need to reverse engineer the patterns from the codebase.
 
-**Done when:** a global error boundary catches render errors, API errors surface consistently via a toast hook, and async routes show loading skeletons.
+**Done when:** `docs/design.md` documents the theme system, layout structure, shared component conventions, and naming patterns.
 
-- [ ] Build it: `/develop error handling and loading`
+- [ ] Build it: `/develop design documentation`
 
 ### 21. API response types · planned · needs a decision
 
