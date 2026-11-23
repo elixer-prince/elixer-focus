@@ -287,7 +287,7 @@ export async function getTasks(): Promise<ApiResponse<Task[]>> {
 
 ## Follow-up
 
-- [ ] Create the `ApiResponse` trait and `web/src/types/api.ts` as part of the Laravel API foundation feature (scope item 1)
-- [ ] Update the Axios interceptor in `web/src/config/axios.ts` to unwrap the success envelope
+- [x] Create the `ApiResponse` trait and `web/src/types/api.ts` as part of the Laravel API foundation feature (scope item 1)
+- [x] Update the Axios interceptor in `web/src/config/axios.ts` to unwrap the success envelope
 - [ ] Consider a PHPStan or Laravel Pint rule to flag direct `response()->json()` calls in API controllers
 

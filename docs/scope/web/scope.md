@@ -27,7 +27,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 22  | Error handling and loading         | Foundation            | done        |
 | 23  | Performance audit                  | Foundation            | done        |
 | 27  | Design documentation               | Foundation            | done        |
-| 21  | API response types                 | Foundation            | planned     |
+| 21  | API response types                 | Foundation            | done        |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
@@ -203,13 +203,18 @@ There is no `design.md` recording design system decisions, component inventory, 
 
 - [x] Build it: `/develop design documentation`
 
-### 21. API response types · planned · needs a decision
+### 21. API response types · done
 
-Define TypeScript response types for the axios client at web/src/config/axios.ts. Currently all API calls will return any until contracts are defined. When the backend starts serving real endpoints, this becomes a maintenance risk without typed responses.
+Define a consistent JSON response envelope so every API call returns the same shape. The Laravel backend provides an ApiResponse trait with success, error, and paginated methods. The frontend defines matching TypeScript types (ApiResponse<T>, ApiErrorResponse, PaginatedResponse<T>) and an Axios interceptor that unwraps the envelope automatically.
 
-**Done when:** API response types exist in a shared location, the axios client returns a consistent Result type with data, error, and status, and a response interceptor normalizes Laravel responses.
+**Done when:** the ApiResponse trait exists, TypeScript types match the envelope, and the Axios interceptor normalizes responses.
 
-- [ ] Design it (spec): `/architect api response types`
+code in `backend/app/Http/Controllers/ApiResponse.php`, `web/src/types/api.ts`, `web/src/config/axios.ts`
+
+- [x] Design it (spec): `/architect api response types`
+- [x] Build it: `/develop api response types`
+
+      Spec [0001](../specs/_root/0001-api-response-envelope.md)
 
 ## Slice 1: core focus loop (MVP)
 
