@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import SessionReflection from "@/features/journal/components/SessionReflection/Index";
+import toast from "react-hot-toast";
 
 const mockSession: CompletedSession = {
   id: "session-1",
@@ -65,6 +66,12 @@ vi.mock("@/components/ui", () => ({
   ),
 }));
 
+vi.mock("react-hot-toast", () => ({
+  default: {
+    success: vi.fn(),
+  },
+}));
+
 vi.mock("react-icons/md", () => ({
   MdClose: () => <span>✕</span>,
 }));
@@ -123,6 +130,38 @@ describe("SessionReflection component", () => {
 
     expect(screen.getByText("Skip")).toBeInTheDocument();
     expect(screen.getByText("Save Reflection")).toBeInTheDocument();
+  });
+
+  it("shows a success toast after saving a reflection", () => {
+    render(
+      <SessionReflection
+        session={mockSession}
+        isOpen={true}
+        onClose={vi.fn()}
+      />,
+    );
+
+    fireEvent.change(
+      screen.getByPlaceholderText("What did you accomplish? How do you feel?"),
+      { target: { value: "Finished my important task." } },
+    );
+    fireEvent.click(screen.getByText("Save Reflection"));
+
+    expect(toast.success).toHaveBeenCalledWith("Reflection saved to journal");
+  });
+
+  it("does not show a success toast when the reflection is skipped", () => {
+    render(
+      <SessionReflection
+        session={mockSession}
+        isOpen={true}
+        onClose={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Skip"));
+
+    expect(toast.success).not.toHaveBeenCalled();
   });
 
   it("disables Save Reflection button when reflection is empty", () => {

@@ -7,6 +7,7 @@ import type { CompletedSession } from "@/features/countdown-timer/types/complete
 import { Button } from "@/components/ui";
 import { format } from "date-fns";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdClose } from "react-icons/md";
 
 type SessionReflectionProps = {
@@ -45,6 +46,7 @@ const SessionReflection = ({
         "reflection",
         session.id,
       );
+      toast.success("Reflection saved to journal");
     }
     setReflection("");
     onClose();
