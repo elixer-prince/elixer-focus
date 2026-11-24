@@ -99,18 +99,18 @@ describe("useAutoSyncTimer", () => {
     expect(mocks.setRemainingTimeInSecondsMock).not.toHaveBeenCalled();
   });
 
-  it("should sync when timer is paused even if timerRunning is true", () => {
+  it("should preserve the remaining time when a running timer is paused", () => {
     mocks.useTimerRunning.mockReturnValue(true);
     mocks.useTimerPaused.mockReturnValue(true);
     mocks.useCurrentSessionType.mockReturnValue("Short Break");
     mocks.useShortBreakDuration.mockReturnValue(5);
-    mocks.useStartTimeInMinutes.mockReturnValue(25);
-    mocks.useRemainingTimeInSeconds.mockReturnValue(1500);
+    mocks.useStartTimeInMinutes.mockReturnValue(5);
+    mocks.useRemainingTimeInSeconds.mockReturnValue(210);
 
     renderHook(() => useAutoSyncTimer());
 
-    expect(mocks.setStartTimeInMinutesMock).toHaveBeenCalledWith(5);
-    expect(mocks.setRemainingTimeInSecondsMock).toHaveBeenCalledWith(300);
+    expect(mocks.setStartTimeInMinutesMock).not.toHaveBeenCalled();
+    expect(mocks.setRemainingTimeInSecondsMock).not.toHaveBeenCalled();
   });
 
   it("should sync Focus session duration correctly", () => {

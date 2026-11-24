@@ -3,7 +3,6 @@ import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useStartTimeInMinutes,
-  useTimerPaused,
   useTimerRunning,
 } from "@/features/countdown-timer/stores/countdown-store";
 import {
@@ -22,17 +21,14 @@ const useAutoSyncTimer = () => {
   const currentSessionType = useCurrentSessionType();
 
   const timerRunning = useTimerRunning();
-  const timerPaused = useTimerPaused();
   const startTimeInMinutes = useStartTimeInMinutes();
   const remainingTimeInSeconds = useRemainingTimeInSeconds();
   const setStartTimeInMinutes = useSetStartTimeInMinutes();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
   useEffect(() => {
-    // Only sync if timer is NOT actively running
-    // timerPaused = true means timer is stopped
-    // timerRunning = false means timer isn't counting down
-    const isTimerIdle = !timerRunning || timerPaused;
+    // Only sync if the timer has not been started
+    const isTimerIdle = !timerRunning;
 
     if (!isTimerIdle) {
       // Timer is running - don't change it!
@@ -74,7 +70,6 @@ const useAutoSyncTimer = () => {
     longBreakDuration,
     currentSessionType,
     timerRunning,
-    timerPaused,
     startTimeInMinutes,
     remainingTimeInSeconds,
     setStartTimeInMinutes,
