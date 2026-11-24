@@ -5,8 +5,6 @@ import {
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
-  useTimerPaused,
-  useTimerRunning,
 } from "@/features/countdown-timer/stores/countdown-store";
 import { convertMillisecondsToSeconds } from "@/utils/conversion";
 import { getCurrentTimestamp } from "@/utils/date";
@@ -18,8 +16,6 @@ const useCountdownTimerHelpers = () => {
   const { autoSwitchSessionType } = useSessionSwitch();
   const { stopEndTicking } = useEndTicking();
 
-  const timerRunning = useTimerRunning();
-  const timerPaused = useTimerPaused();
   const setTimerRunning = useSetTimerRunning();
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
@@ -28,8 +24,8 @@ const useCountdownTimerHelpers = () => {
     useCountdownContext();
 
   const timerShouldNotBeActiveOnRefresh = useCallback((): boolean => {
-    return !timerRunning || timerPaused;
-  }, [timerRunning, timerPaused]);
+    return timerEndTimeRef.current === null;
+  }, [timerEndTimeRef]);
 
   const timerShouldBeTickingOnRefresh = useCallback(
     (remainingSeconds: number): boolean => {

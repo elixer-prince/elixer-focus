@@ -14,6 +14,3 @@ createRoot(document.getElementById("root")!).render(
     </Provider>
   </StrictMode>,
 );
-
-// Show the page once React is mounted and CSS is loaded
-document.body.classList.add("app-ready");

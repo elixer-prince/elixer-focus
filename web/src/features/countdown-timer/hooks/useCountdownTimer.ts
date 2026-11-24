@@ -3,7 +3,7 @@ import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import usePreventTabThrottling from "@/features/countdown-timer/hooks/usePreventTabThrottling";
 import useStartCountdown from "@/features/countdown-timer/hooks/useStartCountdown";
 import { clearIntervalIfItExists } from "@/utils/interval";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 const useCountdownTimer = () => {
   const { startCountdownOnPageLoad } = useStartCountdown();
@@ -19,7 +19,7 @@ const useCountdownTimer = () => {
   const startCountdownOnPageLoadRef = useRef(startCountdownOnPageLoad);
   startCountdownOnPageLoadRef.current = startCountdownOnPageLoad;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     startCountdownOnPageLoadRef.current();
 
     return () => {

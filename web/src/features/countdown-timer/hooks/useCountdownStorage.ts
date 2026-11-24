@@ -28,6 +28,7 @@ const UseCountdownStorage = () => {
 
     timerEndTimeRef.current = null;
     saveToLocalStorage("timerEndTime", null);
+    saveToLocalStorage("timerPausedRemainingTime", null);
 
     setStartTimeInMinutes(newStartTime);
     setRemainingTimeInSeconds(convertMinutesToSeconds(newStartTime));

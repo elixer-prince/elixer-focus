@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   useSetRemainingTimeInSeconds: vi.fn(() => vi.fn()),
   setStartTimeInMinutesMock: vi.fn(),
   setRemainingTimeInSecondsMock: vi.fn(),
+  getFromLocalStorage: vi.fn((_key: string) => null as number | null),
 }));
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
@@ -31,6 +32,10 @@ vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useSetRemainingTimeInSeconds: () => mocks.setRemainingTimeInSecondsMock,
 }));
 
+vi.mock("@/utils/storage", () => ({
+  getFromLocalStorage: mocks.getFromLocalStorage,
+}));
+
 import useAutoSyncTimer from "@/features/countdown-timer/hooks/useAutoSyncTimer";
 
 describe("useAutoSyncTimer", () => {
@@ -44,6 +49,7 @@ describe("useAutoSyncTimer", () => {
     mocks.useLongBreakDuration.mockReturnValue(15);
     mocks.useStartTimeInMinutes.mockReturnValue(25);
     mocks.useRemainingTimeInSeconds.mockReturnValue(1500);
+    mocks.getFromLocalStorage.mockReturnValue(null);
   });
 
   it("should sync timer when remainingTimeInSeconds is stale on page refresh", () => {
@@ -110,6 +116,33 @@ describe("useAutoSyncTimer", () => {
     renderHook(() => useAutoSyncTimer());
 
     expect(mocks.setStartTimeInMinutesMock).not.toHaveBeenCalled();
+    expect(mocks.setRemainingTimeInSecondsMock).not.toHaveBeenCalled();
+  });
+
+  it("should preserve a paused timer remaining time after page refresh", () => {
+    mocks.useTimerRunning.mockReturnValue(false);
+    mocks.useTimerPaused.mockReturnValue(true);
+    mocks.useStartTimeInMinutes.mockReturnValue(25);
+    mocks.useRemainingTimeInSeconds.mockReturnValue(210);
+    mocks.getFromLocalStorage.mockImplementation((key) =>
+      key === "timerPausedRemainingTime" ? 210 : null,
+    );
+
+    renderHook(() => useAutoSyncTimer());
+
+    expect(mocks.setRemainingTimeInSecondsMock).not.toHaveBeenCalled();
+  });
+
+  it("should preserve an active timer remaining time after page refresh", () => {
+    mocks.useTimerRunning.mockReturnValue(false);
+    mocks.useTimerPaused.mockReturnValue(true);
+    mocks.useRemainingTimeInSeconds.mockReturnValue(210);
+    mocks.getFromLocalStorage.mockImplementation((key) =>
+      key === "timerEndTime" ? Date.now() + 210_000 : null,
+    );
+
+    renderHook(() => useAutoSyncTimer());
+
     expect(mocks.setRemainingTimeInSecondsMock).not.toHaveBeenCalled();
   });
 

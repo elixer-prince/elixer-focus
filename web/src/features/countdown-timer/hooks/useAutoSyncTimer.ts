@@ -12,6 +12,7 @@ import {
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/session-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
+import { getFromLocalStorage } from "@/utils/storage";
 import { useEffect } from "react";
 
 const useAutoSyncTimer = () => {
@@ -32,6 +33,14 @@ const useAutoSyncTimer = () => {
 
     if (!isTimerIdle) {
       // Timer is running - don't change it!
+      return;
+    }
+
+    const hasSavedEndTime =
+      getFromLocalStorage<number>("timerEndTime") !== null;
+    const hasSavedPausedTime =
+      getFromLocalStorage<number>("timerPausedRemainingTime") !== null;
+    if (hasSavedEndTime || hasSavedPausedTime) {
       return;
     }
 
