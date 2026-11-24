@@ -42,8 +42,14 @@ type MockStoreValue = {
 
 const MockStoreContext = createContext<MockStoreValue | null>(null);
 
-function MockStoreProvider({ children }: { children: React.ReactNode }) {
-  const [notes, setNotes] = useState([...defaultNotes]);
+function MockStoreProvider({
+  children,
+  initialNotes = defaultNotes,
+}: {
+  children: React.ReactNode;
+  initialNotes?: typeof defaultNotes;
+}) {
+  const [notes, setNotes] = useState([...initialNotes]);
   const [entries] = useState([...defaultEntries]);
 
   const handleDeleteNote = useCallback((noteId: string) => {
@@ -158,8 +164,13 @@ afterEach(() => {
 });
 
 describe("Notes component", () => {
-  const renderWithMock = (ui: React.ReactNode) =>
-    render(<MockStoreProvider>{ui}</MockStoreProvider>);
+  const renderWithMock = (
+    ui: React.ReactNode,
+    initialNotes: typeof defaultNotes = defaultNotes,
+  ) =>
+    render(
+      <MockStoreProvider initialNotes={initialNotes}>{ui}</MockStoreProvider>,
+    );
 
   it("renders the notes section header with count", () => {
     renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />);
@@ -178,6 +189,24 @@ describe("Notes component", () => {
 
     expect(screen.getByText("Test Note")).toBeInTheDocument();
     expect(screen.getByText("quick")).toBeInTheDocument();
+  });
+
+  it("shows newer notes before older notes", () => {
+    renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />, [
+      { ...defaultNotes[0], title: "Older note", createdAt: 1000 },
+      {
+        ...defaultNotes[0],
+        id: "note-2",
+        title: "Newer note",
+        createdAt: 2000,
+      },
+    ]);
+
+    expect(
+      screen
+        .getAllByRole("heading", { level: 4 })
+        .map((heading) => heading.textContent),
+    ).toEqual(["Newer note", "Older note"]);
   });
 
   it("renders edit and delete buttons for each note", () => {

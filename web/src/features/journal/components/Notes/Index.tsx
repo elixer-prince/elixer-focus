@@ -33,7 +33,9 @@ const NotesSection = ({ selectedDate }: NotesSectionProps) => {
 
   // Get notes for this day
   const notes = entry
-    ? allNotes.filter((n: JournalNote) => n.dailyEntryId === entry.id)
+    ? allNotes
+        .filter((n: JournalNote) => n.dailyEntryId === entry.id)
+        .sort((a, b) => b.createdAt - a.createdAt)
     : [];
 
   const handleCreateNote = () => {
