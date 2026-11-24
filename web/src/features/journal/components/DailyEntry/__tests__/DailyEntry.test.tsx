@@ -61,7 +61,7 @@ vi.mock("@/components/ui", () => ({
 }));
 
 vi.mock("@atomic-editor/editor", () => ({
-  AtomicCodeMirrorEditor: ({ markdownSource, onMarkdownChange }) => (
+  AtomicCodeMirrorEditor: ({ markdownSource, _onMarkdownChange }) => (
     <div data-testid="editor-content">
       <div contentEditable={false}>{markdownSource || ""}</div>
     </div>

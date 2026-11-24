@@ -1,16 +1,16 @@
 import { useGetTotalFocusTimeForRanges } from "@/features/countdown-timer/stores/session-history-store";
 import { formatElapsedTime } from "@/utils/formatting";
-import type { TooltipItem } from "chart.js";
-import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
+  type TooltipItem,
 } from "chart.js";
+import { Bar } from "react-chartjs-2";
 import { addDays, format, startOfWeek } from "date-fns";
 import { useMemo } from "react";
 
@@ -25,27 +25,30 @@ ChartJS.register(
 
 const FocusTimeChart = () => {
   // Build the 7-day ranges for the current week (Monday to Sunday)
-  const today = new Date();
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const dayRanges = [];
-  for (let i = 0; i < 7; i++) {
-    const day = addDays(weekStart, i);
-    const startOfDay = new Date(
-      day.getFullYear(),
-      day.getMonth(),
-      day.getDate(),
-    ).getTime();
-    const endOfDay = new Date(
-      day.getFullYear(),
-      day.getMonth(),
-      day.getDate(),
-      23,
-      59,
-      59,
-      999,
-    ).getTime();
-    dayRanges.push({ start: startOfDay, end: endOfDay });
-  }
+  const dayRanges = useMemo(() => {
+    const today = new Date();
+    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+    const ranges = [];
+    for (let i = 0; i < 7; i++) {
+      const day = addDays(weekStart, i);
+      const startOfDay = new Date(
+        day.getFullYear(),
+        day.getMonth(),
+        day.getDate(),
+      ).getTime();
+      const endOfDay = new Date(
+        day.getFullYear(),
+        day.getMonth(),
+        day.getDate(),
+        23,
+        59,
+        59,
+        999,
+      ).getTime();
+      ranges.push({ start: startOfDay, end: endOfDay });
+    }
+    return ranges;
+  }, []);
 
   // Subscribe to timer + session changes for all days in one hook call
   const focusTimes = useGetTotalFocusTimeForRanges(dayRanges);

@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
   useFocusDuration: vi.fn(() => 25),

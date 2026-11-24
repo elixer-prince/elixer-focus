@@ -80,7 +80,7 @@ const JournalCalendar = ({
             const handleGoToToday = useCallback(() => {
               goToMonth(startOfMonth(TODAY));
               onSelectDate(TODAY);
-            }, [goToMonth, onSelectDate]);
+            }, [goToMonth]);
             return (
               <>
                 <div className="mb-2 flex items-center justify-between">
