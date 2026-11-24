@@ -13,11 +13,11 @@ vi.mock("@/features/journal/stores/journal-store", () => {
     createdAt: 1000,
     updatedAt: 1000,
   };
-  const getEntryByDate = vi.fn((date) =>
+  const getEntryByDate = vi.fn((date: string) =>
     date === "2026-01-15" ? entry : undefined,
   );
   return {
-    useGetEntryByDate: () => (date) =>
+    useGetEntryByDate: () => (date: string) =>
       date === "2026-01-15" ? entry : undefined,
     useJournalStore: {
       getState: () => ({
@@ -45,10 +45,28 @@ vi.mock("@/utils/formatting", () => ({
 }));
 
 vi.mock("@/components/ui", () => ({
-  Badge: ({ children, color, size }) => (
-    <span className={`badge-${color} badge-${size}`}>{children}</span>
-  ),
-  Button: ({ children, size, color, onClick, disabled }) => (
+  Badge: ({
+    children,
+    color,
+    size,
+  }: {
+    children: React.ReactNode;
+    color?: string;
+    size?: string;
+  }) => <span className={`badge-${color} badge-${size}`}>{children}</span>,
+  Button: ({
+    children,
+    size,
+    color,
+    onClick,
+    disabled,
+  }: {
+    children: React.ReactNode;
+    size?: string;
+    color?: string;
+    onClick?: () => void;
+    disabled?: boolean;
+  }) => (
     <button
       type="button"
       className={`btn btn-${color} btn-${size}`}
@@ -61,7 +79,12 @@ vi.mock("@/components/ui", () => ({
 }));
 
 vi.mock("@atomic-editor/editor", () => ({
-  AtomicCodeMirrorEditor: ({ markdownSource, _onMarkdownChange }) => (
+  AtomicCodeMirrorEditor: ({
+    markdownSource,
+  }: {
+    markdownSource?: string;
+    _onMarkdownChange?: () => void;
+  }) => (
     <div data-testid="editor-content">
       <div contentEditable={false}>{markdownSource || ""}</div>
     </div>

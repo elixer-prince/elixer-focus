@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useJournalStore } from "@/features/journal/stores/journal-store";
+import type { JournalNote } from "@/features/journal/types/journal";
 
 vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
   getSessionsByDateRange: vi.fn(() => []),
@@ -137,7 +138,7 @@ describe("journal store", () => {
         createdAt: 1000,
         updatedAt: 1000,
       };
-      const note = {
+      const note: JournalNote = {
         id: "note-1",
         dailyEntryId: "entry-1",
         userId: null,
@@ -167,7 +168,7 @@ describe("journal store", () => {
 
   describe("updateNote", () => {
     it("updates the title and content of a note", () => {
-      const note = {
+      const note: JournalNote = {
         id: "note-1",
         dailyEntryId: "entry-1",
         userId: null,
@@ -191,7 +192,7 @@ describe("journal store", () => {
     });
 
     it("updates only the provided fields", () => {
-      const note = {
+      const note: JournalNote = {
         id: "note-1",
         dailyEntryId: "entry-1",
         userId: null,
@@ -224,7 +225,7 @@ describe("journal store", () => {
 
   describe("deleteNote", () => {
     it("removes a note by id", () => {
-      const note = {
+      const note: JournalNote = {
         id: "note-1",
         dailyEntryId: "entry-1",
         userId: null,
@@ -244,7 +245,7 @@ describe("journal store", () => {
     });
 
     it("leaves other notes intact", () => {
-      const note1 = {
+      const note1: JournalNote = {
         id: "note-1",
         dailyEntryId: "e1",
         userId: null,
@@ -255,7 +256,7 @@ describe("journal store", () => {
         createdAt: 1000,
         updatedAt: 1000,
       };
-      const note2 = {
+      const note2: JournalNote = {
         id: "note-2",
         dailyEntryId: "e1",
         userId: null,

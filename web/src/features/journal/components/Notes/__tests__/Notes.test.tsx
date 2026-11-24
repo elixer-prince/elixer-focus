@@ -34,13 +34,19 @@ const createNoteFn = vi.fn();
 const updateNoteFn = vi.fn();
 const deleteNoteFn = vi.fn();
 
-const MockStoreContext = createContext(null);
+type MockStoreValue = {
+  entries: typeof defaultEntries;
+  notes: typeof defaultNotes;
+  deleteNote: (noteId: string) => void;
+};
 
-function MockStoreProvider({ children }) {
+const MockStoreContext = createContext<MockStoreValue | null>(null);
+
+function MockStoreProvider({ children }: { children: React.ReactNode }) {
   const [notes, setNotes] = useState([...defaultNotes]);
   const [entries] = useState([...defaultEntries]);
 
-  const handleDeleteNote = useCallback((noteId) => {
+  const handleDeleteNote = useCallback((noteId: string) => {
     deleteNoteFn(noteId);
     setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }, []);
@@ -55,7 +61,10 @@ function MockStoreProvider({ children }) {
 }
 
 function useMockStore() {
-  return useContext(MockStoreContext);
+  const ctx = useContext(MockStoreContext);
+  if (!ctx)
+    throw new Error("useMockStore must be used within MockStoreProvider");
+  return ctx;
 }
 
 vi.mock("@/features/journal/stores/journal-store", () => {
@@ -79,9 +88,15 @@ vi.mock("@/features/journal/stores/journal-store", () => {
 });
 
 vi.mock("@/components/ui", () => ({
-  Badge: ({ children, color, size }) => (
-    <span className={`badge-${color} badge-${size}`}>{children}</span>
-  ),
+  Badge: ({
+    children,
+    color,
+    size,
+  }: {
+    children: React.ReactNode;
+    color?: string;
+    size?: string;
+  }) => <span className={`badge-${color} badge-${size}`}>{children}</span>,
   Button: ({
     children,
     size,
@@ -89,6 +104,13 @@ vi.mock("@/components/ui", () => ({
     onClick,
     disabled,
     "aria-label": ariaLabel,
+  }: {
+    children: React.ReactNode;
+    size?: string;
+    color?: string;
+    onClick?: () => void;
+    disabled?: boolean;
+    "aria-label"?: string;
   }) => (
     <button
       type="button"
@@ -107,6 +129,13 @@ vi.mock("@/components/ui", () => ({
     onChange,
     className,
     autoFocus,
+  }: {
+    inputSize?: string;
+    placeholder?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    className?: string;
+    autoFocus?: boolean;
   }) => (
     <input
       type="text"
@@ -129,7 +158,7 @@ afterEach(() => {
 });
 
 describe("Notes component", () => {
-  const renderWithMock = (ui) =>
+  const renderWithMock = (ui: React.ReactNode) =>
     render(<MockStoreProvider>{ui}</MockStoreProvider>);
 
   it("renders the notes section header with count", () => {

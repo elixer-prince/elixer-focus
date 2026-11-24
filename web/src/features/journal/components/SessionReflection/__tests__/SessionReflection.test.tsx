@@ -2,9 +2,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { render, screen } from "@testing-library/react";
 
+import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import SessionReflection from "@/features/journal/components/SessionReflection/Index";
 
-const mockSession = {
+const mockSession: CompletedSession = {
   id: "session-1",
   sessionType: "Focus",
   durationInSeconds: 1500,
@@ -12,7 +13,14 @@ const mockSession = {
 };
 
 vi.mock("@/features/journal/stores/journal-store", () => {
-  const entries = [];
+  const entries: Array<{
+    id: string;
+    date: string;
+    userId: string | null;
+    content: string;
+    createdAt: number;
+    updatedAt: number;
+  }> = [];
   const createNote = vi.fn();
   const saveEntry = vi.fn((date, content) => ({
     id: "entry-1",
@@ -33,7 +41,19 @@ vi.mock("@/features/journal/stores/journal-store", () => {
 });
 
 vi.mock("@/components/ui", () => ({
-  Button: ({ children, size, color, onClick, disabled }) => (
+  Button: ({
+    children,
+    size,
+    color,
+    onClick,
+    disabled,
+  }: {
+    children: React.ReactNode;
+    size?: string;
+    color?: string;
+    onClick?: () => void;
+    disabled?: boolean;
+  }) => (
     <button
       type="button"
       className={`btn btn-${color} btn-${size}`}

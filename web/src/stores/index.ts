@@ -27,13 +27,13 @@ export {
   useTimerPaused,
   useRemainingTimeInSeconds,
   useStartTimeInMinutes,
-  useElapsedTimeInSeconds,
+  useSessionProgressInSeconds,
   useSetTimerRunning,
   useSetTimerPaused,
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
-  useSetElapsedTimeInSeconds,
-  useResetElapsedTimeInSeconds,
+  useSetSessionProgressInSeconds,
+  useResetSessionProgressInSeconds,
 } from "@/features/countdown-timer/stores/countdown-store";
 
 export {

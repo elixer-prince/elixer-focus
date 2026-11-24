@@ -6,8 +6,25 @@ import { MemoryRouter } from "react-router";
 import Journal from "@/app/routes/(root)/Journal";
 
 vi.mock("@/features/journal/stores/journal-store", () => {
-  const entries = [];
-  const notes = [];
+  const entries: Array<{
+    id: string;
+    date: string;
+    userId: string | null;
+    content: string;
+    createdAt: number;
+    updatedAt: number;
+  }> = [];
+  const notes: Array<{
+    id: string;
+    dailyEntryId: string;
+    userId: string | null;
+    title: string;
+    content: string;
+    sessionId: string | null;
+    noteType: string;
+    createdAt: number;
+    updatedAt: number;
+  }> = [];
   const getEntryByDate = vi.fn(() => undefined);
   const saveEntry = vi.fn();
   const getNotesByDate = vi.fn(() => []);
@@ -66,13 +83,31 @@ vi.mock("@/hooks/usePageTitle", () => ({
 }));
 
 vi.mock("@/components/ui", () => ({
-  Badge: ({ children }) => <span>{children}</span>,
-  Button: ({ children, onClick, disabled }) => (
+  Badge: ({ children }: { children: React.ReactNode }) => (
+    <span>{children}</span>
+  ),
+  Button: ({
+    children,
+    onClick,
+    disabled,
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+  }) => (
     <button type="button" onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),
-  Input: ({ placeholder, value, onChange }) => (
+  Input: ({
+    placeholder,
+    value,
+    onChange,
+  }: {
+    placeholder?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  }) => (
     <input
       type="text"
       placeholder={placeholder}

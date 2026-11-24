@@ -7,8 +7,25 @@ import { subMonths } from "date-fns";
 
 import JournalCalendar from "@/features/journal/components/Calendar/Index";
 
-const mockEntries = [];
-const mockNotes = [];
+const mockEntries: Array<{
+  id: string;
+  date: string;
+  userId: string | null;
+  content: string;
+  createdAt: number;
+  updatedAt: number;
+}> = [];
+const mockNotes: Array<{
+  id: string;
+  dailyEntryId: string;
+  userId: string | null;
+  title: string;
+  content: string;
+  sessionId: string | null;
+  noteType: string;
+  createdAt: number;
+  updatedAt: number;
+}> = [];
 
 vi.mock("@/features/journal/stores/journal-store", () => {
   return {

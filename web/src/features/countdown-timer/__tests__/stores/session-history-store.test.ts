@@ -1,9 +1,10 @@
+import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import { renderHook } from "@testing-library/react";
 import { vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  sessions: [],
-  lastCompletedSession: null,
+  sessions: [] as CompletedSession[],
+  lastCompletedSession: null as CompletedSession | null,
   addSession: vi.fn(),
   removeSession: vi.fn(),
   clearSessions: vi.fn(),
@@ -36,11 +37,14 @@ vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
 vi.mock(
   "@/features/countdown-timer/stores/session-history-store",
   async (importOriginal) => {
-    const actual = await importOriginal();
+    const actual =
+      await importOriginal<
+        typeof import("@/features/countdown-timer/stores/session-history-store")
+      >();
     return {
       ...actual,
       useSessions: () => mocks.sessions,
-      useGetTotalFocusTime: (from, to) => {
+      useGetTotalFocusTime: (from: number, to: number) => {
         const completedTime = mocks.sessions
           .filter(
             (s) =>
@@ -54,13 +58,15 @@ vi.mock(
         }
         return completedTime;
       },
-      useGetTotalFocusTimeForRanges: (ranges) => {
+      useGetTotalFocusTimeForRanges: (
+        ranges: Array<{ start: number; end: number }>,
+      ) => {
         const now = Date.now();
         const runningProgress =
           mocks.timerRunning && mocks.currentSessionType === "Focus"
             ? mocks.sessionProgressInSeconds
             : 0;
-        return ranges.map((range) => {
+        return ranges.map((range: { start: number; end: number }) => {
           const completedTime = mocks.sessions
             .filter(
               (s) =>
