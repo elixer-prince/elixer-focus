@@ -234,10 +234,8 @@ describe("useNotification", () => {
       expect(mocks.close).toHaveBeenCalled();
     });
 
-    it("should not send notification when permission is denied", async () => {
+    it("should mark notification as failed when permission is denied", async () => {
       mocks.permissionValue = "denied";
-
-      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       const { result } = renderHook(() => useNotification());
 
@@ -246,11 +244,7 @@ describe("useNotification", () => {
       });
 
       expect(mocks.notificationInstances.length).toBe(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Notification permission is "denied"'),
-      );
       expect(result.current.notificationFailed).toBe(true);
-      warnSpy.mockRestore();
     });
 
     it("should re-request permission when default, then send if granted", async () => {
@@ -267,11 +261,9 @@ describe("useNotification", () => {
       expect(mocks.notificationInstances.length).toBe(1);
     });
 
-    it("should not send notification when default and re-request is denied", async () => {
+    it("should mark notification as failed when a permission re-request is denied", async () => {
       mocks.permissionValue = "default";
       mocks.requestPermission.mockResolvedValue("denied");
-
-      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       const { result } = renderHook(() => useNotification());
 
@@ -281,11 +273,7 @@ describe("useNotification", () => {
 
       expect(mocks.requestPermission).toHaveBeenCalledTimes(1);
       expect(mocks.notificationInstances.length).toBe(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Notification permission is "denied"'),
-      );
       expect(result.current.notificationFailed).toBe(true);
-      warnSpy.mockRestore();
     });
 
     it("should not send notification when API is not supported", async () => {
@@ -301,9 +289,7 @@ describe("useNotification", () => {
       expect(result.current.notificationFailed).toBe(true);
     });
 
-    it("should catch and log errors when creating notification fails", async () => {
-      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
+    it("should mark notification as failed when creating it throws", async () => {
       const OriginalNotification = window.Notification;
       const ThrowingNotification = class {
         static permission = "granted";
@@ -323,13 +309,8 @@ describe("useNotification", () => {
         await result.current.sendTimerEndNotification();
       });
 
-      expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to create notification"),
-        expect.any(Error),
-      );
       expect(result.current.notificationFailed).toBe(true);
 
-      errorSpy.mockRestore();
       Object.defineProperty(window, "Notification", {
         value: OriginalNotification,
         writable: true,
@@ -339,7 +320,6 @@ describe("useNotification", () => {
 
     it("should set notificationFailed if onshow does not fire within timeout", async () => {
       mocks.permissionValue = "granted";
-      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       vi.useFakeTimers();
 
       const { result } = renderHook(() => useNotification());
@@ -357,12 +337,8 @@ describe("useNotification", () => {
       });
 
       expect(result.current.notificationFailed).toBe(true);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("never showed within 2 seconds"),
-      );
 
       vi.useRealTimers();
-      warnSpy.mockRestore();
     });
 
     it("should not set notificationFailed if onshow fires before timeout", async () => {

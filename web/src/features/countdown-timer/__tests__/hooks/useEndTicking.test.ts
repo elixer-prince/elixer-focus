@@ -85,11 +85,8 @@ describe("useEndTicking", () => {
     expect(mocks.stopSound).not.toHaveBeenCalled();
   });
 
-  it("should log an error if loop cannot be set", () => {
+  it("should play sound if loop cannot be set", () => {
     const error = new Error("Loop blocked");
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
 
     Object.defineProperty(mocks.timerTickingSoundEffectRef.current, "loop", {
       set: () => {
@@ -103,12 +100,8 @@ describe("useEndTicking", () => {
       result.current.startEndTicking();
     });
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Error setting loop for sound"),
-      error,
+    expect(mocks.playSound).toHaveBeenCalledWith(
+      mocks.timerTickingSoundEffectRef.current,
     );
-    expect(mocks.playSound).toHaveBeenCalled();
-
-    consoleErrorSpy.mockRestore();
   });
 });
