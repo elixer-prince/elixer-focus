@@ -38,12 +38,6 @@ const JournalRoute = () => {
     setSelectedDate(date);
   }, []);
 
-  const handleNewNote = useCallback(() => {
-    // Scroll to notes section
-    const notesEl = document.querySelector(".notes-section");
-    notesEl?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   return (
     <div className="mx-auto max-w-5xl overflow-hidden p-8 max-sm:px-4">
       <div className="mb-6">
@@ -66,10 +60,7 @@ const JournalRoute = () => {
 
         {/* Right column: Daily Entry + Notes */}
         <div className="min-w-0 space-y-4 lg:col-span-2">
-          <DailyEntryView
-            selectedDate={selectedDate}
-            onNewNote={handleNewNote}
-          />
+          <DailyEntryView selectedDate={selectedDate} />
           <NotesSection selectedDate={selectedDate} />
         </div>
       </div>

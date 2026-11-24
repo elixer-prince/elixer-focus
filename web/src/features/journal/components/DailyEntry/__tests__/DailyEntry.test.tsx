@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
 
@@ -70,7 +70,8 @@ vi.mock("@atomic-editor/editor", () => ({
 vi.mock("react-icons/md", () => ({
   MdExpandLess: () => <span>▼</span>,
   MdExpandMore: () => <span>▶</span>,
-  MdNoteAdd: () => <span>+</span>,
+  MdEdit: () => <span>✎</span>,
+  MdVisibility: () => <span>👁</span>,
 }));
 
 afterEach(() => {
@@ -79,69 +80,57 @@ afterEach(() => {
 
 describe("DailyEntry component", () => {
   it("renders the formatted date", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
     expect(screen.getByText("Thursday, January 15, 2026")).toBeInTheDocument();
   });
 
-  it("renders the New Note button", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+  it("renders the Edit button by default", () => {
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
-    expect(screen.getByText("New Note")).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
   });
 
   it("renders the collapsible stats section", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
     expect(screen.getByText("Today's Focus Stats")).toBeInTheDocument();
   });
 
   it("shows no sessions message when there are no sessions", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
     expect(
       screen.getByText("No sessions completed today yet."),
     ).toBeInTheDocument();
   });
 
-  it("renders the Atomic Editor", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+  it("shows placeholder text in view mode when entry is empty", () => {
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    expect(
+      screen.getByText("Click Edit to start writing your journal entry."),
+    ).toBeInTheDocument();
+  });
+
+  it("switches to edit mode when Edit button is clicked", () => {
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    fireEvent.click(screen.getByText("Edit"));
 
     expect(screen.getByTestId("editor-content")).toBeInTheDocument();
   });
 
+  it("switches to view mode when View button is clicked", () => {
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    fireEvent.click(screen.getByText("Edit"));
+
+    expect(screen.getByText("View")).toBeInTheDocument();
+  });
+
   it("renders the stats toggle button", () => {
-    render(
-      <DailyEntryView
-        selectedDate={new Date(2026, 0, 15)}
-        onNewNote={vi.fn()}
-      />,
-    );
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
     const statsButton = screen
       .getByText("Today's Focus Stats")

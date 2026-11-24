@@ -10,16 +10,20 @@ import { format } from "date-fns";
 import { AtomicCodeMirrorEditor } from "@atomic-editor/editor";
 import "@atomic-editor/editor/styles.css";
 import { useEffect, useRef, useState } from "react";
-import { MdExpandLess, MdExpandMore, MdNoteAdd } from "react-icons/md";
-
+import {
+  MdEdit,
+  MdExpandLess,
+  MdExpandMore,
+  MdVisibility,
+} from "react-icons/md";
 type DailyEntryViewProps = {
   selectedDate: Date;
-  onNewNote: () => void;
 };
 
-const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
+const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const [statsOpen, setStatsOpen] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [draftIndicator, setDraftIndicator] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -102,9 +106,22 @@ const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
           {formattedDate}
         </h2>
         <div className="flex items-center gap-2">
-          <Button size="sm" color="secondary" onClick={onNewNote}>
-            <MdNoteAdd size={16} className="mr-1" />
-            New Note
+          <Button
+            size="sm"
+            color={isEditing ? "primary" : "ghost"}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? (
+              <>
+                <MdVisibility size={16} className="mr-1" />
+                View
+              </>
+            ) : (
+              <>
+                <MdEdit size={16} className="mr-1" />
+                Edit
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -163,20 +180,40 @@ const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
         )}
       </div>
 
-      {/* Markdown Editor */}
+      {/* Markdown Editor / View */}
       <div className="border-base-300 bg-base-100 rounded-lg border transition-colors duration-500">
-        {draftIndicator && (
-          <div className="border-base-300 border-t px-4 py-2">
-            <span className="text-base-content/50 text-xs italic">
-              Saving...
-            </span>
+        {isEditing ? (
+          <>
+            {draftIndicator && (
+              <div className="border-base-300 border-t px-4 py-2">
+                <span className="text-base-content/50 text-xs italic">
+                  Saving...
+                </span>
+              </div>
+            )}
+            <AtomicCodeMirrorEditor
+              documentId={dateStr}
+              markdownSource={entryContent}
+              onMarkdownChange={handleMarkdownChange}
+            />
+          </>
+        ) : (
+          <div className="min-h-[200px]">
+            {entryContent ? (
+              <AtomicCodeMirrorEditor
+                documentId={`${dateStr}-view`}
+                markdownSource={entryContent}
+                readOnly={true}
+              />
+            ) : (
+              <div className="p-4">
+                <p className="text-base-content/40 py-8 text-center text-sm italic">
+                  Click Edit to start writing your journal entry.
+                </p>
+              </div>
+            )}
           </div>
         )}
-        <AtomicCodeMirrorEditor
-          documentId={dateStr}
-          markdownSource={entryContent}
-          onMarkdownChange={handleMarkdownChange}
-        />
       </div>
     </div>
   );
