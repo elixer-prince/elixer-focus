@@ -2,37 +2,17 @@ import JournalCalendar from "@/features/journal/components/Calendar/Index";
 import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
 import FocusTimeChart from "@/features/journal/components/Chart/Index";
 import NotesSection from "@/features/journal/components/Notes/Index";
-import SessionReflection from "@/features/journal/components/SessionReflection/Index";
 import StreakCounter from "@/features/journal/components/Streak/Index";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
-import {
-  useLastCompletedSession,
-  useClearLastCompletedSession,
-} from "@/features/countdown-timer/stores/session-history-store";
-import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 const JournalRoute = () => {
   const { updatePageTitle } = usePageTitle();
   const timerRunning = useTimerRunning();
-  const lastCompletedSession = useLastCompletedSession();
-  const clearLastCompletedSession = useClearLastCompletedSession();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [reflectionOpen, setReflectionOpen] = useState(false);
-  const [pendingSession, setPendingSession] = useState<CompletedSession | null>(
-    null,
-  );
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Journal");
-
-  // Listen for session completion events (AC-7)
-  useEffect(() => {
-    if (lastCompletedSession && !reflectionOpen) {
-      setPendingSession(lastCompletedSession);
-      setReflectionOpen(true);
-    }
-  }, [lastCompletedSession, reflectionOpen]);
 
   const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);
@@ -64,17 +44,6 @@ const JournalRoute = () => {
           <NotesSection selectedDate={selectedDate} />
         </div>
       </div>
-
-      {/* Session Reflection Modal */}
-      <SessionReflection
-        session={pendingSession}
-        isOpen={reflectionOpen}
-        onClose={() => {
-          setReflectionOpen(false);
-          setPendingSession(null);
-          clearLastCompletedSession();
-        }}
-      />
     </div>
   );
 };
