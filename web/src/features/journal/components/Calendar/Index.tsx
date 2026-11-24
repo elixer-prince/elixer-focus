@@ -4,6 +4,8 @@ import { useCallback, useMemo, useState } from "react";
 import { DayPicker, useDayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 
+const TODAY = new Date();
+
 type JournalCalendarProps = {
   onSelectDate: (date: Date) => void;
   selectedDate: Date | undefined;
@@ -15,8 +17,8 @@ const JournalCalendar = ({
 }: JournalCalendarProps) => {
   const entries = useEntries();
   const notes = useNotes();
-  const today = useMemo(() => startOfMonth(new Date()), []);
-  const [viewMonth, setViewMonth] = useState(() => startOfMonth(new Date()));
+  const today = useMemo(() => startOfMonth(TODAY), []);
+  const [viewMonth, setViewMonth] = useState(() => startOfMonth(TODAY));
 
   const isViewingCurrentMonth = useMemo(
     () =>
@@ -64,6 +66,10 @@ const JournalCalendar = ({
         components={{
           MonthCaption: (props) => {
             const { goToMonth } = useDayPicker();
+            const handleGoToToday = useCallback(() => {
+              goToMonth(startOfMonth(TODAY));
+              onSelectDate(TODAY);
+            }, [goToMonth, onSelectDate]);
             return (
               <>
                 <div className="mb-2 flex items-center justify-between">
@@ -110,9 +116,7 @@ const JournalCalendar = ({
                   <button
                     type="button"
                     className="btn btn-ghost btn-xs text-primary"
-                    onClick={() => {
-                      goToMonth(today);
-                    }}
+                    onClick={handleGoToToday}
                   >
                     Today
                   </button>

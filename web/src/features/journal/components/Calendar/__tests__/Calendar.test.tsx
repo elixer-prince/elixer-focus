@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { subMonths } from "date-fns";
 
 import JournalCalendar from "@/features/journal/components/Calendar/Index";
 
@@ -81,5 +84,36 @@ describe("Journal Calendar", () => {
     );
 
     expect(screen.queryByText("Today")).not.toBeInTheDocument();
+  });
+
+  it("selects today's date when Today button is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={undefined} />,
+    );
+
+    const now = new Date();
+
+    const previousButton = screen.getAllByRole("button")[0];
+    await user.click(previousButton);
+
+    const previousMonth = subMonths(now, 1);
+    const previousMonthName = previousMonth.toLocaleString("en", {
+      month: "long",
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText(new RegExp(previousMonthName, "i")),
+      ).toBeInTheDocument();
+    });
+
+    const todayButton = await screen.findByText("Today");
+    await user.click(todayButton);
+
+    expect(onSelectDate).toHaveBeenCalledWith(expect.any(Date));
+    const calledDate = onSelectDate.mock.calls[0][0];
+    expect(calledDate.getDate()).toBe(now.getDate());
+    expect(calledDate.getMonth()).toBe(now.getMonth());
+    expect(calledDate.getFullYear()).toBe(now.getFullYear());
   });
 });
