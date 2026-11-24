@@ -1,4 +1,9 @@
-import { MdHomeFilled, MdLibraryBooks, MdTaskAlt } from "react-icons/md";
+import {
+  MdHomeFilled,
+  MdLibraryBooks,
+  MdPerson,
+  MdTaskAlt,
+} from "react-icons/md";
 
 export const defaultLinks = [
   {
@@ -15,5 +20,10 @@ export const defaultLinks = [
     to: "/tasks",
     icon: <MdTaskAlt size={20} />,
     label: "Tasks",
+  },
+  {
+    to: "/profile",
+    icon: <MdPerson size={20} />,
+    label: "Profile",
   },
 ];

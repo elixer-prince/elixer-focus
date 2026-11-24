@@ -22,6 +22,7 @@ export default defineConfig([
         projectService: {
           allowDefaultProject: [
             "e2e/music-player.spec.ts",
+            "e2e/profile.spec.ts",
             "e2e/tasks.spec.ts",
             "playwright.config.ts",
           ],

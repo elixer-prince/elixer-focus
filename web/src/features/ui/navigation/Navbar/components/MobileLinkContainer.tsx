@@ -1,5 +1,5 @@
 import MobileLink from "@/features/ui/navigation/Navbar/components/MobileLink";
-import { MdHomeFilled, MdTaskAlt } from "react-icons/md";
+import { MdHomeFilled, MdPerson, MdTaskAlt } from "react-icons/md";
 
 const MobileLinkContainer = () => {
   return (
@@ -14,6 +14,12 @@ const MobileLinkContainer = () => {
         <MobileLink to="/tasks">
           <MdTaskAlt size={24} />
           Tasks
+        </MobileLink>
+      </li>
+      <li>
+        <MobileLink to="/profile">
+          <MdPerson size={24} />
+          Profile
         </MobileLink>
       </li>
     </ul>

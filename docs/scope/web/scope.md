@@ -43,7 +43,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 43  | Music player duplicate songs fix   | Slice 2 (settings)    | done        |
 | 44  | Music player dedup migration fix   | Slice 2 (settings)    | done        |
 | 10  | Journal                            | Slice 3 (pages)       | done        |
-| 11  | Profile                            | Slice 3 (pages)       | in-progress |
+| 11  | Profile                            | Slice 3 (pages)       | done        |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
@@ -392,13 +392,17 @@ Daily writing space with Markdown editor, session stats, calendar navigation, an
 
 code in `web/src/app/routes/(root)/Journal.tsx`
 
-### 11. Profile · in-progress · needs a decision
+### 11. Profile · done
 
-Placeholder route; implement a profile page for the user.
+Social media style profile page with identity info, productivity stats, character stat bars, activity feed, achievement badges, and the theme selected in Settings. User can edit name and bio; the theme is displayed as read only profile information. Spec [0004](../../specs/web/0004-profile-page/index.md).
 
-**Done when:** profile page shows user info and basic preferences.
+**Done when:** profile page shows user info, real stats from session and task data, fixed placeholder character bars, recent activity, unlockable badges, the theme selected in Settings, and an edit form for name and bio.
 
-- [ ] Design it (spec): `/architect profile`
+- [x] Design it (spec): `/architect profile`
+- [x] Build it: `/develop profile`
+  - [x] Profile store, header, and edit form for name and bio (AC-1, AC-6, AC-7)
+  - [x] Stats row and fixed character stat bars (AC-2, AC-3, AC-8)
+  - [x] Activity feed with task completion time migration, badges, theme display, and page wiring (AC-4, AC-5, AC-9)
 
 code in `web/src/app/routes/(root)/Profile.tsx`
 

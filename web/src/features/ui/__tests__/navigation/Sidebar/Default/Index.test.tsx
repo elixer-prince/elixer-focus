@@ -6,8 +6,8 @@ describe("Default Sidebar", () => {
   const links = [
     { path: "/", label: "Home" },
     { path: "/tasks", label: "Tasks" },
+    { path: "/profile", label: "Profile" },
     // { path: "/journal", label: "Journal" },
-    // {"path": "/profile", "label": "Profile"},
   ];
 
   it("should render a sidebar element", () => {

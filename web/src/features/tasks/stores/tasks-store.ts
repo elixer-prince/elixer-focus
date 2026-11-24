@@ -57,8 +57,14 @@ export const useTasksStore = create<TaskState & TaskActions>()(
         set((state) => {
           const task = state.tasks.find((t) => t.id === id);
           if (task) {
+            const now = getCurrentTimestamp();
+            if (completed && !task.isCompleted) {
+              task.completedAt = now;
+            } else if (!completed) {
+              delete task.completedAt;
+            }
             task.isCompleted = completed;
-            task.updatedAt = getCurrentTimestamp();
+            task.updatedAt = now;
           }
         });
       },
@@ -75,14 +81,27 @@ export const useTasksStore = create<TaskState & TaskActions>()(
     })),
     createPersistOptions<TaskState & TaskActions>({
       name: "tasks-storage",
-      version: 2,
+      version: 3,
       migrate: (state, version) => {
         const persistedState = state as { tasks?: Task[] };
-        if (version === 1) {
-          const migratedTasks = (persistedState.tasks || []).map((task) => ({
-            ...task,
-            updatedAt: (task as Task).updatedAt ?? task.createdAt,
-          }));
+        if (version <= 2) {
+          const migratedTasks = (persistedState.tasks || []).map((task) => {
+            const { completedAt, ...taskWithoutCompletionTime } = task;
+
+            return {
+              ...taskWithoutCompletionTime,
+              updatedAt:
+                version === 1
+                  ? (task.updatedAt ?? task.createdAt)
+                  : task.updatedAt,
+              ...(task.isCompleted
+                ? {
+                    completedAt:
+                      completedAt ?? task.updatedAt ?? task.createdAt,
+                  }
+                : {}),
+            };
+          });
           return { tasks: migratedTasks } as TaskState & TaskActions;
         }
         return persistedState as TaskState & TaskActions;

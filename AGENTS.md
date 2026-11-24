@@ -80,6 +80,7 @@ cd app && npm run web           # Run web version
 - **Markdown Editor in Tests**: Mock `@atomic-editor/editor` in component tests. The editor is a controlled component; pass `markdownSource` and `onMarkdownChange` as controlled props. Test the component shell, not editor internals.
 - **Drag and Drop**: Uses `@dnd-kit/react` v9 with `@dnd-kit/helpers`. Import event types from `@dnd-kit/dom` (not `@dnd-kit/abstract`) and use `Parameters<DragOverEvent>[0]` / `Parameters<DragEndEvent>[0]` for handler signatures. Task reordering uses `groupByCategory` + `move` + `flattenTasks` pattern in both `Tasks.tsx` and `Index.tsx` (home page).
 - **E2E Testing**: Playwright runs against `localhost:5173` with Firefox browser. Config in `web/playwright.config.ts`. E2E tests in `web/e2e/` are excluded from Vitest via `vite.config.ts`. On CI, `page.evaluate()` requires `page.goto("/")` before accessing localStorage in Firefox.
+- **ESLint project service**: Add each new `web/e2e/*.spec.ts` file to `allowDefaultProject` in `web/eslint.config.js` so it receives type aware linting.
 - **Browser Throttle Prevention**: The countdown timer uses Web Audio API (`usePreventTabThrottling` hook) to play a nearly silent oscillator (0.001 volume, 220 Hz) while the timer runs. This keeps the tab exempt from browser throttling in background tabs and power-saving modes, so `setInterval` fires normally and the end beep plays automatically.
 - **Desktop Notifications**: The countdown timer sends OS-level notifications when it ends via the Web Notification API (`useNotification` hook). Permission is requested on timer start. The notification title and body include the session type (e.g., "Focus", "Short Break", "Long Break") via the `sessionType` parameter. The `tag` option deduplicates notifications, and `onclick` focuses the window. A `NotificationStatus` component shows warnings when notifications are disabled and error messages when they fail. OS-specific settings instructions are provided by `getNotificationSettingsInstruction()` in `web/src/utils/browser.ts`.
 - **Focus Ring Pulse**: The countdown timer focus ring pulses via a CSS `@keyframes` animation (`focus-ring-pulse` in `index.css`) while the timer runs. Components conditionally apply the `focus-ring-pulse` class and omit the inline `filter` style using spread (`...(isPulsing ? {} : { filter: "..." })`) so CSS animations take over. Setting `filter: undefined` in React still renders the property, blocking animations.
@@ -112,3 +113,7 @@ cd app && npm run web           # Run web version
 - [playwright-cli](.agents/skills/playwright-cli/): microsoft/playwright-cli, Playwright CLI conventions and best practices
 - [playwright-dev](.agents/skills/playwright-dev/): microsoft/playwright, Playwright development internals
 - [playwright-best-practices](.agents/skills/playwright-best-practices/): currents-dev/playwright-best-practices-skill, E2E testing best practices
+
+## Context files
+
+- [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.
