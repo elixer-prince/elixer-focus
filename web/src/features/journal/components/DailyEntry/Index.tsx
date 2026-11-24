@@ -1,7 +1,4 @@
-import {
-  useGetEntryByDate,
-  useJournalStore,
-} from "@/features/journal/stores/journal-store";
+import { useJournalStore } from "@/features/journal/stores/journal-store";
 import {
   getSessionsByDay,
   getSessionCountsByType,
@@ -10,12 +7,10 @@ import {
 import { formatElapsedTime } from "@/utils/formatting";
 import { Badge, Button } from "@/components/ui";
 import { format } from "date-fns";
+import { AtomicCodeMirrorEditor } from "@atomic-editor/editor";
+import "@atomic-editor/editor/styles.css";
 import { useEffect, useRef, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdNoteAdd } from "react-icons/md";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import { Markdown } from "@tiptap/markdown";
 
 type DailyEntryViewProps = {
   selectedDate: Date;
@@ -24,11 +19,12 @@ type DailyEntryViewProps = {
 
 const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
   const dateStr = format(selectedDate, "yyyy-MM-dd");
-  const getEntryByDate = useGetEntryByDate();
-  const saveEntry = useJournalStore.getState().saveEntry;
   const [statsOpen, setStatsOpen] = useState(true);
   const [draftIndicator, setDraftIndicator] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Track which date we've created an entry for, to avoid re-creating
+  const entryCreatedDateRef = useRef<string | null>(null);
 
   // Session stats for this day
   const sessions = getSessionsByDay(selectedDate);
@@ -65,62 +61,37 @@ const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
     ).getTime(),
   );
 
-  // Get or create entry for this date
-  const existingEntry = getEntryByDate(dateStr);
-
-  // TipTap editor
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Markdown,
-      Placeholder.configure({
-        placeholder: "Write about your day...",
-      }),
-    ],
-    content: existingEntry?.content || "",
-    editorProps: {
-      attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none min-h-[200px] p-4",
-      },
-    },
-  });
-
-  // Auto-save with debounce
-  useEffect(() => {
-    if (editor && existingEntry) {
-      const content = editor.getMarkdown();
-      if (content !== existingEntry.content) {
-        setDraftIndicator(true);
-        if (debounceTimer.current) clearTimeout(debounceTimer.current);
-        debounceTimer.current = setTimeout(() => {
-          saveEntry(dateStr, content);
-          setDraftIndicator(false);
-        }, 1000);
-      }
-    }
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    };
-  }, [editor, existingEntry?.content, dateStr, saveEntry]);
+  // Refs for stable access in effects
+  const dateStrRef = useRef(dateStr);
+  dateStrRef.current = dateStr;
 
   // Create entry when clicking a day with no entry
   useEffect(() => {
-    if (!existingEntry) {
-      saveEntry(dateStr, "");
+    if (entryCreatedDateRef.current === dateStr) return;
+    entryCreatedDateRef.current = dateStr;
+    const entry = useJournalStore.getState().getEntryByDate(dateStr);
+    if (!entry) {
+      useJournalStore.getState().saveEntry(dateStr, "");
     }
-  }, [dateStr, existingEntry, saveEntry]);
+  }, [dateStr]);
 
-  // Sync editor content when date changes
+  // Get current entry content for the editor
+  const entryContent =
+    useJournalStore.getState().getEntryByDate(dateStr)?.content || "";
+
+  // Sync content when date changes
   useEffect(() => {
-    if (editor && existingEntry) {
-      const currentContent = editor.getMarkdown();
-      if (currentContent !== existingEntry.content) {
-        editor.commands.setContent(existingEntry.content, {
-          contentType: "markdown",
-        });
-      }
-    }
-  }, [dateStr, editor, existingEntry]);
+    // date change tracked by entryCreatedDateRef
+  }, [dateStr]);
+
+  const handleMarkdownChange = (value: string) => {
+    setDraftIndicator(true);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      useJournalStore.getState().saveEntry(dateStrRef.current, value);
+      setDraftIndicator(false);
+    }, 1000);
+  };
 
   const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
 
@@ -131,11 +102,6 @@ const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
           {formattedDate}
         </h2>
         <div className="flex items-center gap-2">
-          {draftIndicator && (
-            <span className="text-base-content/50 text-xs italic">
-              Saving...
-            </span>
-          )}
           <Button size="sm" color="secondary" onClick={onNewNote}>
             <MdNoteAdd size={16} className="mr-1" />
             New Note
@@ -199,7 +165,18 @@ const DailyEntryView = ({ selectedDate, onNewNote }: DailyEntryViewProps) => {
 
       {/* Markdown Editor */}
       <div className="border-base-300 bg-base-100 rounded-lg border transition-colors duration-500">
-        {editor && <EditorContent editor={editor} />}
+        {draftIndicator && (
+          <div className="border-base-300 border-t px-4 py-2">
+            <span className="text-base-content/50 text-xs italic">
+              Saving...
+            </span>
+          </div>
+        )}
+        <AtomicCodeMirrorEditor
+          documentId={dateStr}
+          markdownSource={entryContent}
+          onMarkdownChange={handleMarkdownChange}
+        />
       </div>
     </div>
   );

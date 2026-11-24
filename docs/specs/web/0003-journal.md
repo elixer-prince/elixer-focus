@@ -27,7 +27,7 @@ Elixer Focus already tracks completed focus sessions with type, duration, and ti
 - **AC-2**: Clicking a day opens that day's entry in place, showing a collapsible stats section and a Markdown editor below.
 - **AC-3**: The daily entry auto saves with a draft indicator after 1 second of inactivity. No explicit save button is needed.
 - **AC-4**: The collapsible stats section shows total focus time, session count by type (Focus, Short Break, Long Break) for that day, derived from the existing session history store.
-- **AC-5**: The Markdown editor uses TipTap with Markdown serialization (content stored as Markdown strings) and supports bold, italic, lists, headings, and code blocks.
+- **AC-5**: The Markdown editor uses @atomic-editor/editor (CodeMirror 6) with Obsidian-style inline live preview (content stored as Markdown strings) and supports bold, italic, lists, headings, and code blocks.
 - **AC-6**: A "New Note" button creates a free form note with a title and Markdown body, linked to the current day's entry.
 - **AC-7**: After a focus session ends, a modal dialog prompts the user to write a session reflection tied to that session. The prompt is triggered by an event from the countdown timer store.
 - **AC-8**: A focus time bar chart shows daily focus time for the current week, using Chart.js.
@@ -39,17 +39,17 @@ Elixer Focus already tracks completed focus sessions with type, duration, and ti
 
 ### Option 1: Daily entry with Markdown editor and session stats
 
-Each day gets one entry. Users write in Markdown with TipTap. Session stats are shown in a collapsible section. Calendar navigation. Free form notes and session reflections as child records.
+Each day gets one entry. Users write in Markdown with @atomic-editor/editor (CodeMirror 6). Session stats are shown in a collapsible section. Calendar navigation. Free form notes and session reflections as child records.
 
 **Pros**:
 
 - Clean one entry per day model matches how people think about journaling
-- TipTap is actively maintained with excellent React and Markdown support
+- @atomic-editor/editor provides Obsidian-style inline live preview with reliable Markdown input rules
 - Collapsible stats keep the writing area primary while making data available
 
 **Cons**:
 
-- TipTap adds bundle size (approximately 30 kb gzipped for core plus extensions)
+- @atomic-editor/editor adds bundle size (approximately 60 kb gzipped with CodeMirror 6 peers)
 - react-day-picker adds a small dependency (approximately 5 kb gzipped)
 
 ### Option 2: Plain text journal with inline session summaries
@@ -86,11 +86,11 @@ Each journal entry is an independent post with date, title, and body. No daily c
 
 **Chosen option**: Option 1: Daily entry with Markdown editor and session stats
 
-Build a daily journal with TipTap Markdown editing (stored as Markdown strings via TipTap serialization), collapsible session stats, calendar navigation via react-day-picker, and free form notes as child records of daily entries. Session reflections use a modal dialog triggered by the countdown timer store.
+Build a daily journal with @atomic-editor/editor Markdown editing (CodeMirror 6 with Obsidian-style inline live preview, stored as Markdown strings), collapsible session stats, calendar navigation via react-day-picker, and free form notes as child records of daily entries. Session reflections use a modal dialog triggered by the countdown timer store.
 
 ## Rationale
 
-Option 1 matches how journaling works in practice: people write daily, not per post. The one entry per day model creates a natural habit loop. TipTap was chosen over Simple MDE and React Markdown because it offers the best React integration, active maintenance, and extensibility for future features like templates or rich media. The collapsible stats pattern keeps writing primary while making session context available, which the user confirmed. Chart.js was chosen for charts over Recharts because it is more customizable and avoids the generic look the user wanted to avoid. The data model is designed for future sync with userId and updatedAt fields, even though the initial implementation is local only.
+Option 1 matches how journaling works in practice: people write daily, not per post. The one entry per day model creates a natural habit loop. @atomic-editor/editor was chosen over TipTap because it provides reliable Markdown input rules (like # for headings) with Obsidian-style inline live preview, where formatting renders as you type while the underlying text stays as plain Markdown. TipTap was initially considered but had persistent input rule issues in the React/Vite environment that could not be resolved. The collapsible stats pattern keeps writing primary while making session context available, which the user confirmed. Chart.js was chosen for charts over Recharts because it is more customizable and avoids the generic look the user wanted to avoid. The data model is designed for future sync with userId and updatedAt fields, even though the initial implementation is local only.
 
 ## Feature design
 

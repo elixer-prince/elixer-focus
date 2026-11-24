@@ -277,6 +277,14 @@ describe("journal store", () => {
   });
 
   describe("getStreak", () => {
+    // Helper: format a local date to YYYY-MM-DD, matching how entries store dates
+    const localDateStr = (date: Date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    };
+
     it("returns 0 when there are no entries or sessions", () => {
       useJournalStore.setState({ entries: [], notes: [] });
 
@@ -285,10 +293,12 @@ describe("journal store", () => {
 
     it("counts consecutive days from today backward", () => {
       const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
+      today.setHours(0, 0, 0, 0);
+      const todayStr = localDateStr(today);
+
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().slice(0, 10);
+      const yesterdayStr = localDateStr(yesterday);
 
       const entryToday = {
         id: "1",
@@ -316,10 +326,12 @@ describe("journal store", () => {
 
     it("breaks the streak when a day is missing", () => {
       const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
+      today.setHours(0, 0, 0, 0);
+      const todayStr = localDateStr(today);
+
       const twoDaysAgo = new Date(today);
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-      const twoDaysAgoStr = twoDaysAgo.toISOString().slice(0, 10);
+      const twoDaysAgoStr = localDateStr(twoDaysAgo);
 
       const entryToday = {
         id: "1",

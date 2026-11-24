@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
 
@@ -13,12 +13,16 @@ vi.mock("@/features/journal/stores/journal-store", () => {
     createdAt: 1000,
     updatedAt: 1000,
   };
+  const getEntryByDate = vi.fn((date) =>
+    date === "2026-01-15" ? entry : undefined,
+  );
   return {
     useGetEntryByDate: () => (date) =>
       date === "2026-01-15" ? entry : undefined,
     useJournalStore: {
       getState: () => ({
         saveEntry: vi.fn((date, content) => ({ ...entry, date, content })),
+        getEntryByDate,
       }),
     },
     useSaveEntry: () => vi.fn(),
@@ -55,33 +59,12 @@ vi.mock("@/components/ui", () => ({
   ),
 }));
 
-vi.mock("@tiptap/react", () => {
-  const mockEditor = {
-    getMarkdown: vi.fn(() => ""),
-    commands: { setContent: vi.fn() },
-    isFocused: false,
-    options: { extensions: [] },
-    storage: {},
-    on: vi.fn(),
-    off: vi.fn(),
-    destroy: vi.fn(),
-  };
-  return {
-    useEditor: () => mockEditor,
-    EditorContent: () => <div data-testid="editor-content">Editor</div>,
-  };
-});
-
-vi.mock("@tiptap/starter-kit", () => ({
-  default: {},
-}));
-
-vi.mock("@tiptap/extension-placeholder", () => ({
-  default: { configure: () => ({}) },
-}));
-
-vi.mock("@tiptap/markdown", () => ({
-  Markdown: {},
+vi.mock("@atomic-editor/editor", () => ({
+  AtomicCodeMirrorEditor: ({ markdownSource, onMarkdownChange }) => (
+    <div data-testid="editor-content">
+      <div contentEditable={false}>{markdownSource || ""}</div>
+    </div>
+  ),
 }));
 
 vi.mock("react-icons/md", () => ({
@@ -141,7 +124,7 @@ describe("DailyEntry component", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the TipTap editor", () => {
+  it("renders the Atomic Editor", () => {
     render(
       <DailyEntryView
         selectedDate={new Date(2026, 0, 15)}
