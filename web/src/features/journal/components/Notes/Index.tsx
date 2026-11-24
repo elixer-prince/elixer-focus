@@ -2,7 +2,7 @@ import {
   useCreateNote,
   useDeleteNote,
   useEntries,
-  useJournalStore,
+  useNotes,
   useUpdateNote,
 } from "@/features/journal/stores/journal-store";
 import type { JournalNote } from "@/features/journal/types/journal";
@@ -17,6 +17,7 @@ type NotesSectionProps = {
 
 const NotesSection = ({ selectedDate }: NotesSectionProps) => {
   const entries = useEntries();
+  const allNotes = useNotes();
   const createNote = useCreateNote();
   const updateNote = useUpdateNote();
   const deleteNote = useDeleteNote();
@@ -32,9 +33,7 @@ const NotesSection = ({ selectedDate }: NotesSectionProps) => {
 
   // Get notes for this day
   const notes = entry
-    ? useJournalStore
-        .getState()
-        .notes.filter((n: JournalNote) => n.dailyEntryId === entry.id)
+    ? allNotes.filter((n: JournalNote) => n.dailyEntryId === entry.id)
     : [];
 
   const handleCreateNote = () => {
