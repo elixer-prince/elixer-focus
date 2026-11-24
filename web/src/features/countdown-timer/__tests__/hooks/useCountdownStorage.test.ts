@@ -101,6 +101,19 @@ describe("useCountdownStorage", () => {
       );
     });
 
+    it("should clear the stored paused remaining time", () => {
+      const { result } = renderHook(() => useCountdownStorage());
+
+      act(() => {
+        result.current.resetTimerStorage(25);
+      });
+
+      expect(mocks.saveToLocalStorage).toHaveBeenCalledWith(
+        "timerPausedRemainingTime",
+        null,
+      );
+    });
+
     it("should set start time in minutes", () => {
       const { result } = renderHook(() => useCountdownStorage());
 

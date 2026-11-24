@@ -1,4 +1,5 @@
-import { renderHook } from "@testing-library/react";
+import { render, renderHook } from "@testing-library/react";
+import { createElement, useLayoutEffect } from "react";
 
 const mocks = vi.hoisted(() => ({
   startCountdownOnPageLoad: vi.fn(),
@@ -45,6 +46,28 @@ describe("useCountdownTimer", () => {
     renderHook(() => useCountdownTimer());
 
     expect(mocks.startCountdownOnPageLoad).toHaveBeenCalled();
+  });
+
+  it("should restore the timer before the browser can paint", () => {
+    let restoredBeforePaint = false;
+
+    const Timer = () => {
+      useCountdownTimer();
+      return null;
+    };
+
+    const App = () => {
+      useLayoutEffect(() => {
+        restoredBeforePaint =
+          mocks.startCountdownOnPageLoad.mock.calls.length > 0;
+      }, []);
+
+      return createElement(Timer);
+    };
+
+    render(createElement(App));
+
+    expect(restoredBeforePaint).toBe(true);
   });
 
   it("should call cleanup functions on unmount", () => {

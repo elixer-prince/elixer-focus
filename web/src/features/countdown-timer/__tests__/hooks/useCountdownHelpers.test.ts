@@ -95,6 +95,17 @@ describe("useCountdownHelpers", () => {
     it("should return false when timer is running and not paused", () => {
       mocks.timerRunning = true;
       mocks.timerPaused = false;
+      mocks.timerEndTimeRef.current = 1234;
+
+      const { result } = renderHook(() => useCountdownHelpers());
+
+      expect(result.current.timerShouldNotBeActiveOnRefresh()).toBe(false);
+    });
+
+    it("should resume a saved timer after refresh when volatile state has reset", () => {
+      mocks.timerRunning = false;
+      mocks.timerPaused = true;
+      mocks.timerEndTimeRef.current = 1234;
 
       const { result } = renderHook(() => useCountdownHelpers());
 

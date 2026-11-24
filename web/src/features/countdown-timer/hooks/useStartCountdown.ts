@@ -13,7 +13,7 @@ import {
 import { calculateEndTime } from "@/features/countdown-timer/utils/calculations";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
-import { saveToLocalStorage } from "@/utils/storage";
+import { getFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
 import { useCallback } from "react";
 
 const useStartCountdown = () => {
@@ -56,6 +56,7 @@ const useStartCountdown = () => {
     // and as a reference
     timerEndTimeRef.current = endTime;
     saveToLocalStorage("timerEndTime", endTime);
+    saveToLocalStorage("timerPausedRemainingTime", null);
 
     // Request notification permission so the desktop notification
     // is ready by the time the timer ends
@@ -87,7 +88,14 @@ const useStartCountdown = () => {
    * @returns {void}
    */
   const startCountdownOnPageLoad = useCallback(() => {
-    if (timerShouldNotBeActiveOnRefresh()) return;
+    if (timerShouldNotBeActiveOnRefresh()) {
+      const pausedRemainingSeconds = getFromLocalStorage<number>(
+        "timerPausedRemainingTime",
+      );
+      if (pausedRemainingSeconds !== null)
+        setRemainingTimeInSeconds(pausedRemainingSeconds);
+      return;
+    }
 
     if (!timerEndTimeRef.current) return;
 
@@ -101,7 +109,10 @@ const useStartCountdown = () => {
     if (timerEndedWhileAway(remainingSeconds))
       return handleEndedTimerWhileAway();
 
+    setTimerPaused(false);
+    setTimerRunning(true);
     setRemainingTimeInSeconds(remainingSeconds);
+    saveToLocalStorage("timerPausedRemainingTime", null);
 
     // Request notification permission so the desktop notification
     // is ready by the time the timer ends
@@ -119,6 +130,8 @@ const useStartCountdown = () => {
     calculateNewRemainingSeconds,
     handleEndedTimerWhileAway,
     setRemainingTimeInSeconds,
+    setTimerPaused,
+    setTimerRunning,
     requestNotificationPermission,
   ]);
 

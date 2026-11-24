@@ -25,6 +25,7 @@ const mocks = vi.hoisted(() => ({
   clearIntervalIfItExists: vi.fn(),
   calculateEndTime: vi.fn(),
   requestNotificationPermission: vi.fn(),
+  getFromLocalStorage: vi.fn(),
   timerPausedValue: true,
   remainingTimeInSecondsValue: 1500,
   timerOnClickSoundEffectRef: { current: "timer-on-sound" as string | null },
@@ -88,6 +89,7 @@ vi.mock("@/utils/sound", () => ({
 }));
 
 vi.mock("@/utils/storage", () => ({
+  getFromLocalStorage: mocks.getFromLocalStorage,
   saveToLocalStorage: mocks.saveToLocalStorage,
 }));
 
@@ -106,6 +108,7 @@ describe("useStartCountdown", () => {
     mocks.remainingTimeInSecondsValue = 1500;
     mocks.timerEndTimeRef.current = null;
     mocks.timerIntervalRef.current = 123;
+    mocks.getFromLocalStorage.mockReturnValue(null);
     mocks.calculateEndTime.mockReturnValue(999999);
   });
 
@@ -125,6 +128,10 @@ describe("useStartCountdown", () => {
       expect(mocks.saveToLocalStorage).toHaveBeenCalledWith(
         "timerEndTime",
         999999,
+      );
+      expect(mocks.saveToLocalStorage).toHaveBeenCalledWith(
+        "timerPausedRemainingTime",
+        null,
       );
       expect(mocks.requestNotificationPermission).toHaveBeenCalled();
       expect(mocks.runInterval).toHaveBeenCalledWith(999999);
@@ -222,10 +229,27 @@ describe("useStartCountdown", () => {
       expect(mocks.clearIntervalIfItExists).toHaveBeenCalledWith(
         mocks.timerIntervalRef,
       );
+      expect(mocks.setTimerPaused).toHaveBeenCalledWith(false);
+      expect(mocks.setTimerRunning).toHaveBeenCalledWith(true);
       expect(mocks.startEndTicking).toHaveBeenCalled();
       expect(mocks.setRemainingTimeInSeconds).toHaveBeenCalledWith(8);
       expect(mocks.requestNotificationPermission).toHaveBeenCalled();
       expect(mocks.runInterval).toHaveBeenCalledWith(3333);
+    });
+
+    it("should restore a paused remaining time without starting the timer", () => {
+      mocks.timerShouldNotBeActiveOnRefresh.mockReturnValue(true);
+      mocks.timerEndTimeRef.current = null;
+      mocks.getFromLocalStorage.mockReturnValue(210);
+
+      const { result } = renderHook(() => useStartCountdown());
+
+      act(() => {
+        result.current.startCountdownOnPageLoad();
+      });
+
+      expect(mocks.setRemainingTimeInSeconds).toHaveBeenCalledWith(210);
+      expect(mocks.runInterval).not.toHaveBeenCalled();
     });
   });
 });
