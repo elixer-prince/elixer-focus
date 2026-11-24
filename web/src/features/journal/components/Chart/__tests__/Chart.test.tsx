@@ -6,6 +6,7 @@ import FocusTimeChart from "@/features/journal/components/Chart/Index";
 
 vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
   getTotalFocusTime: vi.fn(() => 0),
+  useGetTotalFocusTimeForRanges: vi.fn(() => [0, 0, 0, 0, 0, 0, 0]),
 }));
 
 vi.mock("@/utils/formatting", () => ({

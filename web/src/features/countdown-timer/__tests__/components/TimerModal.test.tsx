@@ -4,7 +4,7 @@ import { vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   modalRef: { current: null as HTMLDialogElement | null },
   previousSessionType: "Focus",
-  elapsedTimeInSeconds: 90,
+  sessionProgressInSeconds: 90,
 }));
 
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
@@ -18,7 +18,7 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
-  useElapsedTimeInSeconds: () => mocks.elapsedTimeInSeconds,
+  useSessionProgressInSeconds: () => mocks.sessionProgressInSeconds,
 }));
 
 import TimerModal from "@/features/countdown-timer/components/TimerModal";
@@ -26,7 +26,7 @@ import TimerModal from "@/features/countdown-timer/components/TimerModal";
 describe("TimerModal", () => {
   beforeEach(() => {
     mocks.previousSessionType = "Focus";
-    mocks.elapsedTimeInSeconds = 90;
+    mocks.sessionProgressInSeconds = 90;
     mocks.modalRef.current = null;
   });
 
@@ -96,16 +96,16 @@ describe("TimerModal", () => {
     document.body.removeChild(dialogElement);
   });
 
-  it("should display formatted elapsed time", () => {
-    mocks.elapsedTimeInSeconds = 150;
+  it("should display formatted session progress time", () => {
+    mocks.sessionProgressInSeconds = 150;
 
     render(<TimerModal />);
 
     expect(screen.getByText(/2 minutes and 30 seconds/)).toBeInTheDocument();
   });
 
-  it("should display zero elapsed time", () => {
-    mocks.elapsedTimeInSeconds = 0;
+  it("should display zero session progress time", () => {
+    mocks.sessionProgressInSeconds = 0;
 
     render(<TimerModal />);
 

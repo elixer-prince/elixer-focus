@@ -32,6 +32,7 @@ vi.mock("@/features/journal/stores/journal-store", () => {
 vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
   getSessionsByDay: vi.fn(() => []),
   getTotalFocusTime: vi.fn(() => 0),
+  useGetTotalFocusTime: vi.fn(() => 0),
   getSessionCountsByType: vi.fn(() => ({
     Focus: 0,
     "Short Break": 0,

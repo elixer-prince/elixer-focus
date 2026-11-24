@@ -2,7 +2,7 @@ import { useJournalStore } from "@/features/journal/stores/journal-store";
 import {
   getSessionsByDay,
   getSessionCountsByType,
-  getTotalFocusTime,
+  useGetTotalFocusTime,
 } from "@/features/countdown-timer/stores/session-history-store";
 import { formatElapsedTime } from "@/utils/formatting";
 import { Badge, Button } from "@/components/ui";
@@ -32,38 +32,22 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
 
   // Session stats for this day
   const sessions = getSessionsByDay(selectedDate);
-  const focusTime = getTotalFocusTime(
-    new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-    ).getTime(),
-    new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-      23,
-      59,
-      59,
-      999,
-    ).getTime(),
-  );
-  const sessionCounts = getSessionCountsByType(
-    new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-    ).getTime(),
-    new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
-      23,
-      59,
-      59,
-      999,
-    ).getTime(),
-  );
+  const dayStart = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+  ).getTime();
+  const dayEnd = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+    23,
+    59,
+    59,
+    999,
+  ).getTime();
+  const focusTime = useGetTotalFocusTime(dayStart, dayEnd);
+  const sessionCounts = getSessionCountsByType(dayStart, dayEnd);
 
   // Refs for stable access in effects
   const dateStrRef = useRef(dateStr);

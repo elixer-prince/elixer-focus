@@ -31,7 +31,7 @@ type SessionActions = {
 
 type SessionStore = SessionState & SessionActions;
 
-const useSessionStore = create<SessionStore>()(
+export const useSessionStore = create<SessionStore>()(
   persist(
     (set) => ({
       focusDuration: 25,

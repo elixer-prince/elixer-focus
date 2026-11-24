@@ -11,8 +11,9 @@ const useFocusRing = () => {
   const CENTER = 172;
 
   const totalTimeInSeconds = convertMinutesToSeconds(startTimeInMinutes);
-  const elapsed = Math.max(0, totalTimeInSeconds - remainingTimeInSeconds);
-  const rawProgress = totalTimeInSeconds > 0 ? elapsed / totalTimeInSeconds : 0;
+  const progressTime = Math.max(0, totalTimeInSeconds - remainingTimeInSeconds);
+  const rawProgress =
+    totalTimeInSeconds > 0 ? progressTime / totalTimeInSeconds : 0;
 
   const progress = Math.min(Math.max(rawProgress, 0), 1); // 0 → 1
 

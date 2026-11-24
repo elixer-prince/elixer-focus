@@ -12,10 +12,14 @@ import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 
 const useResetCountdown = () => {
-  const { resetTimerSoundEffectRef, hasPlayedEndBeepRef, timerIntervalRef } =
-    useCountdownContext();
-  const { resetPageTitle } = usePageTitle();
+  const {
+    resetTimerSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerIntervalRef,
+    sessionProgressIntervalRef,
+  } = useCountdownContext();
   const { resetTimerStorage } = useCountdownTimerStorage();
+  const { resetPageTitle } = usePageTitle();
 
   const timerRunning = useTimerRunning();
 
@@ -37,6 +41,7 @@ const useResetCountdown = () => {
 
   const resetCountdown = () => {
     clearIntervalIfItExists(timerIntervalRef);
+    clearIntervalIfItExists(sessionProgressIntervalRef);
 
     // Reset the beep flag so a new timer cycle can play the beep
     hasPlayedEndBeepRef.current = false;

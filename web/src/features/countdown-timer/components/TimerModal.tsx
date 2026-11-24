@@ -1,14 +1,14 @@
 import Modal from "@/components/ui/Modal";
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
 import { usePreviousSessionType } from "@/features/countdown-timer/stores/session-store";
-import { useElapsedTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
+import { useSessionProgressInSeconds } from "@/features/countdown-timer/stores/countdown-store";
 import { formatElapsedTime } from "@/utils/formatting";
 import { useEffect, useState } from "react";
 
 const TimerModal = () => {
   const { modalRef } = useCountdownContext();
   const previousSessionType = usePreviousSessionType();
-  const elapsedTimeInSeconds = useElapsedTimeInSeconds();
+  const sessionProgressInSeconds = useSessionProgressInSeconds();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -44,7 +44,7 @@ const TimerModal = () => {
         <p className="elapsed-paragraph mt-2 mb-3 font-bold">
           You went over by{" "}
           <span className="elapsed-time text-error text-2xl">
-            {formatElapsedTime(elapsedTimeInSeconds)}
+            {formatElapsedTime(sessionProgressInSeconds)}
           </span>
           .
         </p>

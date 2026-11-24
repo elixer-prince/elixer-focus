@@ -1,5 +1,14 @@
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import {
+  useCurrentSessionType,
+  useSessionStore,
+} from "@/features/countdown-timer/stores/session-store";
+import {
+  useCountdownTimerStore,
+  useSessionProgressInSeconds,
+  useTimerRunning,
+} from "@/features/countdown-timer/stores/countdown-store";
 import { createPersistOptions, persist } from "@/stores/persist-config";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -120,6 +129,99 @@ export const getTotalFocusTime = (from: number, to: number): number => {
     .filter((s) => s.sessionType === "Focus")
     .reduce((sum, s) => sum + s.durationInSeconds, 0);
 };
+
+/**
+ * Returns the progress time of the currently running focus timer, if any.
+ * Returns 0 if the timer is not running or the current session is not Focus.
+ */
+export function getRunningTimerProgress(): number {
+  const { timerRunning, sessionProgressInSeconds } =
+    useCountdownTimerStore.getState();
+  const { currentSessionType } = useSessionStore.getState();
+  if (timerRunning && currentSessionType === "Focus") {
+    return sessionProgressInSeconds;
+  }
+  return 0;
+}
+
+/**
+ * Returns total focus time including the currently running timer if applicable.
+ *
+ * @param from - Start timestamp (inclusive).
+ * @param to - End timestamp (inclusive).
+ * @returns {number} Total focus seconds including running timer.
+ */
+export const getTotalFocusTimeWithRunning = (
+  from: number,
+  to: number,
+): number => {
+  return getTotalFocusTime(from, to) + getRunningTimerProgress();
+};
+
+/**
+ * React hook that returns total focus time and re-renders when the timer
+ * state or session history changes.
+ *
+ * @param from - Start timestamp (inclusive).
+ * @param to - End timestamp (inclusive).
+ * @returns {number} Total focus seconds including running timer.
+ */
+export function useGetTotalFocusTime(from: number, to: number): number {
+  const sessions = useSessions();
+  const timerRunning = useTimerRunning();
+  const sessionProgress = useSessionProgressInSeconds();
+  const currentSessionType = useCurrentSessionType();
+
+  const completedTime = sessions
+    .filter(
+      (s) =>
+        s.sessionType === "Focus" &&
+        s.completedAt >= from &&
+        s.completedAt <= to,
+    )
+    .reduce((sum, s) => sum + s.durationInSeconds, 0);
+
+  if (timerRunning && currentSessionType === "Focus") {
+    return completedTime + sessionProgress;
+  }
+  return completedTime;
+}
+
+/**
+ * React hook that returns an array of focus times for multiple date ranges,
+ * subscribing to timer and session changes. Useful for chart components.
+ * The running timer elapsed time is only added to the range that includes
+ * the current moment (today), not to all ranges.
+ *
+ * @param ranges - Array of { start, end } timestamp pairs.
+ * @returns {number[]} Focus time in seconds for each range.
+ */
+export function useGetTotalFocusTimeForRanges(
+  ranges: { start: number; end: number }[],
+): number[] {
+  const sessions = useSessions();
+  const timerRunning = useTimerRunning();
+  const sessionProgress = useSessionProgressInSeconds();
+  const currentSessionType = useCurrentSessionType();
+
+  const now = Date.now();
+  const runningProgress =
+    timerRunning && currentSessionType === "Focus" ? sessionProgress : 0;
+
+  return ranges.map((range) => {
+    const completedTime = sessions
+      .filter(
+        (s) =>
+          s.sessionType === "Focus" &&
+          s.completedAt >= range.start &&
+          s.completedAt <= range.end,
+      )
+      .reduce((sum, s) => sum + s.durationInSeconds, 0);
+    // Only add running progress time to the range that includes now (today)
+    const isCurrentRange = now >= range.start && now <= range.end;
+    return completedTime + (isCurrentRange ? runningProgress : 0);
+  });
+}
 
 /**
  * Returns session count by type for the given date range.

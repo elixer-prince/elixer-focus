@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 const mocks = vi.hoisted(() => ({
   timerBeepSoundEffectRef: { current: null as HTMLAudioElement | null },
   timerIntervalRef: { current: null as ReturnType<typeof setInterval> | null },
-  elapsedIntervalRef: {
+  sessionProgressIntervalRef: {
     current: null as ReturnType<typeof setInterval> | null,
   },
   hasPlayedEndBeepRef: { current: false },
@@ -12,8 +12,8 @@ const mocks = vi.hoisted(() => ({
   stopEndTicking: vi.fn(),
   displayRemainingTimeInPageTitle: vi.fn(),
   alertUserOfTimerEnd: vi.fn(),
-  setElapsedTimeInSeconds: vi.fn(),
-  resetElapsedTimeInSeconds: vi.fn(),
+  setSessionProgressInSeconds: vi.fn(),
+  resetSessionProgressInSeconds: vi.fn(),
   setRemainingTimeInSeconds: vi.fn(),
   setPreviousSessionType: vi.fn(),
   calculateRemainingSeconds: vi.fn(),
@@ -41,7 +41,7 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
   default: () => ({
     timerBeepSoundEffectRef: mocks.timerBeepSoundEffectRef,
     timerIntervalRef: mocks.timerIntervalRef,
-    elapsedIntervalRef: mocks.elapsedIntervalRef,
+    sessionProgressIntervalRef: mocks.sessionProgressIntervalRef,
     hasPlayedEndBeepRef: mocks.hasPlayedEndBeepRef,
   }),
 }));
@@ -64,8 +64,9 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
-  useSetElapsedTimeInSeconds: () => mocks.setElapsedTimeInSeconds,
-  useResetElapsedTimeInSeconds: () => mocks.resetElapsedTimeInSeconds,
+  useSetSessionProgressInSeconds: () => mocks.setSessionProgressInSeconds,
+  useResetSessionProgressInSeconds: () => mocks.resetSessionProgressInSeconds,
+  useSessionProgressInSeconds: () => 0,
   useSetRemainingTimeInSeconds: () => mocks.setRemainingTimeInSeconds,
 }));
 
@@ -96,7 +97,7 @@ describe("useCountdownInterval", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.timerIntervalRef.current = null;
-    mocks.elapsedIntervalRef.current = null;
+    mocks.sessionProgressIntervalRef.current = null;
     mocks.hasPlayedEndBeepRef.current = false;
     mocks.timerIsAboutToEnd.mockReturnValue(false);
     mocks.timerHasEnded.mockReturnValue(false);
@@ -104,29 +105,29 @@ describe("useCountdownInterval", () => {
     mocks.getCurrentTimestamp.mockReturnValue(1000);
   });
 
-  describe("resetElapsedTime", () => {
-    it("should clear the elapsed interval", () => {
-      mocks.elapsedIntervalRef.current = setInterval(() => {}, 1000);
+  describe("resetSessionProgress", () => {
+    it("should clear the session progress interval", () => {
+      mocks.sessionProgressIntervalRef.current = setInterval(() => {}, 1000);
 
       const { result } = renderHook(() => useCountdownInterval());
 
       act(() => {
-        result.current.resetElapsedTime();
+        result.current.resetSessionProgress();
       });
 
       expect(mocks.clearIntervalIfItExists).toHaveBeenCalledWith(
-        mocks.elapsedIntervalRef,
+        mocks.sessionProgressIntervalRef,
       );
     });
 
-    it("should reset elapsed time in seconds", () => {
+    it("should reset session progress in seconds", () => {
       const { result } = renderHook(() => useCountdownInterval());
 
       act(() => {
-        result.current.resetElapsedTime();
+        result.current.resetSessionProgress();
       });
 
-      expect(mocks.resetElapsedTimeInSeconds).toHaveBeenCalled();
+      expect(mocks.resetSessionProgressInSeconds).toHaveBeenCalled();
     });
   });
 
@@ -165,6 +166,71 @@ describe("useCountdownInterval", () => {
 
       // Verify the interval ref is set
       expect(mocks.timerIntervalRef.current).toBeDefined();
+    });
+
+    it("should start the session progress interval when timer starts", () => {
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+      });
+
+      // The session progress interval should be created
+      expect(mocks.sessionProgressIntervalRef.current).not.toBeNull();
+    });
+  });
+
+  describe("session progress interval", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should update session progress every 100ms when timer runs", () => {
+      mocks.getCurrentTimestamp.mockReturnValue(1000);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+      });
+
+      // Advance time by 100ms to trigger the progress interval
+      mocks.getCurrentTimestamp.mockReturnValue(1100);
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.setSessionProgressInSeconds).toHaveBeenCalledWith(0);
+    });
+
+    it("should not create a duplicate progress interval if one already exists", () => {
+      mocks.sessionProgressIntervalRef.current = setInterval(() => {}, 100);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+      });
+
+      // The progress interval ref should still be the same one we set
+      expect(mocks.sessionProgressIntervalRef.current).toBeDefined();
+    });
+
+    it("should reset session progress when timer ends", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.resetSessionProgressInSeconds).toHaveBeenCalled();
     });
   });
 

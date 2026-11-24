@@ -1,4 +1,4 @@
-import { getTotalFocusTime } from "@/features/countdown-timer/stores/session-history-store";
+import { useGetTotalFocusTimeForRanges } from "@/features/countdown-timer/stores/session-history-store";
 import { formatElapsedTime } from "@/utils/formatting";
 import type { TooltipItem } from "chart.js";
 import { Bar } from "react-chartjs-2";
@@ -12,7 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import { addDays, format, startOfWeek } from "date-fns";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -24,43 +24,36 @@ ChartJS.register(
 );
 
 const FocusTimeChart = () => {
-  const [chartData, setChartData] = useState<{
-    labels: string[];
-    datasets: {
-      label: string;
-      data: number[];
-      backgroundColor: string[];
-      borderColor: string[];
-      borderWidth: number;
-      borderRadius: number;
-    }[];
-  } | null>(null);
+  // Build the 7-day ranges for the current week (Monday to Sunday)
+  const today = new Date();
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+  const dayRanges = [];
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(weekStart, i);
+    const startOfDay = new Date(
+      day.getFullYear(),
+      day.getMonth(),
+      day.getDate(),
+    ).getTime();
+    const endOfDay = new Date(
+      day.getFullYear(),
+      day.getMonth(),
+      day.getDate(),
+      23,
+      59,
+      59,
+      999,
+    ).getTime();
+    dayRanges.push({ start: startOfDay, end: endOfDay });
+  }
 
-  useEffect(() => {
-    const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-    const days: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      days.push(addDays(weekStart, i));
-    }
+  // Subscribe to timer + session changes for all days in one hook call
+  const focusTimes = useGetTotalFocusTimeForRanges(dayRanges);
 
-    const labels = days.map((d) => format(d, "EEE"));
-    const focusTimes = days.map((day) => {
-      const startOfDay = new Date(
-        day.getFullYear(),
-        day.getMonth(),
-        day.getDate(),
-      ).getTime();
-      const endOfDay = new Date(
-        day.getFullYear(),
-        day.getMonth(),
-        day.getDate(),
-        23,
-        59,
-        59,
-        999,
-      ).getTime();
-      return getTotalFocusTime(startOfDay, endOfDay);
+  const chartData = useMemo(() => {
+    const labels = dayRanges.map((range) => {
+      const date = new Date(range.start);
+      return format(date, "EEE");
     });
 
     // Get theme colors from CSS variables
@@ -76,7 +69,7 @@ const FocusTimeChart = () => {
       ? primaryBorder
       : "#7c3aed";
 
-    setChartData({
+    return {
       labels,
       datasets: [
         {
@@ -88,8 +81,8 @@ const FocusTimeChart = () => {
           borderRadius: 4,
         },
       ],
-    });
-  }, []);
+    };
+  }, [dayRanges, focusTimes]);
 
   const options = {
     responsive: true as const,

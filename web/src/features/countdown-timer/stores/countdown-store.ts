@@ -11,7 +11,7 @@ type CountdownTimerState = {
   timerPaused: boolean;
   remainingTimeInSeconds: number;
   startTimeInMinutes: number;
-  elapsedTimeInSeconds: number;
+  sessionProgressInSeconds: number;
 };
 
 type CountdownTimerActions = {
@@ -19,20 +19,20 @@ type CountdownTimerActions = {
   setTimerPaused: (timerPaused: boolean) => void;
   setRemainingTimeInSeconds: (remainingSeconds: number) => void;
   setStartTimeInMinutes: (startTimeInMinutes: number) => void;
-  setElapsedTimeInSeconds: (elapsedTimeInSeconds: number) => void;
-  resetElapsedTimeInSeconds: () => void;
+  setSessionProgressInSeconds: (sessionProgressInSeconds: number) => void;
+  resetSessionProgressInSeconds: () => void;
 };
 
 type CountdownTimerStore = CountdownTimerState & CountdownTimerActions;
 
-const useCountdownTimerStore = create<CountdownTimerStore>()(
+export const useCountdownTimerStore = create<CountdownTimerStore>()(
   persist(
     (set) => ({
       timerRunning: false,
       timerPaused: true,
       remainingTimeInSeconds: convertMinutesToSeconds(25),
       startTimeInMinutes: 25,
-      elapsedTimeInSeconds: 0,
+      sessionProgressInSeconds: 0,
 
       setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
 
@@ -44,16 +44,16 @@ const useCountdownTimerStore = create<CountdownTimerStore>()(
       setStartTimeInMinutes: (startTimeInMinutes: number) =>
         set({ startTimeInMinutes }),
 
-      setElapsedTimeInSeconds: (elapsedTimeInSeconds: number) =>
+      setSessionProgressInSeconds: (sessionProgressInSeconds: number) =>
         set({
-          elapsedTimeInSeconds,
+          sessionProgressInSeconds,
         }),
 
-      resetElapsedTimeInSeconds: () => set({ elapsedTimeInSeconds: 0 }),
+      resetSessionProgressInSeconds: () => set({ sessionProgressInSeconds: 0 }),
     }),
     createPersistOptions<CountdownTimerStore>({
       name: "countdown-timer-storage",
-      version: 2,
+      version: 3,
       partialize: (state) => ({
         startTimeInMinutes: state.startTimeInMinutes,
       }),
@@ -82,8 +82,8 @@ export const useRemainingTimeInSeconds = () =>
 export const useStartTimeInMinutes = () =>
   useCountdownTimerStore((state) => state.startTimeInMinutes);
 
-export const useElapsedTimeInSeconds = () =>
-  useCountdownTimerStore((state) => state.elapsedTimeInSeconds);
+export const useSessionProgressInSeconds = () =>
+  useCountdownTimerStore((state) => state.sessionProgressInSeconds);
 
 // ACTIONS
 
@@ -99,8 +99,8 @@ export const useSetRemainingTimeInSeconds = () =>
 export const useSetStartTimeInMinutes = () =>
   useCountdownTimerStore((state) => state.setStartTimeInMinutes);
 
-export const useSetElapsedTimeInSeconds = () =>
-  useCountdownTimerStore((state) => state.setElapsedTimeInSeconds);
+export const useSetSessionProgressInSeconds = () =>
+  useCountdownTimerStore((state) => state.setSessionProgressInSeconds);
 
-export const useResetElapsedTimeInSeconds = () =>
-  useCountdownTimerStore((state) => state.resetElapsedTimeInSeconds);
+export const useResetSessionProgressInSeconds = () =>
+  useCountdownTimerStore((state) => state.resetSessionProgressInSeconds);
