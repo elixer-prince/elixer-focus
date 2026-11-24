@@ -1,4 +1,5 @@
 import {
+  useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
   useStartTimeInMinutes,
@@ -23,6 +24,7 @@ const useAutoSyncTimer = () => {
   const timerRunning = useTimerRunning();
   const timerPaused = useTimerPaused();
   const startTimeInMinutes = useStartTimeInMinutes();
+  const remainingTimeInSeconds = useRemainingTimeInSeconds();
   const setStartTimeInMinutes = useSetStartTimeInMinutes();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
@@ -55,10 +57,16 @@ const useAutoSyncTimer = () => {
     }
 
     // Only update if the duration has actually changed
-    if (correctDuration !== startTimeInMinutes) {
+    // Check both startTimeInMinutes and remainingTimeInSeconds since
+    // remainingTimeInSeconds is not persisted and may be stale on page refresh
+    const correctRemainingSeconds = convertMinutesToSeconds(correctDuration);
+    if (
+      correctDuration !== startTimeInMinutes ||
+      correctRemainingSeconds !== remainingTimeInSeconds
+    ) {
       // Update timer state
       setStartTimeInMinutes(correctDuration);
-      setRemainingTimeInSeconds(convertMinutesToSeconds(correctDuration));
+      setRemainingTimeInSeconds(correctRemainingSeconds);
     }
   }, [
     focusDuration,
@@ -68,6 +76,7 @@ const useAutoSyncTimer = () => {
     timerRunning,
     timerPaused,
     startTimeInMinutes,
+    remainingTimeInSeconds,
     setStartTimeInMinutes,
     setRemainingTimeInSeconds,
   ]);

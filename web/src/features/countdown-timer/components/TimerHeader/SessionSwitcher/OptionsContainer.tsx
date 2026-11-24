@@ -3,12 +3,8 @@ import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch"
 import { useCurrentSessionType } from "@/features/countdown-timer/stores/session-store";
 
 const OptionsContainer = () => {
-  const {
-    switchToFocus,
-    switchToShortBreak,
-    switchToLongBreak,
-    switchToCustom,
-  } = useSessionSwitch();
+  const { switchToFocus, switchToShortBreak, switchToLongBreak } =
+    useSessionSwitch();
   const currentSessionType = useCurrentSessionType();
 
   return (
@@ -41,16 +37,6 @@ const OptionsContainer = () => {
           checked={currentSessionType === "Long Break"}
         >
           Long Break
-        </SessionOption>
-      </li>
-      <li>
-        <SessionOption
-          value="Custom Session"
-          onChange={switchToCustom}
-          checked={currentSessionType === "Custom"}
-          isCustomOption
-        >
-          Custom
         </SessionOption>
       </li>
     </ul>

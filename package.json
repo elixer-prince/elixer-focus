@@ -3,14 +3,24 @@
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1"
   },
   "scripts": {
     "prepare": "husky",
-    "lint": "cd web && npm run lint",
+    "lint": "cd web && npm run lint && cd app && npm run lint",
+    "lint:web": "cd web && npm run lint",
+    "lint:app": "cd app && npm run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "cd web && npm run test -- --run"
+    "test": "cd web && npm run test -- --run",
+    "test:web": "cd web && npm run test -- --run",
+    "test:backend": "cd backend && composer test"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }

@@ -18,3 +18,17 @@
 @utility debug-border {
   border: 1px solid red;
 }
+
+@keyframes focus-ring-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0.25rem currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 0.5rem currentColor);
+  }
+}
+
+.focus-ring-pulse {
+  animation: focus-ring-pulse 2s ease-in-out infinite;
+}

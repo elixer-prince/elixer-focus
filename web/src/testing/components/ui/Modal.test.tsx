@@ -1,99 +1,234 @@
-import { render, screen } from "@testing-library/react";
-
-const mocks = vi.hoisted(() => ({
-  modalRef: { current: null as HTMLDialogElement | null },
-  previousSessionType: "Focus",
-  elapsedTimeInSeconds: 90,
-}));
-
-vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
-  default: () => ({
-    modalRef: mocks.modalRef,
-  }),
-}));
-
-vi.mock("@/features/countdown-timer/stores/session-store", () => ({
-  usePreviousSessionType: () => mocks.previousSessionType,
-}));
-
-vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
-  useElapsedTimeInSeconds: () => mocks.elapsedTimeInSeconds,
-}));
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import Modal from "@/components/ui/Modal";
 
 describe("Modal", () => {
-  beforeEach(() => {
-    mocks.previousSessionType = "Focus";
-    mocks.elapsedTimeInSeconds = 90;
-  });
-
   it("should render the modal dialog element", () => {
-    render(<Modal />);
+    render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Test content</p>
+      </Modal>,
+    );
 
     const dialog = document.querySelector("dialog");
     expect(dialog).toBeInTheDocument();
   });
 
-  it("should display the previous session type in the header", () => {
-    mocks.previousSessionType = "Short Break";
+  it("should display the title when provided", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}} title="My Modal Title">
+        <p>Content</p>
+      </Modal>,
+    );
 
-    render(<Modal />);
-
-    expect(screen.getByText("Short Break")).toBeInTheDocument();
+    expect(screen.getByText("My Modal Title")).toBeInTheDocument();
   });
 
-  it("should display the formatted elapsed time for seconds and minutes", () => {
-    mocks.elapsedTimeInSeconds = 90;
+  it("should not render a title when not provided", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    );
 
-    render(<Modal />);
-
-    expect(screen.getByText(/1 minute and 30 seconds/)).toBeInTheDocument();
+    expect(screen.queryByText("My Modal Title")).not.toBeInTheDocument();
   });
 
-  it("should display the formatted elapsed time for hours and minutes", () => {
-    mocks.elapsedTimeInSeconds = 5100;
+  it("should render children content", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Custom child content</p>
+      </Modal>,
+    );
 
-    render(<Modal />);
-
-    expect(screen.getByText(/1 hour and 25 minutes/)).toBeInTheDocument();
+    expect(screen.getByText("Custom child content")).toBeInTheDocument();
   });
 
-  it("should display the formatted elapsed time for seconds only", () => {
-    mocks.elapsedTimeInSeconds = 30;
+  it("should render a close button by default", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    );
 
-    render(<Modal />);
-
-    expect(screen.getByText(/30 seconds/)).toBeInTheDocument();
-  });
-
-  it("should display the 'went over by' message", () => {
-    render(<Modal />);
-
-    expect(screen.getByText(/You went over by/)).toBeInTheDocument();
-  });
-
-  it("should render a close button", () => {
-    render(<Modal />);
-
-    const closeButton = document.querySelector("button");
+    const closeButton = screen.getByText("Close");
     expect(closeButton).toBeInTheDocument();
-    expect(closeButton?.textContent).toBe("Close");
   });
 
-  it("should display Long Break session type", () => {
-    mocks.previousSessionType = "Long Break";
+  it("should hide the close button when showCloseButton is false", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}} showCloseButton={false}>
+        <p>Content</p>
+      </Modal>,
+    );
 
-    render(<Modal />);
-
-    expect(screen.getByText("Long Break")).toBeInTheDocument();
+    expect(screen.queryByText("Close")).not.toBeInTheDocument();
   });
 
-  it("should display Custom session type", () => {
-    mocks.previousSessionType = "Custom";
+  it("should call onClose when the close button is clicked", () => {
+    const handleClose = vi.fn();
 
-    render(<Modal />);
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
 
-    expect(screen.getByText("Custom")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Close"));
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call onClose when the backdrop is clicked", () => {
+    const handleClose = vi.fn();
+
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    fireEvent.click(dialog!);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not call onClose when clicking inside the modal box", () => {
+    const handleClose = vi.fn();
+
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    fireEvent.click(screen.getByText("Content"));
+    expect(handleClose).not.toHaveBeenCalled();
+  });
+
+  it("should call onClose when Escape key is pressed", () => {
+    const handleClose = vi.fn();
+
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    fireEvent.keyDown(dialog!, { key: "Escape" });
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should apply size class sm", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}} size="sm">
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const modalBox = document.querySelector(".modal-box");
+    expect(modalBox?.classList.contains("max-w-sm")).toBe(true);
+  });
+
+  it("should apply size class md by default", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const modalBox = document.querySelector(".modal-box");
+    expect(modalBox?.classList.contains("max-w-lg")).toBe(true);
+  });
+
+  it("should apply size class lg", () => {
+    render(
+      <Modal isOpen={true} onClose={() => {}} size="lg">
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const modalBox = document.querySelector(".modal-box");
+    expect(modalBox?.classList.contains("max-w-2xl")).toBe(true);
+  });
+
+  it("should forward ref to the dialog element", () => {
+    const ref = { current: null as HTMLDialogElement | null };
+
+    render(
+      <Modal ref={ref} isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(ref.current).toBeInstanceOf(HTMLDialogElement);
+  });
+
+  it("should sync externalRef to the dialog element", () => {
+    const externalRef = { current: null as HTMLDialogElement | null };
+
+    render(
+      <Modal isOpen={true} onClose={() => {}} externalRef={externalRef}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(externalRef.current).toBeInstanceOf(HTMLDialogElement);
+  });
+
+  it("should open the dialog when isOpen becomes true", () => {
+    const handleClose = vi.fn();
+
+    const { rerender } = render(
+      <Modal isOpen={false} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    expect(dialog?.open).toBe(false);
+
+    rerender(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(dialog?.open).toBe(true);
+  });
+
+  it("should close the dialog when isOpen becomes false", () => {
+    const handleClose = vi.fn();
+
+    const { rerender } = render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    expect(dialog?.open).toBe(true);
+
+    rerender(
+      <Modal isOpen={false} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    expect(dialog?.open).toBe(false);
+  });
+
+  it("should not call onClose when non-Escape key is pressed", () => {
+    const handleClose = vi.fn();
+
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <p>Content</p>
+      </Modal>,
+    );
+
+    const dialog = document.querySelector("dialog");
+    fireEvent.keyDown(dialog!, { key: "Enter" });
+    expect(handleClose).not.toHaveBeenCalled();
   });
 });

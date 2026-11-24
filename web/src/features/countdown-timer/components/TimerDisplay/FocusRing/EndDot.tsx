@@ -1,12 +1,13 @@
 import useFocusRing from "@/features/countdown-timer/hooks/useFocusRing";
 
-const EndDot = () => {
+const EndDot = ({ isPulsing }: { isPulsing: boolean }) => {
   const { radius, angleDeg, CENTER } = useFocusRing();
 
   return (
     <circle
       className={
-        "fill-primary text-primary transition-transform duration-1000 ease-linear"
+        "fill-primary text-primary transition-transform duration-1000 ease-linear" +
+        (isPulsing ? " focus-ring-pulse" : "")
       }
       cx={CENTER + radius}
       cy={CENTER}
@@ -14,7 +15,9 @@ const EndDot = () => {
       style={{
         transformOrigin: `${CENTER / 16}rem ${CENTER / 16}rem`,
         transform: `rotate(${angleDeg}deg)`,
-        filter: "drop-shadow(0 0 0.25rem currentColor)",
+        ...(isPulsing
+          ? {}
+          : { filter: "drop-shadow(0 0 0.25rem currentColor)" }),
       }}
     />
   );

@@ -4,15 +4,22 @@ import type { PropsWithChildren } from "react";
 
 interface ThemeLabelProps {
   value: string;
+  onThemeChange?: (theme: string) => void;
 }
 
 const ThemeLabel = ({
   value,
   children,
+  onThemeChange,
 }: PropsWithChildren<ThemeLabelProps>) => {
   const currentTheme = useCurrentTheme();
   const setCurrentTheme = useSetCurrentTheme();
   const selected = currentTheme === value;
+
+  const handleChange = () => {
+    setCurrentTheme(value);
+    onThemeChange?.(value);
+  };
 
   return (
     <label className={"cursor-pointer"}>
@@ -23,17 +30,27 @@ const ThemeLabel = ({
         className={"sr-only"}
         value={value}
         checked={selected}
-        onChange={() => setCurrentTheme(value)}
+        onChange={handleChange}
       />
 
-      {/* The visible clickable square */}
-      <div className={"flex flex-col items-center gap-2"}>
+      {/* Card container */}
+      <div
+        className={`group bg-base-100 flex flex-col overflow-hidden rounded-xl border transition-all duration-500 ${
+          selected
+            ? "border-primary shadow-md"
+            : "border-base-300 hover:border-primary/50 hover:shadow-lg"
+        }`}
+      >
         <ThemePreview theme={value} selected={selected} />
-        <span
-          className={`text-sm font-semibold ${selected ? "text-primary" : ""}`}
-        >
-          {children}
-        </span>
+        <div className={"px-3 pt-2 pb-3"}>
+          <span
+            className={`text-sm font-semibold transition-colors duration-500 ${
+              selected ? "text-primary" : "text-base-content"
+            }`}
+          >
+            {children}
+          </span>
+        </div>
       </div>
     </label>
   );

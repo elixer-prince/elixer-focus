@@ -34,10 +34,10 @@ const mockPlayerInstance = {
 
 vi.mock("@/features/music-player/stores/store", () => ({
   useSetMusicPaused: () => mockSetMusicPaused,
-  useChosenSongId: () => 1,
+  useChosenSongId: () => "yLOM8R6lbzg",
   useSongs: () => [
     {
-      id: 1,
+      id: "yLOM8R6lbzg",
       title: "Calming White Noise",
       src: "https://www.youtube.com/watch?v=yLOM8R6lbzg",
       isRecommended: true,

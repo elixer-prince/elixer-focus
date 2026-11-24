@@ -2,6 +2,7 @@ import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownCo
 import useCountdownHelpers from "@/features/countdown-timer/hooks/useCountdownHelpers";
 import useCountdownInterval from "@/features/countdown-timer/hooks/useCountdownInterval";
 import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
+import useNotification from "@/features/countdown-timer/hooks/useNotification";
 import {
   useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
@@ -25,6 +26,7 @@ const useStartCountdown = () => {
     timerShouldNotBeActiveOnRefresh,
     handleEndedTimerWhileAway,
   } = useCountdownHelpers();
+  const { requestNotificationPermission } = useNotification();
 
   const timerPaused = useTimerPaused();
   const remainingTimeInSeconds = useRemainingTimeInSeconds();
@@ -32,11 +34,18 @@ const useStartCountdown = () => {
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const { timerOnClickSoundEffectRef, timerEndTimeRef, timerIntervalRef } =
-    useCountdownContext();
+  const {
+    timerOnClickSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerEndTimeRef,
+    timerIntervalRef,
+  } = useCountdownContext();
 
   const startCountdown = useCallback(() => {
     stopEndTicking();
+
+    // Reset the beep flag so it can play again when this session ends
+    hasPlayedEndBeepRef.current = false;
 
     setTimerPaused(false);
     setTimerRunning(true);
@@ -48,14 +57,20 @@ const useStartCountdown = () => {
     timerEndTimeRef.current = endTime;
     saveToLocalStorage("timerEndTime", endTime);
 
+    // Request notification permission so the desktop notification
+    // is ready by the time the timer ends
+    requestNotificationPermission();
+
     runInterval(endTime);
   }, [
     timerEndTimeRef,
+    hasPlayedEndBeepRef,
     remainingTimeInSeconds,
     runInterval,
     setTimerPaused,
     setTimerRunning,
     stopEndTicking,
+    requestNotificationPermission,
   ]);
 
   const startCountdownWithSound = () => {
@@ -87,6 +102,11 @@ const useStartCountdown = () => {
       return handleEndedTimerWhileAway();
 
     setRemainingTimeInSeconds(remainingSeconds);
+
+    // Request notification permission so the desktop notification
+    // is ready by the time the timer ends
+    requestNotificationPermission();
+
     runInterval(endTime);
   }, [
     timerEndTimeRef,
@@ -99,6 +119,7 @@ const useStartCountdown = () => {
     calculateNewRemainingSeconds,
     handleEndedTimerWhileAway,
     setRemainingTimeInSeconds,
+    requestNotificationPermission,
   ]);
 
   return {

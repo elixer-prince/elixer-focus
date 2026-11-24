@@ -3,9 +3,9 @@
 Expo (React Native) mobile companion. Currently the default Expo starter template; no product features yet.
 
 **Build approach:** Skateboard (MVP first; ship the thinnest usable whole, then grow).
-**Workflow:** Alpha (run /check verify after /develop). Project default level of rigor.
+**Workflow:** Prototype (just /develop, no separate verify or test steps). Fastest path for infrastructure work. Project default level of rigor.
 
-_These are recommendations to keep your build orderly, not requirements._
+_These are recommendations to keep your build orderly, not requirements. Skip anything that does not fit: if you already know how to build a feature, use /develop and skip /architect. You decide when a feature is done._
 
 ## At a glance
 
@@ -20,9 +20,9 @@ _These are recommendations to keep your build orderly, not requirements._
 
 ### 1. Expo app foundation · planned · needs a decision
 
-Scaffold the Expo router app, theming, and navigation beyond the starter template.
+Scaffold the Expo router app, theming, and navigation beyond the starter template. Before building mobile features, spec the navigation structure, theming approach, and how the mobile app will share code with the web app. Decide whether the mobile app uses the same DaisyUI themes (via Tailwind for React Native web) or a native theming approach. Set up the shared package dependency so the mobile app can import types immediately from packages/shared/.
 
-**Done when:** the app boots on device and mirrors web navigation.
+**Done when:** the app boots on device with custom navigation, theming that mirrors the web app, and access to shared types from the shared package.
 
 - [ ] Design it (spec): `/architect expo app foundation`
 
@@ -55,3 +55,4 @@ Port the music player to mobile.
 **Done when:** playback works on device.
 
 - [ ] Design it (spec): `/architect mobile music player`
+

@@ -5,8 +5,11 @@ const LinkContainer = () => {
   return (
     <ul className="max-sm:hidden">
       {settingsLinks.map((link) => (
-        <li key={link.name}>
-          <SidebarLink to={link.path}>{link.name}</SidebarLink>
+        <li key={link.to}>
+          <SidebarLink to={link.to}>
+            {link.icon}
+            {link.label}
+          </SidebarLink>
         </li>
       ))}
     </ul>

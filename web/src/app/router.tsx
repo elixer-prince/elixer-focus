@@ -1,6 +1,7 @@
 import AuthLayout from "@/app/layout/Auth";
 import DefaultLayout from "@/app/layout/Default";
 import SettingsLayout from "@/app/layout/Settings";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import HomeRoute from "@/app/routes/(root)/Index";
 import JournalRoute from "@/app/routes/(root)/Journal";
 import ProfileRoute from "@/app/routes/(root)/Profile";
@@ -15,7 +16,11 @@ import { createBrowserRouter } from "react-router";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <DefaultLayout />,
+    element: (
+      <ErrorBoundary>
+        <DefaultLayout />
+      </ErrorBoundary>
+    ),
     errorElement: <NotFoundRoute />,
     children: [
       {
@@ -38,7 +43,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <AuthLayout />,
+    element: (
+      <ErrorBoundary>
+        <AuthLayout />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: "login",
@@ -52,7 +61,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/settings",
-    element: <SettingsLayout />,
+    element: (
+      <ErrorBoundary>
+        <SettingsLayout />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: "",

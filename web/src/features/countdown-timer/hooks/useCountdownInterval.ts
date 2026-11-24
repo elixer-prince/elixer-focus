@@ -3,14 +3,16 @@ import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownCo
 import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import {
-  useResetElapsedTimeInSeconds,
-  useSetElapsedTimeInSeconds,
+  useResetSessionProgressInSeconds,
+  useSetSessionProgressInSeconds,
   useSetRemainingTimeInSeconds,
+  useSessionProgressInSeconds,
 } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionType,
   useSetPreviousSessionType,
 } from "@/features/countdown-timer/stores/session-store";
+import { useAddSession } from "@/features/countdown-timer/stores/session-history-store";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
 import {
   timerHasEnded,
@@ -28,32 +30,38 @@ const useCountdownInterval = () => {
   const { displayRemainingTimeInPageTitle } = usePageTitle();
   const { alertUserOfTimerEnd } = useCountdownAlerts();
 
-  const { timerBeepSoundEffectRef, timerIntervalRef, elapsedIntervalRef } =
-    useCountdownContext();
+  const {
+    timerBeepSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerIntervalRef,
+    sessionProgressIntervalRef,
+  } = useCountdownContext();
 
   const currentSessionType = useCurrentSessionType();
   const setPreviousSessionType = useSetPreviousSessionType();
-  const setElapsedTimeInSeconds = useSetElapsedTimeInSeconds();
-  const resetElapsedTimeInSeconds = useResetElapsedTimeInSeconds();
+  const setSessionProgressInSeconds = useSetSessionProgressInSeconds();
+  const resetSessionProgressInSeconds = useResetSessionProgressInSeconds();
+  const sessionProgressInSeconds = useSessionProgressInSeconds();
+  const addSession = useAddSession();
 
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
-  const resetElapsedTime = useCallback(() => {
-    clearIntervalIfItExists(elapsedIntervalRef);
-    resetElapsedTimeInSeconds();
-  }, [elapsedIntervalRef, resetElapsedTimeInSeconds]);
+  const resetSessionProgress = useCallback(() => {
+    clearIntervalIfItExists(sessionProgressIntervalRef);
+    resetSessionProgressInSeconds();
+  }, [sessionProgressIntervalRef, resetSessionProgressInSeconds]);
 
-  const createElapsedInterval = useCallback(() => {
-    if (elapsedIntervalRef.current) return;
+  const createSessionProgressInterval = useCallback(() => {
+    if (sessionProgressIntervalRef.current) return;
 
     const startTime = getCurrentTimestamp();
 
-    elapsedIntervalRef.current = setInterval(() => {
+    sessionProgressIntervalRef.current = setInterval(() => {
       const now = getCurrentTimestamp();
-      const elapsedSeconds = Math.floor((now - startTime) / 1000);
-      setElapsedTimeInSeconds(elapsedSeconds);
+      const progressSeconds = Math.floor((now - startTime) / 1000);
+      setSessionProgressInSeconds(progressSeconds);
     }, 100);
-  }, [setElapsedTimeInSeconds, elapsedIntervalRef]);
+  }, [setSessionProgressInSeconds, sessionProgressIntervalRef]);
 
   const createNewInterval = useCallback(
     (endTime: number) => {
@@ -70,28 +78,35 @@ const useCountdownInterval = () => {
         if (timerHasEnded(remainingSeconds)) {
           clearIntervalIfItExists(timerIntervalRef);
           stopEndTicking();
-          playSound(timerBeepSoundEffectRef.current);
+          if (!hasPlayedEndBeepRef.current) {
+            hasPlayedEndBeepRef.current = true;
+            playSound(timerBeepSoundEffectRef.current);
+          }
           setPreviousSessionType(currentSessionType);
-          alertUserOfTimerEnd();
+          addSession(currentSessionType, sessionProgressInSeconds);
+          alertUserOfTimerEnd(currentSessionType);
           autoSwitchSessionType();
-          resetElapsedTime();
-          createElapsedInterval();
+          resetSessionProgress();
+          createSessionProgressInterval();
         }
       }, 100);
     },
     [
       currentSessionType,
+      sessionProgressInSeconds,
       timerBeepSoundEffectRef,
+      hasPlayedEndBeepRef,
       timerIntervalRef,
+      addSession,
       autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,
-      resetElapsedTime,
+      resetSessionProgress,
       alertUserOfTimerEnd,
       displayRemainingTimeInPageTitle,
       setRemainingTimeInSeconds,
       setPreviousSessionType,
-      createElapsedInterval,
+      createSessionProgressInterval,
     ],
   );
 
@@ -99,11 +114,12 @@ const useCountdownInterval = () => {
     (endTime: number) => {
       clearIntervalIfItExists(timerIntervalRef);
       timerIntervalRef.current = createNewInterval(endTime);
+      createSessionProgressInterval();
     },
-    [timerIntervalRef, createNewInterval],
+    [timerIntervalRef, createNewInterval, createSessionProgressInterval],
   );
 
-  return { runInterval, resetElapsedTime };
+  return { runInterval, resetSessionProgress };
 };
 
 export default useCountdownInterval;

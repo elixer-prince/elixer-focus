@@ -12,3 +12,6 @@ docs
 
 # Generated daisyUI theme files
 web/src/app/themes/default/daisyui
+
+# Generated Playwright report
+web/playwright-report

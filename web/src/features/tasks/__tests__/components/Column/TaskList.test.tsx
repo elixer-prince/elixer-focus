@@ -9,6 +9,7 @@ vi.mock("@/features/tasks/stores/tasks-store", () => ({
   useAddTask: vi.fn(),
   useRemoveTask: vi.fn(),
   useToggleTaskCompletion: vi.fn(),
+  useUpdateTask: vi.fn(),
   useTasks: vi.fn(),
 }));
 

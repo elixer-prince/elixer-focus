@@ -1,6 +1,7 @@
 import {
   useChosenSongId,
   useMusicPaused,
+  useRemoveSong,
   useSetChosenSongId,
   useSongs,
 } from "@/features/music-player/stores/store";
@@ -8,16 +9,18 @@ import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerC
 import { getVideoId } from "@/features/music-player/utils/conversion";
 
 interface OptionProps {
-  id: number;
+  id: string;
   title: string;
   isRecommended: boolean;
+  isCustom?: boolean;
 }
 
-const Option = ({ id, title, isRecommended }: OptionProps) => {
+const Option = ({ id, title, isRecommended, isCustom }: OptionProps) => {
   const chosenSongId = useChosenSongId();
   const setChosenSongId = useSetChosenSongId();
   const musicPaused = useMusicPaused();
   const songs = useSongs();
+  const removeSong = useRemoveSong();
   const { playerInstanceRef, lastLoadedVideoIdRef } = useMusicPlayerContext();
 
   const handleSwitch = () => {
@@ -40,7 +43,7 @@ const Option = ({ id, title, isRecommended }: OptionProps) => {
   };
 
   return (
-    <li className="menu-item">
+    <li className="menu-item relative min-w-0">
       <label aria-label={`Switch to '${title}'`}>
         <input
           className="radio radio-primary radio-sm"
@@ -50,16 +53,34 @@ const Option = ({ id, title, isRecommended }: OptionProps) => {
           checked={chosenSongId === id}
         />
         <div
-          className={`flex flex-wrap items-center gap-2 ${chosenSongId === id ? "font-bold" : ""}`}
+          className={`flex flex-wrap items-center gap-1 ${chosenSongId === id ? "font-bold" : ""}`}
         >
           {isRecommended && (
             <span className="badge badge-sm badge-secondary badge-soft">
               Recommended
             </span>
           )}
-          <span className="w-34">{title}</span>
+          {isCustom && (
+            <span className="badge badge-sm badge-ghost badge-outline">
+              Custom
+            </span>
+          )}
+          <span className="min-w-0 break-words">{title}</span>
         </div>
       </label>
+      {isCustom && (
+        <button
+          type="button"
+          aria-label={`Remove '${title}'`}
+          className="btn btn-ghost btn-xs btn-circle text-error hover:text-error absolute top-1/2 right-1 -translate-y-1/2"
+          onClick={(e) => {
+            e.stopPropagation();
+            removeSong(id);
+          }}
+        >
+          ✕
+        </button>
+      )}
     </li>
   );
 };

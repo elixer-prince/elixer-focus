@@ -7,8 +7,11 @@ import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 
 const usePauseCountdown = () => {
-  const { timerOffClickSoundEffectRef, timerIntervalRef } =
-    useCountdownContext();
+  const {
+    timerOffClickSoundEffectRef,
+    timerIntervalRef,
+    sessionProgressIntervalRef,
+  } = useCountdownContext();
 
   const timerPaused = useTimerPaused();
   const setTimerPaused = useSetTimerPaused();
@@ -19,6 +22,7 @@ const usePauseCountdown = () => {
     playSound(timerOffClickSoundEffectRef.current);
     setTimerPaused(true);
     clearIntervalIfItExists(timerIntervalRef);
+    clearIntervalIfItExists(sessionProgressIntervalRef);
   };
 
   return { pauseCountdown };

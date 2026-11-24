@@ -2,19 +2,19 @@ import type { YTPlayer } from "@/features/music-player/types/player";
 import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
-  chosenSongId: 1,
+  chosenSongId: "alpha",
   musicPaused: true,
   volume: 55,
   setMusicPaused: vi.fn(),
   songs: [
     {
-      id: 1,
+      id: "alpha",
       title: "Song One",
       src: "https://www.youtube.com/watch?v=alpha",
       isRecommended: true,
     },
     {
-      id: 2,
+      id: "beta",
       title: "Song Two",
       src: "https://www.youtube.com/watch?v=beta",
       isRecommended: false,
@@ -87,19 +87,19 @@ describe("useMusicPlayer", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.chosenSongId = 1;
+    mocks.chosenSongId = "alpha";
     mocks.musicPaused = true;
     mocks.volume = 55;
     mocks.setMusicPaused = vi.fn();
     mocks.songs = [
       {
-        id: 1,
+        id: "alpha",
         title: "Song One",
         src: "https://www.youtube.com/watch?v=alpha",
         isRecommended: true,
       },
       {
-        id: 2,
+        id: "beta",
         title: "Song Two",
         src: "https://www.youtube.com/watch?v=beta",
         isRecommended: false,
@@ -395,7 +395,7 @@ describe("useMusicPlayer", () => {
 
   it("should log error when song is not found", () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    mocks.chosenSongId = 999;
+    mocks.chosenSongId = "nonexistent";
     const playerInstanceRef = createPlayerInstanceRef();
     const playerRef = createPlayerRef();
     mockPlayerInstanceRef.current = playerInstanceRef.current;
@@ -404,7 +404,9 @@ describe("useMusicPlayer", () => {
 
     renderHook(() => useMusicPlayer(), { wrapper: ContextWrapper });
 
-    expect(consoleSpy).toHaveBeenCalledWith("Song with id 999 not found");
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Song with id nonexistent not found",
+    );
     consoleSpy.mockRestore();
   });
 
@@ -739,7 +741,7 @@ describe("useMusicPlayer", () => {
   // the effect does not call any loading method when music is playing.
   it("should not call loadVideoById in effect when switching while music is playing", () => {
     // Start with song 1 playing
-    mocks.chosenSongId = 1;
+    mocks.chosenSongId = "alpha";
     mocks.musicPaused = false;
 
     const playerInstanceRef = createPlayerInstanceRef();
@@ -768,7 +770,7 @@ describe("useMusicPlayer", () => {
     ).mockClear();
 
     // Switch to song 2 while still playing (musicPaused is still false)
-    mocks.chosenSongId = 2;
+    mocks.chosenSongId = "beta";
     act(() => {
       rerender();
     });
@@ -781,7 +783,7 @@ describe("useMusicPlayer", () => {
 
   it("should play the new song when CUED state arrives after switching while playing", () => {
     // Start with song 1 playing
-    mocks.chosenSongId = 1;
+    mocks.chosenSongId = "alpha";
     mocks.musicPaused = false;
 
     const playerInstanceRef = {
@@ -830,7 +832,7 @@ describe("useMusicPlayer", () => {
       .onStateChange as (event: { data: number }) => void;
 
     // Switch to song 2 while playing - the effect sets shouldPlayAfterCueRef
-    mocks.chosenSongId = 2;
+    mocks.chosenSongId = "beta";
     act(() => {
       rerender();
     });
@@ -846,7 +848,7 @@ describe("useMusicPlayer", () => {
 
   it("should pause the new song when switching while music is paused", () => {
     // Start with song 1 paused
-    mocks.chosenSongId = 1;
+    mocks.chosenSongId = "alpha";
     mocks.musicPaused = true;
 
     const playerInstanceRef = createPlayerInstanceRef();
@@ -874,7 +876,7 @@ describe("useMusicPlayer", () => {
     ).mockClear();
 
     // Switch to song 2 while paused
-    mocks.chosenSongId = 2;
+    mocks.chosenSongId = "beta";
     act(() => {
       rerender();
     });
@@ -946,5 +948,110 @@ describe("useMusicPlayer", () => {
       onStateChange({ data: 1 }); // PLAYING
     });
     expect(mocks.setMusicPaused).not.toHaveBeenCalledWith(true);
+  });
+
+  it("should pause playback when the currently playing song is deleted", () => {
+    // Start with song "alpha" playing
+    mocks.chosenSongId = "alpha";
+    mocks.musicPaused = false;
+    mocks.songs = [
+      {
+        id: "alpha",
+        title: "Song One",
+        src: "https://www.youtube.com/watch?v=alpha",
+        isRecommended: true,
+      },
+      {
+        id: "beta",
+        title: "Song Two",
+        src: "https://www.youtube.com/watch?v=beta",
+        isRecommended: false,
+      },
+    ];
+
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+    mockPlayerInstanceRef.current = playerInstanceRef.current;
+    mockPlayerRef.current = playerRef.current;
+    mockIsControllingPlayerRef.current = false;
+
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
+
+    // Clear calls after initial render
+    (
+      playerInstanceRef.current.pauseVideo as ReturnType<typeof vi.fn>
+    ).mockClear();
+
+    // Simulate deleting "alpha" while it's playing: the store removes it from
+    // the songs array and switches chosenSongId to "beta"
+    mocks.chosenSongId = "beta";
+    mocks.songs = [
+      {
+        id: "beta",
+        title: "Song Two",
+        src: "https://www.youtube.com/watch?v=beta",
+        isRecommended: false,
+      },
+    ];
+
+    act(() => {
+      rerender();
+    });
+
+    // The player should be paused immediately because the previous song was
+    // deleted, not just switched
+    expect(playerInstanceRef.current.pauseVideo).toHaveBeenCalled();
+
+    // The store should also reflect the paused state so the UI shows the
+    // play button instead of the pause button
+    expect(mocks.setMusicPaused).toHaveBeenCalledWith(true);
+  });
+
+  it("should not pause playback when switching songs normally", () => {
+    // Start with song "alpha" playing
+    mocks.chosenSongId = "alpha";
+    mocks.musicPaused = false;
+    mocks.songs = [
+      {
+        id: "alpha",
+        title: "Song One",
+        src: "https://www.youtube.com/watch?v=alpha",
+        isRecommended: true,
+      },
+      {
+        id: "beta",
+        title: "Song Two",
+        src: "https://www.youtube.com/watch?v=beta",
+        isRecommended: false,
+      },
+    ];
+
+    const playerInstanceRef = createPlayerInstanceRef();
+    const playerRef = createPlayerRef();
+    mockPlayerInstanceRef.current = playerInstanceRef.current;
+    mockPlayerRef.current = playerRef.current;
+    mockIsControllingPlayerRef.current = false;
+
+    const { rerender } = renderHook(() => useMusicPlayer(), {
+      wrapper: ContextWrapper,
+    });
+
+    // Clear calls after initial render
+    (
+      playerInstanceRef.current.pauseVideo as ReturnType<typeof vi.fn>
+    ).mockClear();
+
+    // Switch to "beta" normally (both songs still in the list)
+    mocks.chosenSongId = "beta";
+
+    act(() => {
+      rerender();
+    });
+
+    // The player should NOT be paused because the previous song still exists
+    // (normal switch, not a delete)
+    expect(playerInstanceRef.current.pauseVideo).not.toHaveBeenCalled();
   });
 });

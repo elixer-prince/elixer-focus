@@ -1,40 +1,105 @@
-import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
-import { usePreviousSessionType } from "@/features/countdown-timer/stores/session-store";
-import { useElapsedTimeInSeconds } from "@/features/countdown-timer/stores/countdown-store";
-import { formatElapsedTime } from "@/utils/formatting";
+import {
+  type PropsWithChildren,
+  type RefObject,
+  useRef,
+  useEffect,
+  forwardRef,
+} from "react";
 
-const Modal = () => {
-  const { modalRef } = useCountdownContext();
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  showCloseButton?: boolean;
+  size?: "sm" | "md" | "lg";
+  externalRef?: RefObject<HTMLDialogElement | null>;
+}
 
-  const previousSessionType = usePreviousSessionType();
-  const elapsedTimeInSeconds = useElapsedTimeInSeconds();
+const Modal = forwardRef<HTMLDialogElement, PropsWithChildren<ModalProps>>(
+  (
+    {
+      isOpen,
+      onClose,
+      title,
+      showCloseButton = true,
+      size = "md",
+      externalRef,
+      children,
+    },
+    ref,
+  ) => {
+    const internalRef = useRef<HTMLDialogElement | null>(null);
+    const resolvedRef = (ref ??
+      internalRef) as RefObject<HTMLDialogElement | null>;
 
-  return (
-    <dialog ref={modalRef} className="modal">
-      <div className="modal-box">
-        <div className="text-center">
-          <h2 className="modal-header text-2xl font-bold">
-            Your <span className="text-primary">{previousSessionType}</span>{" "}
-            Session has ended!
-          </h2>
+    useEffect(() => {
+      if (externalRef) {
+        externalRef.current = resolvedRef.current;
+      }
+    }, [externalRef, resolvedRef]);
 
-          <p className="elapsed-paragraph mt-2 mb-3 font-bold">
-            You went over by{" "}
-            <span className="elapsed-time text-error text-2xl">
-              {formatElapsedTime(elapsedTimeInSeconds)}
-            </span>
-            .
-          </p>
+    useEffect(() => {
+      const dialog = resolvedRef.current;
+      if (!dialog) return;
+
+      if (isOpen) {
+        dialog.showModal();
+      } else {
+        dialog.close();
+      }
+    }, [isOpen, resolvedRef]);
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+      if (e.target === resolvedRef.current) {
+        onClose();
+      }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const sizeClasses = {
+      sm: "max-w-sm",
+      md: "max-w-lg",
+      lg: "max-w-2xl",
+    };
+
+    return (
+      <dialog
+        ref={resolvedRef}
+        className="modal backdrop-blur-sm"
+        onClick={handleBackdropClick}
+        onKeyDown={handleKeyDown}
+      >
+        <div className={`modal-box ${sizeClasses[size]} p-6`}>
+          {title && (
+            <h3 className="text-xl leading-tight font-bold tracking-tight">
+              {title}
+            </h3>
+          )}
+
+          <div className="mt-4">{children}</div>
+
+          {showCloseButton && (
+            <div className="modal-action">
+              <button
+                type="button"
+                className="btn btn-sm btn-ghost normal-case"
+                onClick={onClose}
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
+      </dialog>
+    );
+  },
+);
 
-        <div className="flex justify-center">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
-        </div>
-      </div>
-    </dialog>
-  );
-};
+Modal.displayName = "Modal";
 
 export default Modal;

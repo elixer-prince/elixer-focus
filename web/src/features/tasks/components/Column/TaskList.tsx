@@ -40,7 +40,15 @@ const TaskList = ({
 
       {tasks.map(
         (
-          { id, title, description, category, isCompleted, isSelected },
+          {
+            id,
+            title,
+            description,
+            category,
+            isCompleted,
+            isSelected,
+            updatedAt,
+          },
           index,
         ) => (
           <Task
@@ -51,6 +59,7 @@ const TaskList = ({
             description={description}
             isCompleted={isCompleted}
             isSelected={isSelected}
+            updatedAt={updatedAt}
             index={index}
           />
         ),

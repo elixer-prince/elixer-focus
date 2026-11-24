@@ -16,6 +16,8 @@ export interface YTPlayer {
   setVolume: (volume: number) => void;
   getVolume: () => number;
   getPlayerState: () => number;
+  getCurrentTime: () => number;
+  getDuration: () => number;
   // Add any other methods you use
 }
 

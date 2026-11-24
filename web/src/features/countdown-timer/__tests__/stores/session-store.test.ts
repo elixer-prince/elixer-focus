@@ -12,9 +12,6 @@ describe("Session Store", () => {
       useFocusDuration,
       useShortBreakDuration,
       useLongBreakDuration,
-      useCustomSessionDuration,
-      useCustomSessionType,
-      useCustomSessionInputShown,
       useSessionCountLimit,
       useCurrentSessionType,
       usePreviousSessionType,
@@ -25,13 +22,6 @@ describe("Session Store", () => {
     expect(renderHook(() => useFocusDuration()).result.current).toBe(25);
     expect(renderHook(() => useShortBreakDuration()).result.current).toBe(5);
     expect(renderHook(() => useLongBreakDuration()).result.current).toBe(15);
-    expect(renderHook(() => useCustomSessionDuration()).result.current).toBe(0);
-    expect(renderHook(() => useCustomSessionType()).result.current).toBe(
-      "Custom Focus",
-    );
-    expect(renderHook(() => useCustomSessionInputShown()).result.current).toBe(
-      false,
-    );
     expect(renderHook(() => useSessionCountLimit()).result.current).toBe(4);
     expect(renderHook(() => useCurrentSessionType()).result.current).toBe(
       "Focus",
@@ -50,19 +40,14 @@ describe("Session Store", () => {
       useSetFocusDuration,
       useSetShortBreakDuration,
       useSetLongBreakDuration,
-      useSetCustomSessionDuration,
       useFocusDuration,
       useShortBreakDuration,
       useLongBreakDuration,
-      useCustomSessionDuration,
     } = await loadStore();
 
     const focusDuration = renderHook(() => useFocusDuration()).result;
     const shortBreakDuration = renderHook(() => useShortBreakDuration()).result;
     const longBreakDuration = renderHook(() => useLongBreakDuration()).result;
-    const customSessionDuration = renderHook(() =>
-      useCustomSessionDuration(),
-    ).result;
 
     const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
     const setShortBreakDuration = renderHook(() =>
@@ -71,53 +56,34 @@ describe("Session Store", () => {
     const setLongBreakDuration = renderHook(() =>
       useSetLongBreakDuration(),
     ).result;
-    const setCustomSessionDuration = renderHook(() =>
-      useSetCustomSessionDuration(),
-    ).result;
 
     act(() => {
       setFocusDuration.current(30);
       setShortBreakDuration.current(8);
       setLongBreakDuration.current(20);
-      setCustomSessionDuration.current(12);
     });
 
     expect(focusDuration.current).toBe(30);
     expect(shortBreakDuration.current).toBe(8);
     expect(longBreakDuration.current).toBe(20);
-    expect(customSessionDuration.current).toBe(12);
   });
 
   it("should update session options and types", async () => {
     const {
-      useSetCustomSessionType,
-      useSetCustomSessionInputShown,
       useSetSessionCountLimit,
       useSetCurrentSessionType,
       useSetPreviousSessionType,
-      useCustomSessionType,
-      useCustomSessionInputShown,
       useSessionCountLimit,
       useCurrentSessionType,
       usePreviousSessionType,
     } = await loadStore();
 
-    const customSessionType = renderHook(() => useCustomSessionType()).result;
-    const customSessionInputShown = renderHook(() =>
-      useCustomSessionInputShown(),
-    ).result;
     const sessionCountLimit = renderHook(() => useSessionCountLimit()).result;
     const currentSessionType = renderHook(() => useCurrentSessionType()).result;
     const previousSessionType = renderHook(() =>
       usePreviousSessionType(),
     ).result;
 
-    const setCustomSessionType = renderHook(() =>
-      useSetCustomSessionType(),
-    ).result;
-    const setCustomSessionInputShown = renderHook(() =>
-      useSetCustomSessionInputShown(),
-    ).result;
     const setSessionCountLimit = renderHook(() =>
       useSetSessionCountLimit(),
     ).result;
@@ -129,15 +95,11 @@ describe("Session Store", () => {
     ).result;
 
     act(() => {
-      setCustomSessionType.current("Custom Break");
-      setCustomSessionInputShown.current(true);
       setSessionCountLimit.current(6);
       setCurrentSessionType.current("Short Break");
       setPreviousSessionType.current("Focus");
     });
 
-    expect(customSessionType.current).toBe("Custom Break");
-    expect(customSessionInputShown.current).toBe(true);
     expect(sessionCountLimit.current).toBe(6);
     expect(currentSessionType.current).toBe("Short Break");
     expect(previousSessionType.current).toBe("Focus");
@@ -187,5 +149,67 @@ describe("Session Store", () => {
     });
 
     expect(totalSessionsCompleted.current).toBe(9);
+  });
+
+  describe("persist configuration", () => {
+    it("should declare version 1 in the persist config", async () => {
+      const { useSetFocusDuration } = await loadStore();
+
+      const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
+
+      act(() => {
+        setFocusDuration.current(30);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(1);
+    });
+
+    it("should include the session state in the persisted data", async () => {
+      const { useSetFocusDuration } = await loadStore();
+
+      const setFocusDuration = renderHook(() => useSetFocusDuration()).result;
+
+      act(() => {
+        setFocusDuration.current(30);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("focusDuration");
+      expect(parsed.state).toHaveProperty("currentSessionType");
+    });
+
+    it("should restore session state from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const firstStore = await import(
+        "@/features/countdown-timer/stores/session-store"
+      );
+
+      const setFocusDuration = renderHook(() =>
+        firstStore.useSetFocusDuration(),
+      ).result;
+
+      act(() => {
+        setFocusDuration.current(45);
+      });
+
+      const stored = localStorage.getItem("session-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const reloadedStore = await import(
+        "@/features/countdown-timer/stores/session-store"
+      );
+
+      expect(
+        renderHook(() => reloadedStore.useFocusDuration()).result.current,
+      ).toBe(45);
+    });
   });
 });

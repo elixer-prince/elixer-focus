@@ -1,6 +1,7 @@
 import MusicSwitcher from "@/features/music-player/components/MusicSwitcher/Index";
 import PauseButton from "@/features/music-player/components/PauseButton";
 import PlayButton from "@/features/music-player/components/PlayButton";
+import ProgressDisplay from "@/features/music-player/components/ProgressDisplay";
 import VolumeControls from "@/features/music-player/components/Volume Controls/Index";
 import useMusicPlayer from "@/features/music-player/hooks/useMusicPlayer";
 import useMusicPlayerContext from "@/features/music-player/hooks/useMusicPlayerContext";
@@ -22,6 +23,8 @@ const MusicPlayer = () => {
       <div ref={playerRef} className="hidden"></div>
 
       <MusicSwitcher />
+
+      <ProgressDisplay />
 
       {musicPaused ? <PlayButton /> : <PauseButton />}
 

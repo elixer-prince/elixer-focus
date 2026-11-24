@@ -1,10 +1,14 @@
+import { MdTimer, MdPalette } from "react-icons/md";
+
 export const settingsLinks = [
   {
-    name: "Themes",
-    path: "/settings/themes",
+    label: "Timer",
+    to: "/settings/timer",
+    icon: <MdTimer size={20} />,
   },
   {
-    name: "Timer",
-    path: "/settings/timer",
+    label: "Themes",
+    to: "/settings/themes",
+    icon: <MdPalette size={20} />,
   },
 ];

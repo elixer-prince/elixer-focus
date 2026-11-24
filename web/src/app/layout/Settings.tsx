@@ -1,13 +1,19 @@
-import useCountdownTimer from "@/features/countdown-timer/hooks/useCountdownTimer";
+import TimerModal from "@/features/countdown-timer/components/TimerModal";
+import SessionReflectionModal from "@/features/journal/components/SessionReflection/Modal";
 import Sidebar from "@/features/ui/navigation/Sidebar/Settings/components/Index";
+import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 
 const SettingsLayout = () => {
-  useCountdownTimer();
-
   return (
     <>
       <Sidebar />
+
+      <Toaster />
+
+      <TimerModal />
+
+      <SessionReflectionModal />
 
       <main
         className={

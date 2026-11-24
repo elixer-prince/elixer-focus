@@ -7,13 +7,14 @@ import {
 } from "@/features/tasks/stores/tasks-store";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
-import {
-  DragDropProvider,
-  KeyboardSensor,
-  PointerSensor,
-} from "@dnd-kit/react";
+import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import type { DragEndEvent, DragOverEvent } from "@dnd-kit/dom";
+import {
+  KeyboardSensor,
+  PointerActivationConstraints,
+  type DragEndEvent,
+  type DragOverEvent,
+} from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useCallback, useRef, useState } from "react";
 
@@ -84,8 +85,8 @@ const Tasks = () => {
           }));
         }
         setTasks(flattenTasks(result));
-      } catch (error) {
-        console.error("Drag over handler error:", error);
+      } catch {
+        // Drag over handler error; revert to previous state
       }
     },
     [setTasks],
@@ -106,7 +107,30 @@ const Tasks = () => {
       <TaskPageHeader isDragging={isDragging} />
 
       <DragDropProvider
-        sensors={[PointerSensor, KeyboardSensor]}
+        sensors={[
+          PointerSensor.configure({
+            activationConstraints: [
+              new PointerActivationConstraints.Distance({ value: 5 }),
+              new PointerActivationConstraints.Delay({
+                value: 200,
+                tolerance: 10,
+              }),
+            ],
+            preventActivation: (event, source) => {
+              // Only allow pointer drag to start from the drag handle
+              const handle = source.element?.querySelector(
+                '[aria-label="Drag to reorder"]',
+              );
+              if (!handle) {
+                return false;
+              }
+              return !(
+                event.target instanceof Node && handle.contains(event.target)
+              );
+            },
+          }),
+          KeyboardSensor,
+        ]}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createPersistOptions, persist, simpleMigrate } from "./persist-config";
 
 type ThemeState = {
   currentTheme: string;
@@ -15,7 +15,11 @@ const useThemeStore = create<ThemeState & ThemeActions>()(
       currentTheme: "dark",
       setCurrentTheme: (theme: string) => set(() => ({ currentTheme: theme })),
     }),
-    { name: "theme-storage" },
+    createPersistOptions<ThemeState & ThemeActions>({
+      name: "theme-storage",
+      version: 1,
+      migrate: simpleMigrate<ThemeState & ThemeActions>,
+    }),
   ),
 );
 

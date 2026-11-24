@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "/Applications/WebStorm.app/Contents/plugins/chromeConnect/bin/chrome-devtools",
+      "args": [
+        "start",
+        "--executablePath",
+        "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+        "--isolated"
+      ]
+    }
+  }
+}

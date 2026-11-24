@@ -13,7 +13,7 @@ describe("Countdown Timer Store", () => {
       useTimerPaused,
       useRemainingTimeInSeconds,
       useStartTimeInMinutes,
-      useElapsedTimeInSeconds,
+      useSessionProgressInSeconds,
     } = await loadStore();
 
     expect(renderHook(() => useTimerRunning()).result.current).toBe(false);
@@ -22,7 +22,9 @@ describe("Countdown Timer Store", () => {
       1500,
     );
     expect(renderHook(() => useStartTimeInMinutes()).result.current).toBe(25);
-    expect(renderHook(() => useElapsedTimeInSeconds()).result.current).toBe(0);
+    expect(renderHook(() => useSessionProgressInSeconds()).result.current).toBe(
+      0,
+    );
   });
 
   it("should update countdown state values", async () => {
@@ -31,12 +33,12 @@ describe("Countdown Timer Store", () => {
       useTimerPaused,
       useRemainingTimeInSeconds,
       useStartTimeInMinutes,
-      useElapsedTimeInSeconds,
+      useSessionProgressInSeconds,
       useSetTimerRunning,
       useSetTimerPaused,
       useSetRemainingTimeInSeconds,
       useSetStartTimeInMinutes,
-      useSetElapsedTimeInSeconds,
+      useSetSessionProgressInSeconds,
     } = await loadStore();
 
     const timerRunning = renderHook(() => useTimerRunning()).result;
@@ -45,8 +47,8 @@ describe("Countdown Timer Store", () => {
       useRemainingTimeInSeconds(),
     ).result;
     const startTimeInMinutes = renderHook(() => useStartTimeInMinutes()).result;
-    const elapsedTimeInSeconds = renderHook(() =>
-      useElapsedTimeInSeconds(),
+    const sessionProgressInSeconds = renderHook(() =>
+      useSessionProgressInSeconds(),
     ).result;
 
     const setTimerRunning = renderHook(() => useSetTimerRunning()).result;
@@ -57,8 +59,8 @@ describe("Countdown Timer Store", () => {
     const setStartTimeInMinutes = renderHook(() =>
       useSetStartTimeInMinutes(),
     ).result;
-    const setElapsedTimeInSeconds = renderHook(() =>
-      useSetElapsedTimeInSeconds(),
+    const setSessionProgressInSeconds = renderHook(() =>
+      useSetSessionProgressInSeconds(),
     ).result;
 
     act(() => {
@@ -66,43 +68,108 @@ describe("Countdown Timer Store", () => {
       setTimerPaused.current(false);
       setRemainingTimeInSeconds.current(123);
       setStartTimeInMinutes.current(12);
-      setElapsedTimeInSeconds.current(45);
+      setSessionProgressInSeconds.current(45);
     });
 
     expect(timerRunning.current).toBe(true);
     expect(timerPaused.current).toBe(false);
     expect(remainingTimeInSeconds.current).toBe(123);
     expect(startTimeInMinutes.current).toBe(12);
-    expect(elapsedTimeInSeconds.current).toBe(45);
+    expect(sessionProgressInSeconds.current).toBe(45);
   });
 
-  it("should reset elapsed time", async () => {
+  it("should reset session progress", async () => {
     const {
-      useElapsedTimeInSeconds,
-      useSetElapsedTimeInSeconds,
-      useResetElapsedTimeInSeconds,
+      useSessionProgressInSeconds,
+      useSetSessionProgressInSeconds,
+      useResetSessionProgressInSeconds,
     } = await loadStore();
 
-    const elapsedTimeInSeconds = renderHook(() =>
-      useElapsedTimeInSeconds(),
+    const sessionProgressInSeconds = renderHook(() =>
+      useSessionProgressInSeconds(),
     ).result;
-    const setElapsedTimeInSeconds = renderHook(() =>
-      useSetElapsedTimeInSeconds(),
+    const setSessionProgressInSeconds = renderHook(() =>
+      useSetSessionProgressInSeconds(),
     ).result;
-    const resetElapsedTimeInSeconds = renderHook(() =>
-      useResetElapsedTimeInSeconds(),
+    const resetSessionProgressInSeconds = renderHook(() =>
+      useResetSessionProgressInSeconds(),
     ).result;
 
     act(() => {
-      setElapsedTimeInSeconds.current(99);
+      setSessionProgressInSeconds.current(99);
     });
 
-    expect(elapsedTimeInSeconds.current).toBe(99);
+    expect(sessionProgressInSeconds.current).toBe(99);
 
     act(() => {
-      resetElapsedTimeInSeconds.current();
+      resetSessionProgressInSeconds.current();
     });
 
-    expect(elapsedTimeInSeconds.current).toBe(0);
+    expect(sessionProgressInSeconds.current).toBe(0);
+  });
+
+  describe("persist configuration", () => {
+    it("should declare version 3 in the persist config", async () => {
+      const { useSetStartTimeInMinutes } = await loadStore();
+
+      const setStartTimeInMinutes = renderHook(() =>
+        useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTimeInMinutes.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(3);
+    });
+
+    it("should include the countdown state in the persisted data", async () => {
+      const { useSetStartTimeInMinutes } = await loadStore();
+
+      const setStartTimeInMinutes = renderHook(() =>
+        useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTimeInMinutes.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("startTimeInMinutes");
+    });
+
+    it("should restore countdown state from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const firstStore = await import(
+        "@/features/countdown-timer/stores/countdown-store"
+      );
+
+      const setStartTime = renderHook(() =>
+        firstStore.useSetStartTimeInMinutes(),
+      ).result;
+
+      act(() => {
+        setStartTime.current(20);
+      });
+
+      const stored = localStorage.getItem("countdown-timer-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const reloadedStore = await import(
+        "@/features/countdown-timer/stores/countdown-store"
+      );
+
+      expect(
+        renderHook(() => reloadedStore.useStartTimeInMinutes()).result.current,
+      ).toBe(20);
+    });
   });
 });

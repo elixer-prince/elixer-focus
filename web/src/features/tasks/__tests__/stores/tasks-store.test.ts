@@ -16,6 +16,7 @@ const createTask = (id: string, title: string, category?: TaskCategory) => ({
   isCompleted: false,
   isSelected: false,
   createdAt: 0,
+  updatedAt: 0,
 });
 
 const randomUUIDMock = vi.fn();
@@ -81,6 +82,7 @@ describe("Tasks Store", () => {
         isCompleted: false,
         isSelected: false,
         createdAt: 123456,
+        updatedAt: 123456,
       });
     });
 
@@ -165,6 +167,188 @@ describe("Tasks Store", () => {
       const unaffectedTask = getTasks().find((t) => t.id === "2");
 
       expect(unaffectedTask?.isCompleted).toBe(false);
+    });
+  });
+
+  describe("updateTask", () => {
+    it("should update the title of a specific task", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+
+      act(() => {
+        updateTask("1", { title: "Updated Title" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.title).toBe("Updated Title");
+    });
+
+    it("should update the description of a specific task", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+
+      act(() => {
+        updateTask("1", { description: "New description" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.description).toBe("New description");
+    });
+
+    it("should update both title and description at once", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+
+      act(() => {
+        updateTask("1", { title: "Both Updated", description: "Both fields" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.title).toBe("Both Updated");
+      expect(task?.description).toBe("Both fields");
+    });
+
+    it("should clear the description when setting it to undefined", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+
+      act(() => {
+        updateTask("1", { description: undefined });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.description).toBeUndefined();
+    });
+
+    it("should not affect other tasks", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+
+      act(() => {
+        updateTask("1", { title: "Only Task 1" });
+      });
+
+      const unaffectedTask = getTasks().find((t) => t.id === "2");
+
+      expect(unaffectedTask?.title).toBe("Task 2");
+    });
+
+    it("should not update a non-existent task", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+      const originalTasks = getTasks();
+
+      act(() => {
+        updateTask("999", { title: "Ghost" });
+      });
+
+      expect(getTasks()).toEqual(originalTasks);
+    });
+
+    it("should update the updatedAt timestamp", () => {
+      const updateTask = useTasksStore.getState().updateTask;
+      getCurrentTimestampMock.mockReturnValue(99999);
+
+      act(() => {
+        updateTask("1", { title: "Updated Title" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.updatedAt).toBe(99999);
+    });
+  });
+
+  describe("toggleTaskCompletion updatedAt", () => {
+    it("should update the updatedAt timestamp when toggling completion", () => {
+      const toggleTaskCompletion =
+        useTasksStore.getState().toggleTaskCompletion;
+      getCurrentTimestampMock.mockReturnValue(88888);
+
+      act(() => {
+        toggleTaskCompletion("1", true);
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+
+      expect(task?.updatedAt).toBe(88888);
+    });
+  });
+
+  describe("migration", () => {
+    it("should backfill updatedAt with createdAt for v1 data", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      // Simulate v1 data without updatedAt
+      const v1Data = JSON.stringify({
+        state: {
+          tasks: [
+            {
+              id: "1",
+              title: "Old Task",
+              category: "uncategorised",
+              isCompleted: false,
+              isSelected: false,
+              createdAt: 12345,
+            },
+          ],
+        },
+        version: 1,
+      });
+      localStorage.setItem("tasks-storage", v1Data);
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const tasks = ReloadedStore.getState().tasks;
+      expect(tasks.length).toBe(1);
+      expect(tasks[0].updatedAt).toBe(12345);
+    });
+  });
+
+  describe("persist configuration", () => {
+    it("should declare version 2 in the persist config", () => {
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.version).toBe(2);
+    });
+
+    it("should include the tasks state in the persisted data", () => {
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.state).toHaveProperty("tasks");
+    });
+
+    it("should restore tasks from localStorage on reload", async () => {
+      localStorage.clear();
+      vi.resetModules();
+
+      const { useTasksStore: FreshStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      act(() => {
+        FreshStore.getState().addTask(
+          "Persisted Task",
+          "Test",
+          "urgent-important",
+        );
+      });
+
+      const stored = localStorage.getItem("tasks-storage");
+      expect(stored).not.toBeNull();
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const tasks = ReloadedStore.getState().tasks;
+      expect(tasks.length).toBe(1);
+      expect(tasks[0].title).toBe("Persisted Task");
     });
   });
 });

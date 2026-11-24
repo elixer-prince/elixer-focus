@@ -1,31 +1,26 @@
+import { Input } from "@/components/ui";
 import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext";
 import useValidation from "@/features/settings/timer/hooks/useValidation";
 
 const LongBreakContainer = () => {
   const { validateAndSet } = useValidation();
   const { draftLongBreak, setDraftLongBreak } = useTimerSettingsContext();
+  const isError = Boolean(draftLongBreak && Number(draftLongBreak) < 5);
 
   return (
-    <div>
-      <label className={"mb-2 block text-sm font-medium"}>
-        Long Break (minutes)
-      </label>
-      <input
-        type={"number"}
-        value={draftLongBreak}
-        onChange={(e) => {
-          validateAndSet(e.target.value, setDraftLongBreak, 5);
-        }}
-        className={"input input-primary"}
-        min={5}
-        placeholder={"15"}
-      />
-      {draftLongBreak && Number(draftLongBreak) < 5 && (
-        <p className={"mt-1 text-sm text-red-500"}>
-          Must be at least 5 minutes
-        </p>
-      )}
-    </div>
+    <Input
+      type="number"
+      inputSize="lg"
+      label="Minutes"
+      value={draftLongBreak}
+      onChange={(e) => {
+        validateAndSet(e.target.value, setDraftLongBreak, 5);
+      }}
+      error={isError}
+      helperText={isError ? "Must be at least 5 minutes" : undefined}
+      min={5}
+      placeholder="15"
+    />
   );
 };
 

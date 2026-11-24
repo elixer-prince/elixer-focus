@@ -5,13 +5,13 @@ export const playVideo = (playerRef: RefObject<YTPlayer | null>): void => {
   const player = playerRef.current;
 
   if (!player) {
-    return console.warn("YouTube player not available");
+    return;
   }
 
   try {
     player.playVideo();
-  } catch (error) {
-    console.error(`Failed to play video: ${error}`);
+  } catch {
+    // Failed to play video
   }
 };
 
@@ -19,12 +19,12 @@ export const pauseVideo = (playerRef: RefObject<YTPlayer | null>): void => {
   const player = playerRef.current;
 
   if (!player) {
-    return console.warn("YouTube player not available");
+    return;
   }
 
   try {
     player.pauseVideo();
-  } catch (error) {
-    console.error(`Failed to pause video: ${error}`);
+  } catch {
+    // Failed to pause video
   }
 };

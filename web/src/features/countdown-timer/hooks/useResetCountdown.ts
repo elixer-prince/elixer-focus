@@ -3,7 +3,6 @@ import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountd
 import usePageTitle from "@/hooks/usePageTitle";
 import {
   useCurrentSessionType,
-  useCustomSessionDuration,
   useFocusDuration,
   useLongBreakDuration,
   useShortBreakDuration,
@@ -13,16 +12,20 @@ import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 
 const useResetCountdown = () => {
-  const { resetTimerSoundEffectRef, timerIntervalRef } = useCountdownContext();
-  const { resetPageTitle } = usePageTitle();
+  const {
+    resetTimerSoundEffectRef,
+    hasPlayedEndBeepRef,
+    timerIntervalRef,
+    sessionProgressIntervalRef,
+  } = useCountdownContext();
   const { resetTimerStorage } = useCountdownTimerStorage();
+  const { resetPageTitle } = usePageTitle();
 
   const timerRunning = useTimerRunning();
 
   const focusDuration = useFocusDuration();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
-  const customSessionDuration = useCustomSessionDuration();
   const currentSessionType = useCurrentSessionType();
 
   const calculateInitialTime = (): number => {
@@ -33,13 +36,15 @@ const useResetCountdown = () => {
         return shortBreakDuration;
       case "Long Break":
         return longBreakDuration;
-      case "Custom":
-        return customSessionDuration;
     }
   };
 
   const resetCountdown = () => {
     clearIntervalIfItExists(timerIntervalRef);
+    clearIntervalIfItExists(sessionProgressIntervalRef);
+
+    // Reset the beep flag so a new timer cycle can play the beep
+    hasPlayedEndBeepRef.current = false;
 
     const initialTime = calculateInitialTime();
 
