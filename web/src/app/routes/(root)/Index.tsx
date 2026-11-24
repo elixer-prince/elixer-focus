@@ -1,9 +1,23 @@
 import CountdownTimerContainer from "@/features/countdown-timer/components/Index";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
-import { useTasks } from "@/features/tasks/stores/tasks-store";
+import {
+  useSetTasks,
+  useTasks,
+  useTasksStore,
+} from "@/features/tasks/stores/tasks-store";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import { move } from "@dnd-kit/helpers";
+import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
+import { isSortable } from "@dnd-kit/react/sortable";
+import {
+  KeyboardSensor,
+  PointerActivationConstraints,
+  type DragEndEvent,
+  type DragOverEvent,
+} from "@dnd-kit/dom";
 import usePageTitle from "@/hooks/usePageTitle";
+import { useCallback, useRef, useState } from "react";
 
 const CATEGORY_PRIORITY: TaskCategory[] = [
   "urgent-important",
@@ -12,6 +26,42 @@ const CATEGORY_PRIORITY: TaskCategory[] = [
   "not-urgent-not-important",
   "uncategorised",
 ];
+
+const CATEGORY_LABELS: Record<TaskCategory, string> = {
+  "urgent-important": "Urgent and Important",
+  "not-urgent-important": "Not Urgent but Important",
+  "urgent-not-important": "Urgent but Not Important",
+  "not-urgent-not-important": "Not Urgent nor Important",
+  uncategorised: "Uncategorised",
+};
+
+type GroupedTasks = Record<TaskCategory, Task[]>;
+
+const CATEGORIES: TaskCategory[] = [
+  "urgent-important",
+  "not-urgent-important",
+  "urgent-not-important",
+  "not-urgent-not-important",
+  "uncategorised",
+];
+
+function groupByCategory(tasks: Task[]): GroupedTasks {
+  const grouped: GroupedTasks = {
+    "urgent-important": [],
+    "not-urgent-important": [],
+    "urgent-not-important": [],
+    "not-urgent-not-important": [],
+    uncategorised: [],
+  };
+  for (const task of tasks) {
+    grouped[task.category].push(task);
+  }
+  return grouped;
+}
+
+function flattenTasks(grouped: GroupedTasks): Task[] {
+  return CATEGORIES.flatMap((cat) => grouped[cat]);
+}
 
 function getActiveCategory(tasks: Task[]) {
   for (const category of CATEGORY_PRIORITY) {
@@ -30,6 +80,56 @@ const HomeRoute = () => {
   const tasks = useTasks();
   const activeCategory = getActiveCategory(tasks);
 
+  const setTasks = useSetTasks();
+  const previousTasks = useRef<Task[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragStart = useCallback(() => {
+    previousTasks.current = useTasksStore.getState().tasks;
+    setIsDragging(true);
+  }, []);
+
+  const handleDragOver = useCallback(
+    (event: Parameters<DragOverEvent>[0]) => {
+      try {
+        const { source } = event.operation;
+        if (!isSortable(source)) return;
+
+        const currentTasks = useTasksStore.getState().tasks;
+        const grouped = groupByCategory(currentTasks);
+        const moved = move(grouped, event);
+
+        const result: GroupedTasks = {
+          "urgent-important": [],
+          "not-urgent-important": [],
+          "urgent-not-important": [],
+          "not-urgent-not-important": [],
+          uncategorised: [],
+        };
+        for (const [cat, catTasks] of Object.entries(moved)) {
+          result[cat as TaskCategory] = catTasks.map((t) => ({
+            ...t,
+            category: cat as TaskCategory,
+          }));
+        }
+        setTasks(flattenTasks(result));
+      } catch {
+        // Drag over handler error, revert to previous state
+      }
+    },
+    [setTasks],
+  );
+
+  const handleDragEnd = useCallback(
+    (event: Parameters<DragEndEvent>[0]) => {
+      setIsDragging(false);
+      if (event.canceled) {
+        setTasks(previousTasks.current);
+      }
+    },
+    [setTasks],
+  );
+
   if (!timerRunning) updatePageTitle("Elixer Focus - Home");
 
   return (
@@ -39,7 +139,41 @@ const HomeRoute = () => {
     >
       <CountdownTimerContainer />
 
-      <Column title="Current" category={activeCategory} inputPlaceholder="" />
+      <DragDropProvider
+        sensors={[
+          PointerSensor.configure({
+            activationConstraints: [
+              new PointerActivationConstraints.Distance({ value: 5 }),
+              new PointerActivationConstraints.Delay({
+                value: 200,
+                tolerance: 10,
+              }),
+            ],
+            preventActivation: (event, source) => {
+              const handle = source.element?.querySelector(
+                '[aria-label="Drag to reorder"]',
+              );
+              if (!handle) {
+                return false;
+              }
+              return !(
+                event.target instanceof Node && handle.contains(event.target)
+              );
+            },
+          }),
+          KeyboardSensor,
+        ]}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <Column
+          title={CATEGORY_LABELS[activeCategory]}
+          category={activeCategory}
+          inputPlaceholder=""
+          isDragging={isDragging}
+        />
+      </DragDropProvider>
     </div>
   );
 };
