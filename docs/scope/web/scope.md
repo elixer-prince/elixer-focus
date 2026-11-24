@@ -29,10 +29,12 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 27  | Design documentation               | Foundation            | done        |
 | 21  | API response types                 | Foundation            | done        |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
+| 45  | Idle and session overrun tracking  | Slice 1 (core loop)   | planned     |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
+| 46  | Focus sessions before long break   | Slice 2 (settings)    | planned     |
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
@@ -229,6 +231,14 @@ Adaptive countdown with focus/break sessions, session switching, focus ring, and
 
 code in `web/src/features/countdown-timer/`
 
+### 45. Idle and session overrun tracking · planned · needs a decision
+
+Track time when no timer is active, including before the first session and between sessions. By default, elapsed time after a session ends continues to count toward that session type until the reflection modal closes; a timer setting can turn off this attribution.
+
+**Done when:** idle time and session overrun are recorded without overlapping totals, and a persisted setting defaults to attributing overrun time to the completed session type until the reflection modal closes.
+
+- [ ] Design it (spec): `/architect idle and session overrun tracking`
+
 ### 6. Music player · existing
 
 Play from a predefined list or a YouTube link; Spotify integration; volume and playback controls.
@@ -278,6 +288,14 @@ Configure focus, short break, and long break durations with validation. Card-bas
 - [x] Verify it: `/check verify timer settings`
 
 code in `web/src/features/settings/timer/`
+
+### 46. Focus sessions before long break · planned · needs a decision
+
+Let users choose how many focus sessions happen before a long break, keeping the default at four.
+
+**Done when:** the selected focus session count persists, defaults to four, and determines when the timer schedules a long break.
+
+- [ ] Design it (spec): `/architect focus sessions before long break`
 
 ### 32. Timer keyboard shortcuts · cancelled
 
