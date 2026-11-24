@@ -58,7 +58,7 @@ describe("Journal Calendar", () => {
     expect(gridCells.length).toBeGreaterThan(0);
   });
 
-  it("marks days with entries", () => {
+  it("marks days with entries that have content", () => {
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
     mockEntries.push({
@@ -76,6 +76,139 @@ describe("Journal Calendar", () => {
 
     const dayWithEntry = document.querySelector(".day-with-entry");
     expect(dayWithEntry).toBeInTheDocument();
+  });
+
+  it("does not mark days with empty content", () => {
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    mockEntries.push({
+      id: "1",
+      date: todayStr,
+      userId: null,
+      content: "",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={today} />,
+    );
+
+    const dayWithEntry = document.querySelector(".day-with-entry");
+    expect(dayWithEntry).not.toBeInTheDocument();
+  });
+
+  it("does not mark days with whitespace-only content", () => {
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    mockEntries.push({
+      id: "1",
+      date: todayStr,
+      userId: null,
+      content: "   ",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={today} />,
+    );
+
+    const dayWithEntry = document.querySelector(".day-with-entry");
+    expect(dayWithEntry).not.toBeInTheDocument();
+  });
+
+  it("marks days with notes that have content", () => {
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    mockEntries.push({
+      id: "entry-1",
+      date: todayStr,
+      userId: null,
+      content: "",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+    mockNotes.push({
+      id: "note-1",
+      dailyEntryId: "entry-1",
+      userId: null,
+      title: "Test Note",
+      content: "Some note content",
+      sessionId: null,
+      noteType: "quick",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={today} />,
+    );
+
+    const dayWithEntry = document.querySelector(".day-with-entry");
+    expect(dayWithEntry).toBeInTheDocument();
+  });
+
+  it("marks days with notes that have only a title", () => {
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    mockEntries.push({
+      id: "entry-1",
+      date: todayStr,
+      userId: null,
+      content: "",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+    mockNotes.push({
+      id: "note-1",
+      dailyEntryId: "entry-1",
+      userId: null,
+      title: "Test Note",
+      content: "",
+      sessionId: null,
+      noteType: "quick",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={today} />,
+    );
+
+    const dayWithEntry = document.querySelector(".day-with-entry");
+    expect(dayWithEntry).toBeInTheDocument();
+  });
+
+  it("does not mark days with notes that have empty content and title", () => {
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    mockEntries.push({
+      id: "entry-1",
+      date: todayStr,
+      userId: null,
+      content: "",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+    mockNotes.push({
+      id: "note-1",
+      dailyEntryId: "entry-1",
+      userId: null,
+      title: "",
+      content: "",
+      sessionId: null,
+      noteType: "quick",
+      createdAt: 1000,
+      updatedAt: 1000,
+    });
+
+    render(
+      <JournalCalendar onSelectDate={onSelectDate} selectedDate={today} />,
+    );
+
+    const dayWithEntry = document.querySelector(".day-with-entry");
+    expect(dayWithEntry).not.toBeInTheDocument();
   });
 
   it("hides Today button when viewing current month", () => {

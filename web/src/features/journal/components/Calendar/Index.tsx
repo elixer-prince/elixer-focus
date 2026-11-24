@@ -27,15 +27,28 @@ const JournalCalendar = ({
     [viewMonth, today],
   );
 
-  // Build set of dates that have entries or notes
-  const activeDates = new Set<string>();
-  for (const entry of entries) {
-    activeDates.add(entry.date);
-  }
-  for (const note of notes) {
-    const entry = entries.find((e) => e.id === note.dailyEntryId);
-    if (entry) activeDates.add(entry.date);
-  }
+  // Build set of dates that have entries or notes with content
+  const activeDateObjects = useMemo(() => {
+    const activeDates = new Set<string>();
+    for (const entry of entries) {
+      if (entry.content.trim()) {
+        activeDates.add(entry.date);
+      }
+    }
+    for (const note of notes) {
+      if (note.content.trim() || note.title.trim()) {
+        const entry = entries.find((e) => e.id === note.dailyEntryId);
+        if (entry) {
+          activeDates.add(entry.date);
+        }
+      }
+    }
+    const dateObjects = Array.from(activeDates).map((d) => {
+      const [year, month, day] = d.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    });
+    return dateObjects;
+  }, [entries, notes]);
 
   const handleSelect = useCallback(
     (date: Date | undefined) => {
@@ -56,9 +69,7 @@ const JournalCalendar = ({
         onMonthChange={setViewMonth}
         hideNavigation
         modifiers={{
-          hasEntry: activeDates.size
-            ? Array.from(activeDates).map((d) => new Date(d + "T12:00:00"))
-            : [],
+          hasEntry: activeDateObjects,
         }}
         modifiersClassNames={{
           hasEntry: "day-with-entry",
@@ -132,7 +143,7 @@ const JournalCalendar = ({
           weekdays: "flex justify-between mb-2",
           weekday: "text-xs font-medium text-base-content/50 w-10 text-center",
           week: "flex justify-between",
-          day: "w-10 h-10 rounded-full text-sm flex items-center justify-center cursor-pointer transition-colors hover:bg-primary/10",
+          day: "relative w-10 h-10 rounded-full text-sm flex items-center justify-center cursor-pointer transition-colors hover:bg-primary/10",
           selected:
             "bg-primary text-primary-content hover:bg-primary/90 hover:text-primary-content font-semibold",
           day_button:
@@ -149,10 +160,13 @@ const JournalCalendar = ({
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background-color: hsl(var(--p));
+          background-color: var(--color-primary);
         }
-        .day-with-entry {
-          position: relative;
+        [data-selected].day-with-entry::after {
+          background-color: var(--color-primary-content) !important;
+        }
+        .rdp-today.day-with-entry::after {
+          background-color: blue !important;
         }
       `}</style>
     </div>
