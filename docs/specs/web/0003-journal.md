@@ -31,7 +31,7 @@ Elixer Focus already tracks completed focus sessions with type, duration, and ti
 - **AC-6**: A "New Note" button creates a free form note with a title and Markdown body, linked to the current day's entry.
 - **AC-7**: After a focus session ends, a modal dialog prompts the user to write a session reflection tied to that session. The prompt is triggered by an event from the countdown timer store.
 - **AC-8**: A focus time bar chart shows daily focus time for the current week, using Chart.js.
-- **AC-9**: A streak counter shows consecutive days with at least one focus session or journal entry, counting backward from the most recent day with content.
+- **AC-9**: A streak counter shows consecutive local calendar days with at least one focus session, counting backward from the most recent local day with a focus session.
 - **AC-10**: All journal data (entries and notes) is persisted in localStorage via Zustand and survives page reload.
 - **AC-11**: The data model includes userId and updatedAt fields on all entities to support future backend sync.
 

@@ -1,6 +1,7 @@
 import type { DailyEntry, JournalNote } from "@/features/journal/types/journal";
 import { getSessionsByDateRange } from "@/features/countdown-timer/stores/session-history-store";
 import { getCurrentTimestamp } from "@/utils/date";
+import { calculateFocusSessionStreak } from "@/utils/streak";
 import { createPersistOptions, persist } from "@/stores/persist-config";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -127,43 +128,8 @@ export const useJournalStore = create<JournalStore>()(
       },
 
       getStreak: () => {
-        const { entries, notes } = get();
-        // Get all sessions ever (wide range)
         const sessions = getSessionsByDateRange(0, Date.now());
-
-        // Build a set of dates that have content
-        const activeDates = new Set<string>();
-
-        for (const entry of entries) {
-          activeDates.add(entry.date);
-        }
-        for (const note of notes) {
-          const entry = entries.find((e) => e.id === note.dailyEntryId);
-          if (entry) activeDates.add(entry.date);
-        }
-        for (const session of sessions) {
-          const date = new Date(session.completedAt).toISOString().slice(0, 10);
-          activeDates.add(date);
-        }
-
-        if (activeDates.size === 0) return 0;
-
-        // Count consecutive days backward from the most recent active day
-        let streak = 0;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const checkDate = new Date(today);
-        while (true) {
-          const dateStr = checkDate.toISOString().slice(0, 10);
-          if (activeDates.has(dateStr)) {
-            streak++;
-            checkDate.setDate(checkDate.getDate() - 1);
-          } else {
-            break;
-          }
-        }
-        return streak;
+        return calculateFocusSessionStreak(sessions);
       },
     })),
     createPersistOptions<JournalStore>({

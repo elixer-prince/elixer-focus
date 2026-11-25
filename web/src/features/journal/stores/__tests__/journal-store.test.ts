@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { getSessionsByDateRange } from "@/features/countdown-timer/stores/session-history-store";
+import { calculateCurrentStreak } from "@/features/profile/utils/profile-data";
 import { useJournalStore } from "@/features/journal/stores/journal-store";
 import type { JournalNote } from "@/features/journal/types/journal";
 
@@ -310,74 +312,108 @@ describe("journal store", () => {
       return `${y}-${m}-${d}`;
     };
 
-    it("returns 0 when there are no entries or sessions", () => {
+    it("matches the profile streak when a break session is the newest activity", () => {
+      const today = new Date();
+      today.setHours(12, 0, 0, 0);
+
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const twoDaysAgo = new Date(yesterday);
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
+
+      const sessions = [
+        {
+          id: "focus-two-days-ago",
+          sessionType: "Focus" as const,
+          durationInSeconds: 1500,
+          completedAt: twoDaysAgo.getTime(),
+        },
+        {
+          id: "focus-yesterday",
+          sessionType: "Focus" as const,
+          durationInSeconds: 1500,
+          completedAt: yesterday.getTime(),
+        },
+        {
+          id: "break-today",
+          sessionType: "Short Break" as const,
+          durationInSeconds: 300,
+          completedAt: today.getTime(),
+        },
+      ];
+      vi.mocked(getSessionsByDateRange).mockReturnValueOnce(sessions);
       useJournalStore.setState({ entries: [], notes: [] });
+
+      expect(useJournalStore.getState().getStreak()).toBe(
+        calculateCurrentStreak(sessions),
+      );
+    });
+
+    it("does not count entries when there are no focus sessions", () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = localDateStr(today);
+
+      useJournalStore.setState({
+        entries: [
+          {
+            id: "1",
+            date: todayStr,
+            userId: null,
+            content: "x",
+            createdAt: 1000,
+            updatedAt: 1000,
+          },
+        ],
+        notes: [],
+      });
 
       expect(useJournalStore.getState().getStreak()).toBe(0);
     });
 
-    it("counts consecutive days from today backward", () => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayStr = localDateStr(today);
-
-      const yesterday = new Date(today);
+    it("counts back from the most recent focus day when today has no focus session", () => {
+      const yesterday = new Date();
+      yesterday.setHours(12, 0, 0, 0);
       yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = localDateStr(yesterday);
+      const twoDaysAgo = new Date(yesterday);
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
+      vi.mocked(getSessionsByDateRange).mockReturnValueOnce([
+        {
+          id: "focus-two-days-ago",
+          sessionType: "Focus",
+          durationInSeconds: 1500,
+          completedAt: twoDaysAgo.getTime(),
+        },
+        {
+          id: "focus-yesterday",
+          sessionType: "Focus",
+          durationInSeconds: 1500,
+          completedAt: yesterday.getTime(),
+        },
+      ]);
 
-      const entryToday = {
-        id: "1",
-        date: todayStr,
-        userId: null,
-        content: "x",
-        createdAt: 1000,
-        updatedAt: 1000,
-      };
-      const entryYesterday = {
-        id: "2",
-        date: yesterdayStr,
-        userId: null,
-        content: "x",
-        createdAt: 1000,
-        updatedAt: 1000,
-      };
-      useJournalStore.setState({
-        entries: [entryToday, entryYesterday],
-        notes: [],
-      });
-
-      expect(useJournalStore.getState().getStreak()).toBeGreaterThanOrEqual(2);
+      expect(useJournalStore.getState().getStreak()).toBe(2);
     });
 
-    it("breaks the streak when a day is missing", () => {
+    it("breaks the streak when a focus day is missing", () => {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayStr = localDateStr(today);
-
+      today.setHours(12, 0, 0, 0);
       const twoDaysAgo = new Date(today);
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-      const twoDaysAgoStr = localDateStr(twoDaysAgo);
-
-      const entryToday = {
-        id: "1",
-        date: todayStr,
-        userId: null,
-        content: "x",
-        createdAt: 1000,
-        updatedAt: 1000,
-      };
-      const entryTwoDaysAgo = {
-        id: "2",
-        date: twoDaysAgoStr,
-        userId: null,
-        content: "x",
-        createdAt: 1000,
-        updatedAt: 1000,
-      };
-      useJournalStore.setState({
-        entries: [entryToday, entryTwoDaysAgo],
-        notes: [],
-      });
+      vi.mocked(getSessionsByDateRange).mockReturnValueOnce([
+        {
+          id: "focus-today",
+          sessionType: "Focus",
+          durationInSeconds: 1500,
+          completedAt: today.getTime(),
+        },
+        {
+          id: "focus-two-days-ago",
+          sessionType: "Focus",
+          durationInSeconds: 1500,
+          completedAt: twoDaysAgo.getTime(),
+        },
+      ]);
 
       expect(useJournalStore.getState().getStreak()).toBe(1);
     });

@@ -1,5 +1,8 @@
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import type { Task } from "@/features/tasks/types/task";
+import { calculateFocusSessionStreak } from "@/utils/streak";
+
+export const calculateCurrentStreak = calculateFocusSessionStreak;
 
 export type ProfileStats = {
   totalFocusHours: number;
@@ -20,40 +23,6 @@ export type ProfileBadge = {
   title: string;
   description: string;
   unlocked: boolean;
-};
-
-const getLocalDayStart = (timestamp: number) => {
-  const date = new Date(timestamp);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime();
-};
-
-export const calculateCurrentStreak = (sessions: CompletedSession[]) => {
-  const focusDays = new Set<number>();
-
-  for (const session of sessions) {
-    if (session.sessionType === "Focus") {
-      focusDays.add(getLocalDayStart(session.completedAt));
-    }
-  }
-
-  if (focusDays.size === 0) return 0;
-
-  let mostRecentDay = -Infinity;
-  for (const day of focusDays) {
-    mostRecentDay = Math.max(mostRecentDay, day);
-  }
-
-  const currentDay = new Date(mostRecentDay);
-  let streak = 0;
-
-  while (focusDays.has(currentDay.getTime())) {
-    streak++;
-    currentDay.setDate(currentDay.getDate() - 1);
-    currentDay.setHours(0, 0, 0, 0);
-  }
-
-  return streak;
 };
 
 export const calculateProfileStats = (
