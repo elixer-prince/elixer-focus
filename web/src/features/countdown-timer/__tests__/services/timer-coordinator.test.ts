@@ -200,6 +200,10 @@ describe("timer coordinator", () => {
         request: () => new Promise<void>(() => undefined),
       },
     });
+    useSessionStore.setState({ sessionCountLimit: 6 });
+    const persistedSessionState = localStorage.getItem("session-storage");
+    useSessionStore.setState({ sessionCountLimit: 2 });
+    localStorage.setItem("session-storage", persistedSessionState ?? "");
     stopCoordinator = startTimerCoordinator();
     const timerEndTime = Date.now() + 42_000;
 
@@ -230,7 +234,69 @@ describe("timer coordinator", () => {
       remainingTimeInSeconds: 42,
       sessionProgressInSeconds: 3,
     });
+    expect(useSessionStore.getState().sessionCountLimit).toBe(6);
     expect(getFromLocalStorage<number>("timerEndTime")).toBe(timerEndTime);
+  });
+
+  it("uses the last session count command processed by the coordinator", async () => {
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+    stopCoordinator = startTimerCoordinator();
+    await waitFor(() => expect(getTimerCoordinatorStatus().ready).toBe(true));
+
+    channels[0].onmessage?.({
+      data: {
+        type: "command",
+        command: { type: "set-session-count-limit", limit: 6 },
+      },
+    } as MessageEvent);
+    channels[0].onmessage?.({
+      data: {
+        type: "command",
+        command: { type: "set-session-count-limit", limit: 3 },
+      },
+    } as MessageEvent);
+
+    await waitFor(() =>
+      expect(useSessionStore.getState().sessionCountLimit).toBe(3),
+    );
+    expect(
+      channels[0].messages.filter(
+        (message) => (message as { type?: string }).type === "state",
+      ),
+    ).toHaveLength(3);
+  });
+
+  it("schedules a long break when a completed focus session reaches the limit", () => {
+    vi.stubGlobal("BroadcastChannel", undefined);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: undefined,
+    });
+    useSessionStore.setState({ sessionCountLimit: 1, currentSessionCount: 0 });
+    saveToLocalStorage("timerEndTime", Date.now() - 3_000);
+    useCountdownTimerStore.setState({
+      timerRunId: "completed-focus",
+      activeRunDurationInSeconds: 1_500,
+    });
+
+    stopCoordinator = startTimerCoordinator();
+
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Long Break",
+      currentSessionCount: 0,
+    });
+    expect(useSessionHistoryStore.getState().sessions).toContainEqual(
+      expect.objectContaining({
+        id: "completed-focus",
+        sessionType: "Focus",
+      }),
+    );
   });
 
   it("recovers an expired legacy timer as one session with its saved deadline", () => {
@@ -295,5 +361,121 @@ describe("timer coordinator", () => {
         endedAt: null,
       }),
     );
+  });
+
+  it("applies and persists a session count limit without interrupting the timer", async () => {
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+    saveToLocalStorage("timerEndTime", Date.now() + 60_000);
+    useCountdownTimerStore.setState({
+      timerRunning: true,
+      timerPaused: false,
+      remainingTimeInSeconds: 60,
+      sessionProgressInSeconds: 120,
+      timerRunId: "active-run",
+      activeRunDurationInSeconds: 1_500,
+    });
+    useSessionStore.setState({ currentSessionCount: 2 });
+
+    stopCoordinator = startTimerCoordinator();
+    await waitFor(() => expect(getTimerCoordinatorStatus().ready).toBe(true));
+    const timerBeforeSave = useCountdownTimerStore.getState();
+
+    dispatchTimerCommand({ type: "set-session-count-limit", limit: 6 });
+
+    await waitFor(() =>
+      expect(useSessionStore.getState().sessionCountLimit).toBe(6),
+    );
+    expect(useSessionStore.getState().currentSessionCount).toBe(2);
+    expect(useCountdownTimerStore.getState()).toMatchObject({
+      timerRunning: timerBeforeSave.timerRunning,
+      timerPaused: timerBeforeSave.timerPaused,
+      remainingTimeInSeconds: timerBeforeSave.remainingTimeInSeconds,
+      sessionProgressInSeconds: timerBeforeSave.sessionProgressInSeconds,
+      timerRunId: timerBeforeSave.timerRunId,
+    });
+    expect(channels[0].messages).toContainEqual(
+      expect.objectContaining({ type: "state" }),
+    );
+    expect(
+      JSON.parse(localStorage.getItem("session-storage") ?? "{}").state
+        .sessionCountLimit,
+    ).toBe(6);
+  });
+
+  it("schedules long breaks at the configured count and leaves manual switches unchanged", () => {
+    vi.stubGlobal("BroadcastChannel", undefined);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: undefined,
+    });
+    useSessionStore.setState({ sessionCountLimit: 2, currentSessionCount: 0 });
+    stopCoordinator = startTimerCoordinator();
+
+    dispatchTimerCommand({
+      type: "switch-session",
+      sessionType: "Short Break",
+    });
+    expect(useSessionStore.getState().currentSessionCount).toBe(0);
+    dispatchTimerCommand({ type: "switch-session", sessionType: "Focus" });
+    expect(useSessionStore.getState().currentSessionCount).toBe(0);
+
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Short Break",
+      currentSessionCount: 1,
+    });
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Focus",
+      currentSessionCount: 1,
+    });
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Long Break",
+      currentSessionCount: 0,
+    });
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Focus",
+      currentSessionCount: 0,
+    });
+  });
+
+  it("defers a lowered limit until after the current short break and next focus session", () => {
+    vi.stubGlobal("BroadcastChannel", undefined);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: undefined,
+    });
+    useSessionStore.setState({
+      currentSessionType: "Short Break",
+      currentSessionCount: 3,
+      sessionCountLimit: 4,
+    });
+    stopCoordinator = startTimerCoordinator();
+
+    dispatchTimerCommand({ type: "set-session-count-limit", limit: 2 });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Short Break",
+      currentSessionCount: 3,
+      sessionCountLimit: 2,
+    });
+
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Focus",
+      currentSessionCount: 3,
+    });
+    dispatchTimerCommand({ type: "skip" });
+    expect(useSessionStore.getState()).toMatchObject({
+      currentSessionType: "Long Break",
+      currentSessionCount: 0,
+    });
   });
 });

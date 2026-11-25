@@ -34,7 +34,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
-| 46  | Focus sessions before long break   | Slice 2 (settings)    | planned     |
+| 46  | Focus sessions before long break   | Slice 2 (settings)    | done        |
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
@@ -297,13 +297,19 @@ Configure focus, short break, and long break durations with validation. Card-bas
 
 code in `web/src/features/settings/timer/`
 
-### 46. Focus sessions before long break · planned · needs a decision
+### 46. Focus sessions before long break · done
 
 Let users choose how many focus sessions happen before a long break, keeping the default at four.
 
 **Done when:** the selected focus session count persists, defaults to four, and determines when the timer schedules a long break.
 
-- [ ] Design it (spec): `/architect focus sessions before long break`
+- [x] Design it (spec): [0006](../../specs/web/0006-focus-sessions-before-long-break.md)
+- [x] Build it: `/develop focus sessions before long break`
+  - [x] Add the Focus card count input with draft, validation, save, and reset behavior (AC-1 through AC-3)
+  - [x] Persist and sync the selected count through the timer coordinator (AC-4, AC-7, AC-8)
+  - [x] Verify cycle scheduling, progress, and transition edge cases (AC-5 through AC-7)
+
+code in `web/src/features/settings/timer/` and `web/src/features/countdown-timer/`
 
 ### 32. Timer keyboard shortcuts · cancelled
 

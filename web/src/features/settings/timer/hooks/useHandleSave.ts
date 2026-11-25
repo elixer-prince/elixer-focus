@@ -1,5 +1,6 @@
 import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTimerSettingsContext";
 import useValidation from "@/features/settings/timer/hooks/useValidation";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
 import {
   useSetRemainingTimeInSeconds,
   useSetStartTimeInMinutes,
@@ -29,6 +30,7 @@ const useHandleSave = () => {
 
   const {
     draftFocus,
+    draftSessionCountLimit,
     draftShortBreak,
     draftLongBreak,
     setDraftFocus,
@@ -36,7 +38,7 @@ const useHandleSave = () => {
     setDraftLongBreak,
   } = useTimerSettingsContext();
 
-  const { validateAndSet } = useValidation();
+  const { validateAndSet, validateSessionCountLimit } = useValidation();
 
   const handleSave = useCallback(() => {
     let hasError = false;
@@ -49,6 +51,7 @@ const useHandleSave = () => {
       1,
     );
     const longBreakNum = validateAndSet(draftLongBreak, setDraftLongBreak, 5);
+    const sessionCountLimit = validateSessionCountLimit(draftSessionCountLimit);
 
     // Check for validation errors
     if (focusNum === null || focusNum < 1) {
@@ -69,12 +72,22 @@ const useHandleSave = () => {
       hasError = true;
     }
 
-    if (hasError) return;
+    if (sessionCountLimit === null) {
+      toast.error(
+        "Focus sessions before a long break must be a whole number from 1 to 8",
+      );
+    }
+
+    if (hasError || sessionCountLimit === null) return;
 
     // All valid - update session stores (persist middleware handles localStorage)
     setFocusDuration(focusNum!);
     setShortBreakDuration(shortBreakNum!);
     setLongBreakDuration(longBreakNum!);
+    dispatchTimerCommand({
+      type: "set-session-count-limit",
+      limit: sessionCountLimit,
+    });
 
     // AUTO-UPDATE TIMER if it's not running
     const isTimerIdle = !timerRunning || timerPaused;
@@ -94,11 +107,13 @@ const useHandleSave = () => {
   }, [
     currentSessionType,
     draftFocus,
+    draftSessionCountLimit,
     draftShortBreak,
     draftLongBreak,
     timerRunning,
     timerPaused,
     validateAndSet,
+    validateSessionCountLimit,
     setFocusDuration,
     setShortBreakDuration,
     setLongBreakDuration,

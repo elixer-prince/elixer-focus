@@ -17,6 +17,7 @@ export type TimerCoordinatorCommand =
   | { type: "skip" }
   | { type: "switch-session"; sessionType: CountdownSession }
   | { type: "set-overrun-attribution"; enabled: boolean }
+  | { type: "set-session-count-limit"; limit: number }
   | { type: "reflection-draft"; draft: string }
   | {
       type: "resolve-reflection";
@@ -175,6 +176,17 @@ const applyCommand = (command: TimerCoordinatorCommand) => {
 
   if (command.type === "set-overrun-attribution") {
     useSessionStore.getState().setAttributeSessionOverrun(command.enabled);
+    return;
+  }
+
+  if (command.type === "set-session-count-limit") {
+    if (
+      Number.isInteger(command.limit) &&
+      command.limit >= 1 &&
+      command.limit <= 8
+    ) {
+      useSessionStore.getState().setSessionCountLimit(command.limit);
+    }
     return;
   }
 

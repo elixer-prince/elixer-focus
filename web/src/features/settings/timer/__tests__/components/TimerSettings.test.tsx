@@ -3,18 +3,22 @@ import { vi } from "vitest";
 
 // Mutable mock state for testing unsaved changes scenario
 let mockDraftFocus = "25";
+let mockDraftSessionCountLimit = "4";
 let mockDraftShortBreak = "5";
 let mockDraftLongBreak = "15";
 const mockSetDraftFocus = vi.fn();
+const mockSetDraftSessionCountLimit = vi.fn();
 const mockSetDraftShortBreak = vi.fn();
 const mockSetDraftLongBreak = vi.fn();
 
 vi.mock("@/features/settings/timer/hooks/useTimerSettingsContext", () => ({
   useTimerSettingsContext: () => ({
     draftFocus: mockDraftFocus,
+    draftSessionCountLimit: mockDraftSessionCountLimit,
     draftShortBreak: mockDraftShortBreak,
     draftLongBreak: mockDraftLongBreak,
     setDraftFocus: mockSetDraftFocus,
+    setDraftSessionCountLimit: mockSetDraftSessionCountLimit,
     setDraftShortBreak: mockSetDraftShortBreak,
     setDraftLongBreak: mockSetDraftLongBreak,
   }),
@@ -29,6 +33,7 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useFocusDuration: () => mockFocusDuration,
   useShortBreakDuration: () => mockShortBreakDuration,
   useLongBreakDuration: () => mockLongBreakDuration,
+  useSessionCountLimit: () => 4,
   useCurrentSessionType: () => "Focus",
   useSetFocusDuration: () => vi.fn(),
   useSetShortBreakDuration: () => vi.fn(),
@@ -77,6 +82,7 @@ describe("TimerSettings", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockDraftFocus = "25";
+    mockDraftSessionCountLimit = "4";
     mockDraftShortBreak = "5";
     mockDraftLongBreak = "15";
     mockFocusDuration = 25;
@@ -94,7 +100,9 @@ describe("TimerSettings", () => {
     render(<TimerSettings />);
 
     expect(
-      screen.getByText(/Configure the duration for each session type/i),
+      screen.getByText(
+        /Configure session durations and choose how many focus sessions/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -141,6 +149,14 @@ describe("TimerSettings", () => {
 
     const saveButton = screen.getByText("Save changes");
     expect(saveButton).not.toBeDisabled();
+  });
+
+  it("should enable save when the focus session count changes", () => {
+    mockDraftSessionCountLimit = "6";
+
+    render(<TimerSettings />);
+
+    expect(screen.getByText("Save changes")).not.toBeDisabled();
   });
 
   it("should show reset button when there are unsaved changes", () => {

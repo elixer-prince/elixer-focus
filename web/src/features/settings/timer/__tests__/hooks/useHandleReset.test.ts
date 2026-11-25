@@ -9,15 +9,18 @@ vi.mock("react-hot-toast", () => ({
 }));
 
 const mockSetDraftFocus = vi.fn();
+const mockSetDraftSessionCountLimit = vi.fn();
 const mockSetDraftShortBreak = vi.fn();
 const mockSetDraftLongBreak = vi.fn();
 
 vi.mock("@/features/settings/timer/hooks/useTimerSettingsContext", () => ({
   useTimerSettingsContext: () => ({
     draftFocus: "30",
+    draftSessionCountLimit: "6",
     draftShortBreak: "8",
     draftLongBreak: "20",
     setDraftFocus: mockSetDraftFocus,
+    setDraftSessionCountLimit: mockSetDraftSessionCountLimit,
     setDraftShortBreak: mockSetDraftShortBreak,
     setDraftLongBreak: mockSetDraftLongBreak,
   }),
@@ -27,6 +30,7 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useFocusDuration: () => 25,
   useShortBreakDuration: () => 5,
   useLongBreakDuration: () => 15,
+  useSessionCountLimit: () => 4,
 }));
 
 import toast from "react-hot-toast";
@@ -45,6 +49,7 @@ describe("useHandleReset", () => {
     });
 
     expect(mockSetDraftFocus).toHaveBeenCalledWith("25");
+    expect(mockSetDraftSessionCountLimit).toHaveBeenCalledWith("4");
     expect(mockSetDraftShortBreak).toHaveBeenCalledWith("5");
     expect(mockSetDraftLongBreak).toHaveBeenCalledWith("15");
   });

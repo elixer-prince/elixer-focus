@@ -8,12 +8,22 @@ const mockSetDraftLongBreak = vi.fn();
 
 const mockContext = {
   draftFocus: "30",
+  draftSessionCountLimit: "4",
   draftShortBreak: "8",
   draftLongBreak: "20",
   setDraftFocus: mockSetDraftFocus,
+  setDraftSessionCountLimit: vi.fn(),
   setDraftShortBreak: mockSetDraftShortBreak,
   setDraftLongBreak: mockSetDraftLongBreak,
 };
+
+const { mockDispatchTimerCommand } = vi.hoisted(() => ({
+  mockDispatchTimerCommand: vi.fn(),
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mockDispatchTimerCommand,
+}));
 
 vi.mock("react-hot-toast", () => ({
   default: {
@@ -53,6 +63,12 @@ vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
 vi.mock("@/features/settings/timer/hooks/useValidation", () => ({
   default: () => ({
     hasUnsavedChanges: true,
+    validateSessionCountLimit: (value: string) => {
+      const num = Number(value);
+      return value !== "" && Number.isInteger(num) && num >= 1 && num <= 8
+        ? num
+        : null;
+    },
     validateAndSet: (
       value: string,
       setDraft: (v: string) => void,
@@ -84,6 +100,7 @@ describe("useHandleSave", () => {
     mockTimerPaused = false;
     mockCurrentSessionType = "Focus";
     mockContext.draftFocus = "30";
+    mockContext.draftSessionCountLimit = "4";
     mockContext.draftShortBreak = "8";
     mockContext.draftLongBreak = "20";
   });
@@ -98,6 +115,34 @@ describe("useHandleSave", () => {
     expect(mockSetFocusDuration).toHaveBeenCalledWith(30);
     expect(mockSetShortBreakDuration).toHaveBeenCalledWith(8);
     expect(mockSetLongBreakDuration).toHaveBeenCalledWith(20);
+  });
+
+  it("should save the session count through the timer coordinator", () => {
+    const { result } = renderHook(() => useHandleSave());
+
+    act(() => {
+      result.current.handleSave();
+    });
+
+    expect(mockDispatchTimerCommand).toHaveBeenCalledWith({
+      type: "set-session-count-limit",
+      limit: 4,
+    });
+  });
+
+  it("should block all settings from saving when the session count is invalid", () => {
+    mockContext.draftSessionCountLimit = "1.5";
+
+    const { result } = renderHook(() => useHandleSave());
+
+    act(() => {
+      result.current.handleSave();
+    });
+
+    expect(mockSetFocusDuration).not.toHaveBeenCalled();
+    expect(mockSetShortBreakDuration).not.toHaveBeenCalled();
+    expect(mockSetLongBreakDuration).not.toHaveBeenCalled();
+    expect(mockDispatchTimerCommand).not.toHaveBeenCalled();
   });
 
   it("should show a success toast on valid save", () => {

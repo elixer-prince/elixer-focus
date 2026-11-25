@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes, forwardRef } from "react";
+import { type InputHTMLAttributes, forwardRef, useId } from "react";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputSize?: "sm" | "md" | "lg";
@@ -22,15 +22,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       className,
       id,
+      "aria-describedby": ariaDescribedBy,
+      "aria-invalid": ariaInvalid,
       ...rest
     },
     ref,
   ) => {
     const sizeClass = sizeMap[inputSize];
+    const generatedId = useId();
     const inputId =
-      id || label
-        ? `input-${label?.toLowerCase().replace(/\s+/g, "-") || ""}`
-        : undefined;
+      id ??
+      (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
+    const helperTextId = helperText
+      ? `${inputId ?? generatedId}-helper-text`
+      : undefined;
+    const describedBy = [ariaDescribedBy, helperTextId]
+      .filter(Boolean)
+      .join(" ");
 
     return (
       <div className="w-full">
@@ -42,16 +50,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={inputId}
+          aria-invalid={error ? true : ariaInvalid}
+          aria-describedby={describedBy || undefined}
           type="text"
           className={`input input-primary ${sizeClass} ${error ? "input-error" : ""} ${className || ""}`}
           {...rest}
         />
         {helperText && (
-          <label className="label">
+          <div id={helperTextId} className="label">
             <span className={`label-text-alt ${error ? "text-error" : ""}`}>
               {helperText}
             </span>
-          </label>
+          </div>
         )}
       </div>
     );

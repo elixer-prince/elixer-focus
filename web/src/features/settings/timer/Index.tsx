@@ -24,8 +24,8 @@ const TimerSettingsContent = () => {
           Timer Settings
         </h1>
         <p className={"text-base-content/60 text-sm"}>
-          Configure the duration for each session type. Changes apply when the
-          timer is not running.
+          Configure session durations and choose how many focus sessions happen
+          before a long break. Duration changes apply when the timer is idle.
         </p>
       </header>
 
