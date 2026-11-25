@@ -114,12 +114,40 @@ describe("TimerSettings", () => {
     expect(screen.getByTestId("long-break-container")).toBeInTheDocument();
   });
 
+  it("renders the focus session count in its own card", () => {
+    render(<TimerSettings />);
+
+    const countInput = screen.getByRole("spinbutton", {
+      name: "Focus sessions before a long break",
+    });
+    const countCard = countInput.closest(".card");
+    const focusCard = screen.getByText("Focus").closest(".card");
+
+    expect(countCard).toBeInTheDocument();
+    expect(countCard).not.toBe(focusCard);
+  });
+
   it("should render the card labels", () => {
     render(<TimerSettings />);
 
     expect(screen.getByText("Focus")).toBeInTheDocument();
     expect(screen.getByText("Short Break")).toBeInTheDocument();
     expect(screen.getByText("Long Break")).toBeInTheDocument();
+  });
+
+  it("keeps timer card content aligned to the top", () => {
+    render(<TimerSettings />);
+
+    const cardBodies = [
+      "Focus",
+      "Short Break",
+      "Long Break",
+      "Focus Cycle",
+    ].map((label) => screen.getByText(label).parentElement);
+
+    cardBodies.forEach((cardBody) => {
+      expect(cardBody).toHaveClass("justify-start");
+    });
   });
 
   it("should render the save button", () => {

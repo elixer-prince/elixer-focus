@@ -7,6 +7,7 @@ import useHandleSave from "@/features/settings/timer/hooks/useHandleSave";
 import useTimerSettings from "@/features/settings/timer/hooks/useTimerSettings";
 import useValidation from "@/features/settings/timer/hooks/useValidation";
 import LongBreakContainer from "@/features/settings/timer/LongBreakContainer";
+import SessionCountContainer from "@/features/settings/timer/SessionCountContainer";
 import ShortBreakContainer from "@/features/settings/timer/ShortBreakContainer";
 import TimerSettingsProvider from "@/features/settings/timer/stores/Provider";
 
@@ -29,9 +30,11 @@ const TimerSettingsContent = () => {
         </p>
       </header>
 
-      <div className={"mb-8 grid grid-cols-1 gap-4 md:grid-cols-3"}>
+      <div
+        className={"mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"}
+      >
         <div className={"card bg-base-200"}>
-          <div className={"card-body p-5"}>
+          <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Focus</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
               Duration for focus sessions
@@ -41,7 +44,7 @@ const TimerSettingsContent = () => {
         </div>
 
         <div className={"card bg-base-200"}>
-          <div className={"card-body p-5"}>
+          <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Short Break</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
               Duration between focus sessions
@@ -51,12 +54,22 @@ const TimerSettingsContent = () => {
         </div>
 
         <div className={"card bg-base-200"}>
-          <div className={"card-body p-5"}>
+          <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Long Break</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
               Extended break after completing a cycle
             </p>
             <LongBreakContainer />
+          </div>
+        </div>
+
+        <div className={"card bg-base-200"}>
+          <div className={"card-body justify-start p-5"}>
+            <h2 className={"card-title text-base"}>Focus Cycle</h2>
+            <p className={"text-base-content/50 mb-2 text-xs"}>
+              Sessions before a long break
+            </p>
+            <SessionCountContainer />
           </div>
         </div>
       </div>

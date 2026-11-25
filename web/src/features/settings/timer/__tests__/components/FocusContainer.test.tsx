@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -110,48 +110,5 @@ describe("FocusContainer", () => {
 
     const input = screen.getByPlaceholderText("25") as HTMLInputElement;
     expect(input.min).toBe("1");
-  });
-
-  it("should render the focus session count with its allowed range", () => {
-    render(<FocusContainer />);
-
-    const input = screen.getByRole("spinbutton", {
-      name: "Focus sessions before a long break",
-    }) as HTMLInputElement;
-
-    expect(input.value).toBe("4");
-    expect(input.min).toBe("1");
-    expect(input.max).toBe("8");
-    expect(input.step).toBe("1");
-  });
-
-  it("should keep the entered session count draft", () => {
-    render(<FocusContainer />);
-
-    const input = screen.getByRole("spinbutton", {
-      name: "Focus sessions before a long break",
-    });
-    fireEvent.change(input, { target: { value: "1.5" } });
-
-    expect(mockSetDraftSessionCountLimit).toHaveBeenCalledWith("1.5");
-  });
-
-  it("should expose session count validation inline", () => {
-    mockSessionCountLimitInvalid = true;
-
-    render(<FocusContainer />);
-
-    const input = screen.getByRole("spinbutton", {
-      name: "Focus sessions before a long break",
-    });
-    expect(input).toHaveAttribute("aria-invalid", "true");
-    const descriptionId = input.getAttribute("aria-describedby");
-    expect(descriptionId).toBeTruthy();
-    expect(document.getElementById(descriptionId!)).toHaveTextContent(
-      "Enter a whole number from 1 to 8",
-    );
-    expect(
-      screen.getByText("Enter a whole number from 1 to 8"),
-    ).toBeInTheDocument();
   });
 });

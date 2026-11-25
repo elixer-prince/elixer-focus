@@ -5,7 +5,7 @@
 
 ## Summary
 
-The timer already stores a limit for how many Focus sessions happen before a Long Break, but Timer Settings does not let you change it. This decision adds a saved count from one to eight, with four as the default, to the Focus settings card. Saved changes use the existing timer coordinator so the shared timer applies the new limit consistently across tabs.
+The timer already stores a limit for how many Focus sessions happen before a Long Break, but Timer Settings does not let you change it. This decision adds a saved count from one to eight, with four as the default, in its own settings card, separate from the Focus duration card. Saved changes use the existing timer coordinator so the shared timer applies the new limit consistently across tabs.
 
 ## Context
 
@@ -22,7 +22,7 @@ Timer settings use draft values and a shared Save changes and Reset flow. Timer 
 
 **Acceptance criteria** (the contract, each criterion is IDed and independently checkable):
 
-* **AC-1**: The Focus card in Timer Settings provides a number input labelled for the number of Focus sessions before a Long Break. It accepts whole numbers from 1 through 8 and initializes from the saved limit, which defaults to 4.
+* **AC-1**: A dedicated count card, separate from the Focus duration card, in Timer Settings provides a number input labelled for the number of Focus sessions before a Long Break. It accepts whole numbers from 1 through 8 and initializes from the saved limit, which defaults to 4.
 * **AC-2**: The count is a draft until the existing Save changes action is used. The existing Reset action discards the draft and restores the saved count. Saving the count with duration edits commits them through the same form.
 * **AC-3**: Blank, fractional, below minimum, or above maximum values show inline validation, remain in the input for correction, and prevent all timer setting drafts from being saved.
 * **AC-4**: The selected limit persists in the existing session store across reloads. The timer display shows the existing cycle progress against the selected limit.
@@ -35,7 +35,7 @@ Timer settings use draft values and a shared Save changes and Reset flow. Timer 
 
 ### Option 1: Extend the existing timer settings and coordinator
 
-Expose the existing saved limit in the Focus card, retain its current session store field, and send saved changes through the timer coordinator.
+Expose the existing saved limit in its own Timer Settings card, retain its current session store field, and send saved changes through the timer coordinator.
 
 **Pros**:
 
@@ -79,7 +79,7 @@ Rewrite the timer scheduling flow and its session counter while adding the setti
 
 **Chosen option**: Option 1: Extend the existing timer settings and coordinator
 
-Add the number input to the Focus card, save the existing `sessionCountLimit` through a coordinator command, and keep the current cycle counter and scheduler.
+Add the number input to its own settings card, separate from the Focus duration card, save the existing `sessionCountLimit` through a coordinator command, and keep the current cycle counter and scheduler.
 
 **Implementation skills**: `playwright-best-practices` (`currents-dev/playwright-best-practices-skill`, `.agents/skills/playwright-best-practices/`)
 
@@ -128,7 +128,7 @@ There are no backend endpoints. The feature extends existing client store action
 
 | Action | Value produced or displayed | Source |
 | --- | --- | --- |
-| Initialize the Focus card input | Saved session limit | `SessionState.sessionCountLimit`, defaulting to 4 in the existing store |
+| Initialize the dedicated count card input | Saved session limit | `SessionState.sessionCountLimit`, defaulting to 4 in the existing store |
 | Validate a draft | Whole number from 1 through 8 | User input, checked before the shared save |
 | Reset the count draft | Saved count | `SessionState.sessionCountLimit` |
 | Save the count | New persisted limit | Validated draft sent as a coordinator command |
@@ -155,7 +155,7 @@ None. No new environment variables, credentials, or third party services are nee
 
 **Critical test scenarios** (each maps to an acceptance criterion in Requirements):
 
-* Happy path: load Timer Settings, see the saved count or default 4, save a new allowed count, reload, and confirm the value and timer display persist, verifies **AC-1**, **AC-2**, **AC-4**.
+* Happy path: load Timer Settings, confirm the count input is in its own card outside the Focus duration card, see the saved count or default 4, save a new allowed count, reload, and confirm the value and timer display persist, verifies **AC-1**, **AC-2**, **AC-4**.
 * Reset: edit the count, press Reset, and confirm the saved count returns to the input and the draft is discarded, verifies **AC-2**.
 * Invalid input: try a blank, fractional, below minimum, and above maximum value; confirm inline feedback, retained draft, and no timer settings are saved, verifies **AC-3**.
 * Cycle scheduling: with limits of 1, 4, and 8, verify earlier Focus sessions lead to Short Breaks and the limit reaching Focus session leads directly to Long Break, verifies **AC-5**.
@@ -168,9 +168,10 @@ None. No new environment variables, credentials, or third party services are nee
 
 Follow the Skateboard approach by delivering the smallest complete setting flow, including its effect on the shared timer, before considering broader cycle features.
 
-- [x] Extend the timer settings draft context and provider with the count, add the number input to the Focus card, and include it in dirty state, validation, shared Save changes, and Reset. Keep invalid drafts visible and prevent the full settings form from saving, satisfies **AC-1**, **AC-2**, **AC-3**.
+- [x] Extend the timer settings draft context and provider with the count, and include it in dirty state, validation, shared Save changes, and Reset. Keep invalid drafts visible and prevent the full settings form from saving, satisfies **AC-2**, **AC-3**.
 - [x] Add a coordinator command for the validated limit and apply it to the existing session store through the serialized command queue. Confirm persistence, broadcast, follower rehydration, last processed save behavior, and single tab fallback, satisfies **AC-4**, **AC-7**, **AC-8**.
 - [x] Verify the existing scheduler and `SessionCount` display against limits 1 through 8. Add or update focused tests for completion, skip, manual switching, cycle reset, and a changed limit taking effect when the next Focus session ends or is skipped, satisfies **AC-5**, **AC-6**, **AC-7**.
+- [x] Move the count input into its own settings card, separate from the Focus duration card, and keep duration card content top aligned, satisfies **AC-1**.
 
 ## Consequences
 

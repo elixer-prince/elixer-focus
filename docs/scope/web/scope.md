@@ -299,15 +299,16 @@ code in `web/src/features/settings/timer/`
 
 ### 46. Focus sessions before long break · done
 
-Let users choose how many focus sessions happen before a long break, keeping the default at four.
+Let users choose how many focus sessions happen before a long break in a dedicated settings card, separate from the Focus duration card, keeping the default at four.
 
-**Done when:** the selected focus session count persists, defaults to four, and determines when the timer schedules a long break.
+**Done when:** the selected focus session count persists, defaults to four, determines when the timer schedules a long break, and appears in its own card separate from Focus duration.
 
 - [x] Design it (spec): [0006](../../specs/web/0006-focus-sessions-before-long-break.md)
 - [x] Build it: `/develop focus sessions before long break`
-  - [x] Add the Focus card count input with draft, validation, save, and reset behavior (AC-1 through AC-3)
+  - [x] Add the count input with draft, validation, save, and reset behavior (AC-1 through AC-3)
   - [x] Persist and sync the selected count through the timer coordinator (AC-4, AC-7, AC-8)
   - [x] Verify cycle scheduling, progress, and transition edge cases (AC-5 through AC-7)
+  - [x] Move the count input to a dedicated settings card separate from Focus duration (AC-1)
 
 code in `web/src/features/settings/timer/` and `web/src/features/countdown-timer/`
 
