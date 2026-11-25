@@ -22,6 +22,9 @@ Skateboard (MVP first; ship the thinnest usable whole, then grow).
 npm run lint            # Lint web and app
 npm run lint:web        # Lint web only
 npm run lint:app        # Lint app only
+npm run typecheck       # Type-check web and app
+npm run typecheck:web   # Type-check web with a forced project build
+npm run typecheck:app   # Type-check app
 npm run test            # Run web tests
 npm run test:web        # Run web tests only
 npm run test:backend    # Run backend tests
@@ -101,7 +104,8 @@ cd app && npm run web           # Run web version
 - Web vitest requires globals: true and jsdom environment
 - E2E tests in `web/e2e/` are excluded from Vitest; run them with `npx playwright test`
 - Playwright e2e tests run on GitHub Actions (Ubuntu) via `.github/workflows/playwright.yaml` on push to main/alpha/beta
-- **Lint & TypeCheck CI** runs on push and PR via `.github/workflows/lint-typecheck.yaml` on main/alpha/beta, linting web and app, type checking web, and checking Prettier format
+- **Lint and TypeScript CI** runs on push and PR via `.github/workflows/lint-typecheck.yaml` on main/alpha/beta, linting web and app, type checking both apps, and checking Prettier format
+- **Local TypeScript checks before push**: `.husky/pre-push` runs `npm run typecheck` and blocks a push if either app has type errors
 - **Playwright does not run locally on macOS 12** — Playwright dropped support for macOS 12 (Monterey). Do not attempt to install Playwright browsers or run E2E tests locally. E2E tests only run on CI. Once the local macOS version is upgraded, local Playwright will work again.
 - **TypeScript incremental build cache hides errors** — `tsc -b` uses `.tsbuildinfo` cache files and may skip type-checking files it considers unchanged. The build script uses `tsc -b --force` to always check all files. If you run `tsc -b` without `--force` locally, you may miss type errors that Vercel catches on fresh builds.
 - **Mock type assertions in tests** — When mocking DOM types like `HTMLDialogElement` in tests, use `as unknown as Type` instead of `as Type` to satisfy strict TypeScript checking. Follow the pattern in `web/src/testing/setup.ts` and existing test files.
