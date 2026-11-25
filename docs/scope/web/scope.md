@@ -439,13 +439,21 @@ Social media style profile page with identity info, productivity stats, characte
 
 code in `web/src/app/routes/(root)/Profile.tsx`
 
-### 12. Calendar · in-progress · needs a decision
+### 12. Calendar · in-progress
 
 Placeholder route; implement a calendar view for scheduled focus and tasks.
 
 **Done when:** calendar page renders a monthly view with events.
 
-- [ ] Design it (spec): `/architect calendar`
+- [x] Design it (spec): `/architect calendar`
+Spec: [0007](../../specs/web/0007-calendar-planner/index.md)
+
+- [ ] Build it: `/develop calendar`
+  - [ ] Versioned local schedule model, shared task reuse, Day planner, and tab persistence (AC-1, AC-2, AC-3, AC-9)
+  - [ ] Four calendar views, responsive navigation, and shared week start preference (AC-1, AC-8)
+  - [ ] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
+  - [ ] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
+  - [ ] Sleep event tracking and planned time rail after Sleep Schedule alignment (AC-7)
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
 

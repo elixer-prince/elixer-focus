@@ -121,6 +121,9 @@ cd app && npm run web           # Run web version
 - [playwright-cli](.agents/skills/playwright-cli/): microsoft/playwright-cli, Playwright CLI conventions and best practices
 - [playwright-dev](.agents/skills/playwright-dev/): microsoft/playwright, Playwright development internals
 - [playwright-best-practices](.agents/skills/playwright-best-practices/): currents-dev/playwright-best-practices-skill, E2E testing best practices
+- [vercel-react-best-practices](.agents/skills/vercel-react-best-practices/): vercel-labs/agent-skills, React performance and implementation guidance
+- [vercel-composition-patterns](.agents/skills/vercel-composition-patterns/): vercel-labs/agent-skills, reusable React composition patterns
+- [web-design-guidelines](.agents/skills/web-design-guidelines/): vercel-labs/agent-skills, web interface and accessibility review guidance
 
 ## Context files
 
