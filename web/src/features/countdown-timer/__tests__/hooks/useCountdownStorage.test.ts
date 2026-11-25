@@ -7,6 +7,9 @@ const mocks = vi.hoisted(() => ({
   setTimerPaused: vi.fn(),
   setStartTimeInMinutes: vi.fn(),
   setRemainingTimeInSeconds: vi.fn(),
+  clearTimerRun: vi.fn(),
+  resetSessionProgressInSeconds: vi.fn(),
+  startIdleInterval: vi.fn(),
   saveToLocalStorage: vi.fn(),
   convertMinutesToSeconds: vi.fn((minutes: number) => minutes * 60),
 }));
@@ -23,6 +26,12 @@ vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useSetTimerPaused: () => mocks.setTimerPaused,
   useSetStartTimeInMinutes: () => mocks.setStartTimeInMinutes,
   useSetRemainingTimeInSeconds: () => mocks.setRemainingTimeInSeconds,
+  useClearTimerRun: () => mocks.clearTimerRun,
+  useResetSessionProgressInSeconds: () => mocks.resetSessionProgressInSeconds,
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useStartIdleInterval: () => mocks.startIdleInterval,
 }));
 
 vi.mock("@/utils/conversion", () => ({
@@ -74,6 +83,27 @@ describe("useCountdownStorage", () => {
       });
 
       expect(mocks.setTimerPaused).toHaveBeenCalledWith(true);
+    });
+
+    it("should clear the run identity and session progress", () => {
+      const { result } = renderHook(() => useCountdownStorage());
+
+      act(() => {
+        result.current.resetTimerStorage(25);
+      });
+
+      expect(mocks.clearTimerRun).toHaveBeenCalled();
+      expect(mocks.resetSessionProgressInSeconds).toHaveBeenCalled();
+    });
+
+    it("should begin idle tracking after a manual reset", () => {
+      const { result } = renderHook(() => useCountdownStorage());
+
+      act(() => {
+        result.current.resetTimerStorage(25);
+      });
+
+      expect(mocks.startIdleInterval).toHaveBeenCalledWith(expect.any(Number));
     });
 
     it("should clear the end time ref", () => {

@@ -271,6 +271,50 @@ describe("Tasks Store", () => {
 
       expect(task?.updatedAt).toBe(88888);
     });
+
+    it("AC-4: records the completion timestamp when a task is completed", () => {
+      const toggleTaskCompletion =
+        useTasksStore.getState().toggleTaskCompletion;
+      getCurrentTimestampMock.mockReturnValue(88888);
+
+      act(() => {
+        toggleTaskCompletion("1", true);
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+      expect((task as { completedAt?: number })?.completedAt).toBe(88888);
+    });
+
+    it("AC-4: clears the completion timestamp when a task is reopened", () => {
+      const toggleTaskCompletion =
+        useTasksStore.getState().toggleTaskCompletion;
+      getCurrentTimestampMock.mockReturnValueOnce(88888).mockReturnValue(99999);
+
+      act(() => {
+        toggleTaskCompletion("1", true);
+        toggleTaskCompletion("1", false);
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+      expect(task?.isCompleted).toBe(false);
+      expect((task as { completedAt?: number })?.completedAt).toBeUndefined();
+    });
+
+    it("AC-4: preserves the completion timestamp when task details are edited", () => {
+      const toggleTaskCompletion =
+        useTasksStore.getState().toggleTaskCompletion;
+      const updateTask = useTasksStore.getState().updateTask;
+      getCurrentTimestampMock.mockReturnValueOnce(88888).mockReturnValue(99999);
+
+      act(() => {
+        toggleTaskCompletion("1", true);
+        updateTask("1", { title: "Edited task" });
+      });
+
+      const task = getTasks().find((t) => t.id === "1");
+      expect(task?.updatedAt).toBe(99999);
+      expect((task as { completedAt?: number })?.completedAt).toBe(88888);
+    });
   });
 
   describe("migration", () => {
@@ -305,14 +349,86 @@ describe("Tasks Store", () => {
       expect(tasks.length).toBe(1);
       expect(tasks[0].updatedAt).toBe(12345);
     });
+
+    it("AC-4: backfills completedAt for completed v1 tasks", async () => {
+      localStorage.clear();
+      localStorage.setItem(
+        "tasks-storage",
+        JSON.stringify({
+          state: {
+            tasks: [
+              {
+                id: "1",
+                title: "Completed task",
+                category: "uncategorised",
+                isCompleted: true,
+                isSelected: false,
+                createdAt: 12345,
+              },
+            ],
+          },
+          version: 1,
+        }),
+      );
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const task = ReloadedStore.getState().tasks[0];
+      expect(task.updatedAt).toBe(12345);
+      expect((task as { completedAt?: number }).completedAt).toBe(12345);
+    });
+
+    it("AC-4: backfills completedAt for completed v2 tasks", async () => {
+      localStorage.clear();
+      localStorage.setItem(
+        "tasks-storage",
+        JSON.stringify({
+          state: {
+            tasks: [
+              {
+                id: "1",
+                title: "Completed task",
+                category: "uncategorised",
+                isCompleted: true,
+                isSelected: false,
+                createdAt: 12345,
+                updatedAt: 67890,
+              },
+              {
+                id: "2",
+                title: "Open task",
+                category: "uncategorised",
+                isCompleted: false,
+                isSelected: false,
+                createdAt: 12345,
+                updatedAt: 67890,
+              },
+            ],
+          },
+          version: 2,
+        }),
+      );
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const [completedTask, incompleteTask] = ReloadedStore.getState().tasks;
+      expect(completedTask.completedAt).toBe(67890);
+      expect(incompleteTask).not.toHaveProperty("completedAt");
+    });
   });
 
   describe("persist configuration", () => {
-    it("should declare version 2 in the persist config", () => {
+    it("should declare version 3 in the persist config", () => {
       const stored = localStorage.getItem("tasks-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(2);
+      expect(parsed.version).toBe(3);
     });
 
     it("should include the tasks state in the persisted data", () => {

@@ -12,6 +12,8 @@ type CountdownTimerState = {
   remainingTimeInSeconds: number;
   startTimeInMinutes: number;
   sessionProgressInSeconds: number;
+  timerRunId: string | null;
+  activeRunDurationInSeconds: number | null;
 };
 
 type CountdownTimerActions = {
@@ -21,6 +23,8 @@ type CountdownTimerActions = {
   setStartTimeInMinutes: (startTimeInMinutes: number) => void;
   setSessionProgressInSeconds: (sessionProgressInSeconds: number) => void;
   resetSessionProgressInSeconds: () => void;
+  setTimerRun: (id: string, durationInSeconds: number) => void;
+  clearTimerRun: () => void;
 };
 
 type CountdownTimerStore = CountdownTimerState & CountdownTimerActions;
@@ -33,6 +37,8 @@ export const useCountdownTimerStore = create<CountdownTimerStore>()(
       remainingTimeInSeconds: convertMinutesToSeconds(25),
       startTimeInMinutes: 25,
       sessionProgressInSeconds: 0,
+      timerRunId: null,
+      activeRunDurationInSeconds: null,
 
       setTimerRunning: (timerRunning: boolean) => set({ timerRunning }),
 
@@ -50,12 +56,20 @@ export const useCountdownTimerStore = create<CountdownTimerStore>()(
         }),
 
       resetSessionProgressInSeconds: () => set({ sessionProgressInSeconds: 0 }),
+
+      setTimerRun: (timerRunId, activeRunDurationInSeconds) =>
+        set({ timerRunId, activeRunDurationInSeconds }),
+
+      clearTimerRun: () =>
+        set({ timerRunId: null, activeRunDurationInSeconds: null }),
     }),
     createPersistOptions<CountdownTimerStore>({
       name: "countdown-timer-storage",
-      version: 3,
+      version: 4,
       partialize: (state) => ({
         startTimeInMinutes: state.startTimeInMinutes,
+        timerRunId: state.timerRunId,
+        activeRunDurationInSeconds: state.activeRunDurationInSeconds,
       }),
       migrate: simpleMigrate<CountdownTimerStore>,
     }),
@@ -85,6 +99,12 @@ export const useStartTimeInMinutes = () =>
 export const useSessionProgressInSeconds = () =>
   useCountdownTimerStore((state) => state.sessionProgressInSeconds);
 
+export const useTimerRunId = () =>
+  useCountdownTimerStore((state) => state.timerRunId);
+
+export const useActiveRunDurationInSeconds = () =>
+  useCountdownTimerStore((state) => state.activeRunDurationInSeconds);
+
 // ACTIONS
 
 export const useSetTimerRunning = () =>
@@ -104,3 +124,9 @@ export const useSetSessionProgressInSeconds = () =>
 
 export const useResetSessionProgressInSeconds = () =>
   useCountdownTimerStore((state) => state.resetSessionProgressInSeconds);
+
+export const useSetTimerRun = () =>
+  useCountdownTimerStore((state) => state.setTimerRun);
+
+export const useClearTimerRun = () =>
+  useCountdownTimerStore((state) => state.clearTimerRun);

@@ -32,6 +32,14 @@ vi.mock("@/features/countdown-timer/hooks/useAutoSyncTimer", () => ({
   default: vi.fn(),
 }));
 
+vi.mock("@/features/countdown-timer/hooks/useTimerCoordinator", () => ({
+  useTimerCoordinatorStatus: () => ({
+    ready: true,
+    supported: true,
+    isCoordinator: true,
+  }),
+}));
+
 vi.mock("@/hooks/useDate", () => ({
   useDate: vi.fn(),
 }));

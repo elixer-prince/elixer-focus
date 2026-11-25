@@ -16,6 +16,7 @@ describe("Mobile Link Container", () => {
   const links = [
     { name: /home/i, href: "/" },
     { name: /tasks/i, href: "/tasks" },
+    { name: /profile/i, href: "/profile" },
   ];
 
   it("should render a ul element", () => {

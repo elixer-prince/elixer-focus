@@ -1,4 +1,6 @@
 import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
+import { useLastCompletedSession } from "@/features/countdown-timer/stores/session-history-store";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionCount,
@@ -23,6 +25,7 @@ const useSessionSwitch = () => {
   const currentSessionType = useCurrentSessionType();
   const currentSessionCount = useCurrentSessionCount();
   const sessionCountLimit = useSessionCountLimit();
+  const lastCompletedSession = useLastCompletedSession();
   const setCurrentSessionType = useSetCurrentSessionType();
   const incrementCurrentSessionCount = useIncrementCurrentSessionCount();
   const resetCurrentSessionCount = useResetCurrentSessionCount();
@@ -53,7 +56,7 @@ const useSessionSwitch = () => {
     sessionDuration: number,
   ) => {
     setCurrentSessionType(sessionType);
-    resetTimerStorage(sessionDuration);
+    resetTimerStorage(sessionDuration, false);
   };
 
   const handleBreakSwitching = () => {
@@ -67,37 +70,55 @@ const useSessionSwitch = () => {
   };
 
   const switchToFocus = () => {
-    if (currentSessionType === "Focus") return;
+    if (currentSessionType === "Focus" || lastCompletedSession) return;
 
-    if (!timerRunning)
-      return updateTimerDurationAndReset("Focus", focusDuration);
+    if (!timerRunning) {
+      dispatchTimerCommand({ type: "switch-session", sessionType: "Focus" });
+      return resetPageTitle();
+    }
 
     if (confirm(confirmationMessage)) {
-      updateTimerDurationAndReset("Focus", focusDuration);
+      dispatchTimerCommand({ type: "switch-session", sessionType: "Focus" });
       resetPageTitle();
     }
   };
 
   const switchToShortBreak = () => {
-    if (currentSessionType === "Short Break") return;
+    if (currentSessionType === "Short Break" || lastCompletedSession) return;
 
-    if (!timerRunning)
-      return updateTimerDurationAndReset("Short Break", shortBreakDuration);
+    if (!timerRunning) {
+      dispatchTimerCommand({
+        type: "switch-session",
+        sessionType: "Short Break",
+      });
+      return resetPageTitle();
+    }
 
     if (confirm(confirmationMessage)) {
-      updateTimerDurationAndReset("Short Break", shortBreakDuration);
+      dispatchTimerCommand({
+        type: "switch-session",
+        sessionType: "Short Break",
+      });
       resetPageTitle();
     }
   };
 
   const switchToLongBreak = () => {
-    if (currentSessionType === "Long Break") return;
+    if (currentSessionType === "Long Break" || lastCompletedSession) return;
 
-    if (!timerRunning)
-      return updateTimerDurationAndReset("Long Break", longBreakDuration);
+    if (!timerRunning) {
+      dispatchTimerCommand({
+        type: "switch-session",
+        sessionType: "Long Break",
+      });
+      return resetPageTitle();
+    }
 
     if (confirm(confirmationMessage)) {
-      updateTimerDurationAndReset("Long Break", longBreakDuration);
+      dispatchTimerCommand({
+        type: "switch-session",
+        sessionType: "Long Break",
+      });
       resetPageTitle();
     }
   };

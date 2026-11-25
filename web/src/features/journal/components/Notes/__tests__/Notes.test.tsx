@@ -42,8 +42,14 @@ type MockStoreValue = {
 
 const MockStoreContext = createContext<MockStoreValue | null>(null);
 
-function MockStoreProvider({ children }: { children: React.ReactNode }) {
-  const [notes, setNotes] = useState([...defaultNotes]);
+function MockStoreProvider({
+  children,
+  initialNotes = defaultNotes,
+}: {
+  children: React.ReactNode;
+  initialNotes?: typeof defaultNotes;
+}) {
+  const [notes, setNotes] = useState([...initialNotes]);
   const [entries] = useState([...defaultEntries]);
 
   const handleDeleteNote = useCallback((noteId: string) => {
@@ -104,6 +110,7 @@ vi.mock("@/components/ui", () => ({
     onClick,
     disabled,
     "aria-label": ariaLabel,
+    "aria-pressed": ariaPressed,
   }: {
     children: React.ReactNode;
     size?: string;
@@ -111,6 +118,7 @@ vi.mock("@/components/ui", () => ({
     onClick?: () => void;
     disabled?: boolean;
     "aria-label"?: string;
+    "aria-pressed"?: boolean;
   }) => (
     <button
       type="button"
@@ -118,6 +126,7 @@ vi.mock("@/components/ui", () => ({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
+      aria-pressed={ariaPressed}
     >
       {children}
     </button>
@@ -158,8 +167,13 @@ afterEach(() => {
 });
 
 describe("Notes component", () => {
-  const renderWithMock = (ui: React.ReactNode) =>
-    render(<MockStoreProvider>{ui}</MockStoreProvider>);
+  const renderWithMock = (
+    ui: React.ReactNode,
+    initialNotes: typeof defaultNotes = defaultNotes,
+  ) =>
+    render(
+      <MockStoreProvider initialNotes={initialNotes}>{ui}</MockStoreProvider>,
+    );
 
   it("renders the notes section header with count", () => {
     renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />);
@@ -178,6 +192,68 @@ describe("Notes component", () => {
 
     expect(screen.getByText("Test Note")).toBeInTheDocument();
     expect(screen.getByText("quick")).toBeInTheDocument();
+  });
+
+  it("filters notes by type and can show all notes again", async () => {
+    const user = userEvent.setup();
+    renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />, [
+      defaultNotes[0],
+      {
+        ...defaultNotes[0],
+        id: "note-2",
+        title: "Reflection note",
+        noteType: "reflection",
+      },
+    ]);
+
+    expect(screen.getByText("Test Note")).toBeInTheDocument();
+    expect(screen.getByText("Reflection note")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Reflection notes" }));
+
+    expect(screen.getByText("Reflection note")).toBeInTheDocument();
+    expect(screen.queryByText("Test Note")).not.toBeInTheDocument();
+    expect(screen.getByText("Notes (1)")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Quick notes" }));
+
+    expect(screen.getByText("Test Note")).toBeInTheDocument();
+    expect(screen.queryByText("Reflection note")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "All notes" }));
+
+    expect(screen.getByText("Test Note")).toBeInTheDocument();
+    expect(screen.getByText("Reflection note")).toBeInTheDocument();
+  });
+
+  it("shows an empty state when the selected filter has no matches", async () => {
+    const user = userEvent.setup();
+    renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />);
+
+    await user.click(screen.getByRole("button", { name: "Reflection notes" }));
+
+    expect(
+      screen.getByText("No reflection notes for this day."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Notes (0)")).toBeInTheDocument();
+  });
+
+  it("shows newer notes before older notes", () => {
+    renderWithMock(<NotesSection selectedDate={new Date(2026, 0, 15)} />, [
+      { ...defaultNotes[0], title: "Older note", createdAt: 1000 },
+      {
+        ...defaultNotes[0],
+        id: "note-2",
+        title: "Newer note",
+        createdAt: 2000,
+      },
+    ]);
+
+    expect(
+      screen
+        .getAllByRole("heading", { level: 4 })
+        .map((heading) => heading.textContent),
+    ).toEqual(["Newer note", "Older note"]);
   });
 
   it("renders edit and delete buttons for each note", () => {

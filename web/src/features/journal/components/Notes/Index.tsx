@@ -5,7 +5,7 @@ import {
   useNotes,
   useUpdateNote,
 } from "@/features/journal/stores/journal-store";
-import type { JournalNote } from "@/features/journal/types/journal";
+import type { JournalNote, NoteType } from "@/features/journal/types/journal";
 import { Badge, Button, Input } from "@/components/ui";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -15,12 +15,21 @@ type NotesSectionProps = {
   selectedDate: Date;
 };
 
+type NoteFilter = "all" | NoteType;
+
+const noteFilters: { value: NoteFilter; label: string }[] = [
+  { value: "all", label: "All notes" },
+  { value: "reflection", label: "Reflection notes" },
+  { value: "quick", label: "Quick notes" },
+];
+
 const NotesSection = ({ selectedDate }: NotesSectionProps) => {
   const entries = useEntries();
   const allNotes = useNotes();
   const createNote = useCreateNote();
   const updateNote = useUpdateNote();
   const deleteNote = useDeleteNote();
+  const [noteFilter, setNoteFilter] = useState<NoteFilter>("all");
   const [isCreating, setIsCreating] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
@@ -33,8 +42,14 @@ const NotesSection = ({ selectedDate }: NotesSectionProps) => {
 
   // Get notes for this day
   const notes = entry
-    ? allNotes.filter((n: JournalNote) => n.dailyEntryId === entry.id)
+    ? allNotes
+        .filter((n: JournalNote) => n.dailyEntryId === entry.id)
+        .sort((a, b) => b.createdAt - a.createdAt)
     : [];
+  const filteredNotes =
+    noteFilter === "all"
+      ? notes
+      : notes.filter((note) => note.noteType === noteFilter);
 
   const handleCreateNote = () => {
     if (!entry || !newTitle.trim()) return;
@@ -72,15 +87,34 @@ const NotesSection = ({ selectedDate }: NotesSectionProps) => {
 
   return (
     <div className="notes-section mt-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-base-content text-lg font-semibold">
-          Notes ({notes.length})
+          Notes ({filteredNotes.length})
         </h3>
         {!isCreating && (
           <Button size="sm" color="ghost" onClick={() => setIsCreating(true)}>
             + Add Note
           </Button>
         )}
+      </div>
+
+      <div
+        role="group"
+        aria-label="Filter notes by type"
+        className="mb-3 flex flex-wrap gap-2"
+      >
+        {noteFilters.map(({ value, label }) => (
+          <Button
+            key={value}
+            size="sm"
+            color={noteFilter === value ? "primary" : "ghost"}
+            className="min-h-11"
+            aria-pressed={noteFilter === value}
+            onClick={() => setNoteFilter(value)}
+          >
+            {label}
+          </Button>
+        ))}
       </div>
 
       {/* Create Note Form */}
@@ -121,14 +155,18 @@ const NotesSection = ({ selectedDate }: NotesSectionProps) => {
       )}
 
       {/* Notes List */}
-      {notes.length === 0 && !isCreating && (
+      {filteredNotes.length === 0 && !isCreating && (
         <p className="text-base-content/40 py-4 text-center text-sm italic">
-          No notes yet. Click &quot;Add Note&quot; to create one.
+          {notes.length === 0
+            ? 'No notes yet. Click "Add Note" to create one.'
+            : noteFilter === "reflection"
+              ? "No reflection notes for this day."
+              : "No quick notes for this day."}
         </p>
       )}
 
       <div className="space-y-3">
-        {notes.map((note: JournalNote) => (
+        {filteredNotes.map((note: JournalNote) => (
           <div
             key={note.id}
             className="border-base-300 bg-base-200/20 rounded-lg border p-4 transition-colors duration-500"

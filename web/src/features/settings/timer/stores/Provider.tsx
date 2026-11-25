@@ -2,17 +2,22 @@ import TimerSettingsContext from "@/features/settings/timer/stores/Context";
 import {
   useFocusDuration,
   useLongBreakDuration,
+  useSessionCountLimit,
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/session-store";
 import { type PropsWithChildren, useMemo, useState } from "react";
 
 const TimerSettingsProvider = ({ children }: PropsWithChildren) => {
   const focusDuration = useFocusDuration();
+  const sessionCountLimit = useSessionCountLimit();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
 
   const [draftFocus, setDraftFocus] = useState<string>(
     focusDuration.toString(),
+  );
+  const [draftSessionCountLimit, setDraftSessionCountLimit] = useState<string>(
+    sessionCountLimit.toString(),
   );
   const [draftShortBreak, setDraftShortBreak] = useState<string>(
     shortBreakDuration.toString(),
@@ -24,17 +29,21 @@ const TimerSettingsProvider = ({ children }: PropsWithChildren) => {
   const contextValues = useMemo(
     () => ({
       draftFocus,
+      draftSessionCountLimit,
       draftShortBreak,
       draftLongBreak,
       setDraftFocus,
+      setDraftSessionCountLimit,
       setDraftShortBreak,
       setDraftLongBreak,
     }),
     [
       draftFocus,
+      draftSessionCountLimit,
       draftShortBreak,
       draftLongBreak,
       setDraftFocus,
+      setDraftSessionCountLimit,
       setDraftShortBreak,
       setDraftLongBreak,
     ],

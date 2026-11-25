@@ -14,11 +14,13 @@ const mocks = vi.hoisted(() => ({
     disconnect: vi.fn(),
   },
   useTimerRunning: false,
+  useTimerPaused: false,
   audioContextCreated: false,
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useTimerRunning: () => mocks.useTimerRunning,
+  useTimerPaused: () => mocks.useTimerPaused,
 }));
 
 // Mock Web Audio API with a class that acts as a constructor
@@ -48,6 +50,7 @@ describe("usePreventTabThrottling", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.useTimerRunning = false;
+    mocks.useTimerPaused = false;
     mocks.audioContextCreated = false;
     mocks.oscillator.frequency.value = 0;
     mocks.gainNode.gain.value = 0;
@@ -69,6 +72,16 @@ describe("usePreventTabThrottling", () => {
 
     expect(mocks.audioContextCreated).toBe(true);
     expect(mocks.oscillator.start).toHaveBeenCalled();
+  });
+
+  it("should not prevent throttling while the timer is paused", () => {
+    mocks.useTimerRunning = true;
+    mocks.useTimerPaused = true;
+
+    renderHook(() => usePreventTabThrottling());
+
+    expect(mocks.audioContextCreated).toBe(false);
+    expect(mocks.oscillator.start).not.toHaveBeenCalled();
   });
 
   it("should set the gain to a nearly silent volume", () => {

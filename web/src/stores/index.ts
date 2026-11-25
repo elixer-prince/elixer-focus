@@ -13,6 +13,11 @@ export { createPersistOptions, simpleMigrate, persist } from "./persist-config";
 
 // Core stores
 export { useCurrentTheme, useSetCurrentTheme } from "./theme";
+export {
+  useProfileDisplayName,
+  useProfileBio,
+  useUpdateProfile,
+} from "@/features/profile/stores/profile-store";
 
 export {
   useCurrentTime,

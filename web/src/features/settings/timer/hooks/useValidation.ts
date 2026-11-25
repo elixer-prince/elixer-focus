@@ -2,20 +2,44 @@ import { useTimerSettingsContext } from "@/features/settings/timer/hooks/useTime
 import {
   useFocusDuration,
   useLongBreakDuration,
+  useSessionCountLimit,
   useShortBreakDuration,
 } from "@/features/countdown-timer/stores/session-store";
 import { useCallback } from "react";
 
 const useValidation = () => {
   const focusDuration = useFocusDuration();
+  const sessionCountLimit = useSessionCountLimit();
   const shortBreakDuration = useShortBreakDuration();
   const longBreakDuration = useLongBreakDuration();
 
-  const { draftFocus, draftShortBreak, draftLongBreak } =
-    useTimerSettingsContext();
+  const {
+    draftFocus,
+    draftSessionCountLimit,
+    draftShortBreak,
+    draftLongBreak,
+  } = useTimerSettingsContext();
+
+  const validateSessionCountLimit = useCallback(
+    (value: string): number | null => {
+      if (value.trim() === "") return null;
+
+      const numValue = Number(value);
+      if (!Number.isInteger(numValue) || numValue < 1 || numValue > 8) {
+        return null;
+      }
+
+      return numValue;
+    },
+    [],
+  );
+
+  const isSessionCountLimitInvalid =
+    validateSessionCountLimit(draftSessionCountLimit) === null;
 
   const hasUnsavedChanges: boolean =
     draftFocus !== focusDuration.toString() ||
+    draftSessionCountLimit !== sessionCountLimit.toString() ||
     draftShortBreak !== shortBreakDuration.toString() ||
     draftLongBreak !== longBreakDuration.toString();
 
@@ -59,7 +83,12 @@ const useValidation = () => {
     }
   };
 
-  return { hasUnsavedChanges, validateAndSet };
+  return {
+    hasUnsavedChanges,
+    isSessionCountLimitInvalid,
+    validateAndSet,
+    validateSessionCountLimit,
+  };
 };
 
 export default useValidation;

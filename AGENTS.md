@@ -22,6 +22,9 @@ Skateboard (MVP first; ship the thinnest usable whole, then grow).
 npm run lint            # Lint web and app
 npm run lint:web        # Lint web only
 npm run lint:app        # Lint app only
+npm run typecheck       # Type-check web and app
+npm run typecheck:web   # Type-check web with a forced project build
+npm run typecheck:app   # Type-check app
 npm run test            # Run web tests
 npm run test:web        # Run web tests only
 npm run test:backend    # Run backend tests
@@ -62,6 +65,7 @@ cd app && npm run web           # Run web version
 - **Path Aliases**: Both `web/` and `app/` use `@/*` alias. In web, `@/*` maps to `web/src/*`. In app, `@/*` maps to `app/*`.
 - **Co-located Tests**: Test files in `web/src/features/*/` are in `__tests__/` subdirectories next to source files (not separate test folder)
 - **Shared UI Primitives**: Typed React wrappers for Button, Input, Badge, Spinner, Skeleton, and ErrorBoundary at `web/src/components/ui/`. Import from the barrel `@/components/ui`. All use `forwardRef` and `displayName`. Input uses `inputSize` prop instead of `size` to avoid conflict with native `InputHTMLAttributes.size`. Skeleton uses `animate-pulse` with `role="status"` for accessible loading placeholders. ErrorBoundary is a class component that catches render errors with a fallback UI showing refresh and go-home actions. Spec [0002](docs/specs/web/0002-shared-ui-primitives.md).
+- **Input accessibility**: The shared `Input` links `helperText` with `aria-describedby`, reports `error` through `aria-invalid`, and preserves caller-supplied ARIA descriptions.
 - **Error Handling**: Global `ErrorBoundary` wraps all three route groups in `router.tsx`. API errors are handled by an axios interceptor in `web/src/config/axios.ts` that shows contextual toasts (401 session expired, server errors, network errors). Components can use the `useErrorToast` hook from `web/src/hooks/useErrorToast.ts` for unified error display via react-hot-toast.
 - **TailwindCSS v4**: Uses `@import "tailwindcss"` in CSS, NOT `@tailwind` directives
 - **Zustand Stores**: Use `persist` middleware with `createPersistOptions()` from `@/stores/persist-config`; import stores from the central barrel `@/stores`. Stores with nested array state (tasks, session history, journal) use `immer` middleware for direct draft mutations.
@@ -69,6 +73,8 @@ cd app && npm run web           # Run web version
 - **Calendar**: The Journal uses react-day-picker v10 with a custom `MonthCaption` component for navigation arrows flanking the month name. Use `hideNavigation` prop and `useDayPicker()` hook for navigation. Import `subMonths`/`addMonths` from `date-fns`.
 - **Charts**: The Journal uses Chart.js v4 with `react-chartjs-2` for bar charts. Register scales and elements via `Chart.register()`. Use CSS variable colors (e.g., `var(--bc)`) for theme-aware styling.
 - **Session Reflection Trigger**: The session history store exposes `lastCompletedSession` (set by `addSession()`) and `clearLastCompletedSession()`. The `SessionReflectionModal` component in the layout files subscribes via `useLastCompletedSession()` and opens the reflection modal automatically on every page. The flag is cleared when the modal closes.
+- **Cross tab timer coordination**: Route timer and reflection commands through `dispatchTimerCommand()` in `web/src/features/countdown-timer/services/timer-coordinator.ts`. The coordinator acquires a Web Lock, persists state before broadcasting through `BroadcastChannel`, and falls back to one tab when either API is unavailable. Spec [0005](docs/specs/web/0005-idle-session-overrun/index.md).
+- **Timer cycle setting**: Keep `sessionCountLimit` in the persisted session store (default 4, valid values 1 to 8). Save changes through `dispatchTimerCommand()` so the active coordinator applies and broadcasts them. Spec [0006](docs/specs/web/0006-focus-sessions-before-long-break.md).
 - **Design System**: Documented in [docs/design.md](docs/design.md) — theme system, layout structure, shared UI primitives, feature directory structure, CSS conventions, and more.
 - **Theme System**: Themes located in `web/src/app/themes/` with DaisyUI themes in `default/daisyui/`. Central theme registry in `web/src/config/themes.ts` exports `allThemes` (array of ThemeInfo with value, label, and category) and `validThemeNames` (Set). Import from there instead of hardcoding theme lists.
 - **FOUC Prevention**: `index.html` inline CSS hides the body (`opacity: 0`) until React startup effects restore the timer and set the theme, then `provider.tsx` adds the `app-ready` class. Theme is set synchronously via `useLayoutEffect` in `useAppTheme.ts` (not `useEffect`). An inline script in `<head>` reads the stored theme from localStorage before CSS loads.
@@ -80,6 +86,7 @@ cd app && npm run web           # Run web version
 - **Markdown Editor in Tests**: Mock `@atomic-editor/editor` in component tests. The editor is a controlled component; pass `markdownSource` and `onMarkdownChange` as controlled props. Test the component shell, not editor internals.
 - **Drag and Drop**: Uses `@dnd-kit/react` v9 with `@dnd-kit/helpers`. Import event types from `@dnd-kit/dom` (not `@dnd-kit/abstract`) and use `Parameters<DragOverEvent>[0]` / `Parameters<DragEndEvent>[0]` for handler signatures. Task reordering uses `groupByCategory` + `move` + `flattenTasks` pattern in both `Tasks.tsx` and `Index.tsx` (home page).
 - **E2E Testing**: Playwright runs against `localhost:5173` with Firefox browser. Config in `web/playwright.config.ts`. E2E tests in `web/e2e/` are excluded from Vitest via `vite.config.ts`. On CI, `page.evaluate()` requires `page.goto("/")` before accessing localStorage in Firefox.
+- **ESLint project service**: Add each new `web/e2e/*.spec.ts` file to `allowDefaultProject` in `web/eslint.config.js` so it receives type aware linting.
 - **Browser Throttle Prevention**: The countdown timer uses Web Audio API (`usePreventTabThrottling` hook) to play a nearly silent oscillator (0.001 volume, 220 Hz) while the timer runs. This keeps the tab exempt from browser throttling in background tabs and power-saving modes, so `setInterval` fires normally and the end beep plays automatically.
 - **Desktop Notifications**: The countdown timer sends OS-level notifications when it ends via the Web Notification API (`useNotification` hook). Permission is requested on timer start. The notification title and body include the session type (e.g., "Focus", "Short Break", "Long Break") via the `sessionType` parameter. The `tag` option deduplicates notifications, and `onclick` focuses the window. A `NotificationStatus` component shows warnings when notifications are disabled and error messages when they fail. OS-specific settings instructions are provided by `getNotificationSettingsInstruction()` in `web/src/utils/browser.ts`.
 - **Focus Ring Pulse**: The countdown timer focus ring pulses via a CSS `@keyframes` animation (`focus-ring-pulse` in `index.css`) while the timer runs. Components conditionally apply the `focus-ring-pulse` class and omit the inline `filter` style using spread (`...(isPulsing ? {} : { filter: "..." })`) so CSS animations take over. Setting `filter: undefined` in React still renders the property, blocking animations.
@@ -99,7 +106,8 @@ cd app && npm run web           # Run web version
 - Web vitest requires globals: true and jsdom environment
 - E2E tests in `web/e2e/` are excluded from Vitest; run them with `npx playwright test`
 - Playwright e2e tests run on GitHub Actions (Ubuntu) via `.github/workflows/playwright.yaml` on push to main/alpha/beta
-- **Lint & TypeCheck CI** runs on push and PR via `.github/workflows/lint-typecheck.yaml` on main/alpha/beta, linting web and app, type checking web, and checking Prettier format
+- **Lint and TypeScript CI** runs on push and PR via `.github/workflows/lint-typecheck.yaml` on main/alpha/beta, linting web and app, type checking both apps, and checking Prettier format
+- **Local TypeScript checks before push**: `.husky/pre-push` runs `npm run typecheck` and blocks a push if either app has type errors
 - **Playwright does not run locally on macOS 12** — Playwright dropped support for macOS 12 (Monterey). Do not attempt to install Playwright browsers or run E2E tests locally. E2E tests only run on CI. Once the local macOS version is upgraded, local Playwright will work again.
 - **TypeScript incremental build cache hides errors** — `tsc -b` uses `.tsbuildinfo` cache files and may skip type-checking files it considers unchanged. The build script uses `tsc -b --force` to always check all files. If you run `tsc -b` without `--force` locally, you may miss type errors that Vercel catches on fresh builds.
 - **Mock type assertions in tests** — When mocking DOM types like `HTMLDialogElement` in tests, use `as unknown as Type` instead of `as Type` to satisfy strict TypeScript checking. Follow the pattern in `web/src/testing/setup.ts` and existing test files.
@@ -112,3 +120,7 @@ cd app && npm run web           # Run web version
 - [playwright-cli](.agents/skills/playwright-cli/): microsoft/playwright-cli, Playwright CLI conventions and best practices
 - [playwright-dev](.agents/skills/playwright-dev/): microsoft/playwright, Playwright development internals
 - [playwright-best-practices](.agents/skills/playwright-best-practices/): currents-dev/playwright-best-practices-skill, E2E testing best practices
+
+## Context files
+
+- [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.

@@ -4,6 +4,19 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
 
+const mocks = vi.hoisted(() => ({
+  trackedIntervals: [] as Array<{
+    id: string;
+    kind: "idle" | "overrun";
+    startedAt: number;
+    endedAt: number | null;
+    sessionId: string | null;
+    userId: string | null;
+    createdAt: number;
+    updatedAt: number;
+  }>,
+}));
+
 vi.mock("@/features/journal/stores/journal-store", () => {
   const entry = {
     id: "entry-1",
@@ -32,6 +45,8 @@ vi.mock("@/features/journal/stores/journal-store", () => {
 vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
   getSessionsByDay: vi.fn(() => []),
   getTotalFocusTime: vi.fn(() => 0),
+  useSessions: vi.fn(() => []),
+  useTrackedIntervals: vi.fn(() => mocks.trackedIntervals),
   useGetTotalFocusTime: vi.fn(() => 0),
   getSessionCountsByType: vi.fn(() => ({
     Focus: 0,
@@ -100,6 +115,7 @@ vi.mock("react-icons/md", () => ({
 
 afterEach(() => {
   vi.clearAllMocks();
+  mocks.trackedIntervals = [];
 });
 
 describe("DailyEntry component", () => {
@@ -118,7 +134,7 @@ describe("DailyEntry component", () => {
   it("renders the collapsible stats section", () => {
     render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
-    expect(screen.getByText("Today's Focus Stats")).toBeInTheDocument();
+    expect(screen.getByText("Focus Stats")).toBeInTheDocument();
   });
 
   it("shows no sessions message when there are no sessions", () => {
@@ -127,6 +143,30 @@ describe("DailyEntry component", () => {
     expect(
       screen.getByText("No sessions completed today yet."),
     ).toBeInTheDocument();
+  });
+
+  it("shows tracking stats for an idle only day", () => {
+    const start = new Date(2026, 0, 15).getTime();
+    mocks.trackedIntervals = [
+      {
+        id: "idle-1",
+        kind: "idle",
+        startedAt: start,
+        endedAt: null,
+        sessionId: null,
+        userId: null,
+        createdAt: start,
+        updatedAt: start,
+      },
+    ];
+
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    expect(screen.getByText("Idle Time")).toBeInTheDocument();
+    expect(screen.getByText("Total Focus Time")).toBeInTheDocument();
+    expect(
+      screen.queryByText("No sessions completed today yet."),
+    ).not.toBeInTheDocument();
   });
 
   it("shows placeholder text in view mode when entry is empty", () => {
@@ -156,9 +196,7 @@ describe("DailyEntry component", () => {
   it("renders the stats toggle button", () => {
     render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
 
-    const statsButton = screen
-      .getByText("Today's Focus Stats")
-      .closest("button");
+    const statsButton = screen.getByText("Focus Stats").closest("button");
     expect(statsButton).toBeInTheDocument();
   });
 });

@@ -29,10 +29,12 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 27  | Design documentation               | Foundation            | done        |
 | 21  | API response types                 | Foundation            | done        |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
+| 45  | Idle and session overrun tracking  | Slice 1 (core loop)   | done        |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
 | 8   | Timer settings                     | Slice 2 (settings)    | done        |
+| 46  | Focus sessions before long break   | Slice 2 (settings)    | done        |
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
@@ -43,7 +45,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 43  | Music player duplicate songs fix   | Slice 2 (settings)    | done        |
 | 44  | Music player dedup migration fix   | Slice 2 (settings)    | done        |
 | 10  | Journal                            | Slice 3 (pages)       | done        |
-| 11  | Profile                            | Slice 3 (pages)       | in-progress |
+| 11  | Profile                            | Slice 3 (pages)       | done        |
 | 12  | Calendar                           | Slice 3 (pages)       | in-progress |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
@@ -55,6 +57,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
+| 47  | Sleep schedule                     | Slice 5 (future)      | planned     |
 
 ## Foundations
 
@@ -229,6 +232,21 @@ Adaptive countdown with focus/break sessions, session switching, focus ring, and
 
 code in `web/src/features/countdown-timer/`
 
+### 45. Idle and session overrun tracking · done
+
+Track time when no timer is active, including before the first session and between sessions. By default, elapsed time after a session ends continues to count toward that session type until the reflection modal closes; a timer setting can turn off this attribution.
+
+**Done when:** idle time and session overrun are recorded without overlapping totals, and a persisted setting defaults to attributing overrun time to the completed session type until the reflection modal closes.
+
+- [x] Design it (spec): `/architect idle and session overrun tracking`
+      Spec [0005](../../specs/web/0005-idle-session-overrun/index.md)
+- [x] Build it: `/develop idle and session overrun tracking`
+  - [x] Persist interval lifecycle, settings, and deadline recovery (AC-1, AC-2, AC-3, AC-7, AC-11, AC-12)
+  - [x] Coordinate timer and reflection across tabs with handoff and fallback (AC-4, AC-5, AC-6, AC-7, AC-8)
+  - [x] Add daily Journal stats and the paired weekly comparison chart (AC-2, AC-9, AC-10, AC-11)
+
+code in `web/src/features/countdown-timer/`, `web/src/features/journal/`, `web/src/features/settings/timer/`, and `web/src/app/provider.tsx`
+
 ### 6. Music player · existing
 
 Play from a predefined list or a YouTube link; Spotify integration; volume and playback controls.
@@ -278,6 +296,21 @@ Configure focus, short break, and long break durations with validation. Card-bas
 - [x] Verify it: `/check verify timer settings`
 
 code in `web/src/features/settings/timer/`
+
+### 46. Focus sessions before long break · done
+
+Let users choose how many focus sessions happen before a long break in a dedicated settings card, separate from the Focus duration card, keeping the default at four.
+
+**Done when:** the selected focus session count persists, defaults to four, determines when the timer schedules a long break, and appears in its own card separate from Focus duration.
+
+- [x] Design it (spec): [0006](../../specs/web/0006-focus-sessions-before-long-break.md)
+- [x] Build it: `/develop focus sessions before long break`
+  - [x] Add the count input with draft, validation, save, and reset behavior (AC-1 through AC-3)
+  - [x] Persist and sync the selected count through the timer coordinator (AC-4, AC-7, AC-8)
+  - [x] Verify cycle scheduling, progress, and transition edge cases (AC-5 through AC-7)
+  - [x] Move the count input to a dedicated settings card separate from Focus duration (AC-1)
+
+code in `web/src/features/settings/timer/` and `web/src/features/countdown-timer/`
 
 ### 32. Timer keyboard shortcuts · cancelled
 
@@ -392,13 +425,17 @@ Daily writing space with Markdown editor, session stats, calendar navigation, an
 
 code in `web/src/app/routes/(root)/Journal.tsx`
 
-### 11. Profile · in-progress · needs a decision
+### 11. Profile · done
 
-Placeholder route; implement a profile page for the user.
+Social media style profile page with identity info, productivity stats, character stat bars, activity feed, achievement badges, and the theme selected in Settings. User can edit name and bio; the theme is displayed as read only profile information. Spec [0004](../../specs/web/0004-profile-page/index.md).
 
-**Done when:** profile page shows user info and basic preferences.
+**Done when:** profile page shows user info, real stats from session and task data, fixed placeholder character bars, recent activity, unlockable badges, the theme selected in Settings, and an edit form for name and bio.
 
-- [ ] Design it (spec): `/architect profile`
+- [x] Design it (spec): `/architect profile`
+- [x] Build it: `/develop profile`
+  - [x] Profile store, header, and edit form for name and bio (AC-1, AC-6, AC-7)
+  - [x] Stats row and fixed character stat bars (AC-2, AC-3, AC-8)
+  - [x] Activity feed with task completion time migration, badges, theme display, and page wiring (AC-4, AC-5, AC-9)
 
 code in `web/src/app/routes/(root)/Profile.tsx`
 
@@ -501,4 +538,12 @@ Social media style features (sharing, leaderboards, community). Deferred; massiv
 **Done when:** users can share progress and view others.
 
 - [ ] Design it (spec): `/architect social features`
+
+### 47. Sleep schedule · planned · needs a decision · from spec 0005
+
+Let users configure sleep windows and derive an awake time view from raw idle intervals. Keep raw idle and session records unchanged, including timer sessions that occur during a scheduled sleep window.
+
+**Done when:** users can configure a sleep schedule and see awake idle totals without changing raw idle or session records.
+
+- [ ] Design it (spec): `/architect sleep schedule`
 

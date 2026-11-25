@@ -43,9 +43,8 @@ jobs:
         run: npm run lint
         working-directory: app
 
-      - name: TypeCheck web
-        run: npx tsc -b --force --noEmit
-        working-directory: web
+      - name: TypeCheck web and app
+        run: npm run typecheck
 
       - name: Format check
         run: npx prettier --check .

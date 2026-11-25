@@ -12,6 +12,9 @@ const mocks = vi.hoisted(() => ({
   stopEndTicking: vi.fn(),
   displayRemainingTimeInPageTitle: vi.fn(),
   alertUserOfTimerEnd: vi.fn(),
+  completeSession: vi.fn(),
+  isTimerCoordinatorOwner: vi.fn(() => true),
+  broadcastTimerState: vi.fn(),
   setSessionProgressInSeconds: vi.fn(),
   resetSessionProgressInSeconds: vi.fn(),
   setRemainingTimeInSeconds: vi.fn(),
@@ -60,14 +63,26 @@ vi.mock("@/hooks/usePageTitle", () => ({
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useCurrentSessionType: () => "Focus",
+  useAttributeSessionOverrun: () => true,
   useSetPreviousSessionType: () => mocks.setPreviousSessionType,
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
+  useActiveRunDurationInSeconds: () => 1500,
   useSetSessionProgressInSeconds: () => mocks.setSessionProgressInSeconds,
   useResetSessionProgressInSeconds: () => mocks.resetSessionProgressInSeconds,
   useSessionProgressInSeconds: () => 0,
   useSetRemainingTimeInSeconds: () => mocks.setRemainingTimeInSeconds,
+  useTimerRunId: () => "run-1",
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useCompleteSession: () => mocks.completeSession,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  broadcastTimerState: mocks.broadcastTimerState,
+  isTimerCoordinatorOwner: mocks.isTimerCoordinatorOwner,
 }));
 
 vi.mock("@/features/countdown-timer/utils/calculations", () => ({
@@ -103,6 +118,7 @@ describe("useCountdownInterval", () => {
     mocks.timerHasEnded.mockReturnValue(false);
     mocks.calculateRemainingSeconds.mockReturnValue(100);
     mocks.getCurrentTimestamp.mockReturnValue(1000);
+    mocks.isTimerCoordinatorOwner.mockReturnValue(true);
   });
 
   describe("resetSessionProgress", () => {
@@ -254,6 +270,42 @@ describe("useCountdownInterval", () => {
       });
 
       expect(mocks.alertUserOfTimerEnd).toHaveBeenCalledWith("Focus");
+    });
+
+    it("should record the run identity, captured duration, and deadline once", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.completeSession).toHaveBeenCalledWith(
+        "Focus",
+        1500,
+        999999,
+        "run-1",
+        true,
+      );
+      expect(mocks.broadcastTimerState).toHaveBeenCalled();
+    });
+
+    it("should not process completion side effects in a follower tab", () => {
+      mocks.timerHasEnded.mockReturnValue(true);
+      mocks.isTimerCoordinatorOwner.mockReturnValue(false);
+
+      const { result } = renderHook(() => useCountdownInterval());
+
+      act(() => {
+        result.current.runInterval(999999);
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(mocks.completeSession).not.toHaveBeenCalled();
+      expect(mocks.alertUserOfTimerEnd).not.toHaveBeenCalled();
+      expect(mocks.playSound).not.toHaveBeenCalled();
     });
 
     it("should set previous session type when timer ends", () => {

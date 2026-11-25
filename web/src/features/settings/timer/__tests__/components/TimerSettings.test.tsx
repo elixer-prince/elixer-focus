@@ -3,18 +3,22 @@ import { vi } from "vitest";
 
 // Mutable mock state for testing unsaved changes scenario
 let mockDraftFocus = "25";
+let mockDraftSessionCountLimit = "4";
 let mockDraftShortBreak = "5";
 let mockDraftLongBreak = "15";
 const mockSetDraftFocus = vi.fn();
+const mockSetDraftSessionCountLimit = vi.fn();
 const mockSetDraftShortBreak = vi.fn();
 const mockSetDraftLongBreak = vi.fn();
 
 vi.mock("@/features/settings/timer/hooks/useTimerSettingsContext", () => ({
   useTimerSettingsContext: () => ({
     draftFocus: mockDraftFocus,
+    draftSessionCountLimit: mockDraftSessionCountLimit,
     draftShortBreak: mockDraftShortBreak,
     draftLongBreak: mockDraftLongBreak,
     setDraftFocus: mockSetDraftFocus,
+    setDraftSessionCountLimit: mockSetDraftSessionCountLimit,
     setDraftShortBreak: mockSetDraftShortBreak,
     setDraftLongBreak: mockSetDraftLongBreak,
   }),
@@ -25,13 +29,19 @@ let mockShortBreakDuration = 5;
 let mockLongBreakDuration = 15;
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
+  useAttributeSessionOverrun: () => true,
   useFocusDuration: () => mockFocusDuration,
   useShortBreakDuration: () => mockShortBreakDuration,
   useLongBreakDuration: () => mockLongBreakDuration,
+  useSessionCountLimit: () => 4,
   useCurrentSessionType: () => "Focus",
   useSetFocusDuration: () => vi.fn(),
   useSetShortBreakDuration: () => vi.fn(),
   useSetLongBreakDuration: () => vi.fn(),
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: vi.fn(),
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
@@ -72,6 +82,7 @@ describe("TimerSettings", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockDraftFocus = "25";
+    mockDraftSessionCountLimit = "4";
     mockDraftShortBreak = "5";
     mockDraftLongBreak = "15";
     mockFocusDuration = 25;
@@ -89,7 +100,9 @@ describe("TimerSettings", () => {
     render(<TimerSettings />);
 
     expect(
-      screen.getByText(/Configure the duration for each session type/i),
+      screen.getByText(
+        /Configure session durations and choose how many focus sessions/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -101,12 +114,40 @@ describe("TimerSettings", () => {
     expect(screen.getByTestId("long-break-container")).toBeInTheDocument();
   });
 
+  it("renders the focus session count in its own card", () => {
+    render(<TimerSettings />);
+
+    const countInput = screen.getByRole("spinbutton", {
+      name: "Focus sessions before a long break",
+    });
+    const countCard = countInput.closest(".card");
+    const focusCard = screen.getByText("Focus").closest(".card");
+
+    expect(countCard).toBeInTheDocument();
+    expect(countCard).not.toBe(focusCard);
+  });
+
   it("should render the card labels", () => {
     render(<TimerSettings />);
 
     expect(screen.getByText("Focus")).toBeInTheDocument();
     expect(screen.getByText("Short Break")).toBeInTheDocument();
     expect(screen.getByText("Long Break")).toBeInTheDocument();
+  });
+
+  it("keeps timer card content aligned to the top", () => {
+    render(<TimerSettings />);
+
+    const cardBodies = [
+      "Focus",
+      "Short Break",
+      "Long Break",
+      "Focus Cycle",
+    ].map((label) => screen.getByText(label).parentElement);
+
+    cardBodies.forEach((cardBody) => {
+      expect(cardBody).toHaveClass("justify-start");
+    });
   });
 
   it("should render the save button", () => {
@@ -136,6 +177,14 @@ describe("TimerSettings", () => {
 
     const saveButton = screen.getByText("Save changes");
     expect(saveButton).not.toBeDisabled();
+  });
+
+  it("should enable save when the focus session count changes", () => {
+    mockDraftSessionCountLimit = "6";
+
+    render(<TimerSettings />);
+
+    expect(screen.getByText("Save changes")).not.toBeDisabled();
   });
 
   it("should show reset button when there are unsaved changes", () => {

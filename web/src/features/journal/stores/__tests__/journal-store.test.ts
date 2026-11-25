@@ -126,6 +126,30 @@ describe("journal store", () => {
       expect(note.noteType).toBe("reflection");
       expect(note.sessionId).toBe("session-123");
     });
+
+    it("does not create duplicate reflection notes for a session", () => {
+      useJournalStore.setState({ entries: [], notes: [] });
+      const store = useJournalStore.getState();
+      const first = store.createNote(
+        "entry-id",
+        "Reflection",
+        "Great session",
+        "reflection",
+        "session-123",
+      );
+      const retry = useJournalStore
+        .getState()
+        .createNote(
+          "entry-id",
+          "Reflection",
+          "Great session",
+          "reflection",
+          "session-123",
+        );
+
+      expect(retry).toEqual(first);
+      expect(useJournalStore.getState().notes).toHaveLength(1);
+    });
   });
 
   describe("getNotesByDate", () => {

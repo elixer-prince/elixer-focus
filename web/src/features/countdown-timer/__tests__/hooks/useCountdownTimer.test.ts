@@ -5,7 +5,12 @@ const mocks = vi.hoisted(() => ({
   startCountdownOnPageLoad: vi.fn(),
   stopEndTicking: vi.fn(),
   clearIntervalIfItExists: vi.fn(),
+  timerRunning: true,
+  timerPaused: false,
+  storedEndTime: 5000,
+  timerEndTimeRef: { current: null as number | null },
   timerIntervalRef: { current: null as number | null },
+  sessionProgressIntervalRef: { current: null as number | null },
 }));
 
 vi.mock("@/features/countdown-timer/hooks/useStartCountdown", () => ({
@@ -20,10 +25,21 @@ vi.mock("@/features/countdown-timer/hooks/useEndTicking", () => ({
   }),
 }));
 
+vi.mock("@/features/countdown-timer/hooks/useTimerCoordinator", () => ({
+  default: () => ({ ready: true, supported: true, isCoordinator: true }),
+}));
+
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
   default: () => ({
+    timerEndTimeRef: mocks.timerEndTimeRef,
     timerIntervalRef: mocks.timerIntervalRef,
+    sessionProgressIntervalRef: mocks.sessionProgressIntervalRef,
   }),
+}));
+
+vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
+  useTimerRunning: () => mocks.timerRunning,
+  useTimerPaused: () => mocks.timerPaused,
 }));
 
 vi.mock("@/features/countdown-timer/hooks/usePreventTabThrottling", () => ({
@@ -34,11 +50,19 @@ vi.mock("@/utils/interval", () => ({
   clearIntervalIfItExists: mocks.clearIntervalIfItExists,
 }));
 
+vi.mock("@/utils/storage", () => ({
+  getFromLocalStorage: () => mocks.storedEndTime,
+}));
+
 import useCountdownTimer from "@/features/countdown-timer/hooks/useCountdownTimer";
 
 describe("useCountdownTimer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.timerRunning = true;
+    mocks.timerPaused = false;
+    mocks.storedEndTime = 5000;
+    mocks.timerEndTimeRef.current = null;
     mocks.timerIntervalRef.current = null;
   });
 

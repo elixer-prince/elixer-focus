@@ -4,6 +4,7 @@ interface SessionOptionProps {
   value: string;
   checked: boolean;
   onChange: () => void;
+  disabled?: boolean;
 }
 
 const SessionOption = ({
@@ -11,6 +12,7 @@ const SessionOption = ({
   checked,
   children,
   onChange,
+  disabled = false,
 }: PropsWithChildren<SessionOptionProps>) => {
   return (
     <label>
@@ -21,6 +23,7 @@ const SessionOption = ({
         value={value}
         onChange={onChange}
         checked={checked}
+        disabled={disabled}
       />
       {children}
     </label>

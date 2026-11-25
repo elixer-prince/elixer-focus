@@ -6,18 +6,24 @@ import {
   useTimerPaused,
   useTimerRunning,
 } from "@/features/countdown-timer/stores/countdown-store";
+import { useLastCompletedSession } from "@/features/countdown-timer/stores/session-history-store";
 
 const ButtonControls = () => {
   const timerPaused = useTimerPaused();
   const timerRunning = useTimerRunning();
+  const lastCompletedSession = useLastCompletedSession();
 
   return (
-    <div className={"mb-8 flex justify-center gap-4"}>
+    <fieldset
+      disabled={lastCompletedSession !== null}
+      className="mb-8 flex justify-center gap-4"
+    >
+      <legend className="sr-only">Timer controls</legend>
       {timerPaused && <StartButton />}
       {!timerPaused && <PauseButton />}
       {timerRunning && <ResetButton />}
       <SkipButton />
-    </div>
+    </fieldset>
   );
 };
 

@@ -3,13 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 const mockSetDraftFocus = vi.fn();
+const mockSetDraftSessionCountLimit = vi.fn();
+let mockSessionCountLimitInvalid = false;
 
 vi.mock("@/features/settings/timer/hooks/useTimerSettingsContext", () => ({
   useTimerSettingsContext: () => ({
     draftFocus: "25",
+    draftSessionCountLimit: "4",
     draftShortBreak: "5",
     draftLongBreak: "15",
     setDraftFocus: mockSetDraftFocus,
+    setDraftSessionCountLimit: mockSetDraftSessionCountLimit,
     setDraftShortBreak: vi.fn(),
     setDraftLongBreak: vi.fn(),
   }),
@@ -19,10 +23,12 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useFocusDuration: () => 25,
   useShortBreakDuration: () => 5,
   useLongBreakDuration: () => 15,
+  useSessionCountLimit: () => 4,
 }));
 
 vi.mock("@/features/settings/timer/hooks/useValidation", () => ({
   default: () => ({
+    isSessionCountLimitInvalid: mockSessionCountLimitInvalid,
     hasUnsavedChanges: false,
     validateAndSet: (
       value: string,
@@ -50,6 +56,7 @@ import FocusContainer from "@/features/settings/timer/FocusContainer";
 describe("FocusContainer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSessionCountLimitInvalid = false;
   });
 
   it("should render the input with label", () => {

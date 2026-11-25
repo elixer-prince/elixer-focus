@@ -4,7 +4,10 @@ import {
   useSetStartTimeInMinutes,
   useSetTimerPaused,
   useSetTimerRunning,
+  useClearTimerRun,
+  useResetSessionProgressInSeconds,
 } from "@/features/countdown-timer/stores/countdown-store";
+import { useStartIdleInterval } from "@/features/countdown-timer/stores/session-history-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { saveToLocalStorage } from "@/utils/storage";
 
@@ -15,9 +18,12 @@ const UseCountdownStorage = () => {
   const setTimerPaused = useSetTimerPaused();
   const setStartTimeInMinutes = useSetStartTimeInMinutes();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
+  const clearTimerRun = useClearTimerRun();
+  const resetSessionProgressInSeconds = useResetSessionProgressInSeconds();
+  const startIdleInterval = useStartIdleInterval();
 
   // * Locked * //
-  const resetTimerStorage = (newStartTime: number) => {
+  const resetTimerStorage = (newStartTime: number, startIdle = true) => {
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
@@ -25,6 +31,8 @@ const UseCountdownStorage = () => {
 
     setTimerRunning(false);
     setTimerPaused(true);
+    clearTimerRun();
+    resetSessionProgressInSeconds();
 
     timerEndTimeRef.current = null;
     saveToLocalStorage("timerEndTime", null);
@@ -32,6 +40,7 @@ const UseCountdownStorage = () => {
 
     setStartTimeInMinutes(newStartTime);
     setRemainingTimeInSeconds(convertMinutesToSeconds(newStartTime));
+    if (startIdle) startIdleInterval(Date.now());
   };
 
   return { resetTimerStorage };

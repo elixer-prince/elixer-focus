@@ -4,12 +4,13 @@ import {
   getSessionCountsByType,
   useGetTotalFocusTime,
 } from "@/features/countdown-timer/stores/session-history-store";
+import useTrackedTimeTotalsForRanges from "@/features/countdown-timer/hooks/useTrackedTimeTotals";
 import { formatElapsedTime } from "@/utils/formatting";
 import { Badge, Button } from "@/components/ui";
 import { format } from "date-fns";
 import { AtomicCodeMirrorEditor } from "@atomic-editor/editor";
 import "@atomic-editor/editor/styles.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   MdEdit,
   MdExpandLess,
@@ -48,6 +49,17 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
   ).getTime();
   const focusTime = useGetTotalFocusTime(dayStart, dayEnd);
   const sessionCounts = getSessionCountsByType(dayStart, dayEnd);
+  const trackedRanges = useMemo(
+    () => [{ start: dayStart, end: dayEnd + 1 }],
+    [dayStart, dayEnd],
+  );
+  const [trackedTotals] = useTrackedTimeTotalsForRanges(trackedRanges);
+  const hasTrackedStats =
+    trackedTotals.idleSeconds > 0 ||
+    Object.values(trackedTotals.overrunBySessionType).some(
+      (seconds) => seconds > 0,
+    );
+  const hasStats = sessions.length > 0 || focusTime > 0 || hasTrackedStats;
 
   // Refs for stable access in effects
   const dateStrRef = useRef(dateStr);
@@ -117,22 +129,32 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
           onClick={() => setStatsOpen(!statsOpen)}
         >
           <span className="text-base-content truncate text-sm font-medium">
-            Today&apos;s Focus Stats
+            Focus Stats
           </span>
           {statsOpen ? <MdExpandLess size={20} /> : <MdExpandMore size={20} />}
         </button>
 
         {statsOpen && (
           <div className="border-base-300 border-t p-4">
-            {sessions.length > 0 ? (
+            {hasStats ? (
               <>
-                <div className="mb-3">
-                  <span className="text-base-content/60 text-sm">
-                    Total Focus Time
-                  </span>
-                  <p className="text-primary text-2xl font-bold break-words">
-                    {formatElapsedTime(focusTime)}
-                  </p>
+                <div className="mb-3 grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-base-content/60 text-sm">
+                      Total Focus Time
+                    </span>
+                    <p className="text-primary text-2xl font-bold break-words">
+                      {formatElapsedTime(focusTime)}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-base-content/60 text-sm">
+                      Idle Time
+                    </span>
+                    <p className="text-base-content text-2xl font-bold break-words">
+                      {formatElapsedTime(trackedTotals.idleSeconds)}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {sessionCounts.Focus > 0 && (
@@ -154,6 +176,29 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
                     </Badge>
                   )}
                 </div>
+                {Object.entries(trackedTotals.overrunBySessionType).some(
+                  ([, seconds]) => seconds > 0,
+                ) && (
+                  <div className="mt-3">
+                    <p className="text-base-content/60 mb-2 text-sm">
+                      Overrun by session type
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {(["Focus", "Short Break", "Long Break"] as const).map(
+                        (sessionType) => {
+                          const seconds =
+                            trackedTotals.overrunBySessionType[sessionType];
+                          if (seconds === 0) return null;
+                          return (
+                            <Badge key={sessionType} color="error" size="sm">
+                              {sessionType}: {formatElapsedTime(seconds)}
+                            </Badge>
+                          );
+                        },
+                      )}
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <p className="text-base-content/40 text-sm italic">

@@ -3,16 +3,23 @@ import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownCo
 import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import useSessionSwitch from "@/features/countdown-timer/hooks/useSessionSwitch";
 import {
+  broadcastTimerState,
+  isTimerCoordinatorOwner,
+} from "@/features/countdown-timer/services/timer-coordinator";
+import {
+  useActiveRunDurationInSeconds,
   useResetSessionProgressInSeconds,
   useSetSessionProgressInSeconds,
   useSetRemainingTimeInSeconds,
   useSessionProgressInSeconds,
+  useTimerRunId,
 } from "@/features/countdown-timer/stores/countdown-store";
 import {
   useCurrentSessionType,
+  useAttributeSessionOverrun,
   useSetPreviousSessionType,
 } from "@/features/countdown-timer/stores/session-store";
-import { useAddSession } from "@/features/countdown-timer/stores/session-history-store";
+import { useCompleteSession } from "@/features/countdown-timer/stores/session-history-store";
 import { calculateRemainingSeconds } from "@/features/countdown-timer/utils/calculations";
 import {
   timerHasEnded,
@@ -39,10 +46,13 @@ const useCountdownInterval = () => {
 
   const currentSessionType = useCurrentSessionType();
   const setPreviousSessionType = useSetPreviousSessionType();
+  const attributeSessionOverrun = useAttributeSessionOverrun();
   const setSessionProgressInSeconds = useSetSessionProgressInSeconds();
   const resetSessionProgressInSeconds = useResetSessionProgressInSeconds();
   const sessionProgressInSeconds = useSessionProgressInSeconds();
-  const addSession = useAddSession();
+  const completeSession = useCompleteSession();
+  const timerRunId = useTimerRunId();
+  const activeRunDurationInSeconds = useActiveRunDurationInSeconds();
 
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
 
@@ -78,26 +88,37 @@ const useCountdownInterval = () => {
         if (timerHasEnded(remainingSeconds)) {
           clearIntervalIfItExists(timerIntervalRef);
           stopEndTicking();
+          if (!isTimerCoordinatorOwner()) return;
+
           if (!hasPlayedEndBeepRef.current) {
             hasPlayedEndBeepRef.current = true;
             playSound(timerBeepSoundEffectRef.current);
           }
           setPreviousSessionType(currentSessionType);
-          addSession(currentSessionType, sessionProgressInSeconds);
+          completeSession(
+            currentSessionType,
+            activeRunDurationInSeconds ?? sessionProgressInSeconds,
+            endTime,
+            timerRunId ?? crypto.randomUUID(),
+            attributeSessionOverrun,
+          );
           alertUserOfTimerEnd(currentSessionType);
           autoSwitchSessionType();
           resetSessionProgress();
-          createSessionProgressInterval();
+          broadcastTimerState();
         }
       }, 100);
     },
     [
       currentSessionType,
+      attributeSessionOverrun,
+      activeRunDurationInSeconds,
+      timerRunId,
       sessionProgressInSeconds,
       timerBeepSoundEffectRef,
       hasPlayedEndBeepRef,
       timerIntervalRef,
-      addSession,
+      completeSession,
       autoSwitchSessionType,
       startEndTicking,
       stopEndTicking,
@@ -106,7 +127,6 @@ const useCountdownInterval = () => {
       displayRemainingTimeInPageTitle,
       setRemainingTimeInSeconds,
       setPreviousSessionType,
-      createSessionProgressInterval,
     ],
   );
 

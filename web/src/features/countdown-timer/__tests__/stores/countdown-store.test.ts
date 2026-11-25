@@ -123,7 +123,7 @@ describe("Countdown Timer Store", () => {
       const stored = localStorage.getItem("countdown-timer-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(3);
+      expect(parsed.version).toBe(4);
     });
 
     it("should include the countdown state in the persisted data", async () => {

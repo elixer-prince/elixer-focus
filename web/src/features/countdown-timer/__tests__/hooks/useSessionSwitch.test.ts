@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   setCurrentSessionTypeMock: vi.fn(),
   incrementCurrentSessionCountMock: vi.fn(),
   resetCurrentSessionCountMock: vi.fn(),
+  dispatchTimerCommand: vi.fn(),
 }));
 
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
@@ -39,6 +40,14 @@ vi.mock("@/hooks/usePageTitle", () => ({
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useTimerRunning: mocks.useTimerRunning,
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useLastCompletedSession: () => null,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mocks.dispatchTimerCommand,
 }));
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
@@ -81,7 +90,7 @@ describe("useSessionSwitch", () => {
       });
 
       expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
+      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25, false);
       expect(mocks.resetPageTitle).toHaveBeenCalled();
     });
 
@@ -95,7 +104,7 @@ describe("useSessionSwitch", () => {
       });
 
       expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
+      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25, false);
       expect(mocks.resetCurrentSessionCountMock).toHaveBeenCalled();
     });
 
@@ -112,7 +121,7 @@ describe("useSessionSwitch", () => {
       expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith(
         "Long Break",
       );
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15);
+      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15, false);
       expect(mocks.resetCurrentSessionCountMock).toHaveBeenCalled();
     });
 
@@ -129,7 +138,7 @@ describe("useSessionSwitch", () => {
       expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith(
         "Short Break",
       );
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(5);
+      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(5, false);
       expect(mocks.incrementCurrentSessionCountMock).toHaveBeenCalled();
     });
   });
@@ -158,8 +167,11 @@ describe("useSessionSwitch", () => {
         result.current.switchToFocus();
       });
 
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "switch-session",
+        sessionType: "Focus",
+      });
+      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
       expect(mocks.confirm).not.toHaveBeenCalled();
     });
 
@@ -190,8 +202,11 @@ describe("useSessionSwitch", () => {
         result.current.switchToFocus();
       });
 
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith("Focus");
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "switch-session",
+        sessionType: "Focus",
+      });
+      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
       expect(mocks.resetPageTitle).toHaveBeenCalled();
     });
 
@@ -206,7 +221,7 @@ describe("useSessionSwitch", () => {
         result.current.switchToFocus();
       });
 
-      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
+      expect(mocks.dispatchTimerCommand).not.toHaveBeenCalled();
     });
   });
 
@@ -233,10 +248,11 @@ describe("useSessionSwitch", () => {
         result.current.switchToShortBreak();
       });
 
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith(
-        "Short Break",
-      );
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(5);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "switch-session",
+        sessionType: "Short Break",
+      });
+      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
     });
   });
 
@@ -263,10 +279,11 @@ describe("useSessionSwitch", () => {
         result.current.switchToLongBreak();
       });
 
-      expect(mocks.setCurrentSessionTypeMock).toHaveBeenCalledWith(
-        "Long Break",
-      );
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "switch-session",
+        sessionType: "Long Break",
+      });
+      expect(mocks.resetTimerStorage).not.toHaveBeenCalled();
     });
   });
 });

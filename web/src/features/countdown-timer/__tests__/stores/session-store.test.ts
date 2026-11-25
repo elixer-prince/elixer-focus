@@ -17,6 +17,7 @@ describe("Session Store", () => {
       usePreviousSessionType,
       useCurrentSessionCount,
       useTotalSessionsCompleted,
+      useAttributeSessionOverrun,
     } = await loadStore();
 
     expect(renderHook(() => useFocusDuration()).result.current).toBe(25);
@@ -32,6 +33,9 @@ describe("Session Store", () => {
     expect(renderHook(() => useCurrentSessionCount()).result.current).toBe(0);
     expect(renderHook(() => useTotalSessionsCompleted()).result.current).toBe(
       0,
+    );
+    expect(renderHook(() => useAttributeSessionOverrun()).result.current).toBe(
+      true,
     );
   });
 
@@ -164,7 +168,7 @@ describe("Session Store", () => {
       const stored = localStorage.getItem("session-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(1);
+      expect(parsed.version).toBe(2);
     });
 
     it("should include the session state in the persisted data", async () => {
@@ -210,6 +214,21 @@ describe("Session Store", () => {
       expect(
         renderHook(() => reloadedStore.useFocusDuration()).result.current,
       ).toBe(45);
+    });
+
+    it("should default attribution to enabled when migrating old settings", async () => {
+      localStorage.setItem(
+        "session-storage",
+        JSON.stringify({ state: { focusDuration: 30 }, version: 1 }),
+      );
+      vi.resetModules();
+      const { useAttributeSessionOverrun } = await import(
+        "@/features/countdown-timer/stores/session-store"
+      );
+
+      expect(
+        renderHook(() => useAttributeSessionOverrun()).result.current,
+      ).toBe(true);
     });
   });
 });
