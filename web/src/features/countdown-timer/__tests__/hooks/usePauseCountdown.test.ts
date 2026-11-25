@@ -2,6 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
   playSoundMock: vi.fn(),
+  dispatchTimerCommandMock: vi.fn(),
   clearIntervalIfItExistsMock: vi.fn(),
   setTimerPausedMock: vi.fn(),
   timerIntervalRef: { current: 123 as number | null },
@@ -22,8 +23,14 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useTimerPaused: () => mocks.timerPausedValue,
-  useRemainingTimeInSeconds: () => mocks.remainingTimeInSeconds,
-  useSetTimerPaused: () => mocks.setTimerPausedMock,
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useLastCompletedSession: () => null,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mocks.dispatchTimerCommandMock,
 }));
 
 vi.mock("@/utils/interval", () => ({
@@ -32,10 +39,6 @@ vi.mock("@/utils/interval", () => ({
 
 vi.mock("@/utils/sound", () => ({
   playSound: mocks.playSoundMock,
-}));
-
-vi.mock("@/utils/storage", () => ({
-  saveToLocalStorage: mocks.saveToLocalStorageMock,
 }));
 
 import usePauseCountdown from "@/features/countdown-timer/hooks/usePauseCountdown";
@@ -59,7 +62,7 @@ describe("usePauseCountdown", () => {
     });
 
     expect(mocks.playSoundMock).not.toHaveBeenCalled();
-    expect(mocks.setTimerPausedMock).not.toHaveBeenCalled();
+    expect(mocks.dispatchTimerCommandMock).not.toHaveBeenCalled();
     expect(mocks.clearIntervalIfItExistsMock).not.toHaveBeenCalled();
   });
 
@@ -71,18 +74,12 @@ describe("usePauseCountdown", () => {
     });
 
     expect(mocks.playSoundMock).toHaveBeenCalledWith("timer-off-sound");
-    expect(mocks.setTimerPausedMock).toHaveBeenCalledWith(true);
+    expect(mocks.dispatchTimerCommandMock).toHaveBeenCalledWith({
+      type: "pause",
+    });
     expect(mocks.clearIntervalIfItExistsMock).toHaveBeenCalledWith(
       mocks.timerIntervalRef,
     );
     expect(mocks.timerEndTimeRef.current).toBeNull();
-    expect(mocks.saveToLocalStorageMock).toHaveBeenCalledWith(
-      "timerPausedRemainingTime",
-      210,
-    );
-    expect(mocks.saveToLocalStorageMock).toHaveBeenCalledWith(
-      "timerEndTime",
-      null,
-    );
   });
 });

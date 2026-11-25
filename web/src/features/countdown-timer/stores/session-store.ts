@@ -15,6 +15,7 @@ type SessionState = {
   previousSessionType: CountdownSession | null;
   currentSessionCount: number;
   totalSessionsCompleted: number;
+  attributeSessionOverrun: boolean;
 };
 
 type SessionActions = {
@@ -27,6 +28,7 @@ type SessionActions = {
   incrementCurrentSessionCount: () => void;
   resetCurrentSessionCount: () => void;
   setTotalSessionsCompleted: (count: number) => void;
+  setAttributeSessionOverrun: (enabled: boolean) => void;
 };
 
 type SessionStore = SessionState & SessionActions;
@@ -42,6 +44,7 @@ export const useSessionStore = create<SessionStore>()(
       previousSessionType: null,
       currentSessionCount: 0,
       totalSessionsCompleted: 0,
+      attributeSessionOverrun: true,
 
       setFocusDuration: (duration) => set({ focusDuration: duration }),
 
@@ -65,10 +68,13 @@ export const useSessionStore = create<SessionStore>()(
 
       setTotalSessionsCompleted: (count) =>
         set({ totalSessionsCompleted: count }),
+
+      setAttributeSessionOverrun: (enabled) =>
+        set({ attributeSessionOverrun: enabled }),
     }),
     createPersistOptions<SessionStore>({
       name: "session-storage",
-      version: 1,
+      version: 2,
       migrate: simpleMigrate<SessionStore>,
     }),
   ),
@@ -103,6 +109,9 @@ export const useResetCurrentSessionCount = () =>
 export const useTotalSessionsCompleted = () =>
   useSessionStore((state) => state.totalSessionsCompleted);
 
+export const useAttributeSessionOverrun = () =>
+  useSessionStore((state) => state.attributeSessionOverrun);
+
 // Actions
 
 export const useSetFocusDuration = () =>
@@ -128,3 +137,6 @@ export const useIncrementCurrentSessionCount = () =>
 
 export const useSetTotalSessionsCompleted = () =>
   useSessionStore((state) => state.setTotalSessionsCompleted);
+
+export const useSetAttributeSessionOverrun = () =>
+  useSessionStore((state) => state.setAttributeSessionOverrun);

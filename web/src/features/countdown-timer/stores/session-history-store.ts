@@ -1,5 +1,10 @@
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
+import type { TrackedInterval } from "@/features/countdown-timer/types/tracked-interval";
+import {
+  closeOpenTrackedIntervals,
+  openTrackedInterval,
+} from "@/features/countdown-timer/utils/tracked-intervals";
 import {
   useCurrentSessionType,
   useSessionStore,
@@ -7,6 +12,7 @@ import {
 import {
   useCountdownTimerStore,
   useSessionProgressInSeconds,
+  useTimerPaused,
   useTimerRunning,
 } from "@/features/countdown-timer/stores/countdown-store";
 import { createPersistOptions, persist } from "@/stores/persist-config";
@@ -16,6 +22,8 @@ import { immer } from "zustand/middleware/immer";
 type SessionHistoryState = {
   sessions: CompletedSession[];
   lastCompletedSession: CompletedSession | null;
+  trackedIntervals: TrackedInterval[];
+  reflectionDraft: string;
 };
 
 type SessionHistoryActions = {
@@ -23,50 +31,215 @@ type SessionHistoryActions = {
     sessionType: CountdownSession,
     durationInSeconds: number,
   ) => void;
+  completeSession: (
+    sessionType: CountdownSession,
+    durationInSeconds: number,
+    completedAt: number,
+    id: string,
+    attributeOverrun: boolean,
+  ) => void;
+  initializeTracking: (
+    at: number,
+    timerActive: boolean,
+    attributeOverrun: boolean,
+  ) => void;
+  startIdleInterval: (at: number) => void;
+  closeIdleInterval: (at: number) => void;
+  resolvePendingSession: (id: string, at: number) => void;
+  setReflectionDraft: (draft: string) => void;
   removeSession: (id: string) => void;
   clearSessions: () => void;
   clearLastCompletedSession: () => void;
 };
 
-type SessionHistoryStore = SessionHistoryState & SessionHistoryActions;
+export type SessionHistoryStore = SessionHistoryState & SessionHistoryActions;
 
-const useSessionHistoryStore = create<SessionHistoryStore>()(
+export const useSessionHistoryStore = create<SessionHistoryStore>()(
   persist(
-    immer((set) => ({
+    immer((set, get) => ({
       sessions: [],
       lastCompletedSession: null,
+      trackedIntervals: [],
+      reflectionDraft: "",
 
       addSession: (sessionType, durationInSeconds) =>
+        get().completeSession(
+          sessionType,
+          durationInSeconds,
+          Date.now(),
+          crypto.randomUUID(),
+          useSessionStore.getState().attributeSessionOverrun,
+        ),
+
+      completeSession: (
+        sessionType,
+        durationInSeconds,
+        completedAt,
+        id,
+        attributeOverrun,
+      ) =>
         set((state) => {
+          if (state.sessions.some((session) => session.id === id)) return;
+
           const newSession: CompletedSession = {
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            id,
             sessionType,
             durationInSeconds,
-            completedAt: Date.now(),
+            completedAt,
           };
           state.sessions.push(newSession);
           state.lastCompletedSession = newSession;
+          state.reflectionDraft = "";
+          const intervals = closeOpenTrackedIntervals(
+            state.trackedIntervals,
+            completedAt,
+          );
+          state.trackedIntervals = openTrackedInterval(
+            intervals,
+            attributeOverrun ? "overrun" : "idle",
+            completedAt,
+            attributeOverrun ? id : null,
+          );
+        }),
+
+      initializeTracking: (at, timerActive, attributeOverrun) =>
+        set((state) => {
+          const openIntervals = state.trackedIntervals.filter(
+            (interval) => interval.endedAt === null,
+          );
+          if (openIntervals.length === 1) return;
+          if (openIntervals.length > 1) {
+            state.trackedIntervals = closeOpenTrackedIntervals(
+              state.trackedIntervals,
+              at,
+            );
+          }
+
+          if (state.lastCompletedSession) {
+            const session = state.lastCompletedSession;
+            state.trackedIntervals = openTrackedInterval(
+              state.trackedIntervals,
+              attributeOverrun ? "overrun" : "idle",
+              session.completedAt,
+              attributeOverrun ? session.id : null,
+            );
+            return;
+          }
+
+          if (!timerActive) {
+            state.trackedIntervals = openTrackedInterval(
+              state.trackedIntervals,
+              "idle",
+              at,
+            );
+          }
+        }),
+
+      startIdleInterval: (at) =>
+        set((state) => {
+          if (state.lastCompletedSession) return;
+          state.trackedIntervals = openTrackedInterval(
+            state.trackedIntervals,
+            "idle",
+            at,
+          );
+        }),
+
+      closeIdleInterval: (at) =>
+        set((state) => {
+          const openInterval = state.trackedIntervals.find(
+            (interval) => interval.endedAt === null,
+          );
+          if (openInterval?.kind === "idle") {
+            state.trackedIntervals = closeOpenTrackedIntervals(
+              state.trackedIntervals,
+              at,
+            );
+          }
+        }),
+
+      resolvePendingSession: (id, at) =>
+        set((state) => {
+          if (state.lastCompletedSession?.id !== id) return;
+
+          const openOverrun = state.trackedIntervals.find(
+            (interval) =>
+              interval.kind === "overrun" &&
+              interval.sessionId === id &&
+              interval.endedAt === null,
+          );
+          if (openOverrun) {
+            state.trackedIntervals = openTrackedInterval(
+              closeOpenTrackedIntervals(state.trackedIntervals, at),
+              "idle",
+              at,
+            );
+          }
+          state.lastCompletedSession = null;
+          state.reflectionDraft = "";
+        }),
+
+      setReflectionDraft: (draft) =>
+        set((state) => {
+          if (state.lastCompletedSession) state.reflectionDraft = draft;
         }),
 
       removeSession: (id) =>
         set((state) => {
           state.sessions = state.sessions.filter((s) => s.id !== id);
+          const openOverrun = state.trackedIntervals.some(
+            (interval) =>
+              interval.kind === "overrun" &&
+              interval.sessionId === id &&
+              interval.endedAt === null,
+          );
+          state.trackedIntervals = state.trackedIntervals.filter(
+            (interval) =>
+              interval.kind !== "overrun" || interval.sessionId !== id,
+          );
+          if (state.lastCompletedSession?.id === id) {
+            state.lastCompletedSession = null;
+            state.reflectionDraft = "";
+          }
+          if (openOverrun) {
+            state.trackedIntervals = openTrackedInterval(
+              state.trackedIntervals,
+              "idle",
+              Date.now(),
+            );
+          }
         }),
 
       clearSessions: () =>
         set((state) => {
           state.sessions = [];
+          const openOverrun = state.trackedIntervals.some(
+            (interval) =>
+              interval.kind === "overrun" && interval.endedAt === null,
+          );
+          state.trackedIntervals = state.trackedIntervals.filter(
+            (interval) => interval.kind !== "overrun",
+          );
           state.lastCompletedSession = null;
+          state.reflectionDraft = "";
+          if (openOverrun) {
+            state.trackedIntervals = openTrackedInterval(
+              state.trackedIntervals,
+              "idle",
+              Date.now(),
+            );
+          }
         }),
 
-      clearLastCompletedSession: () =>
-        set((state) => {
-          state.lastCompletedSession = null;
-        }),
+      clearLastCompletedSession: () => {
+        const pending = get().lastCompletedSession;
+        if (pending) get().resolvePendingSession(pending.id, Date.now());
+      },
     })),
     createPersistOptions<SessionHistoryStore>({
       name: "session-history-storage",
-      version: 1,
+      version: 2,
+      migrate: (state) => state as SessionHistoryStore,
     }),
   ),
 );
@@ -135,10 +308,10 @@ export const getTotalFocusTime = (from: number, to: number): number => {
  * Returns 0 if the timer is not running or the current session is not Focus.
  */
 export function getRunningTimerProgress(): number {
-  const { timerRunning, sessionProgressInSeconds } =
+  const { timerRunning, timerPaused, sessionProgressInSeconds } =
     useCountdownTimerStore.getState();
   const { currentSessionType } = useSessionStore.getState();
-  if (timerRunning && currentSessionType === "Focus") {
+  if (timerRunning && !timerPaused && currentSessionType === "Focus") {
     return sessionProgressInSeconds;
   }
   return 0;
@@ -169,6 +342,7 @@ export const getTotalFocusTimeWithRunning = (
 export function useGetTotalFocusTime(from: number, to: number): number {
   const sessions = useSessions();
   const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
   const sessionProgress = useSessionProgressInSeconds();
   const currentSessionType = useCurrentSessionType();
 
@@ -181,7 +355,7 @@ export function useGetTotalFocusTime(from: number, to: number): number {
     )
     .reduce((sum, s) => sum + s.durationInSeconds, 0);
 
-  if (timerRunning && currentSessionType === "Focus") {
+  if (timerRunning && !timerPaused && currentSessionType === "Focus") {
     return completedTime + sessionProgress;
   }
   return completedTime;
@@ -201,12 +375,15 @@ export function useGetTotalFocusTimeForRanges(
 ): number[] {
   const sessions = useSessions();
   const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
   const sessionProgress = useSessionProgressInSeconds();
   const currentSessionType = useCurrentSessionType();
 
   const now = Date.now();
   const runningProgress =
-    timerRunning && currentSessionType === "Focus" ? sessionProgress : 0;
+    timerRunning && !timerPaused && currentSessionType === "Focus"
+      ? sessionProgress
+      : 0;
 
   return ranges.map((range) => {
     const completedTime = sessions
@@ -260,10 +437,34 @@ export const useSessions = () =>
 export const useLastCompletedSession = () =>
   useSessionHistoryStore((state) => state.lastCompletedSession);
 
+export const useTrackedIntervals = () =>
+  useSessionHistoryStore((state) => state.trackedIntervals);
+
+export const useReflectionDraft = () =>
+  useSessionHistoryStore((state) => state.reflectionDraft);
+
 // ACTIONS
 
 export const useAddSession = () =>
   useSessionHistoryStore((state) => state.addSession);
+
+export const useCompleteSession = () =>
+  useSessionHistoryStore((state) => state.completeSession);
+
+export const useInitializeTracking = () =>
+  useSessionHistoryStore((state) => state.initializeTracking);
+
+export const useStartIdleInterval = () =>
+  useSessionHistoryStore((state) => state.startIdleInterval);
+
+export const useCloseIdleInterval = () =>
+  useSessionHistoryStore((state) => state.closeIdleInterval);
+
+export const useResolvePendingSession = () =>
+  useSessionHistoryStore((state) => state.resolvePendingSession);
+
+export const useSetReflectionDraft = () =>
+  useSessionHistoryStore((state) => state.setReflectionDraft);
 
 export const useRemoveSession = () =>
   useSessionHistoryStore((state) => state.removeSession);

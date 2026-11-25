@@ -2,6 +2,10 @@ import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
   timerIntervalRef: { current: null as ReturnType<typeof setInterval> | null },
+  sessionProgressIntervalRef: {
+    current: null as ReturnType<typeof setInterval> | null,
+  },
+  timerEndTimeRef: { current: null as number | null },
   resetTimerSoundEffectRef: { current: null as HTMLAudioElement | null },
   hasPlayedEndBeepRef: { current: false },
   resetTimerStorage: vi.fn(),
@@ -9,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   clearIntervalIfItExists: vi.fn(),
   playSound: vi.fn(),
   confirm: vi.fn(),
+  dispatchTimerCommand: vi.fn(),
   convertMinutesToSeconds: vi.fn((minutes: number) => minutes * 60),
   useCurrentSessionType: vi.fn(() => "Focus"),
   useFocusDuration: vi.fn(() => 25),
@@ -20,6 +25,8 @@ const mocks = vi.hoisted(() => ({
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
   default: () => ({
     timerIntervalRef: mocks.timerIntervalRef,
+    sessionProgressIntervalRef: mocks.sessionProgressIntervalRef,
+    timerEndTimeRef: mocks.timerEndTimeRef,
     resetTimerSoundEffectRef: mocks.resetTimerSoundEffectRef,
     hasPlayedEndBeepRef: mocks.hasPlayedEndBeepRef,
   }),
@@ -39,6 +46,14 @@ vi.mock("@/features/countdown-timer/hooks/useCountdownStorage", () => ({
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useTimerRunning: mocks.useTimerRunning,
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useLastCompletedSession: () => null,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mocks.dispatchTimerCommand,
 }));
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
@@ -91,38 +106,16 @@ describe("useResetCountdown", () => {
       );
     });
 
-    it("should reset timer storage with Focus duration by default", () => {
+    it("should dispatch a reset command", () => {
       const { result } = renderHook(() => useResetCountdown());
 
       act(() => {
         result.current.resetCountdown();
       });
 
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
-    });
-
-    it("should reset timer storage with Short Break duration when session type is Short Break", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Short Break");
-
-      const { result } = renderHook(() => useResetCountdown());
-
-      act(() => {
-        result.current.resetCountdown();
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "reset",
       });
-
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(5);
-    });
-
-    it("should reset timer storage with Long Break duration when session type is Long Break", () => {
-      mocks.useCurrentSessionType.mockReturnValue("Long Break");
-
-      const { result } = renderHook(() => useResetCountdown());
-
-      act(() => {
-        result.current.resetCountdown();
-      });
-
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(15);
     });
 
     it("should reset the page title", () => {
@@ -175,7 +168,9 @@ describe("useResetCountdown", () => {
         result.current.resetCountdownWithSound();
       });
 
-      expect(mocks.resetTimerStorage).toHaveBeenCalledWith(25);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "reset",
+      });
       expect(mocks.resetPageTitle).toHaveBeenCalled();
       expect(mocks.playSound).toHaveBeenCalledWith(
         mocks.resetTimerSoundEffectRef.current,

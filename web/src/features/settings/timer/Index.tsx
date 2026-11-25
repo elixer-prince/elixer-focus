@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
+import { useAttributeSessionOverrun } from "@/features/countdown-timer/stores/session-store";
 import FocusContainer from "@/features/settings/timer/FocusContainer";
 import useHandleReset from "@/features/settings/timer/hooks/useHandleReset";
 import useHandleSave from "@/features/settings/timer/hooks/useHandleSave";
@@ -12,6 +14,7 @@ const TimerSettingsContent = () => {
   const { hasUnsavedChanges } = useValidation();
   const { handleSave } = useHandleSave();
   const { handleReset } = useHandleReset();
+  const attributeSessionOverrun = useAttributeSessionOverrun();
   useTimerSettings();
 
   return (
@@ -57,6 +60,30 @@ const TimerSettingsContent = () => {
           </div>
         </div>
       </div>
+
+      <section className="card bg-base-200 mb-8">
+        <div className="card-body p-5">
+          <h2 className="card-title text-base">Session overrun</h2>
+          <p className="text-base-content/50 text-sm">
+            Choose whether time after a session ends is tracked as overrun or
+            idle time while reflection is open.
+          </p>
+          <label className="label mt-2 cursor-pointer justify-start gap-3">
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={attributeSessionOverrun}
+              onChange={(event) =>
+                dispatchTimerCommand({
+                  type: "set-overrun-attribution",
+                  enabled: event.target.checked,
+                })
+              }
+            />
+            <span className="label-text">Track overrun time</span>
+          </label>
+        </div>
+      </section>
 
       <div className={"flex flex-col gap-3 sm:flex-row sm:items-center"}>
         <div className={"flex gap-3"}>

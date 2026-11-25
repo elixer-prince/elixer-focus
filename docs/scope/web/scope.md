@@ -29,7 +29,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 27  | Design documentation               | Foundation            | done        |
 | 21  | API response types                 | Foundation            | done        |
 | 5   | Countdown timer (adaptive pomodoro) | Slice 1 (core loop)   | existing    |
-| 45  | Idle and session overrun tracking  | Slice 1 (core loop)   | planned     |
+| 45  | Idle and session overrun tracking  | Slice 1 (core loop)   | done        |
 | 6   | Music player                       | Slice 1 (core loop)   | existing    |
 | 7   | Task matrix (Eisenhower)           | Slice 1 (core loop)   | existing    |
 | 18  | Task editing (inline)              | Slice 1 (core loop)   | done        |
@@ -57,6 +57,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
+| 47  | Sleep schedule                     | Slice 5 (future)      | planned     |
 
 ## Foundations
 
@@ -231,13 +232,20 @@ Adaptive countdown with focus/break sessions, session switching, focus ring, and
 
 code in `web/src/features/countdown-timer/`
 
-### 45. Idle and session overrun tracking · planned · needs a decision
+### 45. Idle and session overrun tracking · done
 
 Track time when no timer is active, including before the first session and between sessions. By default, elapsed time after a session ends continues to count toward that session type until the reflection modal closes; a timer setting can turn off this attribution.
 
 **Done when:** idle time and session overrun are recorded without overlapping totals, and a persisted setting defaults to attributing overrun time to the completed session type until the reflection modal closes.
 
-- [ ] Design it (spec): `/architect idle and session overrun tracking`
+- [x] Design it (spec): `/architect idle and session overrun tracking`
+      Spec [0005](../../specs/web/0005-idle-session-overrun/index.md)
+- [x] Build it: `/develop idle and session overrun tracking`
+  - [x] Persist interval lifecycle, settings, and deadline recovery (AC-1, AC-2, AC-3, AC-7, AC-11, AC-12)
+  - [x] Coordinate timer and reflection across tabs with handoff and fallback (AC-4, AC-5, AC-6, AC-7, AC-8)
+  - [x] Add daily Journal stats and the paired weekly comparison chart (AC-2, AC-9, AC-10, AC-11)
+
+code in `web/src/features/countdown-timer/`, `web/src/features/journal/`, `web/src/features/settings/timer/`, and `web/src/app/provider.tsx`
 
 ### 6. Music player · existing
 
@@ -523,4 +531,12 @@ Social media style features (sharing, leaderboards, community). Deferred; massiv
 **Done when:** users can share progress and view others.
 
 - [ ] Design it (spec): `/architect social features`
+
+### 47. Sleep schedule · planned · needs a decision · from spec 0005
+
+Let users configure sleep windows and derive an awake time view from raw idle intervals. Keep raw idle and session records unchanged, including timer sessions that occur during a scheduled sleep window.
+
+**Done when:** users can configure a sleep schedule and see awake idle totals without changing raw idle or session records.
+
+- [ ] Design it (spec): `/architect sleep schedule`
 

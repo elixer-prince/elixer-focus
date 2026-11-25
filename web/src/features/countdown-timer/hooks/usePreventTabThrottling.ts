@@ -1,4 +1,7 @@
-import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
+import {
+  useTimerPaused,
+  useTimerRunning,
+} from "@/features/countdown-timer/stores/countdown-store";
 import { useEffect, useRef } from "react";
 
 /**
@@ -17,13 +20,14 @@ import { useEffect, useRef } from "react";
  */
 const usePreventTabThrottling = () => {
   const timerRunning = useTimerRunning();
+  const timerPaused = useTimerPaused();
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
 
   useEffect(() => {
-    if (!timerRunning) {
+    if (!timerRunning || timerPaused) {
       return;
     }
 
@@ -92,7 +96,7 @@ const usePreventTabThrottling = () => {
       oscillatorRef.current = null;
       gainNodeRef.current = null;
     };
-  }, [timerRunning]);
+  }, [timerRunning, timerPaused]);
 };
 
 export default usePreventTabThrottling;

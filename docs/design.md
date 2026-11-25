@@ -2,6 +2,20 @@
 
 This document records the design system, component conventions, and visual direction for the Elixer Focus web app. Use it as a living reference when adding new features or components.
 
+**Source:** `extracted-from-code`
+
+## Character
+
+Elixer Focus is a calm, focused productivity workspace. Its interface is structured and practical, with clear hierarchy, quiet supporting details, and restrained use of the theme accent. The visual language should make progress and next actions easy to understand without adding decoration that competes for attention.
+
+## Build mandate
+
+Extend the existing application shell and feature layouts instead of introducing a new visual language. Use the existing theme system for every color and keep all surfaces legible across the supported themes. Group related information into clear sections, use concise product specific copy, and preserve the responsive behavior of the surrounding page.
+
+## Component & usage rules
+
+Use the shared UI primitives for common controls. Follow the established card composition with theme driven surfaces, rounded corners, and clear section headings. Use the primary theme color to identify important actions or data, and use muted content colors for supporting text. Charts must read their colors from the active theme. Use the existing `duration-500` color transition convention, and do not rely on color alone to communicate meaning.
+
 ## Tech Stack
 
 - **Framework:** React 19 with Vite

@@ -83,6 +83,14 @@ export const useJournalStore = create<JournalStore>()(
         noteType,
         sessionId = null,
       ) => {
+        if (noteType === "reflection" && sessionId) {
+          const existing = get().notes.find(
+            (note) =>
+              note.noteType === "reflection" && note.sessionId === sessionId,
+          );
+          if (existing) return existing;
+        }
+
         const now = getCurrentTimestamp();
         const newNote: JournalNote = {
           id: crypto.randomUUID(),

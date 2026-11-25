@@ -54,7 +54,8 @@ describe("TimerModal", () => {
   it("should display the 'went over by' message", () => {
     render(<TimerModal />);
 
-    expect(screen.getByText(/You went over by/)).toBeInTheDocument();
+    expect(screen.getByText(/Your session is recorded/)).toBeInTheDocument();
+    expect(screen.queryByText(/You went over by/)).not.toBeInTheDocument();
   });
 
   it("should display Long Break session type", () => {
@@ -94,21 +95,5 @@ describe("TimerModal", () => {
     expect(screen.getByText(/Session has ended/)).toBeInTheDocument();
 
     document.body.removeChild(dialogElement);
-  });
-
-  it("should display formatted session progress time", () => {
-    mocks.sessionProgressInSeconds = 150;
-
-    render(<TimerModal />);
-
-    expect(screen.getByText(/2 minutes and 30 seconds/)).toBeInTheDocument();
-  });
-
-  it("should display zero session progress time", () => {
-    mocks.sessionProgressInSeconds = 0;
-
-    render(<TimerModal />);
-
-    expect(screen.getByText(/0 seconds/)).toBeInTheDocument();
   });
 });

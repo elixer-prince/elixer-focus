@@ -1,12 +1,7 @@
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
-import useCountdownTimerStorage from "@/features/countdown-timer/hooks/useCountdownStorage";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
+import { useLastCompletedSession } from "@/features/countdown-timer/stores/session-history-store";
 import usePageTitle from "@/hooks/usePageTitle";
-import {
-  useCurrentSessionType,
-  useFocusDuration,
-  useLongBreakDuration,
-  useShortBreakDuration,
-} from "@/features/countdown-timer/stores/session-store";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
@@ -17,27 +12,12 @@ const useResetCountdown = () => {
     hasPlayedEndBeepRef,
     timerIntervalRef,
     sessionProgressIntervalRef,
+    timerEndTimeRef,
   } = useCountdownContext();
-  const { resetTimerStorage } = useCountdownTimerStorage();
   const { resetPageTitle } = usePageTitle();
 
   const timerRunning = useTimerRunning();
-
-  const focusDuration = useFocusDuration();
-  const shortBreakDuration = useShortBreakDuration();
-  const longBreakDuration = useLongBreakDuration();
-  const currentSessionType = useCurrentSessionType();
-
-  const calculateInitialTime = (): number => {
-    switch (currentSessionType) {
-      case "Focus":
-        return focusDuration;
-      case "Short Break":
-        return shortBreakDuration;
-      case "Long Break":
-        return longBreakDuration;
-    }
-  };
+  const lastCompletedSession = useLastCompletedSession();
 
   const resetCountdown = () => {
     clearIntervalIfItExists(timerIntervalRef);
@@ -45,15 +25,13 @@ const useResetCountdown = () => {
 
     // Reset the beep flag so a new timer cycle can play the beep
     hasPlayedEndBeepRef.current = false;
-
-    const initialTime = calculateInitialTime();
-
-    resetTimerStorage(initialTime);
+    timerEndTimeRef.current = null;
+    dispatchTimerCommand({ type: "reset" });
     resetPageTitle();
   };
 
   const resetCountdownWithSound = () => {
-    if (!timerRunning) return;
+    if (!timerRunning || lastCompletedSession) return;
 
     // TODO: Implement this as an overlay
     if (confirm("Are you sure you want to reset the countdown?")) {

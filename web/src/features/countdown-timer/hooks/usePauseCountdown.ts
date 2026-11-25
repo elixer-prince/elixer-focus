@@ -1,12 +1,9 @@
 import useCountdownContext from "@/features/countdown-timer/hooks/useCountdownContext";
-import {
-  useRemainingTimeInSeconds,
-  useSetTimerPaused,
-  useTimerPaused,
-} from "@/features/countdown-timer/stores/countdown-store";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
+import { useLastCompletedSession } from "@/features/countdown-timer/stores/session-history-store";
+import { useTimerPaused } from "@/features/countdown-timer/stores/countdown-store";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
-import { saveToLocalStorage } from "@/utils/storage";
 
 const usePauseCountdown = () => {
   const {
@@ -17,17 +14,14 @@ const usePauseCountdown = () => {
   } = useCountdownContext();
 
   const timerPaused = useTimerPaused();
-  const remainingTimeInSeconds = useRemainingTimeInSeconds();
-  const setTimerPaused = useSetTimerPaused();
+  const lastCompletedSession = useLastCompletedSession();
 
   const pauseCountdown = () => {
-    if (timerPaused) return;
+    if (timerPaused || lastCompletedSession) return;
 
     playSound(timerOffClickSoundEffectRef.current);
-    setTimerPaused(true);
-    saveToLocalStorage("timerPausedRemainingTime", remainingTimeInSeconds);
+    dispatchTimerCommand({ type: "pause" });
     timerEndTimeRef.current = null;
-    saveToLocalStorage("timerEndTime", null);
     clearIntervalIfItExists(timerIntervalRef);
     clearIntervalIfItExists(sessionProgressIntervalRef);
   };

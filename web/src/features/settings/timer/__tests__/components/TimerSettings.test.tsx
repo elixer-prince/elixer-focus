@@ -25,6 +25,7 @@ let mockShortBreakDuration = 5;
 let mockLongBreakDuration = 15;
 
 vi.mock("@/features/countdown-timer/stores/session-store", () => ({
+  useAttributeSessionOverrun: () => true,
   useFocusDuration: () => mockFocusDuration,
   useShortBreakDuration: () => mockShortBreakDuration,
   useLongBreakDuration: () => mockLongBreakDuration,
@@ -32,6 +33,10 @@ vi.mock("@/features/countdown-timer/stores/session-store", () => ({
   useSetFocusDuration: () => vi.fn(),
   useSetShortBreakDuration: () => vi.fn(),
   useSetLongBreakDuration: () => vi.fn(),
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: vi.fn(),
 }));
 
 vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({

@@ -3,14 +3,14 @@ import useCountdownHelpers from "@/features/countdown-timer/hooks/useCountdownHe
 import useCountdownInterval from "@/features/countdown-timer/hooks/useCountdownInterval";
 import useEndTicking from "@/features/countdown-timer/hooks/useEndTicking";
 import useNotification from "@/features/countdown-timer/hooks/useNotification";
+import { dispatchTimerCommand } from "@/features/countdown-timer/services/timer-coordinator";
 import {
-  useRemainingTimeInSeconds,
   useSetRemainingTimeInSeconds,
   useSetTimerPaused,
   useSetTimerRunning,
   useTimerPaused,
 } from "@/features/countdown-timer/stores/countdown-store";
-import { calculateEndTime } from "@/features/countdown-timer/utils/calculations";
+import { useLastCompletedSession } from "@/features/countdown-timer/stores/session-history-store";
 import { clearIntervalIfItExists } from "@/utils/interval";
 import { playSound } from "@/utils/sound";
 import { getFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
@@ -29,7 +29,7 @@ const useStartCountdown = () => {
   const { requestNotificationPermission } = useNotification();
 
   const timerPaused = useTimerPaused();
-  const remainingTimeInSeconds = useRemainingTimeInSeconds();
+  const lastCompletedSession = useLastCompletedSession();
   const setTimerRunning = useSetTimerRunning();
   const setTimerPaused = useSetTimerPaused();
   const setRemainingTimeInSeconds = useSetRemainingTimeInSeconds();
@@ -42,40 +42,26 @@ const useStartCountdown = () => {
   } = useCountdownContext();
 
   const startCountdown = useCallback(() => {
+    if (!timerPaused || lastCompletedSession) return;
     stopEndTicking();
 
     // Reset the beep flag so it can play again when this session ends
     hasPlayedEndBeepRef.current = false;
 
-    setTimerPaused(false);
-    setTimerRunning(true);
-
-    const endTime = calculateEndTime(remainingTimeInSeconds);
-
-    // Save the end time to local storage
-    // and as a reference
-    timerEndTimeRef.current = endTime;
-    saveToLocalStorage("timerEndTime", endTime);
-    saveToLocalStorage("timerPausedRemainingTime", null);
-
     // Request notification permission so the desktop notification
     // is ready by the time the timer ends
     requestNotificationPermission();
-
-    runInterval(endTime);
+    dispatchTimerCommand({ type: "start" });
   }, [
-    timerEndTimeRef,
+    timerPaused,
+    lastCompletedSession,
     hasPlayedEndBeepRef,
-    remainingTimeInSeconds,
-    runInterval,
-    setTimerPaused,
-    setTimerRunning,
     stopEndTicking,
     requestNotificationPermission,
   ]);
 
   const startCountdownWithSound = () => {
-    if (!timerPaused) return;
+    if (!timerPaused || lastCompletedSession) return;
 
     playSound(timerOnClickSoundEffectRef.current);
     startCountdown();

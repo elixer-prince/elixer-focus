@@ -25,6 +25,7 @@ const mocks = vi.hoisted(() => ({
   clearIntervalIfItExists: vi.fn(),
   calculateEndTime: vi.fn(),
   requestNotificationPermission: vi.fn(),
+  dispatchTimerCommand: vi.fn(),
   getFromLocalStorage: vi.fn(),
   timerPausedValue: true,
   remainingTimeInSecondsValue: 1500,
@@ -76,6 +77,14 @@ vi.mock("@/features/countdown-timer/stores/countdown-store", () => ({
   useSetRemainingTimeInSeconds: () => mocks.setRemainingTimeInSeconds,
 }));
 
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useLastCompletedSession: () => null,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mocks.dispatchTimerCommand,
+}));
+
 vi.mock("@/features/countdown-timer/utils/calculations", () => ({
   calculateEndTime: mocks.calculateEndTime,
 }));
@@ -113,7 +122,7 @@ describe("useStartCountdown", () => {
   });
 
   describe("startCountdown", () => {
-    it("should start the countdown and persist end time", () => {
+    it("should dispatch a start command and request notification permission", () => {
       const { result } = renderHook(() => useStartCountdown());
 
       act(() => {
@@ -121,20 +130,10 @@ describe("useStartCountdown", () => {
       });
 
       expect(mocks.stopEndTicking).toHaveBeenCalled();
-      expect(mocks.setTimerPaused).toHaveBeenCalledWith(false);
-      expect(mocks.setTimerRunning).toHaveBeenCalledWith(true);
-      expect(mocks.calculateEndTime).toHaveBeenCalledWith(1500);
-      expect(mocks.timerEndTimeRef.current).toBe(999999);
-      expect(mocks.saveToLocalStorage).toHaveBeenCalledWith(
-        "timerEndTime",
-        999999,
-      );
-      expect(mocks.saveToLocalStorage).toHaveBeenCalledWith(
-        "timerPausedRemainingTime",
-        null,
-      );
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "start",
+      });
       expect(mocks.requestNotificationPermission).toHaveBeenCalled();
-      expect(mocks.runInterval).toHaveBeenCalledWith(999999);
     });
   });
 
@@ -148,8 +147,7 @@ describe("useStartCountdown", () => {
       });
 
       expect(mocks.playSound).not.toHaveBeenCalled();
-      expect(mocks.setTimerRunning).not.toHaveBeenCalled();
-      expect(mocks.runInterval).not.toHaveBeenCalled();
+      expect(mocks.dispatchTimerCommand).not.toHaveBeenCalled();
     });
 
     it("should play sound and start the countdown when paused", () => {
@@ -160,8 +158,9 @@ describe("useStartCountdown", () => {
       });
 
       expect(mocks.playSound).toHaveBeenCalledWith("timer-on-sound");
-      expect(mocks.setTimerRunning).toHaveBeenCalledWith(true);
-      expect(mocks.runInterval).toHaveBeenCalledWith(999999);
+      expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({
+        type: "start",
+      });
     });
   });
 

@@ -2,6 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
   autoSwitchSessionType: vi.fn(),
+  dispatchTimerCommand: vi.fn(),
   playSound: vi.fn(),
   confirm: vi.fn(),
   resetTimerSoundEffectRef: { current: "reset-sound" as string | null },
@@ -11,6 +12,14 @@ vi.mock("@/features/countdown-timer/hooks/useSessionSwitch", () => ({
   default: () => ({
     autoSwitchSessionType: mocks.autoSwitchSessionType,
   }),
+}));
+
+vi.mock("@/features/countdown-timer/stores/session-history-store", () => ({
+  useLastCompletedSession: () => null,
+}));
+
+vi.mock("@/features/countdown-timer/services/timer-coordinator", () => ({
+  dispatchTimerCommand: mocks.dispatchTimerCommand,
 }));
 
 vi.mock("@/features/countdown-timer/hooks/useCountdownContext", () => ({
@@ -46,10 +55,10 @@ describe("useSkipCountdown", () => {
     });
 
     expect(mocks.playSound).not.toHaveBeenCalled();
-    expect(mocks.autoSwitchSessionType).not.toHaveBeenCalled();
+    expect(mocks.dispatchTimerCommand).not.toHaveBeenCalled();
   });
 
-  it("should play the reset sound and auto switch session type on confirm", () => {
+  it("should play the reset sound and dispatch a skip command on confirm", () => {
     const { result } = renderHook(() => useSkipCountdown());
 
     act(() => {
@@ -57,6 +66,6 @@ describe("useSkipCountdown", () => {
     });
 
     expect(mocks.playSound).toHaveBeenCalledWith("reset-sound");
-    expect(mocks.autoSwitchSessionType).toHaveBeenCalled();
+    expect(mocks.dispatchTimerCommand).toHaveBeenCalledWith({ type: "skip" });
   });
 });

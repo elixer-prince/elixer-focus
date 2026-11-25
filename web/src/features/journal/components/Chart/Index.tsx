@@ -1,4 +1,5 @@
 import { useGetTotalFocusTimeForRanges } from "@/features/countdown-timer/stores/session-history-store";
+import useTrackedTimeTotalsForRanges from "@/features/countdown-timer/hooks/useTrackedTimeTotals";
 import { formatElapsedTime } from "@/utils/formatting";
 import {
   BarElement,
@@ -52,6 +53,12 @@ const FocusTimeChart = () => {
 
   // Subscribe to timer + session changes for all days in one hook call
   const focusTimes = useGetTotalFocusTimeForRanges(dayRanges);
+  const trackedRanges = useMemo(
+    () => dayRanges.map((range) => ({ ...range, end: range.end + 1 })),
+    [dayRanges],
+  );
+  const trackedTotals = useTrackedTimeTotalsForRanges(trackedRanges);
+  const idleTimes = trackedTotals.map((totals) => totals.idleSeconds);
 
   const chartData = useMemo(() => {
     const labels = dayRanges.map((range) => {
@@ -60,45 +67,52 @@ const FocusTimeChart = () => {
     });
 
     // Get theme colors from CSS variables
-    const primaryColor = getComputedStyle(document.documentElement)
-      .getPropertyValue("--p")
-      .trim();
-    const primaryRgba = `hsla(${primaryColor || "260 80% 62%"}, 0.7)`;
-    const primaryBorder = `hsl(${primaryColor || "260 80% 62%"})`;
-
-    // Use fallback colors if CSS variable not available
-    const bgColor = primaryColor.startsWith("hsl") ? primaryRgba : "#8b5cf6";
-    const borderColor = primaryColor.startsWith("hsl")
-      ? primaryBorder
-      : "#7c3aed";
+    const styles = getComputedStyle(document.documentElement);
+    const primaryColor = styles.getPropertyValue("--color-primary").trim();
+    const secondaryColor = styles.getPropertyValue("--color-secondary").trim();
 
     return {
       labels,
       datasets: [
         {
-          label: "Focus Time (seconds)",
+          label: "Focus Time",
           data: focusTimes,
-          backgroundColor: [bgColor],
-          borderColor: [borderColor],
+          backgroundColor: primaryColor,
+          borderColor: primaryColor,
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: "Idle Time",
+          data: idleTimes,
+          backgroundColor: secondaryColor,
+          borderColor: secondaryColor,
           borderWidth: 1,
           borderRadius: 4,
         },
       ],
     };
-  }, [dayRanges, focusTimes]);
+  }, [dayRanges, focusTimes, idleTimes]);
+
+  const contentColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--color-base-content")
+    .trim();
 
   const options = {
     responsive: true as const,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        labels: {
+          color: contentColor,
+        },
       },
       tooltip: {
         callbacks: {
           label: (context: TooltipItem<"bar">) => {
             const value = context.parsed.y ?? 0;
-            return `Focus: ${formatElapsedTime(value)}`;
+            return `${context.dataset.label}: ${formatElapsedTime(value)}`;
           },
         },
       },
@@ -107,6 +121,7 @@ const FocusTimeChart = () => {
       y: {
         beginAtZero: true,
         ticks: {
+          color: contentColor,
           callback: (value: number | string) => {
             const num = Number(value);
             if (num === 0) return "0";
@@ -116,12 +131,15 @@ const FocusTimeChart = () => {
           },
         },
         grid: {
-          color: "rgba(0,0,0,0.05)",
+          color: `color-mix(in srgb, ${contentColor} 12%, transparent)`,
         },
       },
       x: {
         grid: {
           display: false,
+        },
+        ticks: {
+          color: contentColor,
         },
       },
     },
