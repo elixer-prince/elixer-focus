@@ -19,7 +19,7 @@ const JournalRoute = () => {
   }, []);
 
   return (
-    <div className="mx-auto max-w-5xl overflow-hidden p-8 max-sm:px-4">
+    <div className="mx-auto max-w-5xl overflow-x-clip p-8 max-sm:px-4">
       <div className="mb-6">
         <h1 className="text-base-content text-2xl font-bold">Journal</h1>
         <p className="text-base-content/50 mt-1 text-sm">
@@ -27,9 +27,9 @@ const JournalRoute = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
         {/* Left column: Calendar + Stats */}
-        <div className="min-w-0 space-y-4 lg:col-span-1">
+        <div className="min-w-0 space-y-4 lg:sticky lg:top-[calc(var(--navbar-height)_+_1rem)] lg:col-span-1 lg:self-start">
           <JournalCalendar
             onSelectDate={handleSelectDate}
             selectedDate={selectedDate}
