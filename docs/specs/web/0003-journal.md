@@ -155,7 +155,7 @@ No backend API for the initial implementation. All operations are local store ac
 | Calendar view | Entry presence dots | DailyEntry.date existence check |
 | Calendar view | Note presence dots | JournalNote.dailyEntryId existence check |
 | Focus time chart | Daily focus time bars | Derived from CompletedSession via getTotalFocusTime() per day |
-| Streak counter | Consecutive day count | Derived from DailyEntry.date and CompletedSession.completedAt, computed at read time |
+| Streak counter | Consecutive day count | Derived from completed Focus session timestamps, grouped by local calendar day in `calculateFocusSessionStreak()` (`web/src/utils/streak.ts`) |
 | Session reflection prompt | Session type and duration | CompletedSession.sessionType and durationInSeconds from the just completed session |
 | New note creation | Default dailyEntryId | Current viewed day's DailyEntry.id |
 
@@ -196,7 +196,7 @@ None. No new environment variables or third party credentials are needed.
 5. [x] Build the quick note creation and editing flow with title input, Markdown body, inline edit and delete actions, and note list under daily entry, satisfies **AC-6**
 6. [x] Build the session reflection prompt, triggered when a focus session completes, that creates a JournalNote linked to the session, satisfies **AC-7**
 7. [x] Build the focus time bar chart component using Chart.js with colors derived from CSS variables to match the active DaisyUI theme, showing weekly data derived from session history, satisfies **AC-8**
-8. [x] Build the streak counter component that computes consecutive days from entries and sessions, satisfies **AC-9**
+8. [x] Build the streak counter using `calculateFocusSessionStreak()` to count consecutive local calendar days with Focus sessions, starting from the most recent local day with a Focus session, satisfies **AC-9**
 9. [x] Wire the Journal route to replace the placeholder, integrate all components, satisfies **AC-1**, **AC-2**
 
 ## Consequences
