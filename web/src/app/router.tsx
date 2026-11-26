@@ -17,6 +17,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 
 const CalendarRoute = lazy(() => import("@/app/routes/(root)/Calendar"));
+const BinRoute = lazy(() => import("@/app/routes/(root)/Bin"));
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,24 @@ export const router = createBrowserRouter([
       {
         path: "journal",
         element: <JournalRoute />,
+      },
+      {
+        path: "my/brain-dump",
+        element: (
+          <Suspense
+            fallback={
+              <div
+                className="flex min-h-64 items-center justify-center gap-3"
+                role="status"
+              >
+                <Spinner aria-hidden="true" size="lg" />
+                <span className="sr-only">Loading Brain dump…</span>
+              </div>
+            }
+          >
+            <BinRoute />
+          </Suspense>
+        ),
       },
       {
         path: "calendar",

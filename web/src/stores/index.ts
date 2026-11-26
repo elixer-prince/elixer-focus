@@ -125,6 +125,19 @@ export {
   useGetStreak,
 } from "@/features/journal/stores/journal-store";
 
+// Brain dump store
+export {
+  useBrainDumpThoughts,
+  useBrainDumpReadStatus,
+  useBrainDumpReadError,
+  useBrainDumpCrossTabSupported,
+} from "@/features/brain-dump/stores/brain-dump-store";
+export {
+  startBrainDumpCoordinator,
+  dispatchBrainDumpCommand,
+  retryReadBrainDumpThoughts,
+} from "@/features/brain-dump/services/brain-dump-coordinator";
+
 // UI stores
 export {
   useNavbarIsOpen,

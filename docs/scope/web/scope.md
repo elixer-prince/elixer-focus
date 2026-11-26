@@ -47,7 +47,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 10  | Journal                            | Slice 3 (pages)       | done        |
 | 11  | Profile                            | Slice 3 (pages)       | done        |
 | 12  | Calendar                           | Slice 3 (pages)       | done        |
-| 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
+| 13  | Brain dump (Bin)                   | Slice 3 (pages)       | done        |
 | 48  | Mobile navigation redesign         | Slice 3 (pages)       | planned     |
 | 49  | Personal URL structure             | Slice 3 (pages)       | planned     |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
@@ -460,19 +460,19 @@ Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
 
-### 13. Brain dump (Bin) · in-progress
+### 13. Brain dump (Bin) · done
 
 Placeholder route; implement a brain dump inbox for quick capture.
 
 **Done when:** bin page captures and lists quick notes.
 
 - [x] Design it (spec): `/architect brain dump`
-      Spec: [0009](../../specs/web/0009-brain-dump-inbox.md)
-- [ ] Build it: `/develop brain dump`
-  - [ ] Add the versioned thought store and cross tab coordinator with retry and storage error handling (AC-3, AC-9, AC-11, AC-12, AC-13)
-  - [ ] Build the route, capture and list flow, delete confirmation, and matching desktop and mobile links (AC-1, AC-2, AC-4, AC-5, AC-8, AC-14)
-  - [ ] Add live search and inline autosaving edits (AC-6, AC-7, AC-14)
-  - [ ] Complete cross tab conflict and remote deletion recovery behavior (AC-9, AC-10, AC-12, AC-13)
+      Spec: [0009](../../specs/web/0009-brain-dump-inbox/index.md)
+- [x] Build it: `/develop brain dump`
+  - [x] Add the versioned thought store and cross tab coordinator with retry and storage error handling (AC-3, AC-9, AC-11, AC-12, AC-13)
+  - [x] Build the route, capture and list flow, delete confirmation, and matching desktop and mobile links (AC-1, AC-2, AC-4, AC-5, AC-8, AC-14)
+  - [x] Add live search and inline autosaving edits (AC-6, AC-7, AC-14)
+  - [x] Complete cross tab conflict and remote deletion recovery behavior (AC-9, AC-10, AC-12, AC-13)
 
 code in `web/src/app/routes/(root)/Bin.tsx`
 

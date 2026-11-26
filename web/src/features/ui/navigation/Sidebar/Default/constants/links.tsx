@@ -1,35 +1,46 @@
+import type { IconType } from "react-icons";
 import {
   MdCalendarMonth,
   MdHomeFilled,
   MdLibraryBooks,
+  MdOutlineLightbulb,
   MdPerson,
   MdTaskAlt,
 } from "react-icons/md";
 
-export const defaultLinks = [
+export const defaultLinks: {
+  to: string;
+  icon: IconType;
+  label: string;
+}[] = [
   {
     to: "/",
-    icon: <MdHomeFilled size={20} />,
+    icon: MdHomeFilled,
     label: "Home",
   },
   {
     to: "/journal",
-    icon: <MdLibraryBooks size={20} />,
+    icon: MdLibraryBooks,
     label: "Journal",
   },
   {
+    to: "/my/brain-dump",
+    icon: MdOutlineLightbulb,
+    label: "Brain dump",
+  },
+  {
     to: "/calendar",
-    icon: <MdCalendarMonth size={20} />,
+    icon: MdCalendarMonth,
     label: "Calendar",
   },
   {
     to: "/tasks",
-    icon: <MdTaskAlt size={20} />,
+    icon: MdTaskAlt,
     label: "Tasks",
   },
   {
     to: "/profile",
-    icon: <MdPerson size={20} />,
+    icon: MdPerson,
     label: "Profile",
   },
 ];
