@@ -355,10 +355,17 @@ export function useGetTotalFocusTime(from: number, to: number): number {
     )
     .reduce((sum, s) => sum + s.durationInSeconds, 0);
 
-  if (timerRunning && !timerPaused && currentSessionType === "Focus") {
-    return completedTime + sessionProgress;
-  }
-  return completedTime;
+  const now = Date.now();
+  const runningProgress =
+    timerRunning &&
+    !timerPaused &&
+    currentSessionType === "Focus" &&
+    now >= from &&
+    now <= to
+      ? sessionProgress
+      : 0;
+
+  return completedTime + runningProgress;
 }
 
 /**
