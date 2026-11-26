@@ -9,7 +9,7 @@ const Sidebar = () => {
         {defaultLinks.map((link) => (
           <li key={link.to}>
             <SidebarLink to={link.to}>
-              {link.icon}
+              <link.icon size={20} aria-hidden="true" focusable="false" />
               {link.label}
             </SidebarLink>
           </li>

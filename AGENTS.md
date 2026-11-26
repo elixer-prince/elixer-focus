@@ -130,5 +130,6 @@ cd app && npm run web           # Run web version
 
 - [web/src/features/sleep-schedule/AGENTS.md](web/src/features/sleep-schedule/AGENTS.md): Sleep Schedule settings, records, calculations, migration, and coordination conventions.
 - [web/src/features/calendar/AGENTS.md](web/src/features/calendar/AGENTS.md): Calendar planning, recurrence, and persistence conventions.
+- [web/src/features/brain-dump/AGENTS.md](web/src/features/brain-dump/AGENTS.md): Brain dump capture, local persistence, search, editing, and cross tab coordination.
 - [web/AGENTS.md](web/AGENTS.md): Web workspace React, composition, and interface guidance.
 - [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.
