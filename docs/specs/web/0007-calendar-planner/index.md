@@ -1,7 +1,7 @@
 # 0007. Calendar planner
 
 **Date**: 2026-11-25  
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
@@ -136,8 +136,8 @@ The project uses the Skateboard approach, so the first slice is a usable day pla
 1. [x] Add a versioned local schedule model and migrate existing task records with a 30 minute duration fallback. Build the Day view with task selection or creation, timed and untimed occurrences, and cross tab local persistence. Keep task page completion independent. Satisfies **AC-1**, **AC-2**, **AC-3**, and **AC-9**.
 2. [x] Add FullCalendar's Day, three date, Week, and Month views, date navigation, compact Month markers, and the custom narrow screen scroll wrapper. Add the Settings week start preference and apply it to Calendar and the Journal chart. Satisfies **AC-1** and **AC-8**.
 3. [x] Add `rrule` based recurrence generation for visible date ranges, persisted rule segments, occurrence exceptions, and the selected edit and delete scopes. Recompute saved occurrences only within the affected scope and preserve completion for dates that remain scheduled. Satisfies **AC-4** and **AC-5**.
-4. Add drag and resize behavior, exact time editing, overlap warnings, and same date next slot suggestions. Satisfies **AC-3** and **AC-6**.
-5. Connect the optional sleep layer to the shared Sleep Schedule in spec [0008](../0008-sleep-schedule/index.md). Add generated events, actual time commands through the feature boundary, derived duration, awake totals, the planned time progress rail, and the independent current time line. Do not store duplicate Calendar sleep data. This slice depends on feature 47 and its Sleep Schedule contract. Satisfies **AC-7**.
+4. [x] Add drag and resize behavior, exact time editing, overlap warnings, and same date next slot suggestions. Satisfies **AC-3** and **AC-6**.
+5. [x] Connect the optional sleep layer to the shared Sleep Schedule in spec [0008](../0008-sleep-schedule/index.md). Add generated events, actual time commands through the feature boundary, derived duration, awake totals, the planned time progress rail, and the independent current time line. Do not store duplicate Calendar sleep data. This slice depends on feature 47 and its Sleep Schedule contract. Satisfies **AC-7**.
 
 ## Consequences
 

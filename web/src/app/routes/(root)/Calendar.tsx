@@ -4,11 +4,15 @@ import {
   type CalendarCoordinatorCommand,
 } from "@/features/calendar/services/calendar-coordinator";
 import {
-  createLocalDateTime,
   formatLocalDate,
   getLocalDayRange,
   parseLocalDate,
 } from "@/features/calendar/utils/calendar-date";
+import {
+  getCalendarOverlapWarnings,
+  getOccurrenceTimeRange,
+  getOverlappingOccurrenceIds,
+} from "@/features/calendar/utils/calendar-conflicts";
 import type {
   RecurrenceFrequency,
   RecurrenceRuleDraft,
@@ -35,17 +39,21 @@ import usePageTitle from "@/hooks/usePageTitle";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/react/daygrid";
 import interactionPlugin from "@fullcalendar/react/interaction";
+import classicThemePlugin from "@fullcalendar/react/themes/classic";
 import timeGridPlugin from "@fullcalendar/react/timegrid";
 import {
   addDays,
   addMonths,
   endOfMonth,
+  format,
   startOfMonth,
   startOfWeek,
 } from "date-fns";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { MdAdd, MdArrowBack, MdArrowForward, MdClose } from "react-icons/md";
 import "@fullcalendar/react/skeleton.css";
+import "@fullcalendar/react/themes/classic/theme.css";
+import "@fullcalendar/react/themes/classic/palette.css";
 import "./calendar.css";
 
 const quickDurations = Array.from(
@@ -164,26 +172,6 @@ const formatDuration = (minutes: number) => {
   return `${hours} hr ${remainingMinutes} min`;
 };
 
-const getOccurrenceTimeRange = (occurrence: ScheduledOccurrence) => {
-  if (!occurrence.startTime) return undefined;
-
-  const durationMinutes = occurrence.durationMinutes ?? 30;
-  const start = createLocalDateTime(occurrence.date, occurrence.startTime);
-  if (
-    Number.isNaN(start.getTime()) ||
-    !Number.isInteger(durationMinutes) ||
-    durationMinutes < 1 ||
-    durationMinutes > 1440
-  ) {
-    return undefined;
-  }
-
-  return {
-    start,
-    end: new Date(start.getTime() + durationMinutes * 60_000),
-  };
-};
-
 const getWeekdayOrdinal = (date: string): 1 | 2 | 3 | 4 | 5 | "last" => {
   const parsedDate = parseLocalDate(date);
   const ordinal = Math.ceil(parsedDate.getDate() / 7);
@@ -293,6 +281,14 @@ const CalendarRoute = () => {
     () => dayOccurrences.filter((occurrence) => !occurrence.startTime),
     [dayOccurrences],
   );
+  const overlapWarnings = useMemo(
+    () => getCalendarOverlapWarnings(scheduledOccurrences, selectedDate),
+    [scheduledOccurrences, selectedDate],
+  );
+  const overlappingOccurrenceIds = useMemo(
+    () => getOverlappingOccurrenceIds(scheduledOccurrences),
+    [scheduledOccurrences],
+  );
   const selectedOccurrence = scheduledOccurrences.find(
     (occurrence) => occurrence.id === selectedOccurrenceId,
   );
@@ -363,6 +359,9 @@ const CalendarRoute = () => {
             classNames: [
               "calendar-task-event",
               `calendar-task-event--${occurrence.category}`,
+              ...(overlappingOccurrenceIds.has(occurrence.id)
+                ? ["calendar-task-event--conflict"]
+                : []),
               ...(occurrence.isCompleted
                 ? ["calendar-task-event--completed"]
                 : []),
@@ -478,6 +477,7 @@ const CalendarRoute = () => {
     actualSleepRecords,
     calendarView,
     currentTime,
+    overlappingOccurrenceIds,
     scheduledOccurrences,
     sleepSettings,
     today,
@@ -580,6 +580,41 @@ const CalendarRoute = () => {
     setRecurrenceEndDate(segment?.endDate ?? occurrence.date);
     setOccurrenceCount(String(segment?.occurrenceCount ?? 10));
     setIsScheduleDialogOpen(true);
+  };
+
+  const handleUpdateOccurrenceTiming = async (
+    occurrenceId: string,
+    start: Date | null,
+    end: Date | null,
+    revert: () => void,
+  ) => {
+    const occurrence = scheduledOccurrences.find(
+      (item) => item.id === occurrenceId,
+    );
+    if (!occurrence || !start || !end) {
+      revert();
+      return;
+    }
+
+    const durationMilliseconds = end.getTime() - start.getTime();
+    const durationMinutes = durationMilliseconds / 60_000;
+    if (
+      formatLocalDate(start) !== occurrence.date ||
+      !Number.isInteger(durationMinutes) ||
+      durationMinutes < 1 ||
+      durationMinutes > 1440
+    ) {
+      revert();
+      return;
+    }
+
+    const result = await dispatchCalendarCommand({
+      type: "edit-occurrence",
+      occurrenceId,
+      startTime: format(start, "HH:mm"),
+      durationMinutes,
+    });
+    if (!result.success) revert();
   };
 
   const handleSubmitPlan = async (event: FormEvent<HTMLFormElement>) => {
@@ -813,50 +848,218 @@ const CalendarRoute = () => {
               Current local time is {currentTimeLabel}. Today’s timeline is
               shaded through this time in the day, multi day, and week views.
             </time>
-            <FullCalendar
-              key={`${calendarView}-${selectedDate}-${weekStartsOn}`}
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView={currentView.fullCalendarView}
-              views={{
-                timeGridThreeDay: {
-                  type: "timeGrid",
-                  duration: { days: 3 },
-                },
-              }}
-              initialDate={selectedDate}
-              headerToolbar={false}
-              timeZone="local"
-              firstDay={weekStartsOn}
-              events={calendarEvents}
-              eventClick={(info) => {
-                if (info.event.extendedProps.kind !== "task") return;
-                showOccurrence(info.event.id);
-              }}
-              dateClick={(info) => {
-                if (calendarView !== "month") return;
-                setSelectedDate(info.dateStr);
-                setCalendarView("day");
-              }}
-              slotMinTime="00:00:00"
-              slotMaxTime="24:00:00"
-              slotDuration="00:30:00"
-              scrollTime="08:00:00"
-              allDaySlot={false}
-              nowIndicator
-              height="auto"
-              eventDisplay={calendarView === "month" ? "list-item" : "block"}
-              slotHeaderFormat={{
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: false,
-              }}
-              eventTimeFormat={{ hour: "numeric", minute: "2-digit" }}
-              noEventsContent="No timed plans yet. Add a task to shape this day."
-            />
+            <div className="calendar-planner__calendar">
+              <FullCalendar
+                key={`${calendarView}-${selectedDate}-${weekStartsOn}`}
+                plugins={[
+                  dayGridPlugin,
+                  timeGridPlugin,
+                  interactionPlugin,
+                  classicThemePlugin,
+                ]}
+                initialView={currentView.fullCalendarView}
+                views={{
+                  timeGridThreeDay: {
+                    type: "timeGrid",
+                    duration: { days: 3 },
+                  },
+                }}
+                initialDate={selectedDate}
+                headerToolbar={false}
+                timeZone="local"
+                firstDay={weekStartsOn}
+                events={calendarEvents}
+                editable={calendarView !== "month"}
+                eventOverlap
+                snapDuration="00:05:00"
+                eventAllow={(dropInfo, event) => {
+                  if (
+                    !event ||
+                    event.extendedProps.kind !== "task" ||
+                    !event.start ||
+                    !event.end ||
+                    formatLocalDate(dropInfo.start) !==
+                      formatLocalDate(event.start)
+                  ) {
+                    return false;
+                  }
+
+                  const proposedEnd =
+                    dropInfo.end ??
+                    new Date(
+                      dropInfo.start.getTime() +
+                        event.end.getTime() -
+                        event.start.getTime(),
+                    );
+                  const durationMinutes =
+                    (proposedEnd.getTime() - dropInfo.start.getTime()) / 60_000;
+                  return (
+                    Number.isInteger(durationMinutes) &&
+                    durationMinutes >= 1 &&
+                    durationMinutes <= 1440
+                  );
+                }}
+                eventContent={(info) => {
+                  if (calendarView === "month") {
+                    return undefined;
+                  }
+
+                  const kind = info.event.extendedProps.kind;
+                  const start = info.event.start;
+                  if (!start) return undefined;
+
+                  if (kind === "sleep") {
+                    return (
+                      <div className="calendar-sleep-event-content">
+                        <span
+                          className="calendar-sleep-event-marker"
+                          aria-hidden="true"
+                        />
+                        <span className="calendar-sleep-event-time">
+                          {format(start, "HH:mm")}
+                        </span>
+                        <span className="calendar-sleep-event-title">
+                          {info.event.title}
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  if (kind !== "task") return undefined;
+
+                  const end = info.event.end;
+                  if (!end) return undefined;
+
+                  const durationMinutes = Math.round(
+                    (end.getTime() - start.getTime()) / 60_000,
+                  );
+                  const isCompact = durationMinutes < 45;
+
+                  return (
+                    <div
+                      className={
+                        isCompact
+                          ? "calendar-task-event-content calendar-task-event-content--compact"
+                          : "calendar-task-event-content"
+                      }
+                    >
+                      <span
+                        className={
+                          isCompact
+                            ? "calendar-task-event-time calendar-task-event-time--compact"
+                            : "calendar-task-event-time"
+                        }
+                      >
+                        {isCompact ? format(start, "HH:mm") : info.timeText}
+                      </span>
+                      {!isCompact && (
+                        <span className="calendar-task-event-duration">
+                          {formatDuration(durationMinutes)}
+                        </span>
+                      )}
+                      <span className="calendar-task-event-title">
+                        {info.event.title}
+                      </span>
+                    </div>
+                  );
+                }}
+                eventDrop={(info) => {
+                  if (info.event.extendedProps.kind !== "task") {
+                    info.revert();
+                    return;
+                  }
+                  void handleUpdateOccurrenceTiming(
+                    info.event.id,
+                    info.event.start,
+                    info.event.end,
+                    info.revert,
+                  );
+                }}
+                eventResize={(info) => {
+                  if (info.event.extendedProps.kind !== "task") {
+                    info.revert();
+                    return;
+                  }
+                  void handleUpdateOccurrenceTiming(
+                    info.event.id,
+                    info.event.start,
+                    info.event.end,
+                    info.revert,
+                  );
+                }}
+                eventClick={(info) => {
+                  if (info.event.extendedProps.kind !== "task") return;
+                  showOccurrence(info.event.id);
+                }}
+                dateClick={(info) => {
+                  if (calendarView !== "month") return;
+                  setSelectedDate(info.dateStr);
+                  setCalendarView("day");
+                }}
+                slotMinTime="00:00:00"
+                slotMaxTime="24:00:00"
+                slotDuration="00:30:00"
+                scrollTime="08:00:00"
+                allDaySlot={false}
+                nowIndicator
+                height="auto"
+                eventDisplay={calendarView === "month" ? "list-item" : "block"}
+                slotHeaderFormat={{
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: false,
+                }}
+                eventTimeFormat={{ hour: "numeric", minute: "2-digit" }}
+                noEventsContent="No timed plans yet. Add a task to shape this day."
+              />
+            </div>
           </div>
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-[calc(var(--navbar-height)_+_1rem)] lg:self-start">
+          {overlapWarnings.length > 0 && (
+            <section
+              role="status"
+              aria-label="Schedule conflicts"
+              aria-live="polite"
+              className="border-error/30 bg-error/5 rounded-2xl border p-5"
+            >
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-base-content text-lg font-semibold">
+                    Schedule conflicts
+                  </h2>
+                  <p className="text-base-content/75 mt-1 text-sm">
+                    Timed plans overlap on {getDateLabel(selectedDate)}.
+                  </p>
+                </div>
+                <span className="badge badge-error badge-soft">
+                  {overlapWarnings.length}
+                </span>
+              </div>
+              <ul className="space-y-2">
+                {overlapWarnings.map((warning) => (
+                  <li
+                    key={warning.occurrenceId}
+                    className="border-error/20 bg-base-100 rounded-xl border p-3"
+                  >
+                    <p className="text-base-content font-medium">
+                      {warning.title}
+                    </p>
+                    <p className="text-base-content/75 mt-1 text-sm">
+                      Overlaps with {warning.conflictingTitles.join(", ")}.
+                    </p>
+                    <p className="text-error mt-2 text-sm font-medium">
+                      {warning.suggestedStartTime
+                        ? `Next available: ${warning.suggestedStartTime} (${formatDuration(warning.durationMinutes)}).`
+                        : `No open slot for ${formatDuration(warning.durationMinutes)} fits on this date.`}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           <section className="border-base-content/10 bg-base-100 rounded-2xl border p-5 shadow-sm">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>

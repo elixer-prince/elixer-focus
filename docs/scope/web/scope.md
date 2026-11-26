@@ -46,7 +46,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 44  | Music player dedup migration fix   | Slice 2 (settings)    | done        |
 | 10  | Journal                            | Slice 3 (pages)       | done        |
 | 11  | Profile                            | Slice 3 (pages)       | done        |
-| 12  | Calendar                           | Slice 3 (pages)       | in-progress |
+| 12  | Calendar                           | Slice 3 (pages)       | done        |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
 | 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
@@ -57,7 +57,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
-| 47  | Sleep schedule                     | Slice 5 (future)      | in-progress |
+| 47  | Sleep schedule                     | Slice 5 (future)      | done        |
 
 ## Foundations
 
@@ -439,7 +439,7 @@ Social media style profile page with identity info, productivity stats, characte
 
 code in `web/src/app/routes/(root)/Profile.tsx`
 
-### 12. Calendar · in-progress
+### 12. Calendar · done
 
 Build a planner for scheduled tasks and recurring plans. Sleep events, the planned awake rail, actual records, and awake idle totals use the shared Sleep Schedule in feature 47 and spec [0008](../../specs/web/0008-sleep-schedule/index.md); Calendar does not duplicate its data.
 
@@ -449,11 +449,11 @@ Build a planner for scheduled tasks and recurring plans. Sleep events, the plann
 Spec: [0007](../../specs/web/0007-calendar-planner/index.md)
 Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec 0008](../../specs/web/0008-sleep-schedule/index.md).
 
-- [ ] Build it: `/develop calendar`
+- [x] Build it: `/develop calendar`
   - [x] Versioned local schedule model, shared task reuse, Day planner, and tab persistence (AC-1, AC-2, AC-3, AC-9)
   - [x] Four calendar views, responsive navigation, and shared week start preference (AC-1, AC-8)
   - [x] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
-  - [ ] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
+  - [x] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
   - [x] Sleep events, actual records, awake totals, and planned rail through feature 47 (AC-7)
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
@@ -548,7 +548,7 @@ Social media style features (sharing, leaderboards, community). Deferred; massiv
 
 - [ ] Design it (spec): `/architect social features`
 
-### 47. Sleep schedule · in-progress · from spec 0005
+### 47. Sleep schedule · done · from spec 0005
 
 Let people configure a daily wake time and target sleep duration, optionally override bedtime, record actual sleep, and see awake idle totals. Sleep Schedule owns planned values and actual records. Calendar reads planned events and the progress rail from this feature and sends actual event changes through its command boundary. Keep raw idle and session records unchanged, including timer sessions that occur during planned sleep.
 

@@ -3,9 +3,13 @@ import {
   fireEvent,
   render,
   screen,
+  within,
   waitFor,
 } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { addDays, addMonths } from "date-fns";
+// @ts-expect-error Node types are not included in the web project.
+import { readFileSync } from "node:fs";
 import type { Task } from "@/features/tasks/types/task";
 import {
   formatLocalDate,
@@ -23,6 +27,11 @@ import {
   useTasksStore,
 } from "@/stores";
 
+const calendarStyles = readFileSync(
+  "src/app/routes/(root)/calendar.css",
+  "utf8",
+);
+
 type CalendarMockEvent = {
   id: string;
   title: string;
@@ -33,25 +42,57 @@ type CalendarMockEvent = {
   kind?: string;
 };
 
+type CalendarMockEventApi = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  extendedProps: { kind?: string };
+};
+
 vi.mock("@fullcalendar/react", () => ({
   default: ({
     events = [],
     eventClick,
+    eventAllow,
+    eventDrop,
+    eventResize,
+    eventContent,
     initialDate,
     initialView,
     firstDay,
     dateClick,
     nowIndicator,
+    editable,
+    snapDuration,
   }: {
     events?: CalendarMockEvent[];
     eventClick?: (info: {
       event: { id: string; extendedProps: { kind?: string } };
     }) => void;
+    eventAllow?: (
+      dropInfo: { start: Date; end: Date },
+      event: CalendarMockEventApi,
+    ) => boolean;
+    eventDrop?: (info: {
+      event: CalendarMockEventApi;
+      revert: () => void;
+    }) => void;
+    eventResize?: (info: {
+      event: CalendarMockEventApi;
+      revert: () => void;
+    }) => void;
+    eventContent?: (info: {
+      event: CalendarMockEventApi;
+      timeText: string;
+    }) => ReactNode | undefined;
     initialDate: string;
     initialView: string;
     firstDay?: number;
     dateClick?: (info: { dateStr: string }) => void;
     nowIndicator?: boolean;
+    editable?: boolean;
+    snapDuration?: string;
   }) => {
     const date = parseLocalDate(initialDate);
     const viewStart =
@@ -83,6 +124,8 @@ vi.mock("@fullcalendar/react", () => ({
         data-view={initialView}
         data-first-day={firstDay}
         data-now-indicator={nowIndicator}
+        data-editable={editable}
+        data-snap-duration={snapDuration}
         data-progress-start={timeProgress?.start.toISOString()}
         data-progress-end={timeProgress?.end.toISOString()}
         data-progress-title={timeProgress?.title ?? ""}
@@ -99,23 +142,80 @@ vi.mock("@fullcalendar/react", () => ({
       >
         {visibleEvents
           .filter((event) => event.display !== "background")
-          .map((event) => (
-            <button
-              key={event.id}
-              type="button"
-              className={event.classNames?.join(" ")}
-              onClick={() =>
-                eventClick?.({
-                  event: {
-                    id: event.id,
-                    extendedProps: { kind: event.kind },
+          .map((event) => {
+            const eventApi: CalendarMockEventApi = {
+              id: event.id,
+              title: event.title,
+              start: event.start,
+              end: event.end,
+              extendedProps: { kind: event.kind },
+            };
+
+            return (
+              <div
+                key={event.id}
+                data-can-drop-next-day={eventAllow?.(
+                  {
+                    start: addDays(event.start, 1),
+                    end: addDays(event.end, 1),
                   },
-                })
-              }
-            >
-              {event.title}
-            </button>
-          ))}
+                  eventApi,
+                )}
+              >
+                <button
+                  type="button"
+                  className={event.classNames?.join(" ")}
+                  aria-label={event.title}
+                  onClick={() =>
+                    eventClick?.({
+                      event: {
+                        id: event.id,
+                        extendedProps: { kind: event.kind },
+                      },
+                    })
+                  }
+                >
+                  {eventContent?.({
+                    event: eventApi,
+                    timeText: "9:00 AM - 9:45 AM",
+                  }) ?? event.title}
+                </button>
+                {event.kind === "task" && (
+                  <>
+                    <button
+                      type="button"
+                      data-testid={`move-calendar-event-${event.id}`}
+                      hidden
+                      onClick={() =>
+                        eventDrop?.({
+                          event: {
+                            ...eventApi,
+                            start: new Date(event.start.getTime() + 300_000),
+                            end: new Date(event.end.getTime() + 300_000),
+                          },
+                          revert: vi.fn(),
+                        })
+                      }
+                    />
+                    <button
+                      type="button"
+                      data-testid={`resize-calendar-event-${event.id}`}
+                      hidden
+                      onClick={() =>
+                        eventResize?.({
+                          event: {
+                            ...eventApi,
+                            end: new Date(event.end.getTime() + 300_000),
+                          },
+                          revert: vi.fn(),
+                        })
+                      }
+                    />
+                  </>
+                )}
+              </div>
+            );
+          })}
         {initialView === "dayGridMonth" && dateClick && (
           <button
             type="button"
@@ -208,12 +308,59 @@ describe("Calendar route", () => {
     );
     render(<CalendarRoute />);
 
-    expect(
-      screen.getByRole("button", { name: existingTask.title }),
-    ).toHaveClass(
+    const taskEvent = screen.getByRole("button", {
+      name: existingTask.title,
+    });
+    expect(taskEvent).toHaveClass(
       "calendar-task-event",
       "calendar-task-event--urgent-important",
       "calendar-task-event--completed",
+    );
+    expect(screen.getByText("45 min")).toHaveClass(
+      "calendar-task-event-duration",
+    );
+    expect(within(taskEvent).getByText(existingTask.title)).toHaveClass(
+      "calendar-task-event-title",
+    );
+    expect(calendarStyles).toContain(
+      ".calendar-planner .calendar-task-event-content {",
+    );
+  });
+
+  it("keeps short task blocks compact while showing the start time", () => {
+    const today = formatLocalDate(new Date());
+    setupStores([existingTask]);
+    act(() =>
+      useCalendarStore.setState({
+        ...initialCalendarData,
+        scheduledOccurrences: [
+          {
+            id: "short-occurrence",
+            taskId: existingTask.id,
+            date: today,
+            startTime: "09:00",
+            durationMinutes: 30,
+            title: existingTask.title,
+            category: existingTask.category,
+            isCompleted: false,
+            isSkipped: false,
+          },
+        ],
+      }),
+    );
+    render(<CalendarRoute />);
+
+    const taskEvent = screen.getByRole("button", {
+      name: existingTask.title,
+    });
+    expect(within(taskEvent).getByText("09:00")).toHaveClass(
+      "calendar-task-event-time--compact",
+    );
+    expect(within(taskEvent).getByText(existingTask.title)).toHaveClass(
+      "calendar-task-event-title",
+    );
+    expect(taskEvent.children[0]).toHaveClass(
+      "calendar-task-event-content--compact",
     );
   });
 
@@ -254,6 +401,10 @@ describe("Calendar route", () => {
     );
     expect(screen.getByRole("button", { name: "Actual wake" })).toHaveClass(
       "calendar-sleep-event--actual",
+    );
+    expect(screen.getByText("06:30")).toHaveClass("calendar-sleep-event-time");
+    expect(screen.getByText("Wake Up")).toHaveClass(
+      "calendar-sleep-event-title",
     );
     expect(screen.getByText(/8 hr sleep/)).toBeInTheDocument();
   });
@@ -454,6 +605,91 @@ describe("Calendar route", () => {
       durationMinutes: 45,
     });
   }, 15_000);
+
+  it("saves five minute drag and resize changes for a timed plan", async () => {
+    const today = formatLocalDate(new Date());
+    const occurrence: ScheduledOccurrence = {
+      id: "timed-plan",
+      taskId: existingTask.id,
+      date: today,
+      startTime: "09:00",
+      durationMinutes: 45,
+      title: existingTask.title,
+      category: existingTask.category,
+      isCompleted: false,
+      isSkipped: false,
+    };
+    setupStores([existingTask]);
+    useCalendarStore.setState({
+      ...initialCalendarData,
+      scheduledOccurrences: [occurrence],
+    });
+
+    render(<CalendarRoute />);
+
+    const calendar = screen.getByTestId("day-calendar");
+    expect(calendar).toHaveAttribute("data-editable", "true");
+    expect(calendar).toHaveAttribute("data-snap-duration", "00:05:00");
+    expect(
+      screen.getByTestId("move-calendar-event-timed-plan").parentElement,
+    ).toHaveAttribute("data-can-drop-next-day", "false");
+
+    fireEvent.click(screen.getByTestId("move-calendar-event-timed-plan"));
+    await waitFor(() => {
+      expect(
+        useCalendarStore.getState().scheduledOccurrences[0].startTime,
+      ).toBe("09:05");
+    });
+
+    fireEvent.click(screen.getByTestId("resize-calendar-event-timed-plan"));
+    await waitFor(() => {
+      expect(useCalendarStore.getState().scheduledOccurrences[0]).toMatchObject(
+        {
+          startTime: "09:05",
+          durationMinutes: 50,
+        },
+      );
+    });
+  }, 15_000);
+
+  it("shows overlap warnings and next available times for the selected date", () => {
+    const today = formatLocalDate(new Date());
+    const firstOccurrence: ScheduledOccurrence = {
+      id: "first-overlap",
+      taskId: existingTask.id,
+      date: today,
+      startTime: "09:00",
+      durationMinutes: 60,
+      title: "First block",
+      category: existingTask.category,
+      isCompleted: false,
+      isSkipped: false,
+    };
+    const secondOccurrence: ScheduledOccurrence = {
+      ...firstOccurrence,
+      id: "second-overlap",
+      startTime: "09:30",
+      title: "Second block",
+    };
+    setupStores([existingTask]);
+    useCalendarStore.setState({
+      ...initialCalendarData,
+      scheduledOccurrences: [firstOccurrence, secondOccurrence],
+    });
+
+    render(<CalendarRoute />);
+
+    expect(
+      screen.getByRole("status", { name: "Schedule conflicts" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Overlaps with Second block.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Next available: 10:30 (1 hr)."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "First block" })).toHaveClass(
+      "calendar-task-event--conflict",
+    );
+  });
 
   it("creates, edits, and removes a recurring plan through the calendar", async () => {
     setupStores([existingTask]);

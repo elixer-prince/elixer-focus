@@ -123,6 +123,7 @@ cd app && npm run web           # Run web version
 - [playwright-best-practices](.agents/skills/playwright-best-practices/): currents-dev/playwright-best-practices-skill, E2E testing best practices
 - [vercel-react-best-practices](.agents/skills/vercel-react-best-practices/): vercel-labs/agent-skills, React performance and implementation guidance
 - [vercel-composition-patterns](.agents/skills/vercel-composition-patterns/): vercel-labs/agent-skills, reusable React composition patterns
+- [ui-forager](.agents/skills/ui-forager/): helix98/ui-forager-skill, component discovery and adaptation for interface work
 - [web-design-guidelines](.agents/skills/web-design-guidelines/): vercel-labs/agent-skills, web interface and accessibility review guidance
 
 ## Context files

@@ -70,3 +70,40 @@ Recurrence rules and occurrence lifecycle are now built. This update adds covera
 - AC-1 through AC-3 and AC-8 through AC-9: covered by the earlier checks and Milestone 2 update above.
 - AC-4 and AC-5: covered by the recurrence creation, rule, edit, delete, completion, snapshot, and archive checks in this update.
 - AC-6 remains pending the drag, resize, and conflict milestone. AC-7 remains pending alignment with the shared Sleep Schedule feature.
+
+## Milestone 4 update · 2026-11-26
+
+The drag, resize, and conflict milestone is now built. The shared Sleep Schedule integration was already complete; this update supersedes the earlier notes that AC-6 and AC-7 were pending.
+
+### UI / manual
+
+- [ ] Open `/calendar`, check the selected local date and device time zone in Day, Multi Day, Week, and Month, navigate by each view interval, and open a Month date in Day view. → AC-1 · selected date and device time zone
+- [ ] Reuse an active task with a saved duration, then check archived tasks are excluded and missing duration falls back to 30 minutes. → AC-2 · active Task records and duration fallback
+- [ ] Create and schedule tasks using user input and defaults. Check task details, category, duration, timed and untimed placement, exact minute entry, five minute drag snapping, resize, and an overnight task. → AC-2, AC-3 · user input and task defaults
+- [ ] Create daily, weekly, and monthly rules, then view several ranges and check interval anchors, matching dates, end rules, occurrence counts, and daylight saving behavior. → AC-4 · active series, original start date, rule fields, visible range, and device time zone
+- [ ] Revisit generated dates and confirm each saved occurrence follows its rule segment without duplicates. → AC-4 · saved occurrences generated from rule segments
+- [ ] Edit and delete one occurrence, future occurrences, and a whole series. Check completion retention, skipped dates, and archived task snapshots. → AC-5 · occurrence or series identifiers, edit scope, deletion scope, and archive time
+- [ ] Create overlapping tasks, including one starting on the prior date and crossing midnight. Check warnings, a fitting next slot on the same date, and no suggestion when none fits. → AC-6 · actual timed intervals and requested duration
+- [ ] Check Month markers against saved occurrences in the displayed month. → AC-1 · saved occurrences in the month
+- [ ] Check planned sleep events, awake rails, current time, and totals with valid and invalid Sleep Schedule settings. → AC-7 · shared sleep settings, selected date, local time, and tracked idle intervals
+- [ ] Record, edit, and clear sleep events for today and past dates. Check future entries are rejected and duration is derived from paired records on the wake date. → AC-7 · device time, entered past time, and paired records
+- [ ] Change the saved week start and check Calendar Week, Calendar Month, and the Journal chart while the Journal date picker stays unchanged. → AC-8 · persisted `weekStartsOn`
+- [ ] Use two tabs to check task, schedule, and preference synchronization. Simulate storage failure and unavailable browser coordination APIs; check the error and single tab fallback. → AC-9 · persisted local state and coordinator
+
+### Commands
+
+- [ ] `npm run typecheck:web` and `npm run lint:web` → both pass → AC-3, AC-6
+- [ ] `npm --prefix web run test -- --run 'src/app/routes/(root)/__tests__/Calendar.test.tsx' src/features/calendar/__tests__/utils/calendar-conflicts.test.ts` → 20 tests pass → AC-3, AC-6
+- [ ] `npm --prefix web run build` → production build succeeds → AC-3, AC-6
+
+### Acceptance-criteria coverage
+
+- AC-1: steps 1 and 8 cover the date range and Month marker sources.
+- AC-2: steps 2 and 3 cover reusable tasks, task fields, and defaults.
+- AC-3: step 3 covers timed, untimed, overnight, exact entry, drag, and resize behavior.
+- AC-4: steps 4 and 5 cover recurrence rules and saved generated occurrences.
+- AC-5: step 6 covers occurrence lifecycle and task snapshots.
+- AC-6: step 7 covers overlap detection and same date suggestions.
+- AC-7: steps 9 and 10 cover planned and actual sleep values.
+- AC-8: step 11 covers the shared week start preference.
+- AC-9: step 12 and the commands cover local persistence and fallback behavior.

@@ -97,6 +97,13 @@
       "skillPath": "skills/test/SKILL.md",
       "computedHash": ""
     },
+    "ui-forager": {
+      "source": "helix98/ui-forager-skill",
+      "commit": "512e389fb0a84afa39ebfac16e7160aff52cf9d8",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "f474b6e729e087d1d81bea41c7e0ed8f89509e8e36a7a33208029e6ecda628b3"
+    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "commit": "5a37a6329fbad3666c3207392a6a7c0110e92efb",

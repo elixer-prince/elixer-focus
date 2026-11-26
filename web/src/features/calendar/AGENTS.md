@@ -17,5 +17,6 @@ Calendar tests live in `__tests__/`. Run focused tests from the repository root 
 - [migrate-to-temporal-api](../../../../.agents/skills/migrate-to-temporal-api/): `umami-creative-gmbh/agent-skills`, migration from `Date` and date libraries to Temporal.
 
 MCP servers: `temporal-cortex/mcp` (recommended)
+MCP servers: Tanod `expand_rrule` (recommended)
 
 _Drafted by /sync from the introducing change, worth a quick human pass._
