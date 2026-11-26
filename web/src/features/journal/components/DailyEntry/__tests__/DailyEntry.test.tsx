@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import DailyEntryView from "@/features/journal/components/DailyEntry/Index";
 
@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
     createdAt: number;
     updatedAt: number;
   }>,
+  saveEntry: vi.fn(),
 }));
 
 vi.mock("@/features/journal/stores/journal-store", () => {
@@ -34,7 +35,7 @@ vi.mock("@/features/journal/stores/journal-store", () => {
       date === "2026-01-15" ? entry : undefined,
     useJournalStore: {
       getState: () => ({
-        saveEntry: vi.fn((date, content) => ({ ...entry, date, content })),
+        saveEntry: mocks.saveEntry,
         getEntryByDate,
       }),
     },
@@ -96,13 +97,21 @@ vi.mock("@/components/ui", () => ({
 vi.mock("@atomic-editor/editor", () => ({
   AtomicCodeMirrorEditor: ({
     markdownSource,
+    onMarkdownChange,
   }: {
     markdownSource?: string;
-    _onMarkdownChange?: () => void;
+    onMarkdownChange?: (value: string) => void;
   }) => (
-    <div data-testid="editor-content">
-      <div contentEditable={false}>{markdownSource || ""}</div>
-    </div>
+    <>
+      <textarea
+        data-testid="journal-editor"
+        value={markdownSource || ""}
+        onChange={(event) => onMarkdownChange?.(event.target.value)}
+      />
+      <div data-testid="editor-content">
+        <div contentEditable={false}>{markdownSource || ""}</div>
+      </div>
+    </>
   ),
 }));
 
@@ -115,6 +124,7 @@ vi.mock("react-icons/md", () => ({
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.useRealTimers();
   mocks.trackedIntervals = [];
 });
 
@@ -191,6 +201,37 @@ describe("DailyEntry component", () => {
     fireEvent.click(screen.getByText("Edit"));
 
     expect(screen.getByText("View")).toBeInTheDocument();
+  });
+
+  it("does not render a saving indicator while content is waiting to save", () => {
+    vi.useFakeTimers();
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    fireEvent.click(screen.getByText("Edit"));
+    fireEvent.change(screen.getByTestId("journal-editor"), {
+      target: { value: "A journal entry" },
+    });
+
+    expect(screen.queryByText("Saving...")).not.toBeInTheDocument();
+  });
+
+  it("saves journal changes after one second of inactivity", () => {
+    vi.useFakeTimers();
+    render(<DailyEntryView selectedDate={new Date(2026, 0, 15)} />);
+
+    fireEvent.click(screen.getByText("Edit"));
+    fireEvent.change(screen.getByTestId("journal-editor"), {
+      target: { value: "A journal entry" },
+    });
+
+    act(() => vi.advanceTimersByTime(999));
+    expect(mocks.saveEntry).not.toHaveBeenCalled();
+
+    act(() => vi.advanceTimersByTime(1));
+    expect(mocks.saveEntry).toHaveBeenCalledWith(
+      "2026-01-15",
+      "A journal entry",
+    );
   });
 
   it("renders the stats toggle button", () => {

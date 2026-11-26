@@ -25,7 +25,6 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const [statsOpen, setStatsOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [draftIndicator, setDraftIndicator] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Track which date we've created an entry for, to avoid re-creating
@@ -85,11 +84,9 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
   }, [dateStr]);
 
   const handleMarkdownChange = (value: string) => {
-    setDraftIndicator(true);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => {
       useJournalStore.getState().saveEntry(dateStrRef.current, value);
-      setDraftIndicator(false);
     }, 1000);
   };
 
@@ -212,20 +209,11 @@ const DailyEntryView = ({ selectedDate }: DailyEntryViewProps) => {
       {/* Markdown Editor / View */}
       <div className="border-base-300 bg-base-100 rounded-lg border transition-colors duration-500">
         {isEditing ? (
-          <>
-            {draftIndicator && (
-              <div className="border-base-300 border-t px-4 py-2">
-                <span className="text-base-content/50 text-xs italic">
-                  Saving...
-                </span>
-              </div>
-            )}
-            <AtomicCodeMirrorEditor
-              documentId={dateStr}
-              markdownSource={entryContent}
-              onMarkdownChange={handleMarkdownChange}
-            />
-          </>
+          <AtomicCodeMirrorEditor
+            documentId={dateStr}
+            markdownSource={entryContent}
+            onMarkdownChange={handleMarkdownChange}
+          />
         ) : (
           <div className="min-h-[200px]">
             {entryContent ? (

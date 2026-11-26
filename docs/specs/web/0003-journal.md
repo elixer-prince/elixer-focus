@@ -25,7 +25,7 @@ Elixer Focus already tracks completed focus sessions with type, duration, and ti
 
 - **AC-1**: Opening the Journal shows a calendar view with the current month, where days that have entries or notes are visually marked.
 - **AC-2**: Clicking a day opens that day's entry in place, showing a collapsible stats section and a Markdown editor below.
-- **AC-3**: The daily entry auto saves with a draft indicator after 1 second of inactivity. No explicit save button is needed.
+- **AC-3**: The daily entry auto saves after 1 second of inactivity without a visible draft or saving indicator. No explicit save button is needed.
 - **AC-4**: The collapsible stats section shows total focus time, session count by type (Focus, Short Break, Long Break) for that day, derived from the existing session history store.
 - **AC-5**: The Markdown editor uses @atomic-editor/editor (CodeMirror 6) with Obsidian-style inline live preview (content stored as Markdown strings) and supports bold, italic, lists, headings, and code blocks.
 - **AC-6**: A "New Note" button creates a free form note with a title and Markdown body, linked to the current day's entry.
@@ -176,7 +176,7 @@ None. No new environment variables or third party credentials are needed.
 
 **Critical test scenarios** (each maps to an acceptance criterion in ## Requirements):
 
-- Happy path: user opens Journal, sees calendar, clicks today, writes in Markdown editor, content auto saves, verifies AC-1, AC-2, AC-3, AC-5
+- Happy path: user opens Journal, sees calendar, clicks today, writes in Markdown editor, content auto saves after 1 second of inactivity without a visible saving indicator, verifies AC-1, AC-2, AC-3, AC-5
 - Happy path: user clicks a day with sessions, sees focus time and session count in collapsible stats, verifies AC-4
 - Happy path: user creates a quick note, note appears under the daily entry, verifies AC-6
 - Happy path: user completes a focus session, a modal dialog prompts for reflection, user writes and saves, verifies AC-7
@@ -192,7 +192,7 @@ None. No new environment variables or third party credentials are needed.
 1. [x] Create the journal store with DailyEntry and JournalNote types, Zustand persist middleware, and core actions (getEntryByDate, saveEntry, getNotesByDate, createNote, deleteNote), satisfies **AC-2**, **AC-3**, **AC-10**, **AC-11**
 2. [x] Build the calendar view component using react-day-picker with month navigation, day marking for entries and notes, and click to open day, satisfies **AC-1**
 3. [x] Build the daily entry view with collapsible stats section wired to session history queries and TipTap Markdown editor below, satisfies **AC-2**, **AC-4**, **AC-5**
-4. [x] Implement auto save with 1 second debounce and draft indicator in the journal store, satisfies **AC-3**
+4. [x] Implement auto save with 1 second debounce and no visible draft or saving indicator, satisfies **AC-3**
 5. [x] Build the quick note creation and editing flow with title input, Markdown body, inline edit and delete actions, and note list under daily entry, satisfies **AC-6**
 6. [x] Build the session reflection prompt, triggered when a focus session completes, that creates a JournalNote linked to the session, satisfies **AC-7**
 7. [x] Build the focus time bar chart component using Chart.js with colors derived from CSS variables to match the active DaisyUI theme, showing weekly data derived from session history, satisfies **AC-8**
