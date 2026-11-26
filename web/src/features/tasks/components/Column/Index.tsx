@@ -1,6 +1,6 @@
 import ColumnHeader from "@/features/tasks/components/Column/Header";
 import TaskList from "@/features/tasks/components/Column/TaskList";
-import type { TaskCategory } from "@/features/tasks/types/task";
+import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { useDroppable } from "@dnd-kit/react";
 import { useState } from "react";
@@ -10,6 +10,7 @@ interface ColumnProps {
   category: TaskCategory;
   inputPlaceholder: string;
   isDragging?: boolean;
+  tasks?: Task[];
 }
 
 const Column = ({
@@ -17,6 +18,7 @@ const Column = ({
   category,
   inputPlaceholder,
   isDragging = false,
+  tasks,
 }: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
@@ -46,6 +48,7 @@ const Column = ({
         setInputShown={setInputShown}
         placeholder={inputPlaceholder}
         isDragging={isDragging}
+        tasks={tasks}
       />
     </article>
   );

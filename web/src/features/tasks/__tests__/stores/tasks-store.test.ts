@@ -83,6 +83,7 @@ describe("Tasks Store", () => {
         isSelected: false,
         createdAt: 123456,
         updatedAt: 123456,
+        defaultDurationMinutes: 30,
       });
     });
 
@@ -100,6 +101,17 @@ describe("Tasks Store", () => {
       expect(tasks[0].title).toBe("New Task");
       expect(tasks[0].category).toBe("uncategorised");
       expect(tasks[0].createdAt).toBe(789);
+      expect(tasks[0].defaultDurationMinutes).toBe(30);
+    });
+
+    it("should accept a custom default duration", () => {
+      const addTask = useTasksStore.getState().addTask;
+
+      act(() => {
+        addTask("Long task", undefined, undefined, 75);
+      });
+
+      expect(getTasks()[0].defaultDurationMinutes).toBe(75);
     });
 
     it("should prepend new tasks ahead of existing tasks", () => {
@@ -421,14 +433,46 @@ describe("Tasks Store", () => {
       expect(completedTask.completedAt).toBe(67890);
       expect(incompleteTask).not.toHaveProperty("completedAt");
     });
+
+    it("backfills the default duration for v3 tasks without changing custom values", async () => {
+      localStorage.clear();
+      localStorage.setItem(
+        "tasks-storage",
+        JSON.stringify({
+          state: {
+            tasks: [
+              {
+                ...createTask("1", "Legacy task"),
+                updatedAt: 67890,
+              },
+              {
+                ...createTask("2", "Custom task"),
+                updatedAt: 67890,
+                defaultDurationMinutes: 45,
+              },
+            ],
+          },
+          version: 3,
+        }),
+      );
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      const [legacyTask, customTask] = ReloadedStore.getState().tasks;
+      expect(legacyTask.defaultDurationMinutes).toBe(30);
+      expect(customTask.defaultDurationMinutes).toBe(45);
+    });
   });
 
   describe("persist configuration", () => {
-    it("should declare version 3 in the persist config", () => {
+    it("should declare version 4 in the persist config", () => {
       const stored = localStorage.getItem("tasks-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(3);
+      expect(parsed.version).toBe(4);
     });
 
     it("should include the tasks state in the persisted data", () => {

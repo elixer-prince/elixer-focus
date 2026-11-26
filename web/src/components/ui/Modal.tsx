@@ -4,6 +4,7 @@ import {
   useRef,
   useEffect,
   forwardRef,
+  useId,
 } from "react";
 
 export interface ModalProps {
@@ -29,6 +30,7 @@ const Modal = forwardRef<HTMLDialogElement, PropsWithChildren<ModalProps>>(
     ref,
   ) => {
     const internalRef = useRef<HTMLDialogElement | null>(null);
+    const titleId = useId();
     const resolvedRef = (ref ??
       internalRef) as RefObject<HTMLDialogElement | null>;
 
@@ -71,12 +73,16 @@ const Modal = forwardRef<HTMLDialogElement, PropsWithChildren<ModalProps>>(
       <dialog
         ref={resolvedRef}
         className="modal backdrop-blur-sm"
+        aria-labelledby={title ? titleId : undefined}
         onClick={handleBackdropClick}
         onKeyDown={handleKeyDown}
       >
         <div className={`modal-box ${sizeClasses[size]} p-6`}>
           {title && (
-            <h3 className="text-xl leading-tight font-bold tracking-tight">
+            <h3
+              id={titleId}
+              className="text-xl leading-tight font-bold tracking-tight"
+            >
               {title}
             </h3>
           )}

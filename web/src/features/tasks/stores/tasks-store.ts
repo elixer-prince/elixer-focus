@@ -1,6 +1,11 @@
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import {
+  dispatchCalendarCommand,
+  registerTaskStateHandler,
+} from "@/features/calendar/services/calendar-coordinator";
 import { getCurrentTimestamp } from "@/utils/date";
 import { createPersistOptions, persist } from "@/stores/persist-config";
+import { useCallback } from "react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -14,12 +19,15 @@ type TaskActions = {
     task: string,
     description?: string,
     category?: TaskCategory,
+    defaultDurationMinutes?: number,
   ) => void;
   removeTask: (id: string) => void;
   toggleTaskCompletion: (id: string, completed: boolean) => void;
   updateTask: (
     id: string,
-    updates: Partial<Pick<Task, "title" | "description">>,
+    updates: Partial<
+      Pick<Task, "title" | "description" | "defaultDurationMinutes">
+    >,
   ) => void;
 };
 
@@ -32,7 +40,12 @@ export const useTasksStore = create<TaskState & TaskActions>()(
         set({ tasks });
       },
 
-      addTask: (title, description, category = "uncategorised") => {
+      addTask: (
+        title,
+        description,
+        category = "uncategorised",
+        defaultDurationMinutes = 30,
+      ) => {
         const now = getCurrentTimestamp();
         set((state) => {
           state.tasks.unshift({
@@ -44,6 +57,7 @@ export const useTasksStore = create<TaskState & TaskActions>()(
             isSelected: false,
             createdAt: now,
             updatedAt: now,
+            defaultDurationMinutes,
           });
         });
       },
@@ -81,10 +95,10 @@ export const useTasksStore = create<TaskState & TaskActions>()(
     })),
     createPersistOptions<TaskState & TaskActions>({
       name: "tasks-storage",
-      version: 3,
+      version: 4,
       migrate: (state, version) => {
         const persistedState = state as { tasks?: Task[] };
-        if (version <= 2) {
+        if (version <= 3) {
           const migratedTasks = (persistedState.tasks || []).map((task) => {
             const { completedAt, ...taskWithoutCompletionTime } = task;
 
@@ -94,7 +108,9 @@ export const useTasksStore = create<TaskState & TaskActions>()(
                 version === 1
                   ? (task.updatedAt ?? task.createdAt)
                   : task.updatedAt,
-              ...(task.isCompleted
+              defaultDurationMinutes: task.defaultDurationMinutes ?? 30,
+              ...(task.isCompleted &&
+              (completedAt !== undefined || version <= 2)
                 ? {
                     completedAt:
                       completedAt ?? task.updatedAt ?? task.createdAt,
@@ -110,19 +126,70 @@ export const useTasksStore = create<TaskState & TaskActions>()(
   ),
 );
 
+registerTaskStateHandler({
+  apply: (tasks) => useTasksStore.setState({ tasks }),
+  get: () => useTasksStore.getState().tasks,
+  rehydrate: async () => {
+    await useTasksStore.persist.rehydrate();
+  },
+});
+
 // States
 
 export const useTasks = () => useTasksStore((state) => state.tasks);
 
 // Actions
 
-export const useSetTasks = () => useTasksStore((state) => state.setTasks);
+export const useSetTasks = () =>
+  useCallback(
+    (tasks: Task[]) => dispatchCalendarCommand({ type: "set-tasks", tasks }),
+    [],
+  );
 
-export const useAddTask = () => useTasksStore((state) => state.addTask);
+export const useReorderTasks = () =>
+  useCallback(
+    (tasks: Task[]) =>
+      dispatchCalendarCommand({ type: "reorder-tasks", tasks }),
+    [],
+  );
 
-export const useRemoveTask = () => useTasksStore((state) => state.removeTask);
+export const useAddTask = () =>
+  useCallback(
+    (task: string, description?: string, category?: TaskCategory) =>
+      dispatchCalendarCommand({
+        type: "add-task",
+        title: task,
+        description,
+        category,
+      }),
+    [],
+  );
+
+export const useRemoveTask = () =>
+  useCallback(
+    (id: string) =>
+      dispatchCalendarCommand({ type: "remove-task", taskId: id }),
+    [],
+  );
 
 export const useToggleTaskCompletion = () =>
-  useTasksStore((state) => state.toggleTaskCompletion);
+  useCallback(
+    (id: string, completed: boolean) =>
+      dispatchCalendarCommand({
+        type: "toggle-task-completion",
+        taskId: id,
+        completed,
+      }),
+    [],
+  );
 
-export const useUpdateTask = () => useTasksStore((state) => state.updateTask);
+export const useUpdateTask = () =>
+  useCallback(
+    (
+      id: string,
+      updates: Partial<
+        Pick<Task, "title" | "description" | "defaultDurationMinutes">
+      >,
+    ) => dispatchCalendarCommand({ type: "update-task", taskId: id, updates }),
+    [],
+  );

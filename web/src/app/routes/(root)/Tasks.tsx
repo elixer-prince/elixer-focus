@@ -1,10 +1,7 @@
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
 import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
-import {
-  useSetTasks,
-  useTasksStore,
-} from "@/features/tasks/stores/tasks-store";
+import { useReorderTasks, useTasksStore } from "@/stores";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
@@ -52,14 +49,21 @@ const Tasks = () => {
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
-  const setTasks = useSetTasks();
-  const previousTasks = useRef<Task[]>([]);
+  const [previewTasks, setPreviewTasks] = useState<Task[] | null>(null);
+  const previewTasksRef = useRef<Task[] | null>(null);
+  const updatePreviewTasks = useCallback((nextTasks: Task[] | null) => {
+    previewTasksRef.current = nextTasks;
+    setPreviewTasks(nextTasks);
+  }, []);
+  const reorderTasks = useReorderTasks();
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = useCallback(() => {
-    previousTasks.current = useTasksStore.getState().tasks;
+    updatePreviewTasks(
+      useTasksStore.getState().tasks.map((task) => ({ ...task })),
+    );
     setIsDragging(true);
-  }, []);
+  }, [updatePreviewTasks]);
 
   const handleDragOver = useCallback(
     (event: Parameters<DragOverEvent>[0]) => {
@@ -67,7 +71,8 @@ const Tasks = () => {
         const { source } = event.operation;
         if (!isSortable(source)) return;
 
-        const currentTasks = useTasksStore.getState().tasks;
+        const currentTasks =
+          previewTasksRef.current ?? useTasksStore.getState().tasks;
         const grouped = groupByCategory(currentTasks);
         const moved = move(grouped, event);
 
@@ -84,22 +89,25 @@ const Tasks = () => {
             category: cat as TaskCategory,
           }));
         }
-        setTasks(flattenTasks(result));
+        updatePreviewTasks(flattenTasks(result));
       } catch {
         // Drag over handler error; revert to previous state
       }
     },
-    [setTasks],
+    [updatePreviewTasks],
   );
 
   const handleDragEnd = useCallback(
     (event: Parameters<DragEndEvent>[0]) => {
       setIsDragging(false);
-      if (event.canceled) {
-        setTasks(previousTasks.current);
+      const nextTasks = previewTasksRef.current;
+      if (event.canceled || !nextTasks) {
+        updatePreviewTasks(null);
+        return;
       }
+      void reorderTasks(nextTasks).finally(() => updatePreviewTasks(null));
     },
-    [setTasks],
+    [reorderTasks, updatePreviewTasks],
   );
 
   return (
@@ -141,6 +149,7 @@ const Tasks = () => {
             category="uncategorised"
             inputPlaceholder=""
             isDragging={isDragging}
+            tasks={previewTasks ?? undefined}
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
@@ -148,12 +157,14 @@ const Tasks = () => {
               category="urgent-important"
               inputPlaceholder="Finish assignment due in an hour..."
               isDragging={isDragging}
+              tasks={previewTasks ?? undefined}
             />
             <Column
               title="Not Urgent but Important"
               category="not-urgent-important"
               inputPlaceholder="Practice Spanish for 30 minutes..."
               isDragging={isDragging}
+              tasks={previewTasks ?? undefined}
             />
           </div>
           <div className="tasks-row flex flex-wrap justify-center gap-8">
@@ -162,12 +173,14 @@ const Tasks = () => {
               category="urgent-not-important"
               inputPlaceholder="Wash the dishes..."
               isDragging={isDragging}
+              tasks={previewTasks ?? undefined}
             />
             <Column
               title="Not Urgent nor Important"
               category="not-urgent-not-important"
               inputPlaceholder="Watch Netflix..."
               isDragging={isDragging}
+              tasks={previewTasks ?? undefined}
             />
           </div>
         </div>

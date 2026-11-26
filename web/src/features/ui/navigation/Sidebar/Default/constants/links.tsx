@@ -1,4 +1,5 @@
 import {
+  MdCalendarMonth,
   MdHomeFilled,
   MdLibraryBooks,
   MdPerson,
@@ -15,6 +16,11 @@ export const defaultLinks = [
     to: "/journal",
     icon: <MdLibraryBooks size={20} />,
     label: "Journal",
+  },
+  {
+    to: "/calendar",
+    icon: <MdCalendarMonth size={20} />,
+    label: "Calendar",
   },
   {
     to: "/tasks",

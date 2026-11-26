@@ -1,106 +1,743 @@
-const CalendarRoute = () => {
-  return (
-    <>
-      <p>Calendar Page...</p>
+import { Button, Input, Modal } from "@/components/ui";
+import {
+  dispatchCalendarCommand,
+  type CalendarCoordinatorCommand,
+} from "@/features/calendar/services/calendar-coordinator";
+import {
+  createLocalDateTime,
+  formatLocalDate,
+  getLocalDayRange,
+  parseLocalDate,
+} from "@/features/calendar/utils/calendar-date";
+import type {
+  ScheduledOccurrence,
+  WeekStartsOn,
+} from "@/features/calendar/types/calendar";
+import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
+import { useCalendarStore, useTasks } from "@/stores";
+import usePageTitle from "@/hooks/usePageTitle";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/react/daygrid";
+import interactionPlugin from "@fullcalendar/react/interaction";
+import timeGridPlugin from "@fullcalendar/react/timegrid";
+import { addDays, addMonths, startOfWeek } from "date-fns";
+import { useMemo, useState, type FormEvent } from "react";
+import { MdAdd, MdArrowBack, MdArrowForward, MdClose } from "react-icons/md";
+import "@fullcalendar/react/skeleton.css";
+import "./calendar.css";
 
-      <ul className="timeline timeline-vertical">
-        <li>
-          <div className="timeline-start timeline-box">
-            First Macintosh computer
-          </div>
-          <div className="timeline-middle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="text-primary h-5 w-5"
+const quickDurations = Array.from(
+  { length: 8 },
+  (_, index) => (index + 1) * 15,
+);
+
+const calendarViews = [
+  {
+    id: "day",
+    label: "Day",
+    fullCalendarView: "timeGridDay",
+    previousLabel: "Previous day",
+    nextLabel: "Next day",
+  },
+  {
+    id: "multi-day",
+    label: "Multi Day",
+    fullCalendarView: "timeGridThreeDay",
+    previousLabel: "Previous 3 days",
+    nextLabel: "Next 3 days",
+  },
+  {
+    id: "week",
+    label: "Week",
+    fullCalendarView: "timeGridWeek",
+    previousLabel: "Previous week",
+    nextLabel: "Next week",
+  },
+  {
+    id: "month",
+    label: "Month",
+    fullCalendarView: "dayGridMonth",
+    previousLabel: "Previous month",
+    nextLabel: "Next month",
+  },
+] as const;
+
+type CalendarView = (typeof calendarViews)[number]["id"];
+
+const getDateLabel = (date: string) =>
+  new Intl.DateTimeFormat(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(parseLocalDate(date));
+
+const getViewDateLabel = (
+  view: CalendarView,
+  selectedDate: string,
+  weekStartsOn: WeekStartsOn,
+) => {
+  const date = parseLocalDate(selectedDate);
+  if (view === "day") return getDateLabel(selectedDate);
+  if (view === "month") {
+    return new Intl.DateTimeFormat(undefined, {
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  }
+
+  const rangeStart =
+    view === "week" ? startOfWeek(date, { weekStartsOn }) : date;
+  const rangeEnd = addDays(rangeStart, view === "week" ? 6 : 2);
+  const formatter = new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  return `${formatter.format(rangeStart)} through ${formatter.format(rangeEnd)}`;
+};
+
+const formatDuration = (minutes: number) => {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (!hours) return `${minutes} min`;
+  if (!remainingMinutes) return `${hours} hr`;
+  return `${hours} hr ${remainingMinutes} min`;
+};
+
+const getOccurrenceTimeRange = (occurrence: ScheduledOccurrence) => {
+  if (!occurrence.startTime) return undefined;
+
+  const durationMinutes = occurrence.durationMinutes ?? 30;
+  const start = createLocalDateTime(occurrence.date, occurrence.startTime);
+  if (
+    Number.isNaN(start.getTime()) ||
+    !Number.isInteger(durationMinutes) ||
+    durationMinutes < 1 ||
+    durationMinutes > 1440
+  ) {
+    return undefined;
+  }
+
+  return {
+    start,
+    end: new Date(start.getTime() + durationMinutes * 60_000),
+  };
+};
+
+const CalendarRoute = () => {
+  const { updatePageTitle } = usePageTitle();
+  const timerRunning = useTimerRunning();
+  const tasks = useTasks();
+  const scheduledOccurrences = useCalendarStore(
+    (state) => state.scheduledOccurrences,
+  );
+  const weekStartsOn = useCalendarStore((state) => state.weekStartsOn);
+  const activeTasks = useMemo(
+    () => tasks.filter((task) => task.archivedAt === undefined),
+    [tasks],
+  );
+
+  const today = formatLocalDate(new Date());
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [calendarView, setCalendarView] = useState<CalendarView>("day");
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [planMode, setPlanMode] = useState<"existing" | "new">(
+    activeTasks.length ? "existing" : "new",
+  );
+  const [selectedTaskId, setSelectedTaskId] = useState(
+    activeTasks[0]?.id ?? "",
+  );
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskDescription, setNewTaskDescription] = useState("");
+  const [isTimed, setIsTimed] = useState(false);
+  const [startTime, setStartTime] = useState("09:00");
+  const [durationChoice, setDurationChoice] = useState("30");
+  const [customDuration, setCustomDuration] = useState("30");
+  const [selectedOccurrenceId, setSelectedOccurrenceId] = useState<
+    string | null
+  >(null);
+  const [isConfirmingRemoval, setIsConfirmingRemoval] = useState(false);
+
+  if (!timerRunning) updatePageTitle("Elixer Focus | Calendar");
+
+  const dayOccurrences = useMemo(() => {
+    const selectedDayRange = getLocalDayRange(selectedDate);
+
+    return scheduledOccurrences.filter((occurrence) => {
+      if (occurrence.date === selectedDate) return true;
+
+      const timeRange = getOccurrenceTimeRange(occurrence);
+      return (
+        timeRange !== undefined &&
+        timeRange.start < selectedDayRange.end &&
+        timeRange.end > selectedDayRange.start
+      );
+    });
+  }, [scheduledOccurrences, selectedDate]);
+  const timedOccurrences = useMemo(
+    () => dayOccurrences.filter((occurrence) => occurrence.startTime),
+    [dayOccurrences],
+  );
+  const untimedOccurrences = useMemo(
+    () => dayOccurrences.filter((occurrence) => !occurrence.startTime),
+    [dayOccurrences],
+  );
+  const selectedOccurrence = scheduledOccurrences.find(
+    (occurrence) => occurrence.id === selectedOccurrenceId,
+  );
+
+  const calendarEvents = useMemo(
+    () =>
+      scheduledOccurrences.flatMap((occurrence) => {
+        if (occurrence.isSkipped) return [];
+        const timeRange = getOccurrenceTimeRange(occurrence);
+        if (!timeRange) return [];
+
+        return [
+          {
+            id: occurrence.id,
+            title: occurrence.title,
+            start: timeRange.start,
+            end: timeRange.end,
+          },
+        ];
+      }),
+    [scheduledOccurrences],
+  );
+
+  const currentView =
+    calendarViews.find((view) => view.id === calendarView) ?? calendarViews[0];
+
+  const openScheduleDialog = () => {
+    const defaultDuration = activeTasks[0]?.defaultDurationMinutes ?? 30;
+    setPlanMode(activeTasks.length ? "existing" : "new");
+    setSelectedTaskId(activeTasks[0]?.id ?? "");
+    setNewTaskTitle("");
+    setNewTaskDescription("");
+    setIsTimed(false);
+    setStartTime("09:00");
+    setDurationChoice(
+      quickDurations.includes(defaultDuration)
+        ? String(defaultDuration)
+        : "custom",
+    );
+    setCustomDuration(String(defaultDuration));
+    setIsScheduleDialogOpen(true);
+  };
+
+  const handleSubmitPlan = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const durationMinutes =
+      durationChoice === "custom"
+        ? Number(customDuration)
+        : Number(durationChoice);
+    const command: CalendarCoordinatorCommand =
+      planMode === "new"
+        ? {
+            type: "create-task-and-schedule",
+            title: newTaskTitle,
+            description: newTaskDescription,
+            date: selectedDate,
+            ...(isTimed && { startTime, durationMinutes }),
+          }
+        : {
+            type: "schedule-task",
+            taskId: selectedTaskId,
+            date: selectedDate,
+            ...(isTimed && { startTime, durationMinutes }),
+          };
+
+    const result = await dispatchCalendarCommand(command);
+    if (result.success) setIsScheduleDialogOpen(false);
+  };
+
+  const handleRemoveOccurrence = async () => {
+    if (!selectedOccurrence) return;
+    const result = await dispatchCalendarCommand({
+      type: "remove-occurrence",
+      occurrenceId: selectedOccurrence.id,
+    });
+    if (result.success) {
+      setSelectedOccurrenceId(null);
+      setIsConfirmingRemoval(false);
+    }
+  };
+
+  const showOccurrence = (occurrenceId: string) => {
+    setIsConfirmingRemoval(false);
+    setSelectedOccurrenceId(occurrenceId);
+  };
+
+  const movePeriod = (direction: number) => {
+    const date = parseLocalDate(selectedDate);
+    const nextDate =
+      calendarView === "month"
+        ? addMonths(date, direction)
+        : addDays(
+            date,
+            direction *
+              (calendarView === "day"
+                ? 1
+                : calendarView === "multi-day"
+                  ? 3
+                  : 7),
+          );
+    setSelectedDate(formatLocalDate(nextDate));
+  };
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6 p-4 sm:p-8">
+      <header className="border-base-content/10 bg-base-200 flex flex-col gap-5 rounded-2xl border p-5 sm:flex-row sm:items-end sm:justify-between sm:p-7">
+        <div>
+          <p className="text-base-content/75 mb-2 text-sm font-semibold tracking-wide uppercase">
+            Make space for focused work
+          </p>
+          <h1 className="text-base-content text-3xl font-bold text-balance sm:text-4xl">
+            Your Calendar
+          </h1>
+          <p className="text-base-content/75 mt-2 max-w-xl">
+            Shape today around the tasks that matter. Your plans stay separate
+            from task completion and due dates.
+          </p>
+        </div>
+        <Button
+          className="min-h-11 shrink-0 gap-2"
+          onClick={openScheduleDialog}
+          aria-label="Add a task to this day"
+        >
+          <MdAdd aria-hidden="true" size={20} />
+          Add to day
+        </Button>
+      </header>
+
+      <section
+        aria-label={`${currentView.label} planner`}
+        className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_19rem]"
+      >
+        <div className="calendar-panel border-base-content/10 bg-base-100 min-w-0 rounded-2xl border p-4 shadow-sm sm:p-6">
+          <div className="mb-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <Button
+                  color="ghost"
+                  className="min-h-11 min-w-11 px-2"
+                  aria-label={currentView.previousLabel}
+                  onClick={() => movePeriod(-1)}
+                >
+                  <MdArrowBack aria-hidden="true" size={20} />
+                </Button>
+                <Button
+                  color="ghost"
+                  className="min-h-11 min-w-11 px-2"
+                  aria-label={currentView.nextLabel}
+                  onClick={() => movePeriod(1)}
+                >
+                  <MdArrowForward aria-hidden="true" size={20} />
+                </Button>
+                <div className="ml-1 min-w-0">
+                  <h2 className="text-base-content text-lg font-semibold">
+                    {getViewDateLabel(calendarView, selectedDate, weekStartsOn)}
+                  </h2>
+                  <p
+                    className="text-base-content/75 text-sm"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {timedOccurrences.length} timed
+                    {" · "}
+                    {untimedOccurrences.length} untimed on the selected date
+                  </p>
+                </div>
+              </div>
+              <Button
+                color="outline"
+                className="min-h-11"
+                disabled={selectedDate === today}
+                onClick={() => setSelectedDate(today)}
+              >
+                Today
+              </Button>
+            </div>
+            <div
+              className="join max-w-full"
+              role="group"
+              aria-label="Calendar view"
             >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
+              {calendarViews.map((view) => (
+                <Button
+                  key={view.id}
+                  color={calendarView === view.id ? "primary" : "ghost"}
+                  className="join-item min-h-11 px-2 sm:px-3"
+                  aria-pressed={calendarView === view.id}
+                  onClick={() => setCalendarView(view.id)}
+                >
+                  {view.label}
+                </Button>
+              ))}
+            </div>
           </div>
-          <hr className="bg-primary" />
-        </li>
-        <li>
-          <hr className="bg-primary" />
-          <div className="timeline-middle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="text-primary h-5 w-5"
+
+          <div
+            className={`calendar-planner calendar-planner--${calendarView} min-w-0 overflow-x-auto`}
+          >
+            <FullCalendar
+              key={`${calendarView}-${selectedDate}-${weekStartsOn}`}
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              initialView={currentView.fullCalendarView}
+              views={{
+                timeGridThreeDay: {
+                  type: "timeGrid",
+                  duration: { days: 3 },
+                },
+              }}
+              initialDate={selectedDate}
+              headerToolbar={false}
+              timeZone="local"
+              firstDay={weekStartsOn}
+              events={calendarEvents}
+              eventClick={(info) => showOccurrence(info.event.id)}
+              dateClick={(info) => {
+                if (calendarView !== "month") return;
+                setSelectedDate(info.dateStr);
+                setCalendarView("day");
+              }}
+              slotMinTime="00:00:00"
+              slotMaxTime="24:00:00"
+              slotDuration="00:30:00"
+              scrollTime="08:00:00"
+              allDaySlot={false}
+              nowIndicator
+              height="auto"
+              eventDisplay={calendarView === "month" ? "list-item" : "block"}
+              slotHeaderFormat={{
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: false,
+              }}
+              eventTimeFormat={{ hour: "numeric", minute: "2-digit" }}
+              noEventsContent="No timed plans yet. Add a task to shape this day."
+            />
+          </div>
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-[calc(var(--navbar-height)_+_1rem)] lg:self-start">
+          <section className="border-base-content/10 bg-base-100 rounded-2xl border p-5 shadow-sm">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-base-content text-lg font-semibold">
+                  Without a time
+                </h2>
+                <p className="text-base-content/75 mt-1 text-sm">
+                  Keep flexible tasks close without placing them on the
+                  timeline.
+                </p>
+              </div>
+              <span className="badge badge-primary badge-soft">
+                {untimedOccurrences.length}
+              </span>
+            </div>
+
+            {untimedOccurrences.length ? (
+              <ul className="space-y-2">
+                {untimedOccurrences.map((occurrence) => (
+                  <li key={occurrence.id}>
+                    <button
+                      type="button"
+                      className="group border-base-content/10 bg-base-200/60 hover:border-primary/40 hover:bg-primary/5 focus-visible:ring-primary flex min-h-12 w-full items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left transition-colors duration-500 focus-visible:ring-2"
+                      onClick={() => showOccurrence(occurrence.id)}
+                    >
+                      <span className="min-w-0">
+                        <span className="text-base-content block truncate font-medium">
+                          {occurrence.title}
+                        </span>
+                        <span className="text-base-content/75 block text-xs capitalize">
+                          {occurrence.category.replaceAll("-", " ")}
+                        </span>
+                      </span>
+                      <MdArrowForward
+                        aria-hidden="true"
+                        className="text-base-content/45 shrink-0 transition-transform group-hover:translate-x-1"
+                        size={18}
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="border-base-content/20 bg-base-200/40 rounded-xl border border-dashed px-4 py-5 text-center">
+                <p className="text-base-content font-medium">
+                  Nothing flexible planned
+                </p>
+                <p className="text-base-content/75 mt-1 text-sm">
+                  Add an untimed task here, then fit it in when you are ready.
+                </p>
+                <Button
+                  color="ghost"
+                  className="mt-3 min-h-11"
+                  onClick={openScheduleDialog}
+                >
+                  <MdAdd aria-hidden="true" size={18} />
+                  Add a task
+                </Button>
+              </div>
+            )}
+          </section>
+
+          <section className="border-base-content/10 bg-base-200/70 rounded-2xl border p-5">
+            <h2 className="text-base-content font-semibold">
+              A plan that bends
+            </h2>
+            <p className="text-base-content/75 mt-2 text-sm leading-relaxed">
+              Plans are a guide, not a deadline. Moving a task here never marks
+              its reusable task as complete.
+            </p>
+          </section>
+        </aside>
+      </section>
+
+      <Modal
+        isOpen={isScheduleDialogOpen}
+        onClose={() => setIsScheduleDialogOpen(false)}
+        title="Add a task to your day"
+        size="md"
+        showCloseButton={false}
+      >
+        <form className="space-y-4" onSubmit={handleSubmitPlan}>
+          <div className="join w-full" role="group" aria-label="Task source">
+            <Button
+              color={planMode === "existing" ? "primary" : "outline"}
+              className="join-item min-h-11 flex-1"
+              aria-pressed={planMode === "existing"}
+              disabled={!activeTasks.length}
+              onClick={() => setPlanMode("existing")}
             >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="timeline-end timeline-box">iMac</div>
-          <hr className="bg-primary" />
-        </li>
-        <li>
-          <hr className="bg-primary" />
-          <div className="timeline-start timeline-box">iPod</div>
-          <div className="timeline-middle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="text-primary h-5 w-5"
+              Choose a task
+            </Button>
+            <Button
+              color={planMode === "new" ? "primary" : "outline"}
+              className="join-item min-h-11 flex-1"
+              aria-pressed={planMode === "new"}
+              onClick={() => setPlanMode("new")}
             >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
+              Create a task
+            </Button>
           </div>
-          <hr />
-        </li>
-        <li>
-          <hr />
-          <div className="timeline-middle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="h-5 w-5"
+
+          {planMode === "existing" ? (
+            <label className="form-control w-full">
+              <span className="label-text mb-2 font-medium">Task</span>
+              <select
+                className="select select-bordered select-primary min-h-12 w-full"
+                name="taskId"
+                required
+                value={selectedTaskId}
+                onChange={(event) => {
+                  const taskId = event.currentTarget.value;
+                  setSelectedTaskId(taskId);
+                  const task = activeTasks.find((item) => item.id === taskId);
+                  const defaultDuration = task?.defaultDurationMinutes ?? 30;
+                  setDurationChoice(
+                    quickDurations.includes(defaultDuration)
+                      ? String(defaultDuration)
+                      : "custom",
+                  );
+                  setCustomDuration(String(defaultDuration));
+                }}
+              >
+                <option value="" disabled>
+                  Choose a task to schedule
+                </option>
+                {activeTasks.map((task) => (
+                  <option key={task.id} value={task.id}>
+                    {task.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <div className="space-y-3">
+              <Input
+                label="Task name"
+                name="title"
+                placeholder="What would you like to work on…"
+                autoComplete="off"
+                required
+                value={newTaskTitle}
+                onChange={(event) => setNewTaskTitle(event.currentTarget.value)}
+              />
+              <label className="form-control w-full">
+                <span className="label-text mb-2 font-medium">
+                  Description{" "}
+                  <span className="text-base-content/75">(optional)</span>
+                </span>
+                <textarea
+                  className="textarea textarea-bordered textarea-primary min-h-20 w-full"
+                  name="description"
+                  placeholder="Add a little context…"
+                  value={newTaskDescription}
+                  onChange={(event) =>
+                    setNewTaskDescription(event.currentTarget.value)
+                  }
+                />
+              </label>
+              <p className="text-base-content/75 text-sm">
+                New tasks are added to your Uncategorised list with a 30 minute
+                default duration.
+              </p>
+            </div>
+          )}
+
+          <label className="label border-base-content/15 min-h-12 cursor-pointer justify-start gap-3 rounded-xl border px-3">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+              checked={isTimed}
+              onChange={(event) => setIsTimed(event.currentTarget.checked)}
+            />
+            <span className="label-text font-medium">
+              Set a time on the calendar
+            </span>
+          </label>
+
+          {isTimed && (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <label className="form-control w-full">
+                <span className="label-text mb-2 font-medium">Start time</span>
+                <input
+                  className="input input-bordered input-primary min-h-12 w-full"
+                  type="time"
+                  name="startTime"
+                  step={60}
+                  required
+                  value={startTime}
+                  onChange={(event) => setStartTime(event.currentTarget.value)}
+                />
+              </label>
+              <label className="form-control w-full">
+                <span className="label-text mb-2 font-medium">Duration</span>
+                <select
+                  className="select select-bordered select-primary min-h-12 w-full"
+                  name="duration"
+                  value={durationChoice}
+                  onChange={(event) =>
+                    setDurationChoice(event.currentTarget.value)
+                  }
+                >
+                  {quickDurations.map((duration) => (
+                    <option key={duration} value={duration}>
+                      {formatDuration(duration)}
+                    </option>
+                  ))}
+                  <option value="custom">Custom duration</option>
+                </select>
+                {durationChoice === "custom" && (
+                  <Input
+                    className="mt-2"
+                    aria-label="Custom duration in minutes"
+                    type="number"
+                    name="customDuration"
+                    min={1}
+                    max={1440}
+                    step={1}
+                    required
+                    value={customDuration}
+                    onChange={(event) =>
+                      setCustomDuration(event.currentTarget.value)
+                    }
+                  />
+                )}
+              </label>
+            </div>
+          )}
+
+          <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+            <Button
+              color="ghost"
+              className="min-h-11"
+              onClick={() => setIsScheduleDialogOpen(false)}
             >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
+              Cancel
+            </Button>
+            <Button type="submit" className="min-h-11 gap-2">
+              <MdAdd aria-hidden="true" size={18} />
+              Add to day
+            </Button>
           </div>
-          <div className="timeline-end timeline-box">iPhone</div>
-          <hr />
-        </li>
-        <li>
-          <hr />
-          <div className="timeline-start timeline-box">Apple Watch</div>
-          <div className="timeline-middle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="h-5 w-5"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={selectedOccurrence !== undefined}
+        onClose={() => {
+          setSelectedOccurrenceId(null);
+          setIsConfirmingRemoval(false);
+        }}
+        title={selectedOccurrence?.title}
+        size="sm"
+        showCloseButton={false}
+      >
+        {selectedOccurrence && (
+          <div className="space-y-4">
+            {selectedOccurrence.description && (
+              <p className="text-base-content/70">
+                {selectedOccurrence.description}
+              </p>
+            )}
+            <div className="bg-base-200 rounded-xl px-4 py-3 text-sm">
+              <p>{getDateLabel(selectedOccurrence.date)}</p>
+              <p className="text-base-content/75 mt-1">
+                {selectedOccurrence.startTime
+                  ? `${selectedOccurrence.startTime} · ${formatDuration(selectedOccurrence.durationMinutes ?? 30)}`
+                  : "No time set"}
+              </p>
+            </div>
+            {isConfirmingRemoval ? (
+              <div
+                className="border-error/30 bg-error/5 space-y-3 rounded-xl border p-4"
+                aria-live="polite"
+              >
+                <p className="font-medium">Remove this plan from the day?</p>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    color="ghost"
+                    className="min-h-11"
+                    onClick={() => setIsConfirmingRemoval(false)}
+                  >
+                    Keep plan
+                  </Button>
+                  <Button
+                    color="neutral"
+                    className="min-h-11"
+                    onClick={() => void handleRemoveOccurrence()}
+                  >
+                    Remove plan
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between gap-2">
+                <Button
+                  color="ghost"
+                  className="min-h-11 gap-2"
+                  onClick={() => setSelectedOccurrenceId(null)}
+                >
+                  <MdClose aria-hidden="true" size={18} />
+                  Close
+                </Button>
+                <Button
+                  color="neutral"
+                  className="min-h-11"
+                  onClick={() => setIsConfirmingRemoval(true)}
+                >
+                  Remove plan
+                </Button>
+              </div>
+            )}
           </div>
-        </li>
-      </ul>
-    </>
+        )}
+      </Modal>
+    </div>
   );
 };
 

@@ -11,7 +11,12 @@ import LoginRoute from "@/app/routes/auth/Login";
 import SignUpRoute from "@/app/routes/auth/SignUp";
 import ThemeRoute from "@/app/routes/settings/Theme";
 import TimerRoute from "@/app/routes/settings/Timer";
+import CalendarSettingsRoute from "@/app/routes/settings/Calendar";
+import { Spinner } from "@/components/ui";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
+
+const CalendarRoute = lazy(() => import("@/app/routes/(root)/Calendar"));
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +39,24 @@ export const router = createBrowserRouter([
       {
         path: "journal",
         element: <JournalRoute />,
+      },
+      {
+        path: "calendar",
+        element: (
+          <Suspense
+            fallback={
+              <div
+                className="flex min-h-64 items-center justify-center gap-3"
+                role="status"
+              >
+                <Spinner aria-hidden="true" size="lg" />
+                <span className="sr-only">Loading Calendar…</span>
+              </div>
+            }
+          >
+            <CalendarRoute />
+          </Suspense>
+        ),
       },
       {
         path: "tasks",
@@ -78,6 +101,10 @@ export const router = createBrowserRouter([
       {
         path: "timer",
         element: <TimerRoute />,
+      },
+      {
+        path: "calendar",
+        element: <CalendarSettingsRoute />,
       },
     ],
   },

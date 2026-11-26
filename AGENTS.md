@@ -127,4 +127,5 @@ cd app && npm run web           # Run web version
 
 ## Context files
 
+- [web/AGENTS.md](web/AGENTS.md): Web workspace React, composition, and interface guidance.
 - [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.

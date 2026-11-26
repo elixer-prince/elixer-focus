@@ -1,8 +1,5 @@
 import DeleteButton from "@/features/tasks/components/Task/DeleteButton";
-import {
-  useToggleTaskCompletion,
-  useUpdateTask,
-} from "@/features/tasks/stores/tasks-store";
+import { useToggleTaskCompletion, useUpdateTask } from "@/stores";
 import { formatRelativeTime } from "@/utils/date";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -95,16 +92,16 @@ const Task = ({
     }
   }, [isEditing]);
 
-  const saveEdit = useCallback(() => {
+  const saveEdit = useCallback(async () => {
     const trimmedTitle = editTitle.trim();
     if (!trimmedTitle) {
       return;
     }
-    updateTask(id, {
+    const result = await updateTask(id, {
       title: trimmedTitle,
       description: editDescription.trim() || undefined,
     });
-    setIsEditing(false);
+    if (result?.success !== false) setIsEditing(false);
   }, [editTitle, editDescription, id, updateTask]);
 
   const cancelEdit = useCallback(() => {
@@ -155,7 +152,7 @@ const Task = ({
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        saveEdit();
+        void saveEdit();
       }
     },
     [saveEdit],

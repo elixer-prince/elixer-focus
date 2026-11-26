@@ -39,6 +39,7 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
       getState: () => ({ tasks, setTasks }),
     },
     useSetTasks: () => setTasks,
+    useReorderTasks: () => setTasks,
     useTasks: () => tasks,
     useAddTask: () => vi.fn(),
     useRemoveTask: () => vi.fn(),

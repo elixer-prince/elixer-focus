@@ -1,4 +1,4 @@
-import { useAddTask } from "@/features/tasks/stores/tasks-store";
+import { useAddTask } from "@/stores";
 import type { TaskCategory } from "@/features/tasks/types/task";
 import { useState } from "react";
 
@@ -18,24 +18,39 @@ const NewTaskInput = ({
   const addTask = useAddTask();
 
   const [value, setValue] = useState<string>("");
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddTask = async (title: string) => {
+    setIsAdding(true);
+    try {
+      const result = await addTask(title, "", columnCategory);
+      if (result?.success !== false) {
+        setValue("");
+        setInputShown(false);
+      }
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <input
       type="text"
+      name="taskTitle"
+      aria-label="New task title"
+      autoComplete="off"
       value={value}
-      disabled={disabled}
+      disabled={disabled || isAdding}
       placeholder={placeholder}
       className="new-task-input input border-primary-content/25 input-primary w-full border placeholder:italic"
       onChange={(event) => setValue(event.target.value)}
       onKeyDown={(event) => {
-        if (!disabled && event.key === "Enter") {
+        if (!disabled && !isAdding && event.key === "Enter") {
           if (event.currentTarget.value.trim() === "") {
             setValue("");
             return;
           }
-          addTask(event.currentTarget.value, "", columnCategory);
-          setValue("");
-          setInputShown(false);
+          void handleAddTask(event.currentTarget.value);
         }
       }}
     />

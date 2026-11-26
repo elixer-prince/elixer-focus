@@ -1,6 +1,11 @@
-import { MdTimer, MdPalette } from "react-icons/md";
+import { MdCalendarMonth, MdPalette, MdTimer } from "react-icons/md";
 
 export const settingsLinks = [
+  {
+    label: "Calendar",
+    to: "/settings/calendar",
+    icon: <MdCalendarMonth size={20} />,
+  },
   {
     label: "Timer",
     to: "/settings/timer",

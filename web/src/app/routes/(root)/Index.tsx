@@ -1,11 +1,7 @@
 import CountdownTimerContainer from "@/features/countdown-timer/components/Index";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
-import {
-  useSetTasks,
-  useTasks,
-  useTasksStore,
-} from "@/features/tasks/stores/tasks-store";
+import { useReorderTasks, useTasks, useTasksStore } from "@/stores";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
@@ -78,16 +74,22 @@ const HomeRoute = () => {
   const timerRunning = useTimerRunning();
 
   const tasks = useTasks();
-  const activeCategory = getActiveCategory(tasks);
-
-  const setTasks = useSetTasks();
-  const previousTasks = useRef<Task[]>([]);
+  const [previewTasks, setPreviewTasks] = useState<Task[] | null>(null);
+  const previewTasksRef = useRef<Task[] | null>(null);
+  const updatePreviewTasks = useCallback((nextTasks: Task[] | null) => {
+    previewTasksRef.current = nextTasks;
+    setPreviewTasks(nextTasks);
+  }, []);
+  const activeCategory = getActiveCategory(previewTasks ?? tasks);
+  const reorderTasks = useReorderTasks();
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = useCallback(() => {
-    previousTasks.current = useTasksStore.getState().tasks;
+    updatePreviewTasks(
+      useTasksStore.getState().tasks.map((task) => ({ ...task })),
+    );
     setIsDragging(true);
-  }, []);
+  }, [updatePreviewTasks]);
 
   const handleDragOver = useCallback(
     (event: Parameters<DragOverEvent>[0]) => {
@@ -95,7 +97,8 @@ const HomeRoute = () => {
         const { source } = event.operation;
         if (!isSortable(source)) return;
 
-        const currentTasks = useTasksStore.getState().tasks;
+        const currentTasks =
+          previewTasksRef.current ?? useTasksStore.getState().tasks;
         const grouped = groupByCategory(currentTasks);
         const moved = move(grouped, event);
 
@@ -112,22 +115,25 @@ const HomeRoute = () => {
             category: cat as TaskCategory,
           }));
         }
-        setTasks(flattenTasks(result));
+        updatePreviewTasks(flattenTasks(result));
       } catch {
         // Drag over handler error, revert to previous state
       }
     },
-    [setTasks],
+    [updatePreviewTasks],
   );
 
   const handleDragEnd = useCallback(
     (event: Parameters<DragEndEvent>[0]) => {
       setIsDragging(false);
-      if (event.canceled) {
-        setTasks(previousTasks.current);
+      const nextTasks = previewTasksRef.current;
+      if (event.canceled || !nextTasks) {
+        updatePreviewTasks(null);
+        return;
       }
+      void reorderTasks(nextTasks).finally(() => updatePreviewTasks(null));
     },
-    [setTasks],
+    [reorderTasks, updatePreviewTasks],
   );
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Home");
@@ -172,6 +178,7 @@ const HomeRoute = () => {
           category={activeCategory}
           inputPlaceholder=""
           isDragging={isDragging}
+          tasks={previewTasks ?? undefined}
         />
       </DragDropProvider>
     </div>

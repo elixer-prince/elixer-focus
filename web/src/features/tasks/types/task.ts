@@ -8,6 +8,8 @@ export type Task = {
   createdAt: number;
   updatedAt: number;
   completedAt?: number;
+  defaultDurationMinutes?: number;
+  archivedAt?: number;
 };
 
 export type TaskCategory =

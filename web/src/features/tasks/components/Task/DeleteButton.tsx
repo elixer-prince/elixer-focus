@@ -1,4 +1,4 @@
-import { useRemoveTask } from "@/features/tasks/stores/tasks-store";
+import { useRemoveTask } from "@/stores";
 
 interface DeleteButtonProps {
   id: string;

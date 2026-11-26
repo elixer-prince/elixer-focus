@@ -1,8 +1,11 @@
 import NewTaskInput from "@/features/tasks/components/NewTaskInput";
 import GhostTask from "@/features/tasks/components/Task/Ghost";
 import Task from "@/features/tasks/components/Task/Index";
-import { useTasks } from "@/features/tasks/stores/tasks-store";
-import type { TaskCategory } from "@/features/tasks/types/task";
+import { useTasks } from "@/stores";
+import type {
+  Task as TaskData,
+  TaskCategory,
+} from "@/features/tasks/types/task";
 import type { Dispatch, SetStateAction } from "react";
 
 interface TaskListProps {
@@ -11,6 +14,7 @@ interface TaskListProps {
   setInputShown: Dispatch<SetStateAction<boolean>>;
   placeholder: string;
   isDragging?: boolean;
+  tasks?: TaskData[];
 }
 
 const TaskList = ({
@@ -19,9 +23,12 @@ const TaskList = ({
   setInputShown,
   placeholder,
   isDragging = false,
+  tasks: previewTasks,
 }: TaskListProps) => {
   const allTasks = useTasks();
-  const tasks = allTasks.filter((task) => task.category === columnCategory);
+  const tasks = (previewTasks ?? allTasks).filter(
+    (task) => task.category === columnCategory,
+  );
 
   return (
     <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4">

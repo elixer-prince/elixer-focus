@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 
 import FocusTimeChart from "@/features/journal/components/Chart/Index";
+import { initialCalendarData } from "@/features/calendar/types/calendar";
+import { useCalendarStore } from "@/features/calendar/stores/calendar-store";
 
 const themeColors = vi.hoisted(() => ({
   primary: "rgb(245, 190, 30)",
@@ -35,9 +37,13 @@ vi.mock("react-chartjs-2", () => ({
   Bar: ({
     data,
   }: {
-    data: { datasets: { label: string; backgroundColor: string }[] };
+    data: {
+      labels: string[];
+      datasets: { label: string; backgroundColor: string }[];
+    };
   }) => (
     <div data-testid="chart-canvas">
+      <span data-testid="chart-labels">{data.labels.join(",")}</span>
       {data.datasets.map((dataset) => (
         <span key={dataset.label}>
           {dataset.label}: {dataset.backgroundColor}
@@ -48,6 +54,7 @@ vi.mock("react-chartjs-2", () => ({
 }));
 
 beforeEach(() => {
+  useCalendarStore.setState({ ...initialCalendarData });
   vi.spyOn(window, "getComputedStyle").mockImplementation(
     () =>
       ({
@@ -89,5 +96,19 @@ describe("FocusTimeChart component", () => {
     expect(
       screen.getByText(`Idle Time: ${themeColors.secondary}`),
     ).toBeInTheDocument();
+  });
+
+  it("uses the shared week start preference", () => {
+    render(<FocusTimeChart />);
+
+    expect(screen.getByTestId("chart-labels").textContent?.split(",")[0]).toBe(
+      "Sun",
+    );
+
+    act(() => useCalendarStore.setState({ weekStartsOn: 1 }));
+
+    expect(screen.getByTestId("chart-labels").textContent?.split(",")[0]).toBe(
+      "Mon",
+    );
   });
 });

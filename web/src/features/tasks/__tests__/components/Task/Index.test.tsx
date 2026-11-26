@@ -26,7 +26,7 @@ const mockedStore = vi.hoisted(() => {
   };
 });
 
-vi.mock("@/features/tasks/stores/tasks-store", () => ({
+vi.mock("@/stores", () => ({
   useToggleTaskCompletion: () => mockedStore.useToggleTaskCompletion(),
   useUpdateTask: () => mockedStore.useUpdateTask(),
   useRemoveTask: () => mockedStore.useRemoveTask(),
@@ -36,6 +36,10 @@ afterEach(() => {
   vi.clearAllMocks();
   mockUpdateTask.mockClear();
   mockToggleTaskCompletion.mockClear();
+});
+
+beforeEach(() => {
+  mockUpdateTask.mockResolvedValue({ success: true });
 });
 
 describe("Task", () => {
@@ -258,7 +262,7 @@ describe("Task", () => {
       expect(deleteButton).not.toBeInTheDocument();
     });
 
-    it("should save on Enter key and call updateTask", () => {
+    it("should save on Enter key and call updateTask", async () => {
       render(
         <Task
           index={0}
@@ -275,7 +279,10 @@ describe("Task", () => {
       fireEvent.click(screen.getByText("Original"));
       const titleInput = screen.getByRole("textbox", { name: "Task title" });
       fireEvent.change(titleInput, { target: { value: "Updated Title" } });
-      fireEvent.keyDown(titleInput, { key: "Enter", code: "Enter" });
+      await act(async () => {
+        fireEvent.keyDown(titleInput, { key: "Enter", code: "Enter" });
+        await Promise.resolve();
+      });
 
       expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
         title: "Updated Title",
@@ -339,7 +346,7 @@ describe("Task", () => {
       expect(mockUpdateTask).not.toHaveBeenCalled();
     });
 
-    it("should save when clicking the Save button", () => {
+    it("should save when clicking the Save button", async () => {
       render(
         <Task
           index={0}
@@ -357,12 +364,46 @@ describe("Task", () => {
       const titleInput = screen.getByRole("textbox", { name: "Task title" });
       fireEvent.change(titleInput, { target: { value: "Updated Title" } });
 
-      fireEvent.click(screen.getByRole("button", { name: "Save" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Save" }));
+        await Promise.resolve();
+      });
 
       expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
         title: "Updated Title",
         description: undefined,
       });
+    });
+
+    it("should keep the editor open when the save fails", async () => {
+      mockUpdateTask.mockResolvedValueOnce({
+        success: false,
+        error: "Unable to save task",
+      });
+      render(
+        <Task
+          index={0}
+          id="task-1"
+          title="Original"
+          category="urgent-important"
+          isCompleted={false}
+          isSelected={false}
+          updatedAt={Date.now()}
+        />,
+      );
+
+      fireEvent.click(screen.getByText("Original"));
+      fireEvent.click(screen.getByText("Original"));
+      const titleInput = screen.getByRole("textbox", { name: "Task title" });
+      fireEvent.change(titleInput, { target: { value: "Updated Title" } });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Save" }));
+        await Promise.resolve();
+      });
+
+      expect(titleInput).toBeInTheDocument();
+      expect(titleInput).toHaveValue("Updated Title");
     });
 
     it("should reject saving an empty title and keep editor open", () => {
@@ -435,14 +476,18 @@ describe("Task", () => {
       expect(mockUpdateTask).not.toHaveBeenCalled();
     });
 
-    it("should allow double-click again after saving", () => {
+    it("should allow double-click again after saving", async () => {
       // Use a wrapper component that updates the title prop after save
       function TaskWrapper() {
         const [title, setTitle] = useState("Original");
         const wrappedUpdateTask = useCallback(
-          (id: string, patch: { title?: string; description?: string }) => {
+          async (
+            id: string,
+            patch: { title?: string; description?: string },
+          ) => {
             if (patch.title) setTitle(patch.title);
             mockUpdateTask(id, patch);
+            return { success: true };
           },
           [],
         ) as typeof mockUpdateTask;
@@ -469,7 +514,10 @@ describe("Task", () => {
       fireEvent.click(screen.getByText("Original"));
       const titleInput = screen.getByRole("textbox", { name: "Task title" });
       fireEvent.change(titleInput, { target: { value: "Updated" } });
-      fireEvent.keyDown(titleInput, { key: "Enter", code: "Enter" });
+      await act(async () => {
+        fireEvent.keyDown(titleInput, { key: "Enter", code: "Enter" });
+        await Promise.resolve();
+      });
 
       expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
         title: "Updated",

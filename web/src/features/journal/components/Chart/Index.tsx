@@ -1,5 +1,6 @@
 import { useGetTotalFocusTimeForRanges } from "@/features/countdown-timer/stores/session-history-store";
 import useTrackedTimeTotalsForRanges from "@/features/countdown-timer/hooks/useTrackedTimeTotals";
+import { useCalendarStore } from "@/features/calendar/stores/calendar-store";
 import { formatElapsedTime } from "@/utils/formatting";
 import {
   BarElement,
@@ -25,10 +26,12 @@ ChartJS.register(
 );
 
 const FocusTimeChart = () => {
-  // Build the 7-day ranges for the current week (Monday to Sunday)
+  const weekStartsOn = useCalendarStore((state) => state.weekStartsOn);
+
+  // Build the 7-day ranges for the current week using the shared preference.
   const dayRanges = useMemo(() => {
     const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+    const weekStart = startOfWeek(today, { weekStartsOn });
     const ranges = [];
     for (let i = 0; i < 7; i++) {
       const day = addDays(weekStart, i);
@@ -49,7 +52,7 @@ const FocusTimeChart = () => {
       ranges.push({ start: startOfDay, end: endOfDay });
     }
     return ranges;
-  }, []);
+  }, [weekStartsOn]);
 
   // Subscribe to timer + session changes for all days in one hook call
   const focusTimes = useGetTotalFocusTimeForRanges(dayRanges);

@@ -76,11 +76,18 @@ export {
 export {
   useTasks,
   useSetTasks,
+  useReorderTasks,
   useAddTask,
   useRemoveTask,
   useToggleTaskCompletion,
   useUpdateTask,
+  useTasksStore,
 } from "@/features/tasks/stores/tasks-store";
+
+export {
+  useCalendarStore,
+  useScheduledOccurrences,
+} from "@/features/calendar/stores/calendar-store";
 
 // Music player stores
 export {
