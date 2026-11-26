@@ -145,11 +145,11 @@ Sleep settings, actual records, and recovery data are personal wellness informat
 
 Follow the Skateboard approach by first shipping a usable plan from Settings through to the Calendar rail, then adding actual tracking and derived awake totals.
 
-1. Add the versioned Sleep Schedule model, local persistence, validation, and pure planned time calculations. Cover local dates, daylight saving, missing settings, and invalid values. Satisfies **AC-1**, **AC-2**, **AC-3**.
-2. Add the dedicated Sleep Schedule command coordinator and Settings section. Reuse the established Web Lock, persistence, broadcast, fallback, and error patterns. Start coordination in the main and Settings layouts. Satisfies **AC-1**, **AC-2**, **AC-3**, **AC-7**, **AC-9**.
-3. Connect Calendar read paths to Sleep Schedule. Render planned events, the wake to bed rail, the separate current time line, and no schedule state without duplicating sleep data. Satisfies **AC-3**, **AC-4**.
-4. Add actual bed and wake commands, Calendar recording and correction controls, duration derivation, and the legacy migration with recovery review and export. Remove active Calendar ownership only after the new store has persisted migrated values. Satisfies **AC-5**, **AC-7**, **AC-8**, **AC-9**.
-5. Derive awake idle totals from `TrackedInterval` values and planned awake windows, then show per date totals in Day, Multi Day, and Week views. Satisfies **AC-3**, **AC-6**.
+1. [x] Add the versioned Sleep Schedule model, local persistence, validation, and pure planned time calculations. Cover local dates, daylight saving, missing settings, and invalid values. Satisfies **AC-1**, **AC-2**, **AC-3**.
+2. [x] Add the dedicated Sleep Schedule command coordinator and Settings section. Reuse the established Web Lock, persistence, broadcast, fallback, and error patterns. Start coordination in the main and Settings layouts. Satisfies **AC-1**, **AC-2**, **AC-3**, **AC-7**, **AC-9**.
+3. [x] Connect Calendar read paths to Sleep Schedule. Render planned events, the wake to bed rail, the separate current time line, and no schedule state without duplicating sleep data. Satisfies **AC-3**, **AC-4**.
+4. [x] Add actual bed and wake commands, Calendar recording and correction controls, duration derivation, and the legacy migration with recovery review and export. Remove active Calendar ownership only after the new store has persisted migrated values. Satisfies **AC-5**, **AC-7**, **AC-8**, **AC-9**.
+5. [x] Derive awake idle totals from `TrackedInterval` values and planned awake windows, then show per date totals in Day, Multi Day, and Week views. Satisfies **AC-3**, **AC-6**.
 
 ## Consequences
 

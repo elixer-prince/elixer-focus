@@ -68,6 +68,7 @@ export {
   useClearSessions,
   getSessionsByDateRange,
   getSessionsByDay,
+  useTrackedIntervals,
   getTotalFocusTime,
   getSessionCountsByType,
 } from "@/features/countdown-timer/stores/session-history-store";
@@ -88,6 +89,14 @@ export {
   useCalendarStore,
   useScheduledOccurrences,
 } from "@/features/calendar/stores/calendar-store";
+
+export {
+  useSleepScheduleStore,
+  useSleepScheduleSettings,
+  useActualSleepRecords,
+  useSleepMigrationRecovery,
+  startSleepScheduleCoordinator,
+} from "@/features/sleep-schedule/stores/sleep-schedule-store";
 
 // Music player stores
 export {

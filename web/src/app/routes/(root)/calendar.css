@@ -108,8 +108,70 @@
   pointer-events: none;
 }
 
+.calendar-planner .fc .fc-bg-event.calendar-sleep-rail {
+  background: transparent;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.calendar-planner .fc .fc-bg-event.calendar-sleep-rail::after {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(var(--spacing) * 1.5);
+  width: calc(var(--spacing) * 1);
+  border-radius: var(--radius-selector);
+  background-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+  content: "";
+}
+
+.calendar-planner .fc .fc-bg-event.calendar-sleep-rail--filled::after {
+  background-color: var(--color-primary);
+}
+
+.calendar-planner .fc .fc-event.calendar-sleep-event {
+  font-size: var(--text-xs);
+}
+
+.calendar-planner .fc .fc-event.calendar-sleep-event--planned {
+  border-color: color-mix(in srgb, var(--color-info) 50%, transparent);
+  border-inline-start-color: var(--color-info);
+  border-inline-start-width: calc(var(--spacing) * 1);
+  background-color: color-mix(
+    in srgb,
+    var(--color-info) 12%,
+    var(--color-base-100)
+  );
+  color: var(--color-base-content);
+}
+
+.calendar-planner .fc .fc-event.calendar-sleep-event--actual {
+  border-color: color-mix(in srgb, var(--color-success) 50%, transparent);
+  border-inline-start-color: var(--color-success);
+  border-inline-start-width: calc(var(--spacing) * 1);
+  background-color: color-mix(
+    in srgb,
+    var(--color-success) 12%,
+    var(--color-base-100)
+  );
+  color: var(--color-base-content);
+}
+
+.calendar-planner--month
+  .fc-daygrid-event.calendar-sleep-event--planned
+  .fc-daygrid-event-dot {
+  border-color: var(--color-info);
+}
+
+.calendar-planner--month
+  .fc-daygrid-event.calendar-sleep-event--actual
+  .fc-daygrid-event-dot {
+  border-color: var(--color-success);
+}
+
 .calendar-planner .fc .fc-timegrid-now-indicator-line {
-  display: none;
+  display: block;
+  border-top-color: var(--color-primary);
+  border-top-width: calc(var(--border) * 2);
 }
 
 .calendar-planner .fc .fc-timegrid-now-indicator-arrow {

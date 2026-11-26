@@ -1,6 +1,7 @@
 import { dispatchCalendarCommand } from "@/features/calendar/services/calendar-coordinator";
 import { useCalendarStore } from "@/features/calendar/stores/calendar-store";
 import type { WeekStartsOn } from "@/features/calendar/types/calendar";
+import SleepScheduleSettings from "@/features/sleep-schedule/components/SleepScheduleSettings";
 
 const weekDays: { value: WeekStartsOn; label: string }[] = [
   { value: 0, label: "Sunday" },
@@ -57,6 +58,8 @@ const CalendarSettings = () => {
           </label>
         </div>
       </section>
+
+      <SleepScheduleSettings />
     </section>
   );
 };

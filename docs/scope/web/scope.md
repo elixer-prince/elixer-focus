@@ -454,7 +454,7 @@ Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec
   - [x] Four calendar views, responsive navigation, and shared week start preference (AC-1, AC-8)
   - [x] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
   - [ ] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
-  - [ ] Sleep events, actual records, awake totals, and planned rail through feature 47 (AC-7)
+  - [x] Sleep events, actual records, awake totals, and planned rail through feature 47 (AC-7)
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
 
@@ -556,9 +556,11 @@ Let people configure a daily wake time and target sleep duration, optionally ove
 
 - [x] Design it (spec): `/architect sleep schedule`
 Spec: [0008](../../specs/web/0008-sleep-schedule/index.md); Calendar integration contract: [0007](../../specs/web/0007-calendar-planner/index.md); raw interval source contract: [0005](../../specs/web/0005-idle-session-overrun/index.md).
-- [ ] Build it: `/develop sleep schedule`
-  - [ ] Add local settings, validation, derived bedtime, and the feature owned write coordinator (AC-1, AC-2, AC-3, AC-7, AC-9)
-  - [ ] Connect Calendar planned events, progress rail, current time line, and no schedule state (AC-3, AC-4)
-  - [ ] Add actual bed and wake records, correction, and safe migration recovery (AC-5, AC-7, AC-8)
-  - [ ] Derive idle awake totals and show them per date in time grid views (AC-3, AC-6)
+- [x] Build it: `/develop sleep schedule`
+  - [x] Add local settings, validation, derived bedtime, and the feature owned write coordinator (AC-1, AC-2, AC-3, AC-7, AC-9)
+  - [x] Connect Calendar planned events, progress rail, current time line, and no schedule state (AC-3, AC-4)
+  - [x] Add actual bed and wake records, correction, and safe migration recovery (AC-5, AC-7, AC-8)
+  - [x] Derive idle awake totals and show them per date in time grid views (AC-3, AC-6)
+
+code in `web/src/features/sleep-schedule/`, `web/src/features/calendar/`, `web/src/features/settings/calendar/Index.tsx`, and `web/src/app/routes/(root)/Calendar.tsx`
 

@@ -56,18 +56,11 @@ export type ScheduledOccurrence = {
   isSkipped: boolean;
 };
 
-export type SleepEventRecord = {
-  id: string;
-  date: string;
-  type: "wake" | "bed";
-  actualAt: number;
-};
-
 export type CalendarData = {
   recurrenceSeries: RecurrenceSeries[];
   recurrenceRuleSegments: RecurrenceRuleSegment[];
   scheduledOccurrences: ScheduledOccurrence[];
-  sleepEventRecords: SleepEventRecord[];
+  pendingSleepEventMigration: unknown[];
   weekStartsOn: WeekStartsOn;
 };
 
@@ -75,6 +68,6 @@ export const initialCalendarData: CalendarData = {
   recurrenceSeries: [],
   recurrenceRuleSegments: [],
   scheduledOccurrences: [],
-  sleepEventRecords: [],
+  pendingSleepEventMigration: [],
   weekStartsOn: 0,
 };

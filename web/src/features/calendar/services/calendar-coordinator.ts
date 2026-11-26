@@ -26,7 +26,7 @@ const CHANNEL_NAME = "elixer-focus-calendar";
 const TASKS_STORAGE_KEY = "tasks-storage";
 const CALENDAR_STORAGE_KEY = "calendar-storage";
 const TASKS_STORAGE_VERSION = 4;
-const CALENDAR_STORAGE_VERSION = 1;
+const CALENDAR_STORAGE_VERSION = 2;
 
 type TaskStateHandler = {
   apply: (tasks: Task[]) => void;
@@ -114,7 +114,8 @@ export type CalendarCoordinatorCommand =
       completed: boolean;
     }
   | { type: "remove-occurrence"; occurrenceId: string }
-  | { type: "set-week-start"; weekStartsOn: WeekStartsOn };
+  | { type: "set-week-start"; weekStartsOn: WeekStartsOn }
+  | { type: "clear-sleep-migration" };
 
 export type CalendarCoordinatorResult = {
   success: boolean;
@@ -170,13 +171,26 @@ const normalizeTasks = (tasks: Task[]): Task[] =>
   }));
 
 const normalizeCalendarData = (data: Partial<CalendarData> | null) => {
+  const saved = data as
+    | (Partial<CalendarData> & { sleepEventRecords?: unknown[] })
+    | null;
   const weekStartsOn = data?.weekStartsOn;
+  const pendingSleepEvents =
+    saved &&
+    Object.prototype.hasOwnProperty.call(saved, "pendingSleepEventMigration")
+      ? saved.pendingSleepEventMigration
+      : saved?.sleepEventRecords;
 
   return {
     recurrenceSeries: data?.recurrenceSeries ?? [],
     recurrenceRuleSegments: data?.recurrenceRuleSegments ?? [],
     scheduledOccurrences: data?.scheduledOccurrences ?? [],
-    sleepEventRecords: data?.sleepEventRecords ?? [],
+    pendingSleepEventMigration:
+      pendingSleepEvents === undefined
+        ? []
+        : Array.isArray(pendingSleepEvents)
+          ? pendingSleepEvents
+          : [pendingSleepEvents],
     weekStartsOn: isWeekStartsOn(weekStartsOn)
       ? weekStartsOn
       : initialCalendarData.weekStartsOn,
@@ -189,6 +203,28 @@ const readStoredValue = <T>(key: string, fallback: T): T => {
 
   const parsed = JSON.parse(raw) as { state?: T };
   return parsed.state ?? fallback;
+};
+
+export const readPendingSleepEventMigration = (): unknown[] => {
+  const stored = localStorage.getItem(CALENDAR_STORAGE_KEY);
+  if (!stored) return [];
+
+  const parsed = JSON.parse(stored) as {
+    state?: {
+      pendingSleepEventMigration?: unknown;
+      sleepEventRecords?: unknown;
+    };
+  };
+  const state = parsed.state ?? {};
+  const pending = Object.prototype.hasOwnProperty.call(
+    state,
+    "pendingSleepEventMigration",
+  )
+    ? state.pendingSleepEventMigration
+    : state.sleepEventRecords;
+
+  if (pending === undefined) return [];
+  return Array.isArray(pending) ? pending : [pending];
 };
 
 const readLatestSnapshot = (): CalendarSnapshot => {
@@ -579,6 +615,9 @@ export const applyCalendarCoordinatorCommand = (
       scheduledOccurrences: snapshot.calendar.scheduledOccurrences.map(
         (occurrence) => ({ ...occurrence }),
       ),
+      pendingSleepEventMigration: [
+        ...snapshot.calendar.pendingSleepEventMigration,
+      ],
     },
   };
 
@@ -785,6 +824,9 @@ export const applyCalendarCoordinatorCommand = (
         throw new Error("Choose a valid first day of the week.");
       }
       next.calendar.weekStartsOn = command.weekStartsOn;
+      break;
+    case "clear-sleep-migration":
+      next.calendar.pendingSleepEventMigration = [];
       break;
   }
 

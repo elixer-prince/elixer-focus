@@ -15,8 +15,13 @@ import {
   initialCalendarData,
   type ScheduledOccurrence,
 } from "@/features/calendar/types/calendar";
+import { initialSleepScheduleData } from "@/features/sleep-schedule/types/sleep-schedule";
 import CalendarRoute from "@/app/routes/(root)/Calendar";
-import { useCalendarStore, useTasksStore } from "@/stores";
+import {
+  useCalendarStore,
+  useSleepScheduleStore,
+  useTasksStore,
+} from "@/stores";
 
 type CalendarMockEvent = {
   id: string;
@@ -25,6 +30,7 @@ type CalendarMockEvent = {
   end: Date;
   display?: string;
   classNames?: string[];
+  kind?: string;
 };
 
 vi.mock("@fullcalendar/react", () => ({
@@ -38,7 +44,9 @@ vi.mock("@fullcalendar/react", () => ({
     nowIndicator,
   }: {
     events?: CalendarMockEvent[];
-    eventClick?: (info: { event: { id: string } }) => void;
+    eventClick?: (info: {
+      event: { id: string; extendedProps: { kind?: string } };
+    }) => void;
     initialDate: string;
     initialView: string;
     firstDay?: number;
@@ -78,6 +86,16 @@ vi.mock("@fullcalendar/react", () => ({
         data-progress-start={timeProgress?.start.toISOString()}
         data-progress-end={timeProgress?.end.toISOString()}
         data-progress-title={timeProgress?.title ?? ""}
+        data-sleep-event-count={
+          visibleEvents.filter((event) =>
+            event.classNames?.includes("calendar-sleep-event"),
+          ).length
+        }
+        data-sleep-rail-count={
+          visibleEvents.filter((event) =>
+            event.classNames?.includes("calendar-sleep-rail"),
+          ).length
+        }
       >
         {visibleEvents
           .filter((event) => event.display !== "background")
@@ -86,7 +104,14 @@ vi.mock("@fullcalendar/react", () => ({
               key={event.id}
               type="button"
               className={event.classNames?.join(" ")}
-              onClick={() => eventClick?.({ event: { id: event.id } })}
+              onClick={() =>
+                eventClick?.({
+                  event: {
+                    id: event.id,
+                    extendedProps: { kind: event.kind },
+                  },
+                })
+              }
             >
               {event.title}
             </button>
@@ -123,6 +148,7 @@ const setupStores = (tasks: Task[] = []) => {
   act(() => {
     useTasksStore.setState({ tasks });
     useCalendarStore.setState({ ...initialCalendarData });
+    useSleepScheduleStore.setState(initialSleepScheduleData);
   });
 };
 
@@ -132,6 +158,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -188,6 +215,85 @@ describe("Calendar route", () => {
       "calendar-task-event--urgent-important",
       "calendar-task-event--completed",
     );
+  });
+
+  it("renders planned sleep events, actual markers, and the awake rail", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 26, 12));
+    setupStores();
+    const today = formatLocalDate(new Date());
+    const yesterday = formatLocalDate(addDays(new Date(), -1));
+    useSleepScheduleStore.setState({
+      settings: {
+        wakeTime: "07:00",
+        targetSleepDurationMinutes: 480,
+        bedTimeOverride: null,
+      },
+      actualRecords: [
+        {
+          id: "actual-night",
+          sleepDate: yesterday,
+          bedAt: new Date(`${yesterday}T22:30:00`).getTime(),
+          wakeAt: new Date(`${today}T06:30:00`).getTime(),
+        },
+      ],
+      recoveryEntries: [],
+    });
+
+    render(<CalendarRoute />);
+
+    const calendar = screen.getByTestId("day-calendar");
+    expect(
+      Number(calendar.getAttribute("data-sleep-event-count")),
+    ).toBeGreaterThan(0);
+    expect(
+      Number(calendar.getAttribute("data-sleep-rail-count")),
+    ).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "Wake Up" })).toHaveClass(
+      "calendar-sleep-event--planned",
+    );
+    expect(screen.getByRole("button", { name: "Actual wake" })).toHaveClass(
+      "calendar-sleep-event--actual",
+    );
+    expect(screen.getByText(/8 hr sleep/)).toBeInTheDocument();
+  });
+
+  it("keeps sleep events and rails unavailable without a valid wake schedule", () => {
+    setupStores();
+    render(<CalendarRoute />);
+
+    expect(screen.getByText(/No valid wake time is set/)).toBeInTheDocument();
+    expect(screen.getByText("Unavailable")).toBeInTheDocument();
+    expect(screen.getByTestId("day-calendar")).toHaveAttribute(
+      "data-sleep-event-count",
+      "0",
+    );
+    expect(screen.getByTestId("day-calendar")).toHaveAttribute(
+      "data-sleep-rail-count",
+      "0",
+    );
+  });
+
+  it("shows sleep markers in Month without awake rails or daily totals", () => {
+    setupStores();
+    useSleepScheduleStore.setState({
+      ...initialSleepScheduleData,
+      settings: {
+        wakeTime: "07:00",
+        targetSleepDurationMinutes: 480,
+        bedTimeOverride: null,
+      },
+    });
+    render(<CalendarRoute />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Month" }));
+
+    const calendar = screen.getByTestId("day-calendar");
+    expect(
+      Number(calendar.getAttribute("data-sleep-event-count")),
+    ).toBeGreaterThan(0);
+    expect(calendar).toHaveAttribute("data-sleep-rail-count", "0");
+    expect(screen.queryByText("Awake idle time")).not.toBeInTheDocument();
   });
 
   it("shows one local day and navigates to the previous day", async () => {

@@ -14,15 +14,32 @@ type CalendarActions = {
 
 type CalendarStore = CalendarData & CalendarActions;
 
-const migrateCalendarData = (state: unknown): CalendarStore => {
-  const saved = state as Partial<CalendarData> | null;
+const migrateCalendarData = (
+  state: unknown,
+  version: number,
+): CalendarStore => {
+  const saved = state as
+    | (Partial<CalendarData> & { sleepEventRecords?: unknown[] })
+    | null;
   const weekStartsOn = saved?.weekStartsOn;
+  const pendingSleepEvents =
+    saved &&
+    Object.prototype.hasOwnProperty.call(saved, "pendingSleepEventMigration")
+      ? saved.pendingSleepEventMigration
+      : version < 2
+        ? saved?.sleepEventRecords
+        : undefined;
 
   return {
     recurrenceSeries: saved?.recurrenceSeries ?? [],
     recurrenceRuleSegments: saved?.recurrenceRuleSegments ?? [],
     scheduledOccurrences: saved?.scheduledOccurrences ?? [],
-    sleepEventRecords: saved?.sleepEventRecords ?? [],
+    pendingSleepEventMigration:
+      pendingSleepEvents === undefined
+        ? []
+        : Array.isArray(pendingSleepEvents)
+          ? pendingSleepEvents
+          : [pendingSleepEvents],
     weekStartsOn: isWeekStartsOn(weekStartsOn) ? weekStartsOn : 0,
   } as CalendarStore;
 };
@@ -35,7 +52,7 @@ export const useCalendarStore = create<CalendarStore>()(
     })),
     createPersistOptions<CalendarStore>({
       name: "calendar-storage",
-      version: 1,
+      version: 2,
       migrate: migrateCalendarData,
     }),
   ),

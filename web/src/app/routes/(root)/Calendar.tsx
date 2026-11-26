@@ -15,8 +15,22 @@ import type {
   ScheduledOccurrence,
   WeekStartsOn,
 } from "@/features/calendar/types/calendar";
+import {
+  getActualSleepEvents,
+  getAwakeIdleTotals,
+  getPlannedSleepEvents,
+  getSleepProgressSegments,
+  isValidSleepScheduleSettings,
+} from "@/features/sleep-schedule/utils/sleep-schedule";
+import SleepCalendarPanel from "@/features/sleep-schedule/components/SleepCalendarPanel";
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
-import { useCalendarStore, useTasks } from "@/stores";
+import {
+  useActualSleepRecords,
+  useCalendarStore,
+  useSleepScheduleSettings,
+  useTasks,
+  useTrackedIntervals,
+} from "@/stores";
 import usePageTitle from "@/hooks/usePageTitle";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/react/daygrid";
@@ -79,6 +93,7 @@ type CalendarEvent = {
   end: Date;
   classNames: string[];
   display?: "background";
+  kind: "task" | "sleep" | "sleep-rail" | "time-progress";
 };
 
 const getDateLabel = (date: string) =>
@@ -112,6 +127,33 @@ const getViewDateLabel = (
     year: "numeric",
   });
   return `${formatter.format(rangeStart)} through ${formatter.format(rangeEnd)}`;
+};
+
+const getVisibleDateRange = (
+  view: CalendarView,
+  selectedDate: string,
+  weekStartsOn: WeekStartsOn,
+) => {
+  const date = parseLocalDate(selectedDate);
+  const rangeStart =
+    view === "week"
+      ? startOfWeek(date, { weekStartsOn })
+      : view === "month"
+        ? startOfMonth(date)
+        : date;
+  const rangeEnd =
+    view === "week"
+      ? addDays(rangeStart, 6)
+      : view === "multi-day"
+        ? addDays(date, 2)
+        : view === "month"
+          ? endOfMonth(date)
+          : date;
+
+  return {
+    startDate: formatLocalDate(rangeStart),
+    endDate: formatLocalDate(rangeEnd),
+  };
 };
 
 const formatDuration = (minutes: number) => {
@@ -164,6 +206,9 @@ const CalendarRoute = () => {
   const recurrenceRuleSegments = useCalendarStore(
     (state) => state.recurrenceRuleSegments,
   );
+  const sleepSettings = useSleepScheduleSettings();
+  const actualSleepRecords = useActualSleepRecords();
+  const trackedIntervals = useTrackedIntervals();
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const activeTasks = useMemo(
     () => tasks.filter((task) => task.archivedAt === undefined),
@@ -258,6 +303,10 @@ const CalendarRoute = () => {
     () => JSON.stringify([recurrenceSeries, recurrenceRuleSegments]),
     [recurrenceRuleSegments, recurrenceSeries],
   );
+  const visibleDateRange = useMemo(
+    () => getVisibleDateRange(calendarView, selectedDate, weekStartsOn),
+    [calendarView, selectedDate, weekStartsOn],
+  );
 
   useEffect(() => {
     const intervalId = window.setInterval(
@@ -318,6 +367,7 @@ const CalendarRoute = () => {
                 ? ["calendar-task-event--completed"]
                 : []),
             ],
+            kind: "task",
           },
         ];
       },
@@ -335,11 +385,124 @@ const CalendarRoute = () => {
         end: currentTime,
         display: "background",
         classNames: ["calendar-time-progress"],
+        kind: "time-progress",
+      });
+    }
+
+    const plannedSleepEvents = getPlannedSleepEvents(
+      sleepSettings,
+      visibleDateRange.startDate,
+      visibleDateRange.endDate,
+    );
+    plannedSleepEvents.forEach((event) => {
+      const eventDate = getLocalDayRange(event.date);
+      const title =
+        calendarView === "month"
+          ? event.type === "wake"
+            ? "Wake"
+            : "Bed"
+          : event.type === "wake"
+            ? "Wake Up"
+            : "Go to Bed";
+      events.push({
+        id: event.id,
+        title,
+        start: new Date(event.at),
+        end: new Date(Math.min(event.at + 60_000, eventDate.end.getTime())),
+        classNames: [
+          "calendar-sleep-event",
+          "calendar-sleep-event--planned",
+          `calendar-sleep-event--${event.type}`,
+        ],
+        kind: "sleep",
+      });
+    });
+
+    getActualSleepEvents(
+      actualSleepRecords,
+      visibleDateRange.startDate,
+      visibleDateRange.endDate,
+    ).forEach((event) => {
+      const eventDate = getLocalDayRange(event.date);
+      const title =
+        calendarView === "month"
+          ? event.type === "wake"
+            ? "Actual wake"
+            : "Actual bed"
+          : event.type === "wake"
+            ? "Actual wake"
+            : "Actual bedtime";
+      events.push({
+        id: event.id,
+        title,
+        start: new Date(event.at),
+        end: new Date(Math.min(event.at + 60_000, eventDate.end.getTime())),
+        classNames: [
+          "calendar-sleep-event",
+          "calendar-sleep-event--actual",
+          `calendar-sleep-event--${event.type}`,
+        ],
+        kind: "sleep",
+      });
+    });
+
+    if (
+      calendarView !== "month" &&
+      isValidSleepScheduleSettings(sleepSettings)
+    ) {
+      getSleepProgressSegments(
+        sleepSettings,
+        visibleDateRange.startDate,
+        visibleDateRange.endDate,
+        currentTime.getTime(),
+      ).forEach((segment, index) => {
+        events.push({
+          id: `sleep-rail-${segment.date}-${index}`,
+          title: "",
+          start: new Date(segment.startAt),
+          end: new Date(segment.endAt),
+          display: "background",
+          classNames: [
+            "calendar-sleep-rail",
+            segment.filled
+              ? "calendar-sleep-rail--filled"
+              : "calendar-sleep-rail--upcoming",
+          ],
+          kind: "sleep-rail",
+        });
       });
     }
 
     return events;
-  }, [calendarView, currentTime, scheduledOccurrences, today]);
+  }, [
+    actualSleepRecords,
+    calendarView,
+    currentTime,
+    scheduledOccurrences,
+    sleepSettings,
+    today,
+    visibleDateRange,
+  ]);
+
+  const awakeTotals = useMemo(
+    () =>
+      calendarView === "month"
+        ? []
+        : getAwakeIdleTotals(
+            sleepSettings,
+            trackedIntervals,
+            visibleDateRange.startDate,
+            visibleDateRange.endDate,
+            currentTime.getTime(),
+          ),
+    [
+      calendarView,
+      currentTime,
+      sleepSettings,
+      trackedIntervals,
+      visibleDateRange,
+    ],
+  );
 
   const currentView =
     calendarViews.find((view) => view.id === calendarView) ?? calendarViews[0];
@@ -665,7 +828,10 @@ const CalendarRoute = () => {
               timeZone="local"
               firstDay={weekStartsOn}
               events={calendarEvents}
-              eventClick={(info) => showOccurrence(info.event.id)}
+              eventClick={(info) => {
+                if (info.event.extendedProps.kind !== "task") return;
+                showOccurrence(info.event.id);
+              }}
               dateClick={(info) => {
                 if (calendarView !== "month") return;
                 setSelectedDate(info.dateStr);
@@ -753,15 +919,12 @@ const CalendarRoute = () => {
             )}
           </section>
 
-          <section className="border-base-content/10 bg-base-200/70 rounded-2xl border p-5">
-            <h2 className="text-base-content font-semibold">
-              A plan that bends
-            </h2>
-            <p className="text-base-content/75 mt-2 text-sm leading-relaxed">
-              Plans are a guide, not a deadline. Moving a task here never marks
-              its reusable task as complete.
-            </p>
-          </section>
+          <SleepCalendarPanel
+            selectedDate={selectedDate}
+            currentTime={currentTime}
+            showAwakeTotals={calendarView !== "month"}
+            awakeTotals={awakeTotals}
+          />
         </aside>
       </section>
 

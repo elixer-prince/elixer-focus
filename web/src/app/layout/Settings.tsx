@@ -1,13 +1,22 @@
 import TimerModal from "@/features/countdown-timer/components/TimerModal";
 import { startCalendarCoordinator } from "@/features/calendar/services/calendar-coordinator";
 import SessionReflectionModal from "@/features/journal/components/SessionReflection/Modal";
+import { startSleepScheduleCoordinator } from "@/stores";
 import Sidebar from "@/features/ui/navigation/Sidebar/Settings/components/Index";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 
 const SettingsLayout = () => {
-  useEffect(() => startCalendarCoordinator(), []);
+  useEffect(() => {
+    const stopCalendarCoordinator = startCalendarCoordinator();
+    const stopSleepScheduleCoordinator = startSleepScheduleCoordinator();
+
+    return () => {
+      stopCalendarCoordinator();
+      stopSleepScheduleCoordinator();
+    };
+  }, []);
 
   return (
     <>
