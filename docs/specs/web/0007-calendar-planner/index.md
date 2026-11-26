@@ -153,7 +153,7 @@ The project uses the Skateboard approach, so the first slice is a usable day pla
 - Calendar still needs custom UI for the progress rail, current time line, untimed container, task details, recurrence editing, and sleep tracking.
 - The free FullCalendar core does not provide its Premium horizontal scroll grid, so the custom wrapper needs responsive verification.
 - Persisting generated occurrences and rule segments adds local state and migration work.
-- Sleep tracking cannot be complete until the shared Sleep Schedule feature provides the planned times.
+- Planned sleep events, the awake rail, and awake totals depend on valid settings in the shared Sleep Schedule; actual sleep records remain owned by that feature.
 
 **Neutral**:
 
@@ -163,11 +163,11 @@ The project uses the Skateboard approach, so the first slice is a usable day pla
 
 ## Follow-up
 
-- [ ] Build the Calendar sleep integration against feature 47 and the shared contract in spec [0008](../0008-sleep-schedule/index.md). Do not implement duplicate Calendar sleep settings or records.
+- [x] Build the Calendar sleep integration against feature 47 and the shared contract in spec [0008](../0008-sleep-schedule/index.md). Do not implement duplicate Calendar sleep settings or records.
 - [ ] Account ownership and cross device sync remain out of scope. Revisit local data migration and per account ownership when the account feature is designed.
-- [ ] The installed `vercel-react-best-practices` skill applies to web React code and is not yet recorded in project guidance. Capture it in `web/AGENTS.md` and link that file from the root `AGENTS.md` before implementation.
-- [ ] The installed `vercel-composition-patterns` skill applies to web React component design and is not yet recorded in project guidance. Capture it in `web/AGENTS.md` and link that file from the root `AGENTS.md` before implementation.
-- [ ] The installed `web-design-guidelines` skill applies to web interface review and is not yet recorded in project guidance. Capture it in `web/AGENTS.md` and link that file from the root `AGENTS.md` before implementation.
+- [x] The installed `vercel-react-best-practices` skill applies to web React code and is recorded in project guidance at `web/AGENTS.md`, linked from the root `AGENTS.md`.
+- [x] The installed `vercel-composition-patterns` skill applies to web React component design and is recorded in project guidance at `web/AGENTS.md`, linked from the root `AGENTS.md`.
+- [x] The installed `web-design-guidelines` skill applies to web interface review and is recorded in project guidance at `web/AGENTS.md`, linked from the root `AGENTS.md`.
 
 ## Rationale
 
