@@ -18,6 +18,15 @@ import {
 import CalendarRoute from "@/app/routes/(root)/Calendar";
 import { useCalendarStore, useTasksStore } from "@/stores";
 
+type CalendarMockEvent = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  display?: string;
+  classNames?: string[];
+};
+
 vi.mock("@fullcalendar/react", () => ({
   default: ({
     events = [],
@@ -26,13 +35,15 @@ vi.mock("@fullcalendar/react", () => ({
     initialView,
     firstDay,
     dateClick,
+    nowIndicator,
   }: {
-    events?: Array<{ id: string; title: string; start: Date; end: Date }>;
+    events?: CalendarMockEvent[];
     eventClick?: (info: { event: { id: string } }) => void;
     initialDate: string;
     initialView: string;
     firstDay?: number;
     dateClick?: (info: { dateStr: string }) => void;
+    nowIndicator?: boolean;
   }) => {
     const date = parseLocalDate(initialDate);
     const viewStart =
@@ -53,6 +64,9 @@ vi.mock("@fullcalendar/react", () => ({
     const visibleEvents = events.filter(
       (event) => event.start < viewEnd && event.end > viewStart,
     );
+    const timeProgress = visibleEvents.find((event) =>
+      event.classNames?.includes("calendar-time-progress"),
+    );
 
     return (
       <div
@@ -60,16 +74,23 @@ vi.mock("@fullcalendar/react", () => ({
         data-date={initialDate}
         data-view={initialView}
         data-first-day={firstDay}
+        data-now-indicator={nowIndicator}
+        data-progress-start={timeProgress?.start.toISOString()}
+        data-progress-end={timeProgress?.end.toISOString()}
+        data-progress-title={timeProgress?.title ?? ""}
       >
-        {visibleEvents.map((event) => (
-          <button
-            key={event.id}
-            type="button"
-            onClick={() => eventClick?.({ event: { id: event.id } })}
-          >
-            {event.title}
-          </button>
-        ))}
+        {visibleEvents
+          .filter((event) => event.display !== "background")
+          .map((event) => (
+            <button
+              key={event.id}
+              type="button"
+              className={event.classNames?.join(" ")}
+              onClick={() => eventClick?.({ event: { id: event.id } })}
+            >
+              {event.title}
+            </button>
+          ))}
         {initialView === "dayGridMonth" && dateClick && (
           <button
             type="button"
@@ -115,6 +136,60 @@ afterEach(() => {
 });
 
 describe("Calendar route", () => {
+  it("fills today's timeline through the current local time", () => {
+    setupStores();
+    render(<CalendarRoute />);
+
+    const calendar = screen.getByTestId("day-calendar");
+    const progressStart = calendar.getAttribute("data-progress-start");
+    const progressEnd = calendar.getAttribute("data-progress-end");
+
+    expect(calendar).toHaveAttribute("data-now-indicator", "true");
+    expect(calendar).toHaveAttribute("data-progress-title", "");
+    expect(progressStart).not.toBeNull();
+    expect(progressEnd).not.toBeNull();
+
+    const start = new Date(progressStart!);
+    const end = new Date(progressEnd!);
+    const expectedStart = new Date();
+    expectedStart.setHours(0, 0, 0, 0);
+
+    expect(start.getTime()).toBe(expectedStart.getTime());
+    expect(Math.abs(end.getTime() - Date.now())).toBeLessThan(60_000);
+  });
+
+  it("marks scheduled blocks with their category and completion state", () => {
+    const today = formatLocalDate(new Date());
+    setupStores([existingTask]);
+    act(() =>
+      useCalendarStore.setState({
+        ...initialCalendarData,
+        scheduledOccurrences: [
+          {
+            id: "occurrence-1",
+            taskId: existingTask.id,
+            date: today,
+            startTime: "09:00",
+            durationMinutes: 45,
+            title: existingTask.title,
+            category: existingTask.category,
+            isCompleted: true,
+            isSkipped: false,
+          },
+        ],
+      }),
+    );
+    render(<CalendarRoute />);
+
+    expect(
+      screen.getByRole("button", { name: existingTask.title }),
+    ).toHaveClass(
+      "calendar-task-event",
+      "calendar-task-event--urgent-important",
+      "calendar-task-event--completed",
+    );
+  });
+
   it("shows one local day and navigates to the previous day", async () => {
     setupStores();
     render(<CalendarRoute />);

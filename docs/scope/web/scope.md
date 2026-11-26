@@ -57,7 +57,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
 | 16  | Gamification & streaks             | Slice 5 (future)      | planned     |
 | 17  | Social features                    | Slice 5 (future)      | planned     |
-| 47  | Sleep schedule                     | Slice 5 (future)      | planned     |
+| 47  | Sleep schedule                     | Slice 5 (future)      | in-progress |
 
 ## Foundations
 
@@ -441,19 +441,20 @@ code in `web/src/app/routes/(root)/Profile.tsx`
 
 ### 12. Calendar · in-progress
 
-Placeholder route; implement a calendar view for scheduled focus and tasks.
+Build a planner for scheduled tasks and recurring plans. Sleep events, the planned awake rail, actual records, and awake idle totals use the shared Sleep Schedule in feature 47 and spec [0008](../../specs/web/0008-sleep-schedule/index.md); Calendar does not duplicate its data.
 
-**Done when:** calendar page renders a monthly view with events.
+**Done when:** Calendar meets its planned task and recurrence criteria, and its sleep events, actual records, progress rail, current time line, and awake totals follow feature 47 and spec [0008](../../specs/web/0008-sleep-schedule/index.md).
 
 - [x] Design it (spec): `/architect calendar`
 Spec: [0007](../../specs/web/0007-calendar-planner/index.md)
+Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec 0008](../../specs/web/0008-sleep-schedule/index.md).
 
 - [ ] Build it: `/develop calendar`
   - [x] Versioned local schedule model, shared task reuse, Day planner, and tab persistence (AC-1, AC-2, AC-3, AC-9)
   - [x] Four calendar views, responsive navigation, and shared week start preference (AC-1, AC-8)
   - [x] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
   - [ ] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
-  - [ ] Sleep event tracking and planned time rail after Sleep Schedule alignment (AC-7)
+  - [ ] Sleep events, actual records, awake totals, and planned rail through feature 47 (AC-7)
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
 
@@ -547,11 +548,17 @@ Social media style features (sharing, leaderboards, community). Deferred; massiv
 
 - [ ] Design it (spec): `/architect social features`
 
-### 47. Sleep schedule · planned · needs a decision · from spec 0005
+### 47. Sleep schedule · in-progress · from spec 0005
 
-Let users configure sleep windows and derive an awake time view from raw idle intervals. Keep raw idle and session records unchanged, including timer sessions that occur during a scheduled sleep window.
+Let people configure a daily wake time and target sleep duration, optionally override bedtime, record actual sleep, and see awake idle totals. Sleep Schedule owns planned values and actual records. Calendar reads planned events and the progress rail from this feature and sends actual event changes through its command boundary. Keep raw idle and session records unchanged, including timer sessions that occur during planned sleep.
 
-**Done when:** users can configure a sleep schedule and see awake idle totals without changing raw idle or session records.
+**Done when:** Settings can configure the schedule, Calendar uses its planned events and rail and records actual bed and wake times, and per date awake idle totals are derived without changing raw intervals or sessions.
 
-- [ ] Design it (spec): `/architect sleep schedule`
+- [x] Design it (spec): `/architect sleep schedule`
+Spec: [0008](../../specs/web/0008-sleep-schedule/index.md); Calendar integration contract: [0007](../../specs/web/0007-calendar-planner/index.md); raw interval source contract: [0005](../../specs/web/0005-idle-session-overrun/index.md).
+- [ ] Build it: `/develop sleep schedule`
+  - [ ] Add local settings, validation, derived bedtime, and the feature owned write coordinator (AC-1, AC-2, AC-3, AC-7, AC-9)
+  - [ ] Connect Calendar planned events, progress rail, current time line, and no schedule state (AC-3, AC-4)
+  - [ ] Add actual bed and wake records, correction, and safe migration recovery (AC-5, AC-7, AC-8)
+  - [ ] Derive idle awake totals and show them per date in time grid views (AC-3, AC-6)
 

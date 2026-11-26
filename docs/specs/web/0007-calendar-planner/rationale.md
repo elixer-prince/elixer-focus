@@ -1,10 +1,10 @@
 ## Context
 
-> ⚠️ Premise note: This request now spans the Calendar planner, shared task reuse, recurring schedules, sleep tracking, and a week start preference used by the Journal. They share one planning flow, so this spec keeps those Calendar integrations together. It does not design the Sleep Schedule calculation, account sync, or a full Tasks page redesign. The existing Sleep Schedule scope conflicts with the requested wake and bed source, so align that separate feature before the sleep integration slice.
+> ⚠️ Premise note: This request spans the Calendar planner, shared task reuse, recurring schedules, sleep event presentation, and a week start preference used by the Journal. They share one planning flow, so this spec keeps those Calendar integrations together. It does not own Sleep Schedule settings, actual records, or awake time derivation. Those are defined in spec [0008](../0008-sleep-schedule/index.md). Account sync and a full Tasks page redesign remain outside this decision.
 
 The Calendar route is a placeholder and its current scope only asks for a monthly event view. The requested experience is a day first planner with four views, task occurrences that can be timed or untimed, reusable task records, customizable recurrence, and completion tracked per occurrence. The app already stores Tasks and settings locally, and the task model has its own completion state.
 
-The progress rail and generated sleep events depend on planned Wake Up and Go to Bed times. The user wants those values from the shared Sleep Schedule, not a second Calendar setting. The existing Sleep Schedule scope describes awake time derived from idle intervals, so the integration cannot be built until that feature is aligned with the shared time source. Calendar itself must remain useful without those settings.
+The progress rail and generated sleep events depend on planned Wake Up and Go to Bed times. Calendar reads those values from the shared Sleep Schedule in spec 0008, rather than keeping a second Calendar setting. The Sleep Schedule also derives awake totals from idle intervals without changing timer history. Calendar remains useful when the schedule is absent or invalid.
 
 The app is in alpha. Account work is being handled separately and is not a prerequisite for this base flow. The current design therefore keeps data in the browser, but the user wants live updates between open tabs. Sleep records contain personal wellness information, but they are not medical records or a clinical feature.
 
@@ -74,7 +74,7 @@ Option 3 is the best fit for a planner with four views, drag and resize, and exp
 
 Scheduled occurrences must remain separate from reusable Tasks. A Task can appear in the Eisenhower Matrix and be scheduled more than once, while each occurrence owns its date, duration, and completion. Separate rule segments preserve earlier dates when a user changes a recurring plan from one date forward. A single date field on `Task` would not support these user selected behaviors. (basis: `web/src/features/tasks/types/task.ts`, `docs/specs/web/0001-inline-task-editing.md`)
 
-The Sleep Schedule remains the single source for planned wake and bed times. Calendar does not copy or calculate those settings. Its sleep layer is optional until the separate feature exposes them, and actual sleep records do not alter the plan. The shared week start preference is stored once and reused by Calendar and the Journal graph. Repeated range reads must not create duplicate occurrences, and local wall time must stay consistent through daylight saving changes. (basis: `docs/scope/web/scope.md`, `docs/specs/web/0003-journal.md`, idempotent operation design, local wall time scheduling)
+The Sleep Schedule in spec 0008 is the single source for planned wake and bed times and actual records. Calendar reads those values and sends actual event changes through the feature boundary; it does not copy settings or records. Actual sleep records do not alter the planned rail. The shared week start preference is stored once and reused by Calendar and the Journal graph. Repeated range reads must not create duplicate occurrences, and local wall time must stay consistent through daylight saving changes. (basis: `docs/specs/web/0008-sleep-schedule/index.md`, `docs/scope/web/scope.md`, `docs/specs/web/0003-journal.md`, idempotent operation design, local wall time scheduling)
 
 The installed Vercel React skill gives relevant guidance for the new React components and their performance. The composition skill applies to the complex planner component boundaries, and the web design skill supports the responsive interface review. (basis: installed Vercel community skills)
 
@@ -84,6 +84,7 @@ The installed Vercel React skill gives relevant guidance for the new React compo
 
 - `AGENTS.md` for local persisted stores, date-fns, drag and drop, theme conventions, and the existing browser coordination pattern.
 - `docs/scope/web/scope.md` for the Calendar and Sleep Schedule scope rows.
+- `docs/specs/web/0008-sleep-schedule/index.md` for the canonical planned values, actual records, and awake time contract.
 - `docs/specs/web/0001-inline-task-editing.md` for existing Task editing behavior.
 - `docs/specs/web/0003-journal.md` for Journal calendar and chart behavior.
 - `web/src/features/tasks/types/task.ts` for current Task fields.

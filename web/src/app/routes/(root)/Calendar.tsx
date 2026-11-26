@@ -72,6 +72,15 @@ const calendarViews = [
 
 type CalendarView = (typeof calendarViews)[number]["id"];
 
+type CalendarEvent = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  classNames: string[];
+  display?: "background";
+};
+
 const getDateLabel = (date: string) =>
   new Intl.DateTimeFormat(undefined, {
     weekday: "long",
@@ -155,12 +164,17 @@ const CalendarRoute = () => {
   const recurrenceRuleSegments = useCalendarStore(
     (state) => state.recurrenceRuleSegments,
   );
+  const [currentTime, setCurrentTime] = useState(() => new Date());
   const activeTasks = useMemo(
     () => tasks.filter((task) => task.archivedAt === undefined),
     [tasks],
   );
 
-  const today = formatLocalDate(new Date());
+  const today = formatLocalDate(currentTime);
+  const currentTimeLabel = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(currentTime);
   const [selectedDate, setSelectedDate] = useState(today);
   const [calendarView, setCalendarView] = useState<CalendarView>("day");
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
@@ -246,6 +260,14 @@ const CalendarRoute = () => {
   );
 
   useEffect(() => {
+    const intervalId = window.setInterval(
+      () => setCurrentTime(new Date()),
+      60_000,
+    );
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
     if (!recurrenceSeries.length) return;
     const date = parseLocalDate(selectedDate);
     const rangeStart =
@@ -276,9 +298,9 @@ const CalendarRoute = () => {
     weekStartsOn,
   ]);
 
-  const calendarEvents = useMemo(
-    () =>
-      scheduledOccurrences.flatMap((occurrence) => {
+  const calendarEvents = useMemo(() => {
+    const events: CalendarEvent[] = scheduledOccurrences.flatMap(
+      (occurrence) => {
         if (occurrence.isSkipped) return [];
         const timeRange = getOccurrenceTimeRange(occurrence);
         if (!timeRange) return [];
@@ -289,11 +311,35 @@ const CalendarRoute = () => {
             title: occurrence.title,
             start: timeRange.start,
             end: timeRange.end,
+            classNames: [
+              "calendar-task-event",
+              `calendar-task-event--${occurrence.category}`,
+              ...(occurrence.isCompleted
+                ? ["calendar-task-event--completed"]
+                : []),
+            ],
           },
         ];
-      }),
-    [scheduledOccurrences],
-  );
+      },
+    );
+    const currentDay = getLocalDayRange(today);
+
+    if (
+      calendarView !== "month" &&
+      currentTime.getTime() > currentDay.start.getTime()
+    ) {
+      events.push({
+        id: "calendar-time-progress",
+        title: "",
+        start: currentDay.start,
+        end: currentTime,
+        display: "background",
+        classNames: ["calendar-time-progress"],
+      });
+    }
+
+    return events;
+  }, [calendarView, currentTime, scheduledOccurrences, today]);
 
   const currentView =
     calendarViews.find((view) => view.id === calendarView) ?? calendarViews[0];
@@ -600,6 +646,10 @@ const CalendarRoute = () => {
           <div
             className={`calendar-planner calendar-planner--${calendarView} min-w-0 overflow-x-auto`}
           >
+            <time className="sr-only" dateTime={currentTime.toISOString()}>
+              Current local time is {currentTimeLabel}. Today’s timeline is
+              shaded through this time in the day, multi day, and week views.
+            </time>
             <FullCalendar
               key={`${calendarView}-${selectedDate}-${weekStartsOn}`}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

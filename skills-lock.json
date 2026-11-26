@@ -37,6 +37,13 @@
       "skillPath": "skills/document/SKILL.md",
       "computedHash": ""
     },
+    "migrate-to-temporal-api": {
+      "source": "Umami-Creative-GmbH/Agent-Skills",
+      "commit": "5a2597ec8917149e94fbd60c6447675dad229f17",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-to-temporal-api/SKILL.md",
+      "computedHash": "90758f89ed33bba449f65e6d63fe462e2238668ec6c6aa24d1f199f810044ab0"
+    },
     "playwright-best-practices": {
       "source": "currents-dev/playwright-best-practices-skill",
       "commit": "0b75b5835a87de1fdd202ba965f3bc5a27738fdf",
@@ -69,6 +76,20 @@
       "sourceType": "github",
       "skillPath": "skills/sync/SKILL.md",
       "computedHash": ""
+    },
+    "temporal-api": {
+      "source": "blur94/skills",
+      "commit": "015c482429ee00d283b793b2be8ccb42d784472f",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/temporal-api/SKILL.md",
+      "computedHash": "acb587c2b7644846b6ab1b172053f81b7979a29022009e48b049b68edbfeb01a"
+    },
+    "temporal-date-api": {
+      "source": "Sensei85/skills",
+      "commit": "23647b7730e64c5b421f628ab44b57ac9a64fcb9",
+      "sourceType": "github",
+      "skillPath": "skills/temporal-date-api/SKILL.md",
+      "computedHash": "04d63b83aa828a303edfabf215ee19347be6bf4f670d2bc666dc4e001a1162c0"
     },
     "test": {
       "source": "JavaScript-Mastery-Pro/skills",
