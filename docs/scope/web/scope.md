@@ -48,6 +48,8 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 11  | Profile                            | Slice 3 (pages)       | done        |
 | 12  | Calendar                           | Slice 3 (pages)       | done        |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | in-progress |
+| 48  | Mobile navigation redesign         | Slice 3 (pages)       | planned     |
+| 49  | Personal URL structure             | Slice 3 (pages)       | planned     |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
 | 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
 | 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
@@ -458,15 +460,41 @@ Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec
 
 code in `web/src/app/routes/(root)/Calendar.tsx`
 
-### 13. Brain dump (Bin) · in-progress · needs a decision
+### 13. Brain dump (Bin) · in-progress
 
 Placeholder route; implement a brain dump inbox for quick capture.
 
 **Done when:** bin page captures and lists quick notes.
 
-- [ ] Design it (spec): `/architect brain dump`
+- [x] Design it (spec): `/architect brain dump`
+      Spec: [0009](../../specs/web/0009-brain-dump-inbox.md)
+- [ ] Build it: `/develop brain dump`
+  - [ ] Add the versioned thought store and cross tab coordinator with retry and storage error handling (AC-3, AC-9, AC-11, AC-12, AC-13)
+  - [ ] Build the route, capture and list flow, delete confirmation, and matching desktop and mobile links (AC-1, AC-2, AC-4, AC-5, AC-8, AC-14)
+  - [ ] Add live search and inline autosaving edits (AC-6, AC-7, AC-14)
+  - [ ] Complete cross tab conflict and remote deletion recovery behavior (AC-9, AC-10, AC-12, AC-13)
 
 code in `web/src/app/routes/(root)/Bin.tsx`
+
+### 48. Mobile navigation redesign · planned · from spec 0009
+
+After the missing page links are added, improve the mobile navigation's appearance and behavior using real usage as a guide. The Brain dump feature only mirrors the desktop page links in the current menu.
+
+**Done when:** the mobile navigation has a clear layout and interaction pattern for all current page links, based on the approved design.
+
+- [ ] Design it (spec): `/architect mobile navigation redesign`
+
+code in `web/src/features/ui/navigation/`
+
+### 49. Personal URL structure · planned · from spec 0009
+
+Move personal pages such as Journal and Profile into the `/my/` route group, coordinated with the new `/my/brain-dump` path. Decide the full page list and behavior for existing URLs before changing them.
+
+**Done when:** the agreed personal pages use `/my/` paths and any behavior for their existing URLs is defined and verified.
+
+- [ ] Design it (spec): `/architect personal URL structure`
+
+code in `web/src/app/router.tsx`
 
 ### 19. Subtasks (nested) · planned
 
