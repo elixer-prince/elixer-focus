@@ -1,12 +1,24 @@
 import {
+  type RecurrenceRuleDraft,
+  type RecurrenceRuleSegment,
+  type RecurrenceSeries,
   initialCalendarData,
   isWeekStartsOn,
   type CalendarData,
   type ScheduledOccurrence,
   type WeekStartsOn,
 } from "@/features/calendar/types/calendar";
-import { isValidLocalDate } from "@/features/calendar/utils/calendar-date";
+import {
+  formatLocalDate,
+  isValidLocalDate,
+  parseLocalDate,
+} from "@/features/calendar/utils/calendar-date";
+import {
+  getRecurrenceDatesInRange,
+  validateRecurrenceRule,
+} from "@/features/calendar/utils/calendar-recurrence";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import { subDays } from "date-fns";
 import toast from "react-hot-toast";
 
 const LOCK_NAME = "elixer-focus-calendar-coordinator";
@@ -39,7 +51,10 @@ export type CalendarCoordinatorCommand =
       type: "update-task";
       taskId: string;
       updates: Partial<
-        Pick<Task, "title" | "description" | "defaultDurationMinutes">
+        Pick<
+          Task,
+          "title" | "description" | "defaultDurationMinutes" | "archivedAt"
+        >
       >;
     }
   | { type: "remove-task"; taskId: string }
@@ -60,6 +75,43 @@ export type CalendarCoordinatorCommand =
       date: string;
       startTime?: string;
       durationMinutes?: number;
+    }
+  | {
+      type: "create-recurrence";
+      taskId: string;
+      startDate: string;
+      rule: RecurrenceRuleDraft;
+    }
+  | {
+      type: "create-task-and-recurrence";
+      title: string;
+      description?: string;
+      startDate: string;
+      rule: RecurrenceRuleDraft;
+    }
+  | { type: "materialize-range"; startDate: string; endDate: string }
+  | {
+      type: "edit-occurrence";
+      occurrenceId: string;
+      startTime?: string;
+      durationMinutes?: number;
+    }
+  | {
+      type: "edit-recurrence";
+      seriesId: string;
+      date: string;
+      scope: "future" | "series";
+      rule: RecurrenceRuleDraft;
+    }
+  | {
+      type: "delete-scheduled-occurrence";
+      occurrenceId: string;
+      scope: "occurrence" | "future" | "series";
+    }
+  | {
+      type: "set-occurrence-completion";
+      occurrenceId: string;
+      completed: boolean;
     }
   | { type: "remove-occurrence"; occurrenceId: string }
   | { type: "set-week-start"; weekStartsOn: WeekStartsOn };
@@ -199,6 +251,316 @@ const createOccurrence = (
   };
 };
 
+const createRuleSegment = (
+  seriesId: string,
+  effectiveFrom: string,
+  rule: RecurrenceRuleDraft,
+  id: string = crypto.randomUUID(),
+): RecurrenceRuleSegment => {
+  validateRecurrenceRule(rule, effectiveFrom);
+  if (rule.endDate && rule.endDate < effectiveFrom) {
+    throw new Error("The recurrence end date must be on or after its start.");
+  }
+  return {
+    ...rule,
+    ...(rule.weekdays && { weekdays: [...new Set(rule.weekdays)] }),
+    id,
+    seriesId,
+    effectiveFrom,
+  };
+};
+
+const createRecurrence = (
+  next: CalendarSnapshot,
+  task: Task,
+  startDate: string,
+  rule: RecurrenceRuleDraft,
+) => {
+  if (task.archivedAt !== undefined) {
+    throw new Error("Choose an available task.");
+  }
+  if (!isValidLocalDate(startDate)) {
+    throw new Error("Choose a valid recurrence start date.");
+  }
+  const series: RecurrenceSeries = {
+    id: crypto.randomUUID(),
+    taskId: task.id,
+    startDate,
+    isActive: true,
+  };
+  const segment = createRuleSegment(series.id, startDate, rule);
+  next.calendar.recurrenceSeries.push(series);
+  next.calendar.recurrenceRuleSegments.push(segment);
+};
+
+const materializeRecurrenceRange = (
+  next: CalendarSnapshot,
+  startDate: string,
+  endDate: string,
+) => {
+  if (!isValidLocalDate(startDate) || !isValidLocalDate(endDate)) {
+    throw new Error("Choose a valid calendar date range.");
+  }
+  if (startDate > endDate) return;
+
+  const savedOccurrences = new Set(
+    next.calendar.scheduledOccurrences
+      .filter((occurrence) => occurrence.seriesId && occurrence.segmentId)
+      .map(
+        (occurrence) =>
+          `${occurrence.seriesId}:${occurrence.segmentId}:${occurrence.date}`,
+      ),
+  );
+
+  next.calendar.recurrenceSeries.forEach((series) => {
+    if (!series.isActive) return;
+    const task = next.tasks.find((item) => item.id === series.taskId);
+    if (!task || task.archivedAt !== undefined) {
+      series.isActive = false;
+      return;
+    }
+
+    next.calendar.recurrenceRuleSegments
+      .filter((segment) => segment.seriesId === series.id)
+      .forEach((segment) => {
+        getRecurrenceDatesInRange(series, segment, startDate, endDate).forEach(
+          (date) => {
+            const key = `${series.id}:${segment.id}:${date}`;
+            if (savedOccurrences.has(key)) return;
+            next.calendar.scheduledOccurrences.push({
+              ...createOccurrence(
+                task,
+                date,
+                segment.startTime,
+                segment.durationMinutes,
+              ),
+              seriesId: series.id,
+              segmentId: segment.id,
+            });
+            savedOccurrences.add(key);
+          },
+        );
+      });
+  });
+};
+
+const regenerateSavedOccurrences = (
+  next: CalendarSnapshot,
+  series: RecurrenceSeries,
+  scopeStart: string | undefined,
+) => {
+  const task = next.tasks.find((item) => item.id === series.taskId);
+  if (!task) throw new Error("This task is no longer available.");
+
+  const allSeriesOccurrences = next.calendar.scheduledOccurrences.filter(
+    (occurrence) => occurrence.seriesId === series.id,
+  );
+  const affectedOccurrences = allSeriesOccurrences.filter(
+    (occurrence) => !scopeStart || occurrence.date >= scopeStart,
+  );
+  if (!affectedOccurrences.length) return;
+
+  const rangeStart = scopeStart
+    ? affectedOccurrences.reduce(
+        (earliest, occurrence) =>
+          occurrence.date < earliest ? occurrence.date : earliest,
+        scopeStart,
+      )
+    : affectedOccurrences.reduce(
+        (earliest, occurrence) =>
+          occurrence.date < earliest ? occurrence.date : earliest,
+        affectedOccurrences[0].date,
+      );
+  const rangeEnd = affectedOccurrences.reduce(
+    (latest, occurrence) =>
+      occurrence.date > latest ? occurrence.date : latest,
+    affectedOccurrences[0].date,
+  );
+  const previousByDate = new Map(
+    affectedOccurrences.map((occurrence) => [occurrence.date, occurrence]),
+  );
+  const regenerated = next.calendar.recurrenceRuleSegments
+    .filter((segment) => segment.seriesId === series.id)
+    .flatMap((segment) =>
+      getRecurrenceDatesInRange(series, segment, rangeStart, rangeEnd).map(
+        (date) => {
+          const previous = previousByDate.get(date);
+          const generated = createOccurrence(
+            task,
+            date,
+            segment.startTime,
+            segment.durationMinutes,
+          );
+          return {
+            ...generated,
+            ...(previous && {
+              id: previous.id,
+              title: previous.title,
+              description: previous.description,
+              category: previous.category,
+              isCompleted: previous.isCompleted,
+              ...(previous.completedAt !== undefined && {
+                completedAt: previous.completedAt,
+              }),
+            }),
+            seriesId: series.id,
+            segmentId: segment.id,
+          };
+        },
+      ),
+    );
+
+  next.calendar.scheduledOccurrences = [
+    ...allSeriesOccurrences.filter((occurrence) =>
+      scopeStart ? occurrence.date < scopeStart : false,
+    ),
+    ...next.calendar.scheduledOccurrences.filter(
+      (occurrence) => occurrence.seriesId !== series.id,
+    ),
+    ...regenerated,
+  ];
+};
+
+const deleteScheduledOccurrence = (
+  next: CalendarSnapshot,
+  occurrenceId: string,
+  scope: "occurrence" | "future" | "series",
+) => {
+  const occurrence = next.calendar.scheduledOccurrences.find(
+    (item) => item.id === occurrenceId,
+  );
+  if (!occurrence)
+    throw new Error("This scheduled task is no longer available.");
+
+  if (scope === "occurrence") {
+    if (!occurrence.seriesId) {
+      next.calendar.scheduledOccurrences =
+        next.calendar.scheduledOccurrences.filter(
+          (item) => item.id !== occurrenceId,
+        );
+      return;
+    }
+    occurrence.isSkipped = true;
+    occurrence.isCompleted = false;
+    delete occurrence.completedAt;
+    return;
+  }
+
+  if (!occurrence.seriesId) {
+    throw new Error("Choose a recurring occurrence for this action.");
+  }
+  const series = next.calendar.recurrenceSeries.find(
+    (item) => item.id === occurrence.seriesId,
+  );
+  if (!series) throw new Error("This recurrence is no longer available.");
+
+  if (scope === "series") {
+    next.calendar.recurrenceSeries = next.calendar.recurrenceSeries.filter(
+      (item) => item.id !== series.id,
+    );
+    next.calendar.recurrenceRuleSegments =
+      next.calendar.recurrenceRuleSegments.filter(
+        (segment) => segment.seriesId !== series.id,
+      );
+    next.calendar.scheduledOccurrences =
+      next.calendar.scheduledOccurrences.filter(
+        (item) => item.seriesId !== series.id,
+      );
+    return;
+  }
+
+  const previousDate = formatLocalDate(
+    subDays(parseLocalDate(occurrence.date), 1),
+  );
+  next.calendar.recurrenceRuleSegments =
+    next.calendar.recurrenceRuleSegments.flatMap((segment) => {
+      if (segment.seriesId !== series.id) return [segment];
+      if (segment.effectiveFrom >= occurrence.date) return [];
+      if (
+        segment.effectiveThrough !== undefined &&
+        segment.effectiveThrough < occurrence.date
+      ) {
+        return [segment];
+      }
+      return [{ ...segment, effectiveThrough: previousDate }];
+    });
+  series.isActive = next.calendar.recurrenceRuleSegments.some(
+    (segment) => segment.seriesId === series.id,
+  );
+  next.calendar.scheduledOccurrences =
+    next.calendar.scheduledOccurrences.filter(
+      (item) => item.seriesId !== series.id || item.date < occurrence.date,
+    );
+};
+
+const editRecurrence = (
+  next: CalendarSnapshot,
+  seriesId: string,
+  date: string,
+  scope: "future" | "series",
+  rule: RecurrenceRuleDraft,
+) => {
+  if (!isValidLocalDate(date)) throw new Error("Choose a valid edit date.");
+  const series = next.calendar.recurrenceSeries.find(
+    (item) => item.id === seriesId,
+  );
+  if (!series || !series.isActive) {
+    throw new Error("This recurrence is no longer available.");
+  }
+  const task = next.tasks.find((item) => item.id === series.taskId);
+  if (!task || task.archivedAt !== undefined) {
+    throw new Error("This task is no longer available.");
+  }
+  const selectedOccurrence = next.calendar.scheduledOccurrences.find(
+    (item) =>
+      item.seriesId === series.id && item.date === date && !item.isSkipped,
+  );
+  if (!selectedOccurrence) {
+    throw new Error("Choose an existing occurrence to edit.");
+  }
+
+  if (scope === "series") {
+    const updatedSegments = next.calendar.recurrenceRuleSegments.map(
+      (segment) => {
+        if (segment.seriesId !== series.id) return segment;
+        const updated = createRuleSegment(
+          series.id,
+          segment.effectiveFrom,
+          rule,
+          segment.id,
+        );
+        return {
+          ...updated,
+          ...(segment.effectiveThrough && {
+            effectiveThrough: segment.effectiveThrough,
+          }),
+        };
+      },
+    );
+    next.calendar.recurrenceRuleSegments = updatedSegments;
+    regenerateSavedOccurrences(next, series, undefined);
+    return;
+  }
+
+  const previousDate = formatLocalDate(subDays(parseLocalDate(date), 1));
+  const updatedSegments = next.calendar.recurrenceRuleSegments.flatMap(
+    (segment) => {
+      if (segment.seriesId !== series.id) return [segment];
+      if (segment.effectiveFrom >= date) return [];
+      if (
+        segment.effectiveThrough !== undefined &&
+        segment.effectiveThrough < date
+      ) {
+        return [segment];
+      }
+      return [{ ...segment, effectiveThrough: previousDate }];
+    },
+  );
+  updatedSegments.push(createRuleSegment(series.id, date, rule));
+  next.calendar.recurrenceRuleSegments = updatedSegments;
+  regenerateSavedOccurrences(next, series, date);
+};
+
 export const applyCalendarCoordinatorCommand = (
   snapshot: CalendarSnapshot,
   command: CalendarCoordinatorCommand,
@@ -208,7 +570,15 @@ export const applyCalendarCoordinatorCommand = (
     tasks: snapshot.tasks.map((task) => ({ ...task })),
     calendar: {
       ...snapshot.calendar,
-      scheduledOccurrences: [...snapshot.calendar.scheduledOccurrences],
+      recurrenceSeries: snapshot.calendar.recurrenceSeries.map((series) => ({
+        ...series,
+      })),
+      recurrenceRuleSegments: snapshot.calendar.recurrenceRuleSegments.map(
+        (segment) => ({ ...segment }),
+      ),
+      scheduledOccurrences: snapshot.calendar.scheduledOccurrences.map(
+        (occurrence) => ({ ...occurrence }),
+      ),
     },
   };
 
@@ -233,10 +603,18 @@ export const applyCalendarCoordinatorCommand = (
       const task = next.tasks.find((item) => item.id === command.taskId);
       if (!task) throw new Error("This task is no longer available.");
       Object.assign(task, command.updates, { updatedAt: now });
+      if (task.archivedAt !== undefined) {
+        next.calendar.recurrenceSeries.forEach((series) => {
+          if (series.taskId === task.id) series.isActive = false;
+        });
+      }
       break;
     }
     case "remove-task":
       next.tasks = next.tasks.filter((task) => task.id !== command.taskId);
+      next.calendar.recurrenceSeries.forEach((series) => {
+        if (series.taskId === command.taskId) series.isActive = false;
+      });
       break;
     case "toggle-task-completion": {
       const task = next.tasks.find((item) => item.id === command.taskId);
@@ -250,6 +628,10 @@ export const applyCalendarCoordinatorCommand = (
     }
     case "set-tasks":
       next.tasks = normalizeTasks(command.tasks);
+      next.calendar.recurrenceSeries.forEach((series) => {
+        const task = next.tasks.find((item) => item.id === series.taskId);
+        if (!task || task.archivedAt !== undefined) series.isActive = false;
+      });
       break;
     case "reorder-tasks": {
       const currentTasks = new Map(next.tasks.map((task) => [task.id, task]));
@@ -302,6 +684,94 @@ export const applyCalendarCoordinatorCommand = (
           command.durationMinutes,
         ),
       );
+      break;
+    }
+    case "create-recurrence": {
+      const task = next.tasks.find((item) => item.id === command.taskId);
+      if (!task) throw new Error("Choose an available task.");
+      createRecurrence(next, task, command.startDate, command.rule);
+      break;
+    }
+    case "create-task-and-recurrence": {
+      const title = command.title.trim();
+      if (!title) throw new Error("Enter a task title.");
+      const task: Task = {
+        id: crypto.randomUUID(),
+        title,
+        description: command.description?.trim() || undefined,
+        category: "uncategorised",
+        isCompleted: false,
+        isSelected: false,
+        createdAt: now,
+        updatedAt: now,
+        defaultDurationMinutes: 30,
+      };
+      next.tasks.unshift(task);
+      createRecurrence(next, task, command.startDate, command.rule);
+      break;
+    }
+    case "materialize-range":
+      materializeRecurrenceRange(next, command.startDate, command.endDate);
+      break;
+    case "edit-occurrence": {
+      const occurrence = next.calendar.scheduledOccurrences.find(
+        (item) => item.id === command.occurrenceId,
+      );
+      if (!occurrence) {
+        throw new Error("This scheduled task is no longer available.");
+      }
+      if (command.startTime !== undefined && !isValidTime(command.startTime)) {
+        throw new Error("Choose a valid start time.");
+      }
+      if (
+        command.startTime === undefined &&
+        command.durationMinutes !== undefined
+      ) {
+        throw new Error("An untimed task cannot have a duration.");
+      }
+      const duration = command.startTime
+        ? (command.durationMinutes ??
+          next.tasks.find((task) => task.id === occurrence.taskId)
+            ?.defaultDurationMinutes ??
+          30)
+        : undefined;
+      if (
+        duration !== undefined &&
+        (!Number.isInteger(duration) || duration < 1 || duration > 1440)
+      ) {
+        throw new Error("Duration must be between 1 and 1440 minutes.");
+      }
+      if (command.startTime) {
+        occurrence.startTime = command.startTime;
+        occurrence.durationMinutes = duration;
+      } else {
+        delete occurrence.startTime;
+        delete occurrence.durationMinutes;
+      }
+      break;
+    }
+    case "edit-recurrence":
+      editRecurrence(
+        next,
+        command.seriesId,
+        command.date,
+        command.scope,
+        command.rule,
+      );
+      break;
+    case "delete-scheduled-occurrence":
+      deleteScheduledOccurrence(next, command.occurrenceId, command.scope);
+      break;
+    case "set-occurrence-completion": {
+      const occurrence = next.calendar.scheduledOccurrences.find(
+        (item) => item.id === command.occurrenceId,
+      );
+      if (!occurrence || occurrence.isSkipped) {
+        throw new Error("This scheduled task is no longer available.");
+      }
+      occurrence.isCompleted = command.completed;
+      if (command.completed) occurrence.completedAt = now;
+      else delete occurrence.completedAt;
       break;
     }
     case "remove-occurrence":

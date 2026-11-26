@@ -26,7 +26,10 @@ type TaskActions = {
   updateTask: (
     id: string,
     updates: Partial<
-      Pick<Task, "title" | "description" | "defaultDurationMinutes">
+      Pick<
+        Task,
+        "title" | "description" | "defaultDurationMinutes" | "archivedAt"
+      >
     >,
   ) => void;
 };
@@ -188,7 +191,10 @@ export const useUpdateTask = () =>
     (
       id: string,
       updates: Partial<
-        Pick<Task, "title" | "description" | "defaultDurationMinutes">
+        Pick<
+          Task,
+          "title" | "description" | "defaultDurationMinutes" | "archivedAt"
+        >
       >,
     ) => dispatchCalendarCommand({ type: "update-task", taskId: id, updates }),
     [],

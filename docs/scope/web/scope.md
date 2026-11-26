@@ -451,7 +451,7 @@ Spec: [0007](../../specs/web/0007-calendar-planner/index.md)
 - [ ] Build it: `/develop calendar`
   - [x] Versioned local schedule model, shared task reuse, Day planner, and tab persistence (AC-1, AC-2, AC-3, AC-9)
   - [x] Four calendar views, responsive navigation, and shared week start preference (AC-1, AC-8)
-  - [ ] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
+  - [x] Recurrence rules, dated rule segments, and occurrence lifecycle (AC-4, AC-5)
   - [ ] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
   - [ ] Sleep event tracking and planned time rail after Sleep Schedule alignment (AC-7)
 

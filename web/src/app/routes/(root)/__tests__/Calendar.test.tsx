@@ -274,6 +274,58 @@ describe("Calendar route", () => {
     });
   }, 15_000);
 
+  it("creates, edits, and removes a recurring plan through the calendar", async () => {
+    setupStores([existingTask]);
+    render(<CalendarRoute />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Add a task to this day" }),
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: "Repeat this plan" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add recurring plan" }));
+
+    await waitFor(() => {
+      expect(useCalendarStore.getState().recurrenceSeries).toHaveLength(1);
+      expect(useCalendarStore.getState().scheduledOccurrences).toHaveLength(1);
+    });
+    expect(useCalendarStore.getState().scheduledOccurrences[0]).toMatchObject({
+      seriesId: useCalendarStore.getState().recurrenceSeries[0].id,
+      segmentId: useCalendarStore.getState().recurrenceRuleSegments[0].id,
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Prepare the outline/ }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Entire series" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Frequency" }), {
+      target: { value: "daily" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    await waitFor(() => {
+      expect(
+        useCalendarStore.getState().recurrenceRuleSegments[0].frequency,
+      ).toBe("daily");
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Prepare the outline/ }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Remove plan" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Removal scope" }), {
+      target: { value: "series" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Remove plan" }));
+
+    await waitFor(() => {
+      expect(useCalendarStore.getState().recurrenceSeries).toHaveLength(0);
+      expect(useCalendarStore.getState().recurrenceRuleSegments).toHaveLength(
+        0,
+      );
+      expect(useCalendarStore.getState().scheduledOccurrences).toHaveLength(0);
+    });
+  }, 15_000);
+
   it("shows a timed task on the next day when it crosses midnight", () => {
     const overnightOccurrence: ScheduledOccurrence = {
       id: "overnight-1",

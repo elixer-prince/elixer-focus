@@ -35,6 +35,11 @@ export type RecurrenceRuleSegment = {
   occurrenceCount?: number;
 };
 
+export type RecurrenceRuleDraft = Omit<
+  RecurrenceRuleSegment,
+  "id" | "seriesId" | "effectiveFrom" | "effectiveThrough"
+>;
+
 export type ScheduledOccurrence = {
   id: string;
   taskId: string;
