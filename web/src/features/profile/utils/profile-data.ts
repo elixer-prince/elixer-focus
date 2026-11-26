@@ -1,5 +1,7 @@
 import type { CompletedSession } from "@/features/countdown-timer/types/completed-session";
+import type { TrackedInterval } from "@/features/countdown-timer/types/tracked-interval";
 import type { Task } from "@/features/tasks/types/task";
+import { getTrackedIntervalElapsedSeconds } from "@/features/countdown-timer/utils/tracked-intervals";
 import { calculateFocusSessionStreak } from "@/utils/streak";
 
 export const calculateCurrentStreak = calculateFocusSessionStreak;
@@ -48,13 +50,29 @@ const formatSessionDuration = (durationInSeconds: number) => {
 export const getRecentProfileActivity = (
   sessions: CompletedSession[],
   tasks: Task[],
+  trackedIntervals: TrackedInterval[] = [],
   limit = 5,
+  now = Date.now(),
 ): ProfileActivity[] => {
+  const overrunSecondsBySession = new Map<string, number>();
+  for (const interval of trackedIntervals) {
+    if (interval.kind !== "overrun" || !interval.sessionId) continue;
+
+    const elapsedSeconds = getTrackedIntervalElapsedSeconds(interval, now);
+    overrunSecondsBySession.set(
+      interval.sessionId,
+      (overrunSecondsBySession.get(interval.sessionId) ?? 0) + elapsedSeconds,
+    );
+  }
+
   const sessionActivity = sessions.map((session) => ({
     id: `session-${session.id}`,
     kind: "session" as const,
     title: `${session.sessionType} session`,
-    detail: formatSessionDuration(session.durationInSeconds),
+    detail: formatSessionDuration(
+      session.durationInSeconds +
+        (overrunSecondsBySession.get(session.id) ?? 0),
+    ),
     completedAt: session.completedAt,
   }));
 

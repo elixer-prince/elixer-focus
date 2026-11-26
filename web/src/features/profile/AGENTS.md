@@ -2,7 +2,7 @@
 
 Profile behavior is governed by `../../../../docs/specs/web/0004-profile-page/index.md`.
 
-`stores/profile-store.ts` persists identity details. `utils/profile-data.ts` derives stats, activity, and badge state from the session and task stores. Keep derived calculations out of the identity store.
+`stores/profile-store.ts` persists identity details. `utils/profile-data.ts` derives stats, activity, and badge state from the session, tracked interval, and task stores. Keep derived calculations out of the identity store.
 
 Components in `components/` present profile data. Shared store hooks are exported through `@/stores`.
 

@@ -1,14 +1,28 @@
 import { useSessions, useTasks } from "@/stores";
-import { useMemo } from "react";
+import { useTrackedIntervals } from "@/features/countdown-timer/stores/session-history-store";
+import { useEffect, useMemo, useState } from "react";
 import { getRecentProfileActivity } from "@/features/profile/utils/profile-data";
 import { MdCheckCircle, MdHistory, MdTimer } from "react-icons/md";
 
 const RecentActivity = () => {
   const sessions = useSessions();
   const tasks = useTasks();
+  const trackedIntervals = useTrackedIntervals();
+  const [now, setNow] = useState(Date.now());
+  const hasOpenOverrun = trackedIntervals.some(
+    (interval) => interval.kind === "overrun" && interval.endedAt === null,
+  );
+
+  useEffect(() => {
+    if (!hasOpenOverrun) return;
+
+    const intervalId = setInterval(() => setNow(Date.now()), 1_000);
+    return () => clearInterval(intervalId);
+  }, [hasOpenOverrun]);
+
   const activity = useMemo(
-    () => getRecentProfileActivity(sessions, tasks),
-    [sessions, tasks],
+    () => getRecentProfileActivity(sessions, tasks, trackedIntervals, 5, now),
+    [sessions, tasks, trackedIntervals, now],
   );
 
   return (
