@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import ProfileRoute from "@/app/routes/(root)/Profile";
+import ProfileRoute from "@/app/routes/my/Profile";
 
 const profileMocks = vi.hoisted(() => ({
   displayName: "Focus User",

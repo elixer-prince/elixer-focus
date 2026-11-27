@@ -2,7 +2,7 @@
 
 Calendar behavior is governed by `docs/specs/web/0007-calendar-planner/index.md`.
 
-The route is `web/src/app/routes/(root)/Calendar.tsx`. Persisted schedule data lives in `stores/calendar-store.ts`, and recurrence date generation lives in `utils/calendar-recurrence.ts`.
+The route is `web/src/app/routes/my/Calendar.tsx`. Persisted schedule data lives in `stores/calendar-store.ts`, and recurrence date generation lives in `utils/calendar-recurrence.ts`.
 
 Render the planner with FullCalendar day grid and time grid plugins. Use `RRule` from `rrule` in `utils/calendar-recurrence.ts` to expand recurrence definitions.
 
@@ -21,5 +21,6 @@ Calendar tests live in `__tests__/`. Run focused tests from the repository root 
 MCP servers: `temporal-cortex/mcp` (recommended)
 MCP servers: Tanod `expand_rrule` (recommended)
 Declined: `@fullcalendar/react`, `rrule`
+Declined: `temporal-polyfill`
 
 _Drafted by /sync from the introducing change, worth a quick human pass._

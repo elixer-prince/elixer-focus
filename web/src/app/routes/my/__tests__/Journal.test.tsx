@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 
-import Journal from "@/app/routes/(root)/Journal";
+import Journal from "@/app/routes/my/Journal";
 
 vi.mock("@/features/journal/stores/journal-store", () => {
   const entries: Array<{

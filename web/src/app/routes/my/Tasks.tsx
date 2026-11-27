@@ -43,7 +43,7 @@ function flattenTasks(grouped: GroupedTasks): Task[] {
   return CATEGORIES.flatMap((cat) => grouped[cat]);
 }
 
-const Tasks = () => {
+const TasksRoute = () => {
   const { updatePageTitle } = usePageTitle();
   const timerRunning = useTimerRunning();
 
@@ -213,4 +213,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default TasksRoute;

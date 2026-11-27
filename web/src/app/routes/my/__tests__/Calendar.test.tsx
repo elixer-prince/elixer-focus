@@ -20,17 +20,14 @@ import {
   type ScheduledOccurrence,
 } from "@/features/calendar/types/calendar";
 import { initialSleepScheduleData } from "@/features/sleep-schedule/types/sleep-schedule";
-import CalendarRoute from "@/app/routes/(root)/Calendar";
+import CalendarRoute from "@/app/routes/my/Calendar";
 import {
   useCalendarStore,
   useSleepScheduleStore,
   useTasksStore,
 } from "@/stores";
 
-const calendarStyles = readFileSync(
-  "src/app/routes/(root)/calendar.css",
-  "utf8",
-);
+const calendarStyles = readFileSync("src/app/routes/my/calendar.css", "utf8");
 
 type CalendarMockEvent = {
   id: string;

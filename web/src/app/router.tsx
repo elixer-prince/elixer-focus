@@ -3,9 +3,9 @@ import DefaultLayout from "@/app/layout/Default";
 import SettingsLayout from "@/app/layout/Settings";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import HomeRoute from "@/app/routes/(root)/Index";
-import JournalRoute from "@/app/routes/(root)/Journal";
-import ProfileRoute from "@/app/routes/(root)/Profile";
-import TasksRoute from "@/app/routes/(root)/Tasks";
+import JournalRoute from "@/app/routes/my/Journal";
+import ProfileRoute from "@/app/routes/my/Profile";
+import TasksRoute from "@/app/routes/my/Tasks";
 import NotFoundRoute from "@/app/routes/404";
 import LoginRoute from "@/app/routes/auth/Login";
 import SignUpRoute from "@/app/routes/auth/SignUp";
@@ -16,8 +16,8 @@ import { Spinner } from "@/components/ui";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router";
 
-const CalendarRoute = lazy(() => import("@/app/routes/(root)/Calendar"));
-const BinRoute = lazy(() => import("@/app/routes/(root)/Bin"));
+const CalendarRoute = lazy(() => import("@/app/routes/my/Calendar"));
+const BrainDumpRoute = lazy(() => import("@/app/routes/my/BrainDump"));
 
 export const router = createBrowserRouter([
   {
@@ -62,7 +62,7 @@ export const router = createBrowserRouter([
                   </div>
                 }
               >
-                <BinRoute />
+                <BrainDumpRoute />
               </Suspense>
             ),
           },

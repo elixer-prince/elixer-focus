@@ -1,4 +1,4 @@
-import Tasks from "@/app/routes/(root)/Tasks";
+import Tasks from "@/app/routes/my/Tasks";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 
