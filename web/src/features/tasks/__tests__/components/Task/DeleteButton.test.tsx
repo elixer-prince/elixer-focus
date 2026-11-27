@@ -1,5 +1,5 @@
 import DeleteButton from "@/features/tasks/components/Task/DeleteButton";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("DeleteButton", () => {
   it("should render", () => {
@@ -32,5 +32,19 @@ describe("DeleteButton", () => {
     const deleteButton = screen.getByRole("button");
 
     expect(deleteButton).toHaveClass("line-through");
+  });
+
+  it("asks for confirmation before deleting a task with subtasks", () => {
+    render(
+      <DeleteButton id="ExStr123f51" isCompleted={false} subtaskCount={2} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "This task has 2 subtasks. Deleting it removes all of them.",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
   });
 });

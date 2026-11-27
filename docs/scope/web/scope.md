@@ -51,7 +51,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | done        |
 | 48  | Mobile navigation redesign         | Slice 3 (pages)       | done        |
 | 49  | Personal URL structure             | Slice 3 (pages)       | done        |
-| 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
+| 19  | Subtasks (nested)                  | Slice 3 (pages)       | done        |
 | 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
 | 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
 | 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
@@ -521,13 +521,20 @@ Move personal pages such as Journal and Profile into the `/my/` route group, coo
 
 code in `web/src/app/router.tsx`, `web/src/features/ui/navigation/Sidebar/Default/constants/links.tsx`, `web/src/app/__tests__/router.test.ts`, and `web/src/features/ui/navigation/__tests__/page-links.test.tsx`
 
-### 19. Subtasks (nested) · planned
+### 19. Subtasks (nested) · done
 
 Tasks can contain subtasks, and subtasks can contain their own subtasks, forming a tree. Each subtask has a title, a done state, and an order position. The parent task shows a progress indicator based on completed subtasks.
 
 **Done when:** user can add, edit, delete, and reorder subtasks within any task, with unlimited nesting depth and progress tracking on parent tasks.
 
-- [ ] Design it (spec): `/architect subtasks`
+- [x] Design it (spec): [0013](../../specs/web/0013-subtasks/index.md)
+- [x] Build it: `/develop subtasks`
+  - [x] Add the versioned Subtask store and coordinator support with legacy owner handling (AC-7, AC-8)
+  - [x] Build the recursive checklist with add, completion, progress, and accessible expansion (AC-1, AC-2, AC-4)
+  - [x] Add inline editing and confirmed subtree deletion, including Task deletion cleanup (AC-3, AC-5, AC-7)
+  - [x] Add keyboard and pointer sibling reordering with concurrent move handling (AC-6, AC-8)
+
+code in `web/src/features/tasks/components/Task/SubtaskChecklist.tsx`, `web/src/features/tasks/stores/subtasks-store.ts`, `web/src/features/tasks/utils/subtask-tree.ts`, `web/src/features/calendar/services/calendar-coordinator.ts`, and `web/src/app/routes/(root)/Tasks.tsx`
 
 ### 37. Task search and filtering · planned
 

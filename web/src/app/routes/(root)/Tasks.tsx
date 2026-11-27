@@ -1,7 +1,7 @@
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
 import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
-import { useReorderTasks, useTasksStore } from "@/stores";
+import { useReorderSubtasks, useReorderTasks, useTasksStore } from "@/stores";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
@@ -56,6 +56,7 @@ const Tasks = () => {
     setPreviewTasks(nextTasks);
   }, []);
   const reorderTasks = useReorderTasks();
+  const reorderSubtasks = useReorderSubtasks();
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = useCallback(() => {
@@ -68,8 +69,9 @@ const Tasks = () => {
   const handleDragOver = useCallback(
     (event: Parameters<DragOverEvent>[0]) => {
       try {
-        const { source } = event.operation;
-        if (!isSortable(source)) return;
+        const { source, target } = event.operation;
+        if (!isSortable(source) || source.type === "subtask") return;
+        if (target && isSortable(target) && target.type === "subtask") return;
 
         const currentTasks =
           previewTasksRef.current ?? useTasksStore.getState().tasks;
@@ -100,6 +102,23 @@ const Tasks = () => {
   const handleDragEnd = useCallback(
     (event: Parameters<DragEndEvent>[0]) => {
       setIsDragging(false);
+      const source = event.operation.source;
+      if (isSortable(source) && source.type === "subtask") {
+        updatePreviewTasks(null);
+        if (event.canceled) return;
+
+        const target = event.operation.target;
+        if (target && (!isSortable(target) || target.type !== "subtask")) {
+          return;
+        }
+        const sourceId = String(source.id).replace(/^subtask-/, "");
+        const targetId = target
+          ? String(target.id).replace(/^subtask-/, "")
+          : null;
+        const before = target ? source.index > target.index : false;
+        void reorderSubtasks(sourceId, targetId, before);
+        return;
+      }
       const nextTasks = previewTasksRef.current;
       if (event.canceled || !nextTasks) {
         updatePreviewTasks(null);
@@ -107,7 +126,7 @@ const Tasks = () => {
       }
       void reorderTasks(nextTasks).finally(() => updatePreviewTasks(null));
     },
-    [reorderTasks, updatePreviewTasks],
+    [reorderSubtasks, reorderTasks, updatePreviewTasks],
   );
 
   return (
@@ -127,7 +146,7 @@ const Tasks = () => {
             preventActivation: (event, source) => {
               // Only allow pointer drag to start from the drag handle
               const handle = source.element?.querySelector(
-                '[aria-label="Drag to reorder"]',
+                '[aria-label^="Drag to reorder"]',
               );
               if (!handle) {
                 return false;
@@ -150,6 +169,7 @@ const Tasks = () => {
             inputPlaceholder=""
             isDragging={isDragging}
             tasks={previewTasks ?? undefined}
+            taskSurface="matrix"
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
@@ -158,6 +178,7 @@ const Tasks = () => {
               inputPlaceholder="Finish assignment due in an hour..."
               isDragging={isDragging}
               tasks={previewTasks ?? undefined}
+              taskSurface="matrix"
             />
             <Column
               title="Not Urgent but Important"
@@ -165,6 +186,7 @@ const Tasks = () => {
               inputPlaceholder="Practice Spanish for 30 minutes..."
               isDragging={isDragging}
               tasks={previewTasks ?? undefined}
+              taskSurface="matrix"
             />
           </div>
           <div className="tasks-row flex flex-wrap justify-center gap-8">
@@ -174,6 +196,7 @@ const Tasks = () => {
               inputPlaceholder="Wash the dishes..."
               isDragging={isDragging}
               tasks={previewTasks ?? undefined}
+              taskSurface="matrix"
             />
             <Column
               title="Not Urgent nor Important"
@@ -181,6 +204,7 @@ const Tasks = () => {
               inputPlaceholder="Watch Netflix..."
               isDragging={isDragging}
               tasks={previewTasks ?? undefined}
+              taskSurface="matrix"
             />
           </div>
         </div>

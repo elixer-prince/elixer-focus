@@ -11,6 +11,7 @@ interface ColumnProps {
   inputPlaceholder: string;
   isDragging?: boolean;
   tasks?: Task[];
+  taskSurface?: "matrix" | "home";
 }
 
 const Column = ({
@@ -19,6 +20,7 @@ const Column = ({
   inputPlaceholder,
   isDragging = false,
   tasks,
+  taskSurface = "home",
 }: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
@@ -49,6 +51,7 @@ const Column = ({
         placeholder={inputPlaceholder}
         isDragging={isDragging}
         tasks={tasks}
+        taskSurface={taskSurface}
       />
     </article>
   );

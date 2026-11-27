@@ -23,6 +23,15 @@ const mockedStore = vi.hoisted(() => {
     useToggleTaskCompletion: vi.fn(() => mockToggleTaskCompletion),
     useUpdateTask: vi.fn(() => mockUpdateTask),
     useRemoveTask: vi.fn(() => mockRemoveTask),
+    useSubtasks: vi.fn(() => []),
+    useSubtaskCount: vi.fn(() => 0),
+    useSubtaskCoordinatorSupport: vi.fn(() => true),
+    useAddSubtask: vi.fn(() => vi.fn(async () => ({ success: true }))),
+    useUpdateSubtask: vi.fn(() => vi.fn(async () => ({ success: true }))),
+    useToggleSubtaskCompletion: vi.fn(() =>
+      vi.fn(async () => ({ success: true })),
+    ),
+    useRemoveSubtask: vi.fn(() => vi.fn(async () => ({ success: true }))),
   };
 });
 
@@ -30,6 +39,14 @@ vi.mock("@/stores", () => ({
   useToggleTaskCompletion: () => mockedStore.useToggleTaskCompletion(),
   useUpdateTask: () => mockedStore.useUpdateTask(),
   useRemoveTask: () => mockedStore.useRemoveTask(),
+  useSubtasks: () => mockedStore.useSubtasks(),
+  useSubtaskCount: () => mockedStore.useSubtaskCount(),
+  useSubtaskCoordinatorSupport: () =>
+    mockedStore.useSubtaskCoordinatorSupport(),
+  useAddSubtask: () => mockedStore.useAddSubtask(),
+  useUpdateSubtask: () => mockedStore.useUpdateSubtask(),
+  useToggleSubtaskCompletion: () => mockedStore.useToggleSubtaskCompletion(),
+  useRemoveSubtask: () => mockedStore.useRemoveSubtask(),
 }));
 
 afterEach(() => {
@@ -40,6 +57,7 @@ afterEach(() => {
 
 beforeEach(() => {
   mockUpdateTask.mockResolvedValue({ success: true });
+  mockedStore.useSubtaskCount.mockReturnValue(0);
 });
 
 describe("Task", () => {
@@ -114,6 +132,50 @@ describe("Task", () => {
     const button = screen.getByRole("button", { name: /delete/i });
 
     expect(button).toBeInTheDocument();
+  });
+
+  it("shows the checklist on the Tasks matrix surface", () => {
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="A random Task!"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+        taskSurface="matrix"
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Expand subtasks for A random Task!",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not show Subtask controls on the Home surface", () => {
+    mockedStore.useSubtaskCount.mockReturnValue(2);
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="A random Task!"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /subtasks for A random Task!/i }),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "This task has 2 subtasks. Deleting it removes all of them.",
+    );
   });
 
   it("should have a drag handle", () => {

@@ -86,6 +86,18 @@ export {
 } from "@/features/tasks/stores/tasks-store";
 
 export {
+  useSubtasks,
+  useSubtaskCount,
+  useSubtaskCoordinatorSupport,
+  useAddSubtask,
+  useUpdateSubtask,
+  useToggleSubtaskCompletion,
+  useRemoveSubtask,
+  useReorderSubtasks,
+  useSubtasksStore,
+} from "@/features/tasks/stores/subtasks-store";
+
+export {
   useCalendarStore,
   useScheduledOccurrences,
 } from "@/features/calendar/stores/calendar-store";

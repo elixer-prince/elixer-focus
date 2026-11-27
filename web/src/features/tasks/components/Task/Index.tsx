@@ -1,5 +1,10 @@
 import DeleteButton from "@/features/tasks/components/Task/DeleteButton";
-import { useToggleTaskCompletion, useUpdateTask } from "@/stores";
+import SubtaskChecklist from "@/features/tasks/components/Task/SubtaskChecklist";
+import {
+  useSubtaskCount,
+  useToggleTaskCompletion,
+  useUpdateTask,
+} from "@/stores";
 import { formatRelativeTime } from "@/utils/date";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,6 +20,7 @@ interface TaskProps {
   isCompleted: boolean;
   isSelected: boolean;
   updatedAt: number;
+  taskSurface?: "matrix" | "home";
 }
 
 const Task = ({
@@ -26,9 +32,11 @@ const Task = ({
   isCompleted,
   isSelected,
   updatedAt,
+  taskSurface = "home",
 }: TaskProps) => {
   const toggleTaskCompletion = useToggleTaskCompletion();
   const updateTask = useUpdateTask();
+  const subtaskCount = useSubtaskCount(id);
 
   const [isEditing, setIsEditing] = useState(false);
   const titleRef = useRef(title);
@@ -65,6 +73,12 @@ const Task = ({
       if (
         e.target instanceof HTMLElement &&
         (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON")
+      ) {
+        return;
+      }
+      if (
+        e.target instanceof Element &&
+        e.target.closest("[data-task-click-ignore]")
       ) {
         return;
       }
@@ -223,53 +237,75 @@ const Task = ({
       tabIndex={0}
       data-dragging={isDragging}
       onClick={handleClick}
-      className={`task bg-base-100 mr-3 flex items-center justify-between gap-1 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
+      className={`task bg-base-100 mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
     >
-      <div className="flex items-center gap-2">
-        <div
-          ref={handleRef}
-          className="cursor-grab"
-          aria-label="Drag to reorder"
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="currentColor"
-            className="opacity-40"
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex min-w-0 items-center gap-2">
+          <div
+            ref={handleRef}
+            className="cursor-grab"
+            aria-label="Drag to reorder"
           >
-            <circle cx="3" cy="2" r="1" />
-            <circle cx="9" cy="2" r="1" />
-            <circle cx="3" cy="6" r="1" />
-            <circle cx="9" cy="6" r="1" />
-            <circle cx="3" cy="10" r="1" />
-            <circle cx="9" cy="10" r="1" />
-          </svg>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="currentColor"
+              className="opacity-40"
+            >
+              <circle cx="3" cy="2" r="1" />
+              <circle cx="9" cy="2" r="1" />
+              <circle cx="3" cy="6" r="1" />
+              <circle cx="9" cy="6" r="1" />
+              <circle cx="3" cy="10" r="1" />
+              <circle cx="9" cy="10" r="1" />
+            </svg>
+          </div>
+
+          <input
+            className="accent-primary-content/25"
+            type="checkbox"
+            checked={isCompleted}
+            onChange={() => toggleTaskCompletion(id, !isCompleted)}
+          />
+
+          <p
+            className={`${taskSurface === "matrix" ? "min-w-0 truncate" : ""} ${isCompleted ? "text-base-content/50 line-through" : ""}`.trim()}
+          >
+            {title}
+          </p>
+
+          {description && (
+            <p
+              className={
+                taskSurface === "matrix"
+                  ? "truncate text-sm opacity-70"
+                  : "text-sm opacity-70"
+              }
+            >
+              {description}
+            </p>
+          )}
         </div>
 
-        <input
-          className="accent-primary-content/25"
-          type="checkbox"
-          checked={isCompleted}
-          onChange={() => toggleTaskCompletion(id, !isCompleted)}
-        />
-
-        <p className={isCompleted ? "text-base-content/50 line-through" : ""}>
-          {title}
-        </p>
-
-        {description && <p className="text-sm opacity-70">{description}</p>}
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className="text-xs opacity-40"
+            title={new Date(updatedAt).toLocaleString()}
+          >
+            {formatRelativeTime(updatedAt)}
+          </span>
+          <DeleteButton
+            id={id}
+            isCompleted={isCompleted}
+            subtaskCount={subtaskCount}
+          />
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <span
-          className="text-xs opacity-40"
-          title={new Date(updatedAt).toLocaleString()}
-        >
-          {formatRelativeTime(updatedAt)}
-        </span>
-        <DeleteButton id={id} isCompleted={isCompleted} />
-      </div>
+      {taskSurface === "matrix" && (
+        <SubtaskChecklist taskId={id} taskTitle={title} />
+      )}
     </li>
   );
 };

@@ -15,6 +15,7 @@ interface TaskListProps {
   placeholder: string;
   isDragging?: boolean;
   tasks?: TaskData[];
+  taskSurface?: "matrix" | "home";
 }
 
 const TaskList = ({
@@ -24,6 +25,7 @@ const TaskList = ({
   placeholder,
   isDragging = false,
   tasks: previewTasks,
+  taskSurface = "home",
 }: TaskListProps) => {
   const allTasks = useTasks();
   const tasks = (previewTasks ?? allTasks).filter(
@@ -31,7 +33,10 @@ const TaskList = ({
   );
 
   return (
-    <ul className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4">
+    <ul
+      tabIndex={-1}
+      className="tasks-container__task-list flex flex-col gap-4 overflow-auto pt-1 pr-1 pb-4 pl-4"
+    >
       {columnCategory !== "uncategorised" && inputShown && (
         <div className="mr-3">
           <NewTaskInput
@@ -68,6 +73,7 @@ const TaskList = ({
             isSelected={isSelected}
             updatedAt={updatedAt}
             index={index}
+            taskSurface={taskSurface}
           />
         ),
       )}

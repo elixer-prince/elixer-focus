@@ -18,20 +18,39 @@ import {
   validateRecurrenceRule,
 } from "@/features/calendar/utils/calendar-recurrence";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import type { Subtask } from "@/features/tasks/types/subtask";
+import {
+  assertValidSubtasks,
+  getSubtasksForParent,
+  removeSubtaskTree,
+  reorderSubtasks,
+} from "@/features/tasks/utils/subtask-tree";
+import { getCurrentTimestamp } from "@/utils/date";
 import { subDays } from "date-fns";
 import toast from "react-hot-toast";
 
 const LOCK_NAME = "elixer-focus-calendar-coordinator";
 const CHANNEL_NAME = "elixer-focus-calendar";
 const TASKS_STORAGE_KEY = "tasks-storage";
+const SUBTASKS_STORAGE_KEY = "subtasks-storage";
 const CALENDAR_STORAGE_KEY = "calendar-storage";
 const TASKS_STORAGE_VERSION = 4;
+const SUBTASKS_STORAGE_VERSION = 1;
 const CALENDAR_STORAGE_VERSION = 2;
+const LEGACY_SUBTASK_OWNER_ERROR =
+  "Subtasks are unavailable while an older tab owns the coordinator. Refresh that tab to continue.";
 
 type TaskStateHandler = {
   apply: (tasks: Task[]) => void;
   get: () => Task[];
   rehydrate: () => Promise<void>;
+};
+
+export type SubtaskStateHandler = {
+  apply: (subtasks: Subtask[]) => void;
+  get: () => Subtask[];
+  rehydrate: () => Promise<void>;
+  setCoordinatorSupportsSubtasks: (supported: boolean | null) => void;
 };
 
 export type CalendarStateHandler = {
@@ -61,6 +80,25 @@ export type CalendarCoordinatorCommand =
   | { type: "toggle-task-completion"; taskId: string; completed: boolean }
   | { type: "set-tasks"; tasks: Task[] }
   | { type: "reorder-tasks"; tasks: Task[] }
+  | {
+      type: "add-subtask";
+      taskId: string;
+      parentSubtaskId: string | null;
+      title: string;
+    }
+  | { type: "update-subtask"; subtaskId: string; title: string }
+  | {
+      type: "toggle-subtask-completion";
+      subtaskId: string;
+      completed: boolean;
+    }
+  | { type: "remove-subtask"; subtaskId: string }
+  | {
+      type: "reorder-subtasks";
+      subtaskId: string;
+      targetSubtaskId: string | null;
+      before: boolean;
+    }
   | {
       type: "schedule-task";
       taskId: string;
@@ -124,7 +162,9 @@ export type CalendarCoordinatorResult = {
 
 export type CalendarSnapshot = {
   tasks: Task[];
+  subtasks: Subtask[];
   calendar: CalendarData;
+  supportsSubtasks?: boolean;
 };
 
 type CoordinatorMessage =
@@ -140,28 +180,36 @@ type QueuedCommand = {
 };
 
 let taskStateHandler: TaskStateHandler | null = null;
+let subtaskStateHandler: SubtaskStateHandler | null = null;
 let calendarStateHandler: CalendarStateHandler | null = null;
 
 export const registerTaskStateHandler = (handler: TaskStateHandler) => {
   taskStateHandler = handler;
 };
 
+export const registerSubtaskStateHandler = (handler: SubtaskStateHandler) => {
+  subtaskStateHandler = handler;
+};
+
 export const registerCalendarStateHandler = (handler: CalendarStateHandler) => {
   calendarStateHandler = handler;
 };
 
-let activeCoordinator: {
+type ActiveCoordinator = {
   channel: BroadcastChannel | null;
   disposed: boolean;
   isOwner: boolean;
   ready: boolean;
   hasRemoteState: boolean;
+  coordinatorSupportsSubtasks: boolean | null;
   supported: boolean;
   releaseLock: (() => void) | null;
   commandQueue: Promise<void>;
   queuedCommands: QueuedCommand[];
   pendingCommands: Map<string, QueuedCommand>;
-} | null = null;
+};
+
+let activeCoordinator: ActiveCoordinator | null = null;
 
 const normalizeTasks = (tasks: Task[]): Task[] =>
   tasks.map((task) => ({
@@ -235,12 +283,24 @@ const readLatestSnapshot = (): CalendarSnapshot => {
   const taskState = readStoredValue<{ tasks?: Task[] }>(TASKS_STORAGE_KEY, {
     tasks: taskStateHandler.get(),
   });
+  const tasks = normalizeTasks(taskState.tasks ?? taskStateHandler.get());
+  const taskIds = new Set(tasks.map((task) => task.id));
+  const subtaskState = readStoredValue<{ subtasks?: Subtask[] }>(
+    SUBTASKS_STORAGE_KEY,
+    { subtasks: subtaskStateHandler?.get() ?? [] },
+  );
+  const subtasks = (subtaskState.subtasks ?? []).filter((subtask) =>
+    taskIds.has(subtask.taskId),
+  );
+  assertValidSubtasks(tasks, subtasks);
 
   return {
-    tasks: normalizeTasks(taskState.tasks ?? taskStateHandler.get()),
+    tasks,
+    subtasks,
     calendar: normalizeCalendarData(
       readStoredValue(CALENDAR_STORAGE_KEY, calendarStateHandler.get()),
     ),
+    supportsSubtasks: true,
   };
 };
 
@@ -600,10 +660,11 @@ const editRecurrence = (
 export const applyCalendarCoordinatorCommand = (
   snapshot: CalendarSnapshot,
   command: CalendarCoordinatorCommand,
-  now = Date.now(),
+  now = getCurrentTimestamp(),
 ): CalendarSnapshot => {
   const next = {
     tasks: snapshot.tasks.map((task) => ({ ...task })),
+    subtasks: (snapshot.subtasks ?? []).map((subtask) => ({ ...subtask })),
     calendar: {
       ...snapshot.calendar,
       recurrenceSeries: snapshot.calendar.recurrenceSeries.map((series) => ({
@@ -619,7 +680,9 @@ export const applyCalendarCoordinatorCommand = (
         ...snapshot.calendar.pendingSleepEventMigration,
       ],
     },
+    supportsSubtasks: true,
   };
+  assertValidSubtasks(next.tasks, next.subtasks);
 
   switch (command.type) {
     case "add-task": {
@@ -651,6 +714,9 @@ export const applyCalendarCoordinatorCommand = (
     }
     case "remove-task":
       next.tasks = next.tasks.filter((task) => task.id !== command.taskId);
+      next.subtasks = next.subtasks.filter(
+        (subtask) => subtask.taskId !== command.taskId,
+      );
       next.calendar.recurrenceSeries.forEach((series) => {
         if (series.taskId === command.taskId) series.isActive = false;
       });
@@ -667,6 +733,9 @@ export const applyCalendarCoordinatorCommand = (
     }
     case "set-tasks":
       next.tasks = normalizeTasks(command.tasks);
+      next.subtasks = next.subtasks.filter((subtask) =>
+        next.tasks.some((task) => task.id === subtask.taskId),
+      );
       next.calendar.recurrenceSeries.forEach((series) => {
         const task = next.tasks.find((item) => item.id === series.taskId);
         if (!task || task.archivedAt !== undefined) series.isActive = false;
@@ -687,6 +756,73 @@ export const applyCalendarCoordinatorCommand = (
       ];
       break;
     }
+    case "add-subtask": {
+      const taskExists = next.tasks.some((task) => task.id === command.taskId);
+      if (!taskExists) throw new Error("This task is no longer available.");
+      const title = command.title.trim();
+      if (!title) throw new Error("Enter a subtask title.");
+      if (
+        command.parentSubtaskId !== null &&
+        !next.subtasks.some(
+          (subtask) =>
+            subtask.id === command.parentSubtaskId &&
+            subtask.taskId === command.taskId,
+        )
+      ) {
+        throw new Error("This parent subtask is no longer available.");
+      }
+      const siblings = getSubtasksForParent(
+        next.subtasks,
+        command.taskId,
+        command.parentSubtaskId,
+      );
+      const id = crypto.randomUUID();
+      if (next.subtasks.some((subtask) => subtask.id === id)) {
+        throw new Error("Unable to create a unique subtask.");
+      }
+      next.subtasks.push({
+        id,
+        taskId: command.taskId,
+        parentSubtaskId: command.parentSubtaskId,
+        title,
+        isCompleted: false,
+        position: siblings.length,
+        createdAt: now,
+        updatedAt: now,
+      });
+      break;
+    }
+    case "update-subtask": {
+      const subtask = next.subtasks.find(
+        (item) => item.id === command.subtaskId,
+      );
+      if (!subtask) throw new Error("This subtask is no longer available.");
+      const title = command.title.trim();
+      if (!title) throw new Error("A subtask title cannot be empty.");
+      subtask.title = title;
+      subtask.updatedAt = now;
+      break;
+    }
+    case "toggle-subtask-completion": {
+      const subtask = next.subtasks.find(
+        (item) => item.id === command.subtaskId,
+      );
+      if (!subtask) throw new Error("This subtask is no longer available.");
+      subtask.isCompleted = command.completed;
+      subtask.updatedAt = now;
+      break;
+    }
+    case "remove-subtask":
+      next.subtasks = removeSubtaskTree(next.subtasks, command.subtaskId);
+      break;
+    case "reorder-subtasks":
+      next.subtasks = reorderSubtasks(
+        next.subtasks,
+        command.subtaskId,
+        command.targetSubtaskId,
+        command.before,
+      );
+      break;
     case "schedule-task": {
       const task = next.tasks.find((item) => item.id === command.taskId);
       if (!task) throw new Error("Choose an available task.");
@@ -830,11 +966,13 @@ export const applyCalendarCoordinatorCommand = (
       break;
   }
 
+  assertValidSubtasks(next.tasks, next.subtasks);
   return next;
 };
 
 const persistSnapshot = (snapshot: CalendarSnapshot) => {
   const previousTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+  const previousSubtasks = localStorage.getItem(SUBTASKS_STORAGE_KEY);
   const previousCalendar = localStorage.getItem(CALENDAR_STORAGE_KEY);
 
   try {
@@ -846,6 +984,13 @@ const persistSnapshot = (snapshot: CalendarSnapshot) => {
       }),
     );
     localStorage.setItem(
+      SUBTASKS_STORAGE_KEY,
+      JSON.stringify({
+        state: { subtasks: snapshot.subtasks },
+        version: SUBTASKS_STORAGE_VERSION,
+      }),
+    );
+    localStorage.setItem(
       CALENDAR_STORAGE_KEY,
       JSON.stringify({
         state: snapshot.calendar,
@@ -853,14 +998,17 @@ const persistSnapshot = (snapshot: CalendarSnapshot) => {
       }),
     );
   } catch (error) {
-    try {
-      if (previousTasks === null) localStorage.removeItem(TASKS_STORAGE_KEY);
-      else localStorage.setItem(TASKS_STORAGE_KEY, previousTasks);
-      if (previousCalendar === null)
-        localStorage.removeItem(CALENDAR_STORAGE_KEY);
-      else localStorage.setItem(CALENDAR_STORAGE_KEY, previousCalendar);
-    } catch {
-      // Keep the original write error as the useful failure reason.
+    for (const [key, value] of [
+      [TASKS_STORAGE_KEY, previousTasks],
+      [SUBTASKS_STORAGE_KEY, previousSubtasks],
+      [CALENDAR_STORAGE_KEY, previousCalendar],
+    ] as const) {
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {
+        // Keep the original write error as the useful failure reason.
+      }
     }
     throw error;
   }
@@ -869,10 +1017,29 @@ const persistSnapshot = (snapshot: CalendarSnapshot) => {
 const applySnapshotToStores = (snapshot: CalendarSnapshot) => {
   taskStateHandler?.apply(snapshot.tasks);
   calendarStateHandler?.apply(snapshot.calendar);
+  const supportsSubtasks = snapshot.supportsSubtasks === true;
+  subtaskStateHandler?.setCoordinatorSupportsSubtasks(supportsSubtasks);
+  if (supportsSubtasks) {
+    subtaskStateHandler?.apply(snapshot.subtasks ?? []);
+  }
+};
+
+const initializeSubtaskStorage = () => {
+  if (localStorage.getItem(SUBTASKS_STORAGE_KEY) !== null) return;
+  localStorage.setItem(
+    SUBTASKS_STORAGE_KEY,
+    JSON.stringify({
+      state: { subtasks: subtaskStateHandler?.get() ?? [] },
+      version: SUBTASKS_STORAGE_VERSION,
+    }),
+  );
 };
 
 const getPersistError = (error: unknown) =>
   error instanceof Error ? error.message : "Unable to save calendar changes.";
+
+const isSubtaskCommand = (command: CalendarCoordinatorCommand) =>
+  command.type.includes("subtask");
 
 const executeCommand = async (
   command: CalendarCoordinatorCommand,
@@ -914,6 +1081,13 @@ const flushQueuedCommands = (
 ) => {
   const queued = coordinator.queuedCommands.splice(0);
   queued.forEach(({ id, command, resolve }) => {
+    if (
+      isSubtaskCommand(command) &&
+      coordinator.coordinatorSupportsSubtasks === false
+    ) {
+      resolve({ success: false, error: LEGACY_SUBTASK_OWNER_ERROR });
+      return;
+    }
     if (coordinator.isOwner) {
       void enqueueCommand(coordinator, id, command).then(resolve);
     } else {
@@ -930,6 +1104,13 @@ export const dispatchCalendarCommand = (
   const id = crypto.randomUUID();
 
   const resultPromise = new Promise<CalendarCoordinatorResult>((resolve) => {
+    if (
+      isSubtaskCommand(command) &&
+      coordinator?.coordinatorSupportsSubtasks === false
+    ) {
+      resolve({ success: false, error: LEGACY_SUBTASK_OWNER_ERROR });
+      return;
+    }
     if (!coordinator || !coordinator.supported) {
       void executeCommand(command).then(resolve);
       return;
@@ -948,7 +1129,10 @@ export const dispatchCalendarCommand = (
 
   return resultPromise.then((result) => {
     if (!result.success) {
-      toast.error(`Calendar changes were not saved: ${result.error}`);
+      const changeType = isSubtaskCommand(command)
+        ? "Subtask changes"
+        : "Calendar changes";
+      toast.error(`${changeType} were not saved: ${result.error}`);
     }
     return result;
   });
@@ -961,12 +1145,13 @@ export const startCalendarCoordinator = () => {
     typeof window !== "undefined" &&
     typeof BroadcastChannel !== "undefined" &&
     "locks" in navigator;
-  const coordinator = {
+  const coordinator: ActiveCoordinator = {
     channel: supported ? new BroadcastChannel(CHANNEL_NAME) : null,
     disposed: false,
     isOwner: false,
     ready: false,
     hasRemoteState: false,
+    coordinatorSupportsSubtasks: null,
     supported,
     releaseLock: null as (() => void) | null,
     commandQueue: Promise.resolve(),
@@ -974,10 +1159,20 @@ export const startCalendarCoordinator = () => {
     pendingCommands: new Map<string, QueuedCommand>(),
   };
   activeCoordinator = coordinator;
+  subtaskStateHandler?.setCoordinatorSupportsSubtasks(null);
 
   if (!supported) {
     coordinator.isOwner = true;
     coordinator.ready = true;
+    coordinator.coordinatorSupportsSubtasks = true;
+    subtaskStateHandler?.setCoordinatorSupportsSubtasks(true);
+    try {
+      initializeSubtaskStorage();
+    } catch (error) {
+      toast.error(
+        `Subtask storage was not initialized: ${getPersistError(error)}`,
+      );
+    }
     return () => stopCalendarCoordinator(coordinator);
   }
 
@@ -1013,6 +1208,8 @@ export const startCalendarCoordinator = () => {
     if (message.type === "state") {
       if (!coordinator.isOwner) {
         coordinator.hasRemoteState = true;
+        coordinator.coordinatorSupportsSubtasks =
+          message.snapshot.supportsSubtasks === true;
         applySnapshotToStores(message.snapshot);
         flushQueuedCommands(coordinator);
       }
@@ -1032,8 +1229,10 @@ export const startCalendarCoordinator = () => {
     .request(LOCK_NAME, async () => {
       if (coordinator.disposed) return;
       coordinator.isOwner = true;
+      coordinator.coordinatorSupportsSubtasks = true;
       await Promise.all([
         taskStateHandler?.rehydrate(),
+        subtaskStateHandler?.rehydrate(),
         calendarStateHandler?.rehydrate(),
       ]);
       coordinator.ready = true;
@@ -1057,6 +1256,15 @@ export const startCalendarCoordinator = () => {
       coordinator.supported = false;
       coordinator.isOwner = true;
       coordinator.ready = true;
+      coordinator.coordinatorSupportsSubtasks = true;
+      subtaskStateHandler?.setCoordinatorSupportsSubtasks(true);
+      try {
+        initializeSubtaskStorage();
+      } catch (error) {
+        toast.error(
+          `Subtask storage was not initialized: ${getPersistError(error)}`,
+        );
+      }
       coordinator.pendingCommands.forEach(({ command, resolve }) => {
         void executeCommand(command).then(resolve);
       });

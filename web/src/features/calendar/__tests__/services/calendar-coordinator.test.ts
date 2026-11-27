@@ -3,12 +3,17 @@ import {
   applyCalendarCoordinatorCommand,
   dispatchCalendarCommand,
   startCalendarCoordinator,
+  type CalendarCoordinatorCommand,
   type CalendarSnapshot,
 } from "@/features/calendar/services/calendar-coordinator";
 import { initialCalendarData } from "@/features/calendar/types/calendar";
 import type { Task } from "@/features/tasks/types/task";
 import { useCalendarStore } from "@/features/calendar/stores/calendar-store";
 import { useTasksStore } from "@/features/tasks/stores/tasks-store";
+import {
+  useSubtaskCoordinatorStore,
+  useSubtasksStore,
+} from "@/features/tasks/stores/subtasks-store";
 
 const task: Task = {
   id: "task-1",
@@ -46,13 +51,20 @@ class FakeBroadcastChannel {
 
 const createSnapshot = (): CalendarSnapshot => ({
   tasks: [{ ...task }],
+  subtasks: [],
   calendar: { ...initialCalendarData, scheduledOccurrences: [] },
+  supportsSubtasks: true,
 });
 
 let stopCoordinator: (() => void) | undefined;
 
 beforeEach(() => {
   channels.length = 0;
+  useSubtasksStore.setState({
+    subtasks: [],
+  });
+  useSubtaskCoordinatorStore.setState({ supportsSubtasks: true });
+  localStorage.removeItem("subtasks-storage");
   let id = 0;
   vi.stubGlobal("crypto", {
     randomUUID: () => `generated-${++id}`,
@@ -551,6 +563,284 @@ describe("calendar coordinator commands", () => {
     expect(result.tasks[0].title).toBe("Latest title");
   });
 
+  it("adds, edits, and completes nested subtasks without changing Tasks", () => {
+    const snapshot = createSnapshot();
+    const root = applyCalendarCoordinatorCommand(
+      snapshot,
+      {
+        type: "add-subtask",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "  Review the draft  ",
+      },
+      200,
+    );
+    const child = applyCalendarCoordinatorCommand(
+      root,
+      {
+        type: "add-subtask",
+        taskId: task.id,
+        parentSubtaskId: "generated-1",
+        title: "Check the citations",
+      },
+      300,
+    );
+    const renamed = applyCalendarCoordinatorCommand(
+      child,
+      {
+        type: "update-subtask",
+        subtaskId: "generated-1",
+        title: "  Review the final draft  ",
+      },
+      400,
+    );
+    const completed = applyCalendarCoordinatorCommand(
+      renamed,
+      {
+        type: "toggle-subtask-completion",
+        subtaskId: "generated-2",
+        completed: true,
+      },
+      500,
+    );
+
+    expect(completed.tasks).toEqual(snapshot.tasks);
+    expect(completed.subtasks).toEqual([
+      {
+        id: "generated-1",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Review the final draft",
+        isCompleted: false,
+        position: 0,
+        createdAt: 200,
+        updatedAt: 400,
+      },
+      {
+        id: "generated-2",
+        taskId: task.id,
+        parentSubtaskId: "generated-1",
+        title: "Check the citations",
+        isCompleted: true,
+        position: 0,
+        createdAt: 300,
+        updatedAt: 500,
+      },
+    ]);
+  });
+
+  it("removes a whole subtree and closes the former sibling positions", () => {
+    const snapshot = createSnapshot();
+    snapshot.subtasks = [
+      {
+        id: "first",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "First",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "remove-me",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Remove me",
+        isCompleted: false,
+        position: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "child",
+        taskId: task.id,
+        parentSubtaskId: "remove-me",
+        title: "Child",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "last",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Last",
+        isCompleted: false,
+        position: 2,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ];
+
+    const result = applyCalendarCoordinatorCommand(snapshot, {
+      type: "remove-subtask",
+      subtaskId: "remove-me",
+    });
+
+    expect(result.subtasks.map(({ id, position }) => [id, position])).toEqual([
+      ["first", 0],
+      ["last", 1],
+    ]);
+  });
+
+  it("removes every subtask when its Task is deleted", () => {
+    const snapshot = createSnapshot();
+    snapshot.subtasks = [
+      {
+        id: "root",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Root",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "child",
+        taskId: task.id,
+        parentSubtaskId: "root",
+        title: "Child",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ];
+
+    const result = applyCalendarCoordinatorCommand(snapshot, {
+      type: "remove-task",
+      taskId: task.id,
+    });
+
+    expect(result.tasks).toEqual([]);
+    expect(result.subtasks).toEqual([]);
+  });
+
+  it("reorders only current siblings and rejects stale or cross-parent targets", () => {
+    const snapshot = createSnapshot();
+    snapshot.subtasks = [
+      ...["first", "second", "third"].map((id, position) => ({
+        id,
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: id,
+        isCompleted: false,
+        position,
+        createdAt: 1,
+        updatedAt: 1,
+      })),
+      {
+        id: "nested",
+        taskId: task.id,
+        parentSubtaskId: "first",
+        title: "Nested",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ];
+
+    const moved = applyCalendarCoordinatorCommand(snapshot, {
+      type: "reorder-subtasks",
+      subtaskId: "first",
+      targetSubtaskId: "third",
+      before: false,
+    });
+
+    expect(
+      moved.subtasks
+        .filter((subtask) => subtask.parentSubtaskId === null)
+        .sort((left, right) => left.position - right.position)
+        .map(({ id, position }) => [id, position]),
+    ).toEqual([
+      ["second", 0],
+      ["third", 1],
+      ["first", 2],
+    ]);
+    expect(() =>
+      applyCalendarCoordinatorCommand(moved, {
+        type: "reorder-subtasks",
+        subtaskId: "first",
+        targetSubtaskId: "missing",
+        before: true,
+      }),
+    ).toThrow("no longer available");
+    expect(() =>
+      applyCalendarCoordinatorCommand(moved, {
+        type: "reorder-subtasks",
+        subtaskId: "first",
+        targetSubtaskId: "nested",
+        before: true,
+      }),
+    ).toThrow("same checklist");
+  });
+
+  it("rejects missing parent links and cycles in the stored tree", () => {
+    const snapshot = createSnapshot();
+    expect(() =>
+      applyCalendarCoordinatorCommand(snapshot, {
+        type: "add-subtask",
+        taskId: task.id,
+        parentSubtaskId: "missing-parent",
+        title: "Child",
+      }),
+    ).toThrow("parent subtask is no longer available");
+
+    snapshot.subtasks = [
+      {
+        id: "first",
+        taskId: task.id,
+        parentSubtaskId: "second",
+        title: "First",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "second",
+        taskId: task.id,
+        parentSubtaskId: "first",
+        title: "Second",
+        isCompleted: false,
+        position: 0,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ];
+    expect(() =>
+      applyCalendarCoordinatorCommand(snapshot, {
+        type: "add-task",
+        title: "Another task",
+      }),
+    ).toThrow("cannot contain cycles");
+  });
+
+  it("removes deep trees without recursive traversal", () => {
+    const snapshot = createSnapshot();
+    snapshot.subtasks = Array.from({ length: 2500 }, (_, index) => ({
+      id: `deep-${index}`,
+      taskId: task.id,
+      parentSubtaskId: index === 0 ? null : `deep-${index - 1}`,
+      title: `Subtask ${index}`,
+      isCompleted: false,
+      position: 0,
+      createdAt: 1,
+      updatedAt: 1,
+    }));
+
+    const result = applyCalendarCoordinatorCommand(snapshot, {
+      type: "remove-subtask",
+      subtaskId: "deep-0",
+    });
+
+    expect(result.subtasks).toHaveLength(0);
+  });
+
   it("persists a coordinator command and updates both stores", async () => {
     localStorage.clear();
     useTasksStore.setState({ tasks: [{ ...task }] });
@@ -571,6 +861,255 @@ describe("calendar coordinator commands", () => {
       JSON.parse(localStorage.getItem("calendar-storage")!).state
         .scheduledOccurrences,
     ).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem("subtasks-storage")!)).toEqual({
+      state: { subtasks: [] },
+      version: 1,
+    });
+  });
+
+  it("initializes the versioned Subtask key in single-tab mode", () => {
+    localStorage.clear();
+    vi.stubGlobal("BroadcastChannel", undefined);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: undefined,
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+
+    expect(JSON.parse(localStorage.getItem("subtasks-storage")!)).toEqual({
+      state: { subtasks: [] },
+      version: 1,
+    });
+  });
+
+  it("initializes the Subtask key when Web Locks reject after startup", async () => {
+    localStorage.clear();
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: () => Promise.reject(new Error("Web Locks unavailable")),
+      },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+
+    await waitFor(() =>
+      expect(JSON.parse(localStorage.getItem("subtasks-storage")!)).toEqual({
+        state: { subtasks: [] },
+        version: 1,
+      }),
+    );
+    expect(useSubtaskCoordinatorStore.getState().supportsSubtasks).toBe(true);
+  });
+
+  it("keeps Subtask commands available in single-tab mode", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    vi.stubGlobal("BroadcastChannel", undefined);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: undefined,
+    });
+    stopCoordinator = startCalendarCoordinator();
+
+    const result = await dispatchCalendarCommand({
+      type: "add-subtask",
+      taskId: task.id,
+      parentSubtaskId: null,
+      title: "A one tab Subtask",
+    });
+
+    expect(result.success).toBe(true);
+    expect(useSubtasksStore.getState().subtasks).toHaveLength(1);
+    expect(useSubtaskCoordinatorStore.getState().supportsSubtasks).toBe(true);
+  });
+
+  it("stores subtasks separately without changing Task records", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+
+    const result = await dispatchCalendarCommand({
+      type: "add-subtask",
+      taskId: task.id,
+      parentSubtaskId: null,
+      title: "  Check the draft  ",
+    });
+
+    const storedTasks = JSON.parse(localStorage.getItem("tasks-storage")!);
+    const storedSubtasks = JSON.parse(
+      localStorage.getItem("subtasks-storage")!,
+    );
+    expect(result.success).toBe(true);
+    expect(storedTasks.version).toBe(4);
+    expect(storedTasks.state.tasks).toEqual([task]);
+    expect(storedSubtasks.version).toBe(1);
+    expect(storedSubtasks.state.subtasks).toMatchObject([
+      {
+        id: "generated-2",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Check the draft",
+        isCompleted: false,
+        position: 0,
+      },
+    ]);
+    expect(useTasksStore.getState().tasks).toEqual([task]);
+  });
+
+  it("serializes concurrent sibling moves against the latest Subtask tree", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    useSubtasksStore.setState({
+      subtasks: ["a", "b", "c", "d"].map((id, position) => ({
+        id,
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: id,
+        isCompleted: false,
+        position,
+        createdAt: 1,
+        updatedAt: 1,
+      })),
+    });
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+    await waitFor(() =>
+      expect(useSubtaskCoordinatorStore.getState().supportsSubtasks).toBe(true),
+    );
+
+    const results = await Promise.all([
+      dispatchCalendarCommand({
+        type: "reorder-subtasks",
+        subtaskId: "a",
+        targetSubtaskId: "c",
+        before: false,
+      }),
+      dispatchCalendarCommand({
+        type: "reorder-subtasks",
+        subtaskId: "d",
+        targetSubtaskId: "b",
+        before: true,
+      }),
+    ]);
+
+    expect(results.every((result) => result.success)).toBe(true);
+    expect(
+      useSubtasksStore
+        .getState()
+        .subtasks.slice()
+        .sort((left, right) => left.position - right.position)
+        .map((subtask) => subtask.id),
+    ).toEqual(["d", "b", "c", "a"]);
+  });
+
+  it("does not report subtask commands successful to a legacy coordinator", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    const storedSubtask = {
+      id: "preserved",
+      taskId: task.id,
+      parentSubtaskId: null,
+      title: "Keep me",
+      isCompleted: false,
+      position: 0,
+      createdAt: 1,
+      updatedAt: 1,
+    };
+    useSubtasksStore.setState({ subtasks: [storedSubtask] });
+    const previousSubtasks = localStorage.getItem("subtasks-storage");
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: { request: () => new Promise<void>(() => undefined) },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+    const resultPromise = dispatchCalendarCommand({
+      type: "add-subtask",
+      taskId: task.id,
+      parentSubtaskId: null,
+      title: "A subtask",
+    });
+    channels[0].onmessage?.({
+      data: {
+        type: "state",
+        snapshot: {
+          tasks: [{ ...task }],
+          calendar: { ...initialCalendarData },
+        } as CalendarSnapshot,
+      },
+    } as MessageEvent);
+
+    await expect(resultPromise).resolves.toMatchObject({
+      success: false,
+      error: expect.stringContaining("Refresh that tab"),
+    });
+    expect(useSubtaskCoordinatorStore.getState().supportsSubtasks).toBe(false);
+    expect(useSubtasksStore.getState().subtasks).toEqual([storedSubtask]);
+    expect(localStorage.getItem("subtasks-storage")).toBe(previousSubtasks);
+    expect(
+      channels[0].messages.some(
+        (message) => (message as { type?: string }).type === "command",
+      ),
+    ).toBe(false);
+  });
+
+  it("reconciles subtasks whose Task was deleted by a legacy tab", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    localStorage.setItem(
+      "subtasks-storage",
+      JSON.stringify({
+        state: {
+          subtasks: [
+            {
+              id: "orphan",
+              taskId: task.id,
+              parentSubtaskId: null,
+              title: "Orphaned",
+              isCompleted: false,
+              position: 0,
+              createdAt: 1,
+              updatedAt: 1,
+            },
+          ],
+        },
+        version: 1,
+      }),
+    );
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+
+    await waitFor(() =>
+      expect(channels[0].messages).toContainEqual(
+        expect.objectContaining({ type: "state" }),
+      ),
+    );
+    expect(useSubtasksStore.getState().subtasks).toEqual([]);
+    expect(
+      JSON.parse(localStorage.getItem("subtasks-storage")!).state.subtasks,
+    ).toEqual([]);
   });
 
   it("holds the Web Lock while persisting and broadcasting owner commands", async () => {
@@ -695,4 +1234,101 @@ describe("calendar coordinator commands", () => {
       JSON.parse(localStorage.getItem("calendar-storage")!).state,
     ).toHaveProperty("scheduledOccurrences", []);
   });
+
+  it("keeps prior state when the Subtask storage write fails", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    const previousTasks = localStorage.getItem("tasks-storage");
+    const previousCalendar = localStorage.getItem("calendar-storage");
+    const originalSetItem = Storage.prototype.setItem;
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(function (
+      this: Storage,
+      key: string,
+      value: string,
+    ) {
+      if (key === "subtasks-storage") throw new Error("storage is full");
+      originalSetItem.call(this, key, value);
+    });
+
+    const result = await dispatchCalendarCommand({
+      type: "add-subtask",
+      taskId: task.id,
+      parentSubtaskId: null,
+      title: "Retry me",
+    });
+
+    expect(result.success).toBe(false);
+    expect(useSubtasksStore.getState().subtasks).toEqual([]);
+    expect(localStorage.getItem("tasks-storage")).toBe(previousTasks);
+    expect(localStorage.getItem("calendar-storage")).toBe(previousCalendar);
+    expect(localStorage.getItem("subtasks-storage")).toBeNull();
+  });
+
+  it.each([
+    [
+      "edit",
+      {
+        type: "update-subtask",
+        subtaskId: "first",
+        title: "Renamed",
+      },
+    ],
+    ["delete", { type: "remove-subtask", subtaskId: "first" }],
+    [
+      "reorder",
+      {
+        type: "reorder-subtasks",
+        subtaskId: "first",
+        targetSubtaskId: "second",
+        before: false,
+      },
+    ],
+  ] satisfies [string, CalendarCoordinatorCommand][])(
+    "does not apply a failed Subtask %s",
+    async (_operation, command) => {
+      localStorage.clear();
+      useTasksStore.setState({ tasks: [{ ...task }] });
+      useCalendarStore.setState({ ...initialCalendarData });
+      const previousSubtasks = [
+        {
+          id: "first",
+          taskId: task.id,
+          parentSubtaskId: null,
+          title: "First",
+          isCompleted: false,
+          position: 0,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+        {
+          id: "second",
+          taskId: task.id,
+          parentSubtaskId: null,
+          title: "Second",
+          isCompleted: false,
+          position: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      ];
+      useSubtasksStore.setState({ subtasks: previousSubtasks });
+      const previousStorage = localStorage.getItem("subtasks-storage");
+      const originalSetItem = Storage.prototype.setItem;
+      vi.spyOn(Storage.prototype, "setItem").mockImplementation(function (
+        this: Storage,
+        key: string,
+        value: string,
+      ) {
+        if (key === "subtasks-storage") throw new Error("storage is full");
+        originalSetItem.call(this, key, value);
+      });
+
+      const result = await dispatchCalendarCommand(command);
+
+      expect(result.success).toBe(false);
+      expect(useSubtasksStore.getState().subtasks).toEqual(previousSubtasks);
+      expect(localStorage.getItem("subtasks-storage")).toBe(previousStorage);
+    },
+  );
 });
