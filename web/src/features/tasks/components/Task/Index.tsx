@@ -1,16 +1,24 @@
+import { Badge, Input } from "@/components/ui";
 import DeleteButton from "@/features/tasks/components/Task/DeleteButton";
 import SubtaskChecklist from "@/features/tasks/components/Task/SubtaskChecklist";
+import {
+  formatDueAt,
+  formatDueAtForInput,
+  parseDueAtInput,
+} from "@/features/tasks/utils/task-due-date";
 import {
   useSubtaskCount,
   useToggleTaskCompletion,
   useUpdateTask,
 } from "@/stores";
+import type { TaskUpdate } from "@/features/tasks/types/task";
 import { formatRelativeTime } from "@/utils/date";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 const DOUBLE_CLICK_TIMEOUT = 300;
 const TASK_EXIT_DURATION_MS = 200;
+const MAX_TIMEOUT_DELAY_MS = 2_147_483_647;
 
 export type TaskCompletionTransition = {
   status?: "pending" | "exiting";
@@ -33,6 +41,7 @@ interface TaskProps {
   isCompleted: boolean;
   isSelected: boolean;
   updatedAt: number;
+  dueAt?: number;
   isSortingDisabled?: boolean;
   taskSurface?: "matrix" | "home" | "archive";
   completionTransition?: TaskCompletionTransition;
@@ -47,6 +56,7 @@ const Task = ({
   isCompleted,
   isSelected,
   updatedAt,
+  dueAt,
   isSortingDisabled = false,
   taskSurface = "home",
   completionTransition,
@@ -54,10 +64,15 @@ const Task = ({
   const toggleTaskCompletion = useToggleTaskCompletion();
   const updateTask = useUpdateTask();
   const subtaskCount = useSubtaskCount(id);
+  const dueDateInputId = useId();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [editDueAt, setEditDueAt] = useState("");
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
   const titleRef = useRef(title);
   const descriptionRef = useRef(description);
+  const dueAtRef = useRef(dueAt);
+  const editDueAtInitialRef = useRef("");
   const [editTitle, setEditTitle] = useState(title);
   const [editDescription, setEditDescription] = useState(description || "");
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -70,6 +85,7 @@ const Task = ({
   // Keep refs in sync with latest props on every render
   titleRef.current = title;
   descriptionRef.current = description;
+  dueAtRef.current = dueAt;
 
   const { ref, isDragging } = useSortable({
     id,
@@ -107,10 +123,28 @@ const Task = ({
     return () => window.clearTimeout(timeoutId);
   }, [completionTransition?.status, id]);
 
+  useEffect(() => {
+    if (dueAt === undefined || isCompleted || currentTime > dueAt) return;
+
+    const delay = Math.max(dueAt - Date.now() + 1, 0);
+    const timeoutId = window.setTimeout(
+      () => setCurrentTime(Date.now()),
+      Math.min(delay, MAX_TIMEOUT_DELAY_MS),
+    );
+
+    return () => window.clearTimeout(timeoutId);
+  }, [currentTime, dueAt, isCompleted]);
+
   const startEditing = useCallback(() => {
     setIsEditing(true);
     setEditTitle(titleRef.current);
     setEditDescription(descriptionRef.current || "");
+    const dueAtValue =
+      dueAtRef.current === undefined
+        ? ""
+        : formatDueAtForInput(dueAtRef.current);
+    editDueAtInitialRef.current = dueAtValue;
+    setEditDueAt(dueAtValue);
   }, []);
 
   const handleClick = useCallback(
@@ -166,16 +200,26 @@ const Task = ({
     if (!trimmedTitle) {
       return;
     }
-    const result = await updateTask(id, {
+    const updates: TaskUpdate = {
       title: trimmedTitle,
       description: editDescription.trim() || undefined,
-    });
+    };
+    if (editDueAt !== editDueAtInitialRef.current) {
+      updates.dueAt = parseDueAtInput(editDueAt);
+    }
+    const result = await updateTask(id, updates);
     if (result?.success !== false) setIsEditing(false);
-  }, [editTitle, editDescription, id, updateTask]);
+  }, [editTitle, editDescription, editDueAt, id, updateTask]);
 
   const cancelEdit = useCallback(() => {
     setEditTitle(titleRef.current);
     setEditDescription(descriptionRef.current || "");
+    const dueAtValue =
+      dueAtRef.current === undefined
+        ? ""
+        : formatDueAtForInput(dueAtRef.current);
+    editDueAtInitialRef.current = dueAtValue;
+    setEditDueAt(dueAtValue);
     setIsEditing(false);
   }, []);
 
@@ -270,18 +314,38 @@ const Task = ({
             rows={2}
           />
         </div>
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="min-w-0 flex-1">
+            <Input
+              id={dueDateInputId}
+              label="Due date and time"
+              type="datetime-local"
+              inputSize="sm"
+              value={editDueAt}
+              onChange={(event) => setEditDueAt(event.target.value)}
+              className="bg-base-100 min-h-11 w-full"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setEditDueAt("")}
+            className="btn btn-ghost btn-xs min-h-11 px-3"
+          >
+            Clear due date
+          </button>
+        </div>
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={() => cancelEditRef.current()}
-            className="btn btn-ghost btn-xs"
+            className="btn btn-ghost btn-xs min-h-11 px-3"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={saveEdit}
-            className="btn btn-primary btn-xs"
+            className="btn btn-primary btn-xs min-h-11 px-3"
           >
             Save
           </button>
@@ -374,6 +438,19 @@ const Task = ({
           />
         </div>
       </div>
+
+      {dueAt !== undefined && !isCompleted && taskSurface !== "archive" && (
+        <div className="text-base-content/70 flex items-center gap-2 text-sm">
+          <time dateTime={new Date(dueAt).toISOString()}>
+            Due {formatDueAt(dueAt)}
+          </time>
+          {currentTime > dueAt && (
+            <Badge color="error" size="sm">
+              Overdue
+            </Badge>
+          )}
+        </div>
+      )}
 
       {taskSurface !== "home" && (
         <SubtaskChecklist taskId={id} taskTitle={title} />

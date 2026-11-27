@@ -16,6 +16,10 @@ import {
   TASK_CATEGORY_ORDER,
 } from "@/features/tasks/utils/task-archive";
 import { filterTasksByQuery } from "@/features/tasks/utils/task-search";
+import {
+  sortTasksByDueAt,
+  type TaskSortMode,
+} from "@/features/tasks/utils/task-due-date";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
@@ -62,6 +66,7 @@ const TasksRoute = () => {
   const [exitingTaskIds, setExitingTaskIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const [sortMode, setSortMode] = useState<TaskSortMode>("manual");
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
@@ -75,10 +80,12 @@ const TasksRoute = () => {
   const reorderSubtasks = useReorderSubtasks();
   const [isDragging, setIsDragging] = useState(false);
   const isSearchActive = searchQuery.trim().length > 0;
-  const visibleTasks = filterTasksByQuery(
+  const filteredTasks = filterTasksByQuery(
     getActiveTasks(previewTasks ?? tasks),
     searchQuery,
   );
+  const visibleTasks =
+    sortMode === "due-date" ? sortTasksByDueAt(filteredTasks) : filteredTasks;
   const completedTaskGroups = getCompletedTaskGroups(tasks);
 
   const handleTaskExitStart = useCallback((id: string) => {
@@ -219,17 +226,19 @@ const TasksRoute = () => {
     <div
       ref={taskFocusScopeRef}
       data-task-focus-scope="matrix"
-      className="p-12 max-sm:px-4"
+      className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
       <TaskPageHeader
         isDragging={isDragging}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        sortMode={sortMode}
+        onSortModeChange={setSortMode}
       />
 
       {isSearchActive && visibleTasks.length === 0 && (
         <p
-          className="task-panel text-base-content/70 mx-auto mt-4 max-w-100 text-center"
+          className="task-panel rounded-box border-base-content/15 bg-base-200 text-base-content/70 mx-auto mt-6 w-full max-w-5xl border p-4 text-center shadow-sm"
           role="status"
         >
           No tasks match “{searchQuery.trim()}”.
@@ -265,25 +274,27 @@ const TasksRoute = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="tasks-container mt-8 flex flex-col items-center gap-8">
-          <Column
-            title="Uncategorised"
-            category="uncategorised"
-            inputPlaceholder=""
-            isDragging={isDragging}
-            isSortingDisabled={isSearchActive}
-            tasks={visibleTasks}
-            taskSurface="matrix"
-            onTaskExitStart={handleTaskExitStart}
-            onTaskExitEnd={handleTaskExitEnd}
-          />
-          <div className="tasks-row flex flex-wrap justify-center gap-8">
+        <section className="mt-8 space-y-6" aria-label="Task categories">
+          <div className="mx-auto w-full max-w-3xl">
+            <Column
+              title="Uncategorised"
+              category="uncategorised"
+              inputPlaceholder=""
+              isDragging={isDragging}
+              isSortingDisabled={isSearchActive || sortMode === "due-date"}
+              tasks={visibleTasks}
+              taskSurface="matrix"
+              onTaskExitStart={handleTaskExitStart}
+              onTaskExitEnd={handleTaskExitEnd}
+            />
+          </div>
+          <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
             <Column
               title="Urgent and Important"
               category="urgent-important"
               inputPlaceholder="Finish assignment due in an hour..."
               isDragging={isDragging}
-              isSortingDisabled={isSearchActive}
+              isSortingDisabled={isSearchActive || sortMode === "due-date"}
               tasks={visibleTasks}
               taskSurface="matrix"
               onTaskExitStart={handleTaskExitStart}
@@ -294,20 +305,18 @@ const TasksRoute = () => {
               category="not-urgent-important"
               inputPlaceholder="Practice Spanish for 30 minutes..."
               isDragging={isDragging}
-              isSortingDisabled={isSearchActive}
+              isSortingDisabled={isSearchActive || sortMode === "due-date"}
               tasks={visibleTasks}
               taskSurface="matrix"
               onTaskExitStart={handleTaskExitStart}
               onTaskExitEnd={handleTaskExitEnd}
             />
-          </div>
-          <div className="tasks-row flex flex-wrap justify-center gap-8">
             <Column
               title="Urgent but Not Important"
               category="urgent-not-important"
               inputPlaceholder="Wash the dishes..."
               isDragging={isDragging}
-              isSortingDisabled={isSearchActive}
+              isSortingDisabled={isSearchActive || sortMode === "due-date"}
               tasks={visibleTasks}
               taskSurface="matrix"
               onTaskExitStart={handleTaskExitStart}
@@ -318,14 +327,14 @@ const TasksRoute = () => {
               category="not-urgent-not-important"
               inputPlaceholder="Watch Netflix..."
               isDragging={isDragging}
-              isSortingDisabled={isSearchActive}
+              isSortingDisabled={isSearchActive || sortMode === "due-date"}
               tasks={visibleTasks}
               taskSurface="matrix"
               onTaskExitStart={handleTaskExitStart}
               onTaskExitEnd={handleTaskExitEnd}
             />
           </div>
-        </div>
+        </section>
         <TaskArchive
           groups={completedTaskGroups}
           hiddenTaskIds={exitingTaskIds}

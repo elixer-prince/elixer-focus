@@ -1,4 +1,8 @@
 import Task from "@/features/tasks/components/Task/Index";
+import {
+  formatDueAt,
+  formatDueAtForInput,
+} from "@/features/tasks/utils/task-due-date";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { useCallback, useState } from "react";
 
@@ -54,6 +58,7 @@ vi.mock("@/stores", () => ({
 }));
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.clearAllMocks();
   mockUpdateTask.mockClear();
   mockToggleTaskCompletion.mockClear();
@@ -81,6 +86,86 @@ describe("Task", () => {
     const task = screen.getByRole("listitem");
 
     expect(task).toBeInTheDocument();
+  });
+
+  it("shows a localized due date on active tasks", () => {
+    const dueAt = new Date(2030, 0, 15, 14, 30).getTime();
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="Task with a deadline"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+        dueAt={dueAt}
+      />,
+    );
+
+    expect(screen.getByText(`Due ${formatDueAt(dueAt)}`)).toBeInTheDocument();
+    expect(screen.queryByText("Overdue")).not.toBeInTheDocument();
+  });
+
+  it("does not show a deadline for undated tasks or completed archive tasks", () => {
+    const { rerender } = render(
+      <Task
+        index={0}
+        id="task-1"
+        title="Undated task"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+      />,
+    );
+
+    expect(screen.queryByText(/^Due /)).not.toBeInTheDocument();
+
+    rerender(
+      <Task
+        index={0}
+        id="task-1"
+        title="Completed task"
+        category="urgent-important"
+        isCompleted
+        isSelected={false}
+        updatedAt={Date.now()}
+        dueAt={Date.now() - 1}
+        taskSurface="archive"
+      />,
+    );
+
+    expect(screen.queryByText("Overdue")).not.toBeInTheDocument();
+  });
+
+  it("marks an active task overdue when its deadline passes", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(0));
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="Task nearing deadline"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={0}
+        dueAt={1000}
+      />,
+    );
+
+    expect(screen.queryByText("Overdue")).not.toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.queryByText("Overdue")).not.toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(screen.getByText("Overdue")).toBeInTheDocument();
   });
 
   it("should disable sorting while task filtering is active", () => {
@@ -437,6 +522,69 @@ describe("Task", () => {
       expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
         title: "Updated Title",
         description: undefined,
+      });
+    });
+
+    it("saves the selected local due date and time as an instant", async () => {
+      render(
+        <Task
+          index={0}
+          id="task-1"
+          title="Set a deadline"
+          category="urgent-important"
+          isCompleted={false}
+          isSelected={false}
+          updatedAt={Date.now()}
+        />,
+      );
+
+      fireEvent.click(screen.getByText("Set a deadline"));
+      fireEvent.click(screen.getByText("Set a deadline"));
+      fireEvent.change(screen.getByLabelText("Due date and time"), {
+        target: { value: "2030-01-15T14:30" },
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Save" }));
+        await Promise.resolve();
+      });
+
+      expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
+        title: "Set a deadline",
+        description: undefined,
+        dueAt: new Date("2030-01-15T14:30").getTime(),
+      });
+    });
+
+    it("clears an existing due date from the inline editor", async () => {
+      const dueAt = new Date(2030, 0, 15, 14, 30).getTime();
+      render(
+        <Task
+          index={0}
+          id="task-1"
+          title="Clear a deadline"
+          category="urgent-important"
+          isCompleted={false}
+          isSelected={false}
+          updatedAt={Date.now()}
+          dueAt={dueAt}
+        />,
+      );
+
+      fireEvent.click(screen.getByText("Clear a deadline"));
+      fireEvent.click(screen.getByText("Clear a deadline"));
+      expect(screen.getByLabelText("Due date and time")).toHaveValue(
+        formatDueAtForInput(dueAt),
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Clear due date" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Save" }));
+        await Promise.resolve();
+      });
+
+      expect(mockUpdateTask).toHaveBeenCalledWith("task-1", {
+        title: "Clear a deadline",
+        description: undefined,
+        dueAt: null,
       });
     });
 

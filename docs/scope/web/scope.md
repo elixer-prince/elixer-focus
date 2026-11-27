@@ -54,7 +54,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | done        |
 | 37  | Task search and filtering          | Slice 3 (pages)       | done        |
 | 38  | Task completion animation and archive | Slice 3 (pages)   | done        |
-| 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
+| 39  | Task due dates and priority        | Slice 3 (pages)       | done        |
 | 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
 | 14  | Auth (login/signup)                | Slice 4 (auth)        | in-progress |
 | 15  | Onboarding flow                    | Slice 4 (auth)        | in-progress |
@@ -559,13 +559,20 @@ Add a slide out animation when a task is completed. Move completed tasks to a co
 
 code in `web/src/features/tasks/utils/task-archive.ts`, `web/src/features/tasks/components/TaskArchive.tsx`, `web/src/features/tasks/components/Task/Index.tsx`, `web/src/features/tasks/components/Column/TaskList.tsx`, `web/src/app/routes/my/Tasks.tsx`, `web/src/app/routes/(root)/Index.tsx`, and `web/e2e/tasks.spec.ts`
 
-### 39. Task due dates and priority · planned
+### 39. Task due dates and priority · done
 
 Add an optional due date field to the Task type with visual indicators (e.g., red border for overdue). Makes the Eisenhower matrix more actionable.
 
 **Done when:** tasks can have due dates, overdue tasks are visually highlighted, and tasks can be sorted by due date.
 
-- [ ] Build it: `/develop task due dates and priority`
+- [x] Design it (spec): `/architect task due dates and priority`
+      Spec: [0015](../../specs/web/0015-task-due-dates-priority/index.md)
+- [x] Build it: `/develop task due dates and priority`
+  - [x] Add optional deadline data and version 5 coordinator persistence (AC-1, AC-3)
+  - [x] Add local deadline editing and active card indicators (AC-2, AC-4, AC-5, AC-6)
+  - [x] Add temporary due date sorting and preserve manual order (AC-7, AC-8)
+
+code in `web/src/features/tasks/types/task.ts`, `web/src/features/tasks/utils/task-due-date.ts`, `web/src/features/tasks/stores/tasks-store.ts`, `web/src/features/calendar/services/calendar-coordinator.ts`, `web/src/features/tasks/components/Task/Index.tsx`, `web/src/features/tasks/components/Column/TaskList.tsx`, `web/src/features/tasks/components/TaskPageHeader.tsx`, and `web/src/app/routes/my/Tasks.tsx`
 
 ### 34. Adaptive duration logic · planned
 

@@ -17,7 +17,11 @@ import {
   getRecurrenceDatesInRange,
   validateRecurrenceRule,
 } from "@/features/calendar/utils/calendar-recurrence";
-import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import type {
+  Task,
+  TaskCategory,
+  TaskUpdate,
+} from "@/features/tasks/types/task";
 import type { Subtask } from "@/features/tasks/types/subtask";
 import {
   assertValidSubtasks,
@@ -34,7 +38,7 @@ const CHANNEL_NAME = "elixer-focus-calendar";
 const TASKS_STORAGE_KEY = "tasks-storage";
 const SUBTASKS_STORAGE_KEY = "subtasks-storage";
 const CALENDAR_STORAGE_KEY = "calendar-storage";
-const TASKS_STORAGE_VERSION = 4;
+const TASKS_STORAGE_VERSION = 5;
 const SUBTASKS_STORAGE_VERSION = 1;
 const CALENDAR_STORAGE_VERSION = 2;
 const LEGACY_SUBTASK_OWNER_ERROR =
@@ -69,12 +73,7 @@ export type CalendarCoordinatorCommand =
   | {
       type: "update-task";
       taskId: string;
-      updates: Partial<
-        Pick<
-          Task,
-          "title" | "description" | "defaultDurationMinutes" | "archivedAt"
-        >
-      >;
+      updates: TaskUpdate;
     }
   | { type: "remove-task"; taskId: string }
   | { type: "toggle-task-completion"; taskId: string; completed: boolean }
@@ -704,7 +703,10 @@ export const applyCalendarCoordinatorCommand = (
     case "update-task": {
       const task = next.tasks.find((item) => item.id === command.taskId);
       if (!task) throw new Error("This task is no longer available.");
-      Object.assign(task, command.updates, { updatedAt: now });
+      const { dueAt, ...taskUpdates } = command.updates;
+      Object.assign(task, taskUpdates, { updatedAt: now });
+      if (dueAt === null) delete task.dueAt;
+      else if (dueAt !== undefined) task.dueAt = dueAt;
       if (task.archivedAt !== undefined) {
         next.calendar.recurrenceSeries.forEach((series) => {
           if (series.taskId === task.id) series.isActive = false;

@@ -2,11 +2,18 @@ import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const renderTaskPageHeader = (searchQuery = "", onSearchChange = vi.fn()) =>
+const renderTaskPageHeader = (
+  searchQuery = "",
+  onSearchChange = vi.fn(),
+  sortMode: "manual" | "due-date" = "manual",
+  onSortModeChange = vi.fn(),
+) =>
   render(
     <TaskPageHeader
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
+      sortMode={sortMode}
+      onSortModeChange={onSortModeChange}
     />,
   );
 
@@ -104,5 +111,16 @@ describe("TaskPageHeader", () => {
     fireEvent.change(searchInput, { target: { value: "focus" } });
 
     expect(onSearchChange).toHaveBeenCalledWith("focus");
+  });
+
+  it("should report when due date sorting is selected", () => {
+    const onSortModeChange = vi.fn();
+    renderTaskPageHeader("", vi.fn(), "manual", onSortModeChange);
+
+    fireEvent.change(screen.getByRole("combobox", { name: /sort tasks/i }), {
+      target: { value: "due-date" },
+    });
+
+    expect(onSortModeChange).toHaveBeenCalledWith("due-date");
   });
 });

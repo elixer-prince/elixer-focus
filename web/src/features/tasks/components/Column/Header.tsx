@@ -1,5 +1,4 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useLocation } from "react-router";
 
 interface ColumnHeaderProps {
   title: string;
@@ -7,6 +6,7 @@ interface ColumnHeaderProps {
   inputShown: boolean;
   setInputShown: Dispatch<SetStateAction<boolean>>;
   isDragging?: boolean;
+  isTaskMatrix?: boolean;
 }
 
 const ColumnHeader = ({
@@ -15,27 +15,26 @@ const ColumnHeader = ({
   inputShown,
   setInputShown,
   isDragging = false,
+  isTaskMatrix = false,
 }: ColumnHeaderProps) => {
-  const location = useLocation();
-
   return (
-    <header className="tasks-container__header flex items-center justify-center gap-2 p-4">
-      <h2 className="tasks-list__heading bg-base-200 sticky top-0 text-center text-2xl font-bold select-none">
+    <header className="tasks-container__header flex items-center justify-between gap-3 p-4">
+      <h2 className="tasks-list__heading bg-base-200 sticky top-0 min-w-0 flex-1 text-left text-lg leading-snug font-semibold select-none sm:text-xl">
         {title} Tasks
       </h2>
 
-      {category !== "uncategorised" && location.pathname === "/tasks" && (
+      {category !== "uncategorised" && isTaskMatrix && (
         <>
           {inputShown ? (
             <button
-              className="cancel-button btn btn-sm btn-soft text-primary-content btn-primary"
+              className="cancel-button btn btn-sm btn-soft btn-primary min-h-11 shrink-0"
               onClick={() => setInputShown(!inputShown)}
             >
               Cancel
             </button>
           ) : (
             <button
-              className="add-task-button btn btn-sm btn-soft text-primary-content btn-primary"
+              className="add-task-button btn btn-sm btn-soft btn-primary min-h-11 shrink-0"
               disabled={isDragging}
               onClick={() => {
                 if (isDragging) return;

@@ -1,16 +1,18 @@
 import Column from "@/features/tasks/components/Column/Index";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
 
-const ColumnMock = ({ pathname = "/tasks" }: { pathname?: string }) => {
+const ColumnMock = ({
+  taskSurface = "matrix",
+}: {
+  taskSurface?: "matrix" | "home";
+}) => {
   return (
-    <MemoryRouter initialEntries={[pathname]}>
-      <Column
-        title="Column Title"
-        category="urgent-important"
-        inputPlaceholder=""
-      />
-    </MemoryRouter>
+    <Column
+      title="Column Title"
+      category="urgent-important"
+      inputPlaceholder=""
+      taskSurface={taskSurface}
+    />
   );
 };
 
@@ -47,7 +49,7 @@ describe("Column", () => {
   });
 
   it("should not render an 'add task' button on the home page", () => {
-    render(<ColumnMock pathname="/" />);
+    render(<ColumnMock taskSurface="home" />);
 
     const addTaskButton = screen.queryByRole("button", {
       name: /add task/i,

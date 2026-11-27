@@ -1,7 +1,12 @@
 import Tasks from "@/app/routes/my/Tasks";
+import { useTasksStore } from "@/features/tasks/stores/tasks-store";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router";
+
+const mockUseSortable = vi.hoisted(() =>
+  vi.fn(() => ({ ref: () => {}, isDragging: false })),
+);
 
 // Mocks
 
@@ -32,6 +37,46 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
       isCompleted: false,
       isSelected: false,
       createdAt: 0,
+    },
+    {
+      id: "5",
+      title: "Later due",
+      category: "urgent-important",
+      isCompleted: false,
+      isSelected: false,
+      createdAt: 0,
+      updatedAt: 0,
+      dueAt: 2_300_000_000_000,
+    },
+    {
+      id: "6",
+      title: "Tie first due",
+      category: "urgent-important",
+      isCompleted: false,
+      isSelected: false,
+      createdAt: 0,
+      updatedAt: 0,
+      dueAt: 2_200_000_000_000,
+    },
+    {
+      id: "7",
+      title: "Earliest due",
+      category: "urgent-important",
+      isCompleted: false,
+      isSelected: false,
+      createdAt: 0,
+      updatedAt: 0,
+      dueAt: 2_100_000_000_000,
+    },
+    {
+      id: "8",
+      title: "Tie second due",
+      category: "urgent-important",
+      isCompleted: false,
+      isSelected: false,
+      createdAt: 0,
+      updatedAt: 0,
+      dueAt: 2_200_000_000_000,
     },
     {
       id: "3",
@@ -100,6 +145,7 @@ vi.mock("@dnd-kit/react/sortable", async (importOriginal) => {
   return {
     ...actual,
     isSortable: vi.fn(() => true),
+    useSortable: mockUseSortable,
   };
 });
 
@@ -194,6 +240,83 @@ describe("Tasks page", () => {
 
     expect(screen.getByText("Task One")).toBeInTheDocument();
     expect(screen.getByText("Task Two")).toBeInTheDocument();
+  });
+
+  it("sorts filtered tasks by due date without changing their manual order", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <Tasks />
+      </MemoryRouter>,
+    );
+
+    const urgentColumn = screen.getByText("Task Two").closest("article");
+    const getUrgentTaskIds = () =>
+      Array.from(
+        urgentColumn?.querySelectorAll<HTMLLIElement>("li[data-task-id]") ?? [],
+      ).map((task) => task.dataset.taskId);
+    const sortControl = screen.getByRole("combobox", { name: /sort tasks/i });
+
+    expect(sortControl).toHaveValue("manual");
+    expect(getUrgentTaskIds()).toEqual(["2", "5", "6", "7", "8"]);
+
+    await user.selectOptions(sortControl, "due-date");
+
+    expect(getUrgentTaskIds()).toEqual(["7", "6", "8", "5", "2"]);
+    expect(mockUseSortable).toHaveBeenCalledWith(
+      expect.objectContaining({ disabled: true }),
+    );
+    expect(useTasksStore.getState().setTasks).not.toHaveBeenCalled();
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: /search tasks/i,
+    });
+    await user.type(searchInput, "due");
+    expect(getUrgentTaskIds()).toEqual(["7", "6", "8", "5"]);
+
+    await user.clear(searchInput);
+    mockUseSortable.mockClear();
+    await user.selectOptions(sortControl, "manual");
+
+    expect(getUrgentTaskIds()).toEqual(["2", "5", "6", "7", "8"]);
+    expect(mockUseSortable).toHaveBeenCalledWith(
+      expect.objectContaining({ disabled: false }),
+    );
+    expect(useTasksStore.getState().tasks.map(({ id }) => id)).toEqual([
+      "1",
+      "2",
+      "5",
+      "6",
+      "7",
+      "8",
+      "3",
+      "4",
+    ]);
+  });
+
+  it("resets the temporary due date sort when the Tasks page is reopened", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <MemoryRouter>
+        <Tasks />
+      </MemoryRouter>,
+    );
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: /sort tasks/i }),
+      "due-date",
+    );
+    unmount();
+
+    render(
+      <MemoryRouter>
+        <Tasks />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("combobox", { name: /sort tasks/i })).toHaveValue(
+      "manual",
+    );
   });
 
   it("should only show tasks in their matching category column", () => {

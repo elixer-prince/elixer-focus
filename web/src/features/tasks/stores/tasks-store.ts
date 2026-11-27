@@ -1,4 +1,8 @@
-import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import type {
+  Task,
+  TaskCategory,
+  TaskUpdate,
+} from "@/features/tasks/types/task";
 import {
   dispatchCalendarCommand,
   registerTaskStateHandler,
@@ -23,15 +27,7 @@ type TaskActions = {
   ) => void;
   removeTask: (id: string) => void;
   toggleTaskCompletion: (id: string, completed: boolean) => void;
-  updateTask: (
-    id: string,
-    updates: Partial<
-      Pick<
-        Task,
-        "title" | "description" | "defaultDurationMinutes" | "archivedAt"
-      >
-    >,
-  ) => void;
+  updateTask: (id: string, updates: TaskUpdate) => void;
 };
 
 export const useTasksStore = create<TaskState & TaskActions>()(
@@ -90,7 +86,10 @@ export const useTasksStore = create<TaskState & TaskActions>()(
         set((state) => {
           const task = state.tasks.find((t) => t.id === id);
           if (task) {
-            Object.assign(task, updates);
+            const { dueAt, ...taskUpdates } = updates;
+            Object.assign(task, taskUpdates);
+            if (dueAt === null) delete task.dueAt;
+            else if (dueAt !== undefined) task.dueAt = dueAt;
             task.updatedAt = getCurrentTimestamp();
           }
         });
@@ -98,7 +97,7 @@ export const useTasksStore = create<TaskState & TaskActions>()(
     })),
     createPersistOptions<TaskState & TaskActions>({
       name: "tasks-storage",
-      version: 4,
+      version: 5,
       migrate: (state, version) => {
         const persistedState = state as { tasks?: Task[] };
         if (version <= 3) {
@@ -188,14 +187,7 @@ export const useToggleTaskCompletion = () =>
 
 export const useUpdateTask = () =>
   useCallback(
-    (
-      id: string,
-      updates: Partial<
-        Pick<
-          Task,
-          "title" | "description" | "defaultDurationMinutes" | "archivedAt"
-        >
-      >,
-    ) => dispatchCalendarCommand({ type: "update-task", taskId: id, updates }),
+    (id: string, updates: TaskUpdate) =>
+      dispatchCalendarCommand({ type: "update-task", taskId: id, updates }),
     [],
   );

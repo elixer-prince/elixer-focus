@@ -36,11 +36,12 @@ const Column = ({
     accept: "task",
     collisionPriority: CollisionPriority.Low,
   });
+  const widthClass = taskSurface === "matrix" ? "max-w-none" : "max-w-92";
 
   return (
     <article
       ref={ref}
-      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 static flex h-fit max-h-60 w-full max-w-92 flex-col overflow-hidden rounded-md border outline-2 outline-transparent transition-colors duration-500 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
+      className={`tasks-container tasks-list hover:outline-primary/75 bg-base-200 border-base-content/25 static flex h-fit max-h-60 w-full ${widthClass} flex-col overflow-hidden rounded-md border shadow-sm outline-2 outline-transparent transition-colors duration-500 ${isDropTarget ? "outline-primary/75 outline-2" : ""}`.trim()}
     >
       <ColumnHeader
         title={title}
@@ -48,6 +49,7 @@ const Column = ({
         inputShown={inputShown}
         setInputShown={setInputShown}
         isDragging={isDragging}
+        isTaskMatrix={taskSurface === "matrix"}
       />
 
       <TaskList

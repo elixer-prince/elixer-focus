@@ -10,6 +10,13 @@ export type Task = {
   completedAt?: number;
   defaultDurationMinutes?: number;
   archivedAt?: number;
+  dueAt?: number;
+};
+
+export type TaskUpdate = Partial<
+  Pick<Task, "title" | "description" | "defaultDurationMinutes" | "archivedAt">
+> & {
+  dueAt?: number | null;
 };
 
 export type TaskCategory =

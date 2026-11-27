@@ -172,6 +172,7 @@ const TaskList = ({
             isCompleted,
             isSelected,
             updatedAt,
+            dueAt,
           },
           index,
         ) => (
@@ -184,6 +185,7 @@ const TaskList = ({
             isCompleted={isCompleted}
             isSelected={isSelected}
             updatedAt={updatedAt}
+            dueAt={dueAt}
             index={index}
             isSortingDisabled={isSortingDisabled}
             taskSurface={taskSurface}

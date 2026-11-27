@@ -166,6 +166,7 @@ const TaskArchive = ({
                       isCompleted={task.isCompleted}
                       isSelected={task.isSelected}
                       updatedAt={task.updatedAt}
+                      dueAt={task.dueAt}
                       index={index}
                       isSortingDisabled
                       taskSurface="archive"

@@ -1,11 +1,5 @@
 import Header from "@/features/tasks/components/Column/Header";
 import { render, screen } from "@testing-library/react";
-import { useLocation } from "react-router";
-import type { Mock } from "vitest";
-
-vi.mock("react-router", () => ({
-  useLocation: vi.fn(),
-}));
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -13,14 +7,13 @@ afterEach(() => {
 
 describe("Column.Header", () => {
   it("should render", () => {
-    (useLocation as Mock).mockReturnValue({ pathname: "/tasks" });
-
     render(
       <Header
         title="Column Header"
         category="urgent-important"
         inputShown={false}
         setInputShown={vi.fn()}
+        isTaskMatrix
       />,
     );
 
@@ -34,6 +27,7 @@ describe("Column.Header", () => {
         category="urgent-important"
         inputShown={false}
         setInputShown={vi.fn()}
+        isTaskMatrix
       />,
     );
 
@@ -50,6 +44,7 @@ describe("Column.Header", () => {
         category="urgent-important"
         inputShown={false}
         setInputShown={vi.fn()}
+        isTaskMatrix
       />,
     );
 
@@ -66,6 +61,7 @@ describe("Column.Header", () => {
         category="urgent-important"
         inputShown
         setInputShown={vi.fn()}
+        isTaskMatrix
       />,
     );
 
@@ -75,9 +71,7 @@ describe("Column.Header", () => {
     expect(cancelButton).toHaveTextContent(/cancel/i);
   });
 
-  it("should not render the add task or cancel button on the home", () => {
-    (useLocation as Mock).mockReturnValue({ pathname: "/" });
-
+  it("should not render matrix actions outside the task matrix", () => {
     render(
       <Header
         title="Column Header"

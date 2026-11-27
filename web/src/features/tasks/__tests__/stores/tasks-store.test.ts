@@ -465,14 +465,35 @@ describe("Tasks Store", () => {
       expect(legacyTask.defaultDurationMinutes).toBe(30);
       expect(customTask.defaultDurationMinutes).toBe(45);
     });
+
+    it("AC-1: keeps version 4 tasks valid and undated when migrating to version 5", async () => {
+      localStorage.clear();
+      localStorage.setItem(
+        "tasks-storage",
+        JSON.stringify({
+          state: { tasks: [createTask("legacy", "Version 4 task")] },
+          version: 4,
+        }),
+      );
+
+      vi.resetModules();
+      const { useTasksStore: ReloadedStore } = await import(
+        "@/features/tasks/stores/tasks-store"
+      );
+
+      expect(ReloadedStore.getState().tasks[0]).not.toHaveProperty("dueAt");
+      const persisted = JSON.parse(localStorage.getItem("tasks-storage")!);
+      expect(persisted.version).toBe(5);
+      expect(persisted.state.tasks[0]).not.toHaveProperty("dueAt");
+    });
   });
 
   describe("persist configuration", () => {
-    it("should declare version 4 in the persist config", () => {
+    it("should declare version 5 in the persist config", () => {
       const stored = localStorage.getItem("tasks-storage");
       expect(stored).not.toBeNull();
       const parsed = JSON.parse(stored!);
-      expect(parsed.version).toBe(4);
+      expect(parsed.version).toBe(5);
     });
 
     it("should include the tasks state in the persisted data", () => {

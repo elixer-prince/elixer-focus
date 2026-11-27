@@ -607,6 +607,67 @@ describe("calendar coordinator commands", () => {
     expect(nextDate.calendar.scheduledOccurrences[0].title).toBe(task.title);
   });
 
+  it("sets and clears a task deadline without changing Calendar state", () => {
+    const snapshot = createSnapshot();
+    snapshot.calendar.recurrenceSeries = [
+      {
+        id: "series-1",
+        taskId: task.id,
+        startDate: "2026-11-23",
+        isActive: true,
+      },
+    ];
+    snapshot.calendar.recurrenceRuleSegments = [
+      {
+        id: "segment-1",
+        seriesId: "series-1",
+        effectiveFrom: "2026-11-23",
+        frequency: "daily",
+        interval: 1,
+      },
+    ];
+    snapshot.calendar.scheduledOccurrences = [
+      {
+        id: "occurrence-1",
+        taskId: task.id,
+        seriesId: "series-1",
+        segmentId: "segment-1",
+        date: "2026-11-23",
+        title: task.title,
+        description: task.description,
+        category: task.category,
+        isCompleted: false,
+        isSkipped: false,
+      },
+    ];
+    const dueAt = 1_900_000_000_000;
+    const setDeadline = applyCalendarCoordinatorCommand(
+      snapshot,
+      {
+        type: "update-task",
+        taskId: task.id,
+        updates: { dueAt },
+      },
+      200,
+    );
+
+    expect(setDeadline.tasks[0].dueAt).toBe(dueAt);
+    expect(setDeadline.calendar).toEqual(snapshot.calendar);
+
+    const clearDeadline = applyCalendarCoordinatorCommand(
+      setDeadline,
+      {
+        type: "update-task",
+        taskId: task.id,
+        updates: { dueAt: null },
+      },
+      300,
+    );
+
+    expect(clearDeadline.tasks[0]).not.toHaveProperty("dueAt");
+    expect(clearDeadline.calendar).toEqual(snapshot.calendar);
+  });
+
   it("applies task reordering without replacing newer task details", () => {
     const snapshot = createSnapshot();
     snapshot.tasks.push({ ...task, id: "task-2", title: "Latest title" });
@@ -1009,7 +1070,7 @@ describe("calendar coordinator commands", () => {
       localStorage.getItem("subtasks-storage")!,
     );
     expect(result.success).toBe(true);
-    expect(storedTasks.version).toBe(4);
+    expect(storedTasks.version).toBe(5);
     expect(storedTasks.state.tasks).toEqual([task]);
     expect(storedSubtasks.version).toBe(1);
     expect(storedSubtasks.state.subtasks).toMatchObject([
@@ -1213,6 +1274,62 @@ describe("calendar coordinator commands", () => {
     );
   });
 
+  it("AC-3: persists and broadcasts task deadline updates at version 5", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+    await waitFor(() =>
+      expect(channels[0].messages).toContainEqual(
+        expect.objectContaining({ type: "state" }),
+      ),
+    );
+
+    const dueAt = 1_900_000_000_000;
+    const setResult = await dispatchCalendarCommand({
+      type: "update-task",
+      taskId: task.id,
+      updates: { dueAt },
+    });
+
+    expect(setResult.success).toBe(true);
+    expect(useTasksStore.getState().tasks[0].dueAt).toBe(dueAt);
+    expect(JSON.parse(localStorage.getItem("tasks-storage")!).version).toBe(5);
+    expect(channels[0].messages).toContainEqual(
+      expect.objectContaining({
+        type: "state",
+        snapshot: expect.objectContaining({
+          tasks: [expect.objectContaining({ dueAt })],
+        }),
+      }),
+    );
+
+    const clearResult = await dispatchCalendarCommand({
+      type: "update-task",
+      taskId: task.id,
+      updates: { dueAt: null },
+    });
+    const storedTask = JSON.parse(localStorage.getItem("tasks-storage")!).state
+      .tasks[0];
+    const latestState = [...channels[0].messages]
+      .reverse()
+      .find((message) => (message as { type?: string }).type === "state") as
+      | { snapshot: CalendarSnapshot }
+      | undefined;
+
+    expect(clearResult.success).toBe(true);
+    expect(storedTask).not.toHaveProperty("dueAt");
+    expect(latestState?.snapshot.tasks[0]).not.toHaveProperty("dueAt");
+  });
+
   it("sends follower commands to the owner and applies its broadcast state", async () => {
     localStorage.clear();
     useTasksStore.setState({ tasks: [] });
@@ -1274,8 +1391,10 @@ describe("calendar coordinator commands", () => {
       (message) => (message as { type?: string }).type === "command",
     ) as { id: string; type: string };
     const completedSnapshot = createSnapshot();
+    const dueAt = 1_900_000_000_000;
     completedSnapshot.tasks[0] = {
       ...completedSnapshot.tasks[0],
+      dueAt,
       isCompleted: true,
       completedAt: 300,
       updatedAt: 300,
@@ -1296,6 +1415,7 @@ describe("calendar coordinator commands", () => {
     expect(useTasksStore.getState().tasks[0]).toMatchObject({
       isCompleted: true,
       completedAt: 300,
+      dueAt,
     });
   });
 
