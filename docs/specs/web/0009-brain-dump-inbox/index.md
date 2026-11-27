@@ -18,7 +18,7 @@ The Brain dump page gives you a quick place to write unstructured thoughts when 
 **Acceptance criteria** (the contract, each criterion is IDed and independently checkable):
 
 - **AC-1**: Opening `/my/brain-dump` in the default app layout shows a page titled `Brain dump`, followed by the helper text `Capture what's on your mind. Sort it out later.`, the capture form, search when thoughts exist, and the saved thought list. The page uses the current design system and works at mobile and desktop widths.
-- **AC-2**: Desktop and mobile navigation show the same page links in the same order: Home, Journal, Brain dump, Calendar, Tasks, Profile. Brain dump appears after Journal and links to `/my/brain-dump`; Journal and Calendar keep their current `/journal` and `/calendar` URLs. The mobile menu otherwise keeps its current appearance and behavior.
+- **AC-2**: Desktop and mobile navigation show the same page links in the same order: Home (`/`), Journal (`/my/journal`), Brain dump (`/my/brain-dump`), Calendar (`/my/calendar`), Tasks (`/my/tasks`), and Profile (`/my/profile`). Brain dump appears after Journal. The mobile menu otherwise keeps its current appearance and behavior.
 - **AC-3**: Each saved thought is an independent `BrainDumpThought` with a unique ID, plain text content, creation and update timestamps, a latest mutation ID, and nullable `userId`. Records persist in a versioned Zustand store in the current browser profile and survive reloads. New records have `userId: null`; no account login or backend is required.
 - **AC-4**: The capture form has one multiline plain text field and an explicit Add button. Enter inserts a line break. The saved value is trimmed at its edges, keeps internal spaces and line breaks, has no per thought length limit, and cannot be empty or whitespace only. Duplicate text is allowed. A successful Add creates one thought, clears and refocuses the field, clears an active search, and makes the new thought visible at the top. A failed save keeps the draft available.
 - **AC-5**: The list loads all saved thoughts without pagination, shows full content and a relative creation time, and sorts by `createdAt` descending. Editing a thought does not change its position. With no saved thoughts, the page shows short guidance below the capture form.
@@ -164,7 +164,7 @@ Follow the Skateboard approach by first shipping the smallest usable whole: a re
 
 **Neutral**:
 
-- The app uses a personal route for Brain dump while existing Journal and Calendar paths remain unchanged for now.
+- Personal pages use the canonical `/my/` paths, and the legacy top level paths redirect as specified in spec 0012.
 - The `userId` field prepares the record shape for later ownership but does not implement account migration.
 
 ## Follow-up
@@ -172,4 +172,4 @@ Follow the Skateboard approach by first shipping the smallest usable whole: a re
 - [ ] Design the broader mobile navigation appearance and behavior as a separate feature. This spec only adds the missing page links and aligns their order.
 - [ ] Design account sync and a safe migration for browser local thoughts before assigning `userId` or sending text to the backend.
 - [ ] Revisit IndexedDB if localStorage quota errors or observed collection size justify a different storage layer.
-- [ ] Coordinate the planned `/my` URL structure for Journal and Profile with this new `/my/brain-dump` route; do not change their current URLs in this feature.
+- [x] Coordinate the `/my/` URL structure for personal pages with this `/my/brain-dump` route. Spec [0012](../0012-personal-url-structure.md) defines the canonical paths and legacy redirects.

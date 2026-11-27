@@ -11,7 +11,7 @@ The mobile menu will become a side drawer that slides over part of the page, rat
 
 The web app has a fixed top bar and a separate desktop sidebar. On mobile, opening the hamburger currently expands the navigation to the full screen, hiding the page underneath. This makes it hard to keep your place while choosing another page.
 
-The mobile page links were brought into line with desktop navigation in spec 0009. This feature is scoped separately as web scope feature 48. It changes the mobile navigation presentation only. The page routes, link order, desktop sidebar, settings link, and music player are outside the change.
+The mobile page links were brought into line with desktop navigation in spec 0009, and spec 0012 later set the canonical personal URLs. This feature is scoped separately as web scope feature 48. It changes the mobile navigation presentation only; route definitions and shared link destinations follow those specs. The link order, desktop sidebar, settings link, and music player are outside this change.
 
 ## Requirements
 
@@ -24,9 +24,9 @@ The mobile page links were brought into line with desktop navigation in spec 000
 
 - **AC-1**: On mobile, the hamburger opens a fixed side drawer that slides in from the left over part of the page. The drawer is out of the document flow, the page does not shift, the drawer does not cover the full screen, and no dark overlay obscures the visible page area.
 - **AC-2**: The top bar remains `5rem` tall while the drawer is open. The drawer begins below the top bar, extends to the bottom of the viewport, and uses a responsive width of `min(18rem, 68vw)`, leaving part of the page visible beside it.
-- **AC-3**: The drawer shows the same page links, labels, destinations, and order as desktop navigation: Home (`/`), Journal (`/journal`), Brain dump (`/my/brain-dump`), Calendar (`/calendar`), Tasks (`/tasks`), and Profile (`/profile`). The active page is visibly identified. Selecting a link navigates to its route and closes the drawer.
+- **AC-3**: The drawer shows the same page links, labels, destinations, and order as desktop navigation: Home (`/`), Journal (`/my/journal`), Brain dump (`/my/brain-dump`), Calendar (`/my/calendar`), Tasks (`/my/tasks`), and Profile (`/my/profile`). The active page is visibly identified. Selecting a link navigates to its route and closes the drawer.
 - **AC-4**: The hamburger exposes its expanded state and the drawer it controls to assistive technology. Escape and a click outside close the drawer, with focus returned to the hamburger when Escape closes it. Keyboard users can reach and activate every link, focus is visible, and the drawer motion is reduced or removed when the user requests reduced motion.
-- **AC-5**: The drawer uses the current theme and design system. The desktop sidebar, route structure, settings link, and music player remain unchanged. The drawer is not shown at the existing desktop breakpoint.
+- **AC-5**: The drawer uses the current theme and design system. This presentation change leaves route definitions, the desktop sidebar, settings link, and music player unchanged. It uses the canonical page destinations in AC-3 and is not shown at the existing desktop breakpoint.
 
 ## Options considered
 
@@ -125,7 +125,7 @@ There are no HTTP endpoints. The navigation uses the existing local state and Re
 - Mobile and desktop use the same six page links in the same order.
 - The drawer does not dim or cover the full page. It is a nonmodal navigation panel, so it does not trap focus or block the visible page area.
 - The hamburger uses `aria-expanded` and `aria-controls`; the drawer is a labelled navigation landmark with semantic links.
-- Desktop navigation, route URLs, settings, and music playback are not changed.
+- Route definitions and desktop navigation behavior are outside this presentation change. The drawer uses the canonical destinations in AC-3 from the shared `defaultLinks` definition.
 - The drawer motion uses transform or opacity, not a transition of all properties, and honors reduced motion.
 
 **Security model**:
