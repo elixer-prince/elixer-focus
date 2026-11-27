@@ -15,23 +15,34 @@ const ThemeSettings = () => {
   };
 
   return (
-    <section className={"size-full"}>
-      <header className={"mb-8"}>
-        <h1 className={"text-primary mb-1 text-xl font-bold"}>
+    <section className={"size-full max-w-6xl"}>
+      <header className={"mb-8 max-w-3xl"}>
+        <h1
+          className={
+            "text-base-content mb-1 text-2xl font-semibold tracking-tight"
+          }
+        >
           Theme Settings
         </h1>
-        <p className={"text-base-content/60 text-sm"}>
+        <p className={"text-base-content/70 text-sm sm:text-base"}>
           Pick a visual theme for the app. Your choice is saved automatically
           and applied across all pages.
         </p>
       </header>
 
-      <div className={"mb-6"}>
+      <div className={"mb-6 max-w-lg"}>
+        <label
+          className="label-text mb-2 block font-medium"
+          htmlFor="theme-search"
+        >
+          Search themes
+        </label>
         <input
+          id="theme-search"
           type={"text"}
           placeholder={"Search themes..."}
           className={
-            "input input-bordered w-full max-w-xs transition-colors duration-500"
+            "input input-bordered w-full transition-colors duration-500"
           }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -39,23 +50,27 @@ const ThemeSettings = () => {
       </div>
 
       {filteredThemes.length === 0 ? (
-        <p className={"text-base-content/50"}>No themes match your search.</p>
-      ) : (
-        <div
-          className={
-            "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-          }
+        <p
+          className="border-base-300 text-base-content/70 rounded-box border border-dashed p-6 text-center"
+          role="status"
         >
-          {filteredThemes.map((theme) => (
-            <ThemeLabel
-              key={theme.value}
-              value={theme.value}
-              onThemeChange={handleThemeChange}
-            >
-              {theme.label}
-            </ThemeLabel>
-          ))}
-        </div>
+          No themes match your search.
+        </p>
+      ) : (
+        <fieldset>
+          <legend className="mb-4 font-semibold">Available themes</legend>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {filteredThemes.map((theme) => (
+              <ThemeLabel
+                key={theme.value}
+                value={theme.value}
+                onThemeChange={handleThemeChange}
+              >
+                {theme.label}
+              </ThemeLabel>
+            ))}
+          </div>
+        </fieldset>
       )}
     </section>
   );

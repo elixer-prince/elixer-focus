@@ -1,16 +1,18 @@
 import NavLogo from "@/features/ui/navigation/NavLogo";
 import LinkContainer from "@/features/ui/navigation/Sidebar/Settings/components/LinkContainer";
-import { GoSidebarExpand } from "react-icons/go";
+import SettingsMobileNavigation from "@/features/ui/navigation/Sidebar/Settings/components/SettingsMobileNavigation";
 
 const Sidebar = () => {
   return (
     // Settings Sidebar
-    <nav className="sm:bg-base-100/25 border-r-base-content/50 fixed top-0 left-0 z-10 w-full items-center border-r px-4 py-5.5 backdrop-blur-sm transition-colors duration-500 select-none max-sm:h-(--navbar-height) max-sm:border-b-2 sm:bottom-0 sm:w-(--sidebar-width)">
-      <header className="mb-6 flex items-center justify-between">
-        <NavLogo />
-
-        <div className="cursor-pointer max-sm:hidden">
-          <GoSidebarExpand size={24} />
+    <nav
+      aria-label="Settings navigation"
+      className="sm:bg-base-100/25 border-r-base-content/50 max-sm:border-b-base-content/50 fixed top-0 left-0 z-10 flex h-(--navbar-height) w-full items-center justify-between border-r border-b px-4 backdrop-blur-sm transition-colors duration-500 select-none sm:bottom-0 sm:block sm:h-auto sm:w-(--sidebar-width) sm:border-b-0 sm:py-5.5"
+    >
+      <header className="flex w-full items-center justify-between max-sm:h-full sm:mb-6">
+        <div className="flex items-center gap-2">
+          <SettingsMobileNavigation />
+          <NavLogo />
         </div>
       </header>
 

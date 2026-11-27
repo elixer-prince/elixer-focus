@@ -247,9 +247,9 @@ const SleepScheduleSettings = () => {
   return (
     <section
       aria-labelledby="sleep-schedule-title"
-      className="card bg-base-200 mt-6 max-w-3xl"
+      className="card border-base-300/60 bg-base-200 mt-6 max-w-3xl border shadow-sm"
     >
-      <div className="card-body p-5">
+      <div className="card-body p-5 sm:p-6">
         <header>
           <h2 className="card-title text-base" id="sleep-schedule-title">
             Sleep schedule

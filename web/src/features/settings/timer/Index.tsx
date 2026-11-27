@@ -19,12 +19,16 @@ const TimerSettingsContent = () => {
   useTimerSettings();
 
   return (
-    <section className={"size-full"}>
-      <header className={"mb-8"}>
-        <h1 className={"text-primary mb-1 text-xl font-bold"}>
+    <section className={"size-full max-w-6xl"}>
+      <header className={"mb-8 max-w-3xl"}>
+        <h1
+          className={
+            "text-base-content mb-1 text-2xl font-semibold tracking-tight"
+          }
+        >
           Timer Settings
         </h1>
-        <p className={"text-base-content/60 text-sm"}>
+        <p className={"text-base-content/70 text-sm sm:text-base"}>
           Configure session durations and choose how many focus sessions happen
           before a long break. Duration changes apply when the timer is idle.
         </p>
@@ -33,7 +37,7 @@ const TimerSettingsContent = () => {
       <div
         className={"mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"}
       >
-        <div className={"card bg-base-200"}>
+        <div className={"card border-base-300/60 bg-base-200 border shadow-sm"}>
           <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Focus</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
@@ -43,7 +47,7 @@ const TimerSettingsContent = () => {
           </div>
         </div>
 
-        <div className={"card bg-base-200"}>
+        <div className={"card border-base-300/60 bg-base-200 border shadow-sm"}>
           <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Short Break</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
@@ -53,7 +57,7 @@ const TimerSettingsContent = () => {
           </div>
         </div>
 
-        <div className={"card bg-base-200"}>
+        <div className={"card border-base-300/60 bg-base-200 border shadow-sm"}>
           <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Long Break</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
@@ -63,7 +67,7 @@ const TimerSettingsContent = () => {
           </div>
         </div>
 
-        <div className={"card bg-base-200"}>
+        <div className={"card border-base-300/60 bg-base-200 border shadow-sm"}>
           <div className={"card-body justify-start p-5"}>
             <h2 className={"card-title text-base"}>Focus Cycle</h2>
             <p className={"text-base-content/50 mb-2 text-xs"}>
@@ -74,14 +78,14 @@ const TimerSettingsContent = () => {
         </div>
       </div>
 
-      <section className="card bg-base-200 mb-8">
+      <section className="card border-base-300/60 bg-base-200 mb-8 border shadow-sm">
         <div className="card-body p-5">
           <h2 className="card-title text-base">Session overrun</h2>
           <p className="text-base-content/50 text-sm">
             Choose whether time after a session ends is tracked as overrun or
             idle time while reflection is open.
           </p>
-          <label className="label mt-2 cursor-pointer justify-start gap-3">
+          <label className="label mt-2 min-h-11 cursor-pointer justify-start gap-3">
             <input
               type="checkbox"
               className="toggle toggle-primary"
@@ -103,13 +107,19 @@ const TimerSettingsContent = () => {
           <Button
             type="button"
             color="primary"
+            className="min-h-11"
             onClick={handleSave}
             disabled={!hasUnsavedChanges}
           >
             Save changes
           </Button>
           {hasUnsavedChanges && (
-            <Button type="button" color="ghost" onClick={handleReset}>
+            <Button
+              type="button"
+              color="ghost"
+              className="min-h-11"
+              onClick={handleReset}
+            >
               Reset
             </Button>
           )}

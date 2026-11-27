@@ -27,7 +27,7 @@ const ThemeLabel = ({
       <input
         type={"radio"}
         name={"theme-radios"}
-        className={"sr-only"}
+        className={"peer sr-only"}
         value={value}
         checked={selected}
         onChange={handleChange}
@@ -35,7 +35,7 @@ const ThemeLabel = ({
 
       {/* Card container */}
       <div
-        className={`group bg-base-100 flex flex-col overflow-hidden rounded-xl border transition-all duration-500 ${
+        className={`group peer-focus-visible:outline-primary bg-base-100 flex flex-col overflow-hidden rounded-xl border transition-all duration-500 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 ${
           selected
             ? "border-primary shadow-md"
             : "border-base-300 hover:border-primary/50 hover:shadow-lg"

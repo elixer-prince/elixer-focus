@@ -37,6 +37,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 46  | Focus sessions before long break   | Slice 2 (settings)    | done        |
 | 32  | Timer keyboard shortcuts           | Slice 2 (settings)    | cancelled   |
 | 9   | Theme settings                     | Slice 2 (settings)    | done        |
+| 50  | Settings page redesign             | Slice 2 (settings)    | done        |
 | 35  | Music player custom playlist       | Slice 2 (settings)    | done        |
 | 36  | Music player progress display      | Slice 2 (settings)    | done        |
 | 40  | Music player song validation       | Slice 2 (settings)    | done        |
@@ -48,7 +49,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 11  | Profile                            | Slice 3 (pages)       | done        |
 | 12  | Calendar                           | Slice 3 (pages)       | done        |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | done        |
-| 48  | Mobile navigation redesign         | Slice 3 (pages)       | planned     |
+| 48  | Mobile navigation redesign         | Slice 3 (pages)       | done        |
 | 49  | Personal URL structure             | Slice 3 (pages)       | planned     |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
 | 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
@@ -334,6 +335,21 @@ Pick and preview a theme; persist the choice across sessions. The page displays 
 
 code in `web/src/features/settings/theme/`
 
+### 50. Settings page redesign · done · from spec 0011
+
+Refresh Calendar, Timer, and Themes without changing their routes, existing content groups, controls, or behavior. On mobile, make the three settings destinations available through a partial drawer using the same pattern as the regular navigation.
+
+**Done when:** the settings screens follow the existing design system, the mobile drawer provides accessible navigation to Calendar, Timer, and Themes, and all current settings behavior remains unchanged.
+
+- [x] Design it (spec): `/architect settings page redesign`
+      Spec: [0011](../../specs/web/0011-settings-page-redesign.md)
+- [x] Build it: `/develop settings page redesign`
+  - [x] Add accessible mobile settings navigation with the three settings links, keeping the desktop sidebar (AC-3, AC-4)
+  - [x] Polish the shared shell and Calendar screen without changing existing behavior (AC-1, AC-2, AC-5)
+  - [x] Polish Timer and Themes and add focused tests for existing behavior (AC-1, AC-2, AC-5)
+
+code in `web/src/app/layout/Settings.tsx`, `web/src/features/settings/`, and `web/src/features/ui/navigation/Sidebar/Settings/`
+
 ### 35. Music player custom playlist · done
 
 Let users add their own YouTube links as favorites. A text input in the MusicSwitcher dropdown accepts a YouTube URL, extracts the video ID, and appends it to the songs array in localStorage.
@@ -476,15 +492,20 @@ Placeholder route; implement a brain dump inbox for quick capture.
 
 code in `web/src/app/routes/(root)/Bin.tsx`
 
-### 48. Mobile navigation redesign · planned · from spec 0009
+### 48. Mobile navigation redesign · done · from spec 0010
 
 After the missing page links are added, improve the mobile navigation's appearance and behavior using real usage as a guide. The Brain dump feature only mirrors the desktop page links in the current menu.
 
 **Done when:** the mobile navigation has a clear layout and interaction pattern for all current page links, based on the approved design.
 
-- [ ] Design it (spec): `/architect mobile navigation redesign`
+- [x] Design it (spec): `/architect mobile navigation redesign`
+      Spec: [0010](../../specs/web/0010-mobile-navigation-redesign.md)
+- [x] Build it: `/develop mobile navigation redesign`
+  - [x] Build the fixed partial width drawer without moving the page or changing the top bar (AC-1, AC-2)
+  - [x] Preserve the page links and add accessible open, close, and reduced motion behavior (AC-3, AC-4)
+  - [x] Keep the existing theme and desktop navigation, with responsive navigation tests (AC-5)
 
-code in `web/src/features/ui/navigation/`
+code in `web/src/features/ui/navigation/Navbar/`
 
 ### 49. Personal URL structure · planned · from spec 0009
 

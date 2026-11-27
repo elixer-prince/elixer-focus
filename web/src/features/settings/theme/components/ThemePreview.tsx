@@ -46,6 +46,7 @@ const ThemePreview = ({ theme, selected }: ThemePreviewProps) => {
       {/* Selected check mark overlay */}
       {selected && (
         <div
+          aria-hidden="true"
           className={
             "text-primary-content bg-primary absolute top-2 right-2 z-10 grid size-5 place-items-center rounded-full text-xs shadow-md"
           }

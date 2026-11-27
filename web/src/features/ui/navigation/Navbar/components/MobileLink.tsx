@@ -8,10 +8,10 @@ const MobileLink = ({ to, children }: PropsWithChildren<{ to: string }>) => {
   return (
     <NavLink
       className={({ isActive }) => {
-        return `flex items-center gap-1 rounded-md px-4 py-2 transition-colors duration-500 ${
+        return `rounded-box text-base-content focus-visible:outline-primary flex min-h-12 items-center gap-3 border px-4 py-3 transition-colors duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 ${
           isActive
-            ? "text-primary bg-primary-content/10 pointer-events-none font-bold"
-            : "border-primary-content/50 hover:bg-primary-content/4 hover:border-primary-content/75"
+            ? "border-primary/20 bg-primary/10 text-primary font-semibold"
+            : "hover:bg-base-200 border-transparent"
         }`.trim();
       }}
       to={to}

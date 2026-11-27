@@ -18,17 +18,17 @@ const CalendarSettings = () => {
 
   return (
     <section className="size-full">
-      <header className="mb-8">
-        <h1 className="text-primary mb-1 text-xl font-bold">
+      <header className="mb-8 max-w-3xl">
+        <h1 className="text-base-content mb-1 text-2xl font-semibold tracking-tight">
           Calendar Settings
         </h1>
-        <p className="text-base-content/60 text-sm">
+        <p className="text-base-content/70 text-sm sm:text-base">
           Set the first weekday for your planner. Changes save automatically.
         </p>
       </header>
 
-      <section className="card bg-base-200 max-w-3xl">
-        <div className="card-body p-5">
+      <section className="card border-base-300/60 bg-base-200 max-w-3xl border shadow-sm">
+        <div className="card-body p-5 sm:p-6">
           <h2 className="card-title text-base">Week layout</h2>
           <p className="text-base-content/70 text-sm">
             Calendar week and month views, and the Journal chart, use this
