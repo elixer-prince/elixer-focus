@@ -10,6 +10,7 @@ interface ColumnProps {
   category: TaskCategory;
   inputPlaceholder: string;
   isDragging?: boolean;
+  isSortingDisabled?: boolean;
   tasks?: Task[];
   taskSurface?: "matrix" | "home";
 }
@@ -19,6 +20,7 @@ const Column = ({
   category,
   inputPlaceholder,
   isDragging = false,
+  isSortingDisabled = false,
   tasks,
   taskSurface = "home",
 }: ColumnProps) => {
@@ -50,6 +52,7 @@ const Column = ({
         setInputShown={setInputShown}
         placeholder={inputPlaceholder}
         isDragging={isDragging}
+        isSortingDisabled={isSortingDisabled}
         tasks={tasks}
         taskSurface={taskSurface}
       />

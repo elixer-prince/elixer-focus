@@ -20,6 +20,7 @@ interface TaskProps {
   isCompleted: boolean;
   isSelected: boolean;
   updatedAt: number;
+  isSortingDisabled?: boolean;
   taskSurface?: "matrix" | "home";
 }
 
@@ -32,6 +33,7 @@ const Task = ({
   isCompleted,
   isSelected,
   updatedAt,
+  isSortingDisabled = false,
   taskSurface = "home",
 }: TaskProps) => {
   const toggleTaskCompletion = useToggleTaskCompletion();
@@ -58,7 +60,7 @@ const Task = ({
     type: "task",
     accept: "task",
     group: category,
-    disabled: isEditing,
+    disabled: isEditing || isSortingDisabled,
   });
 
   const startEditing = useCallback(() => {

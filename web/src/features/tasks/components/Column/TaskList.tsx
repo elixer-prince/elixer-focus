@@ -14,6 +14,7 @@ interface TaskListProps {
   setInputShown: Dispatch<SetStateAction<boolean>>;
   placeholder: string;
   isDragging?: boolean;
+  isSortingDisabled?: boolean;
   tasks?: TaskData[];
   taskSurface?: "matrix" | "home";
 }
@@ -24,6 +25,7 @@ const TaskList = ({
   setInputShown,
   placeholder,
   isDragging = false,
+  isSortingDisabled = false,
   tasks: previewTasks,
   taskSurface = "home",
 }: TaskListProps) => {
@@ -73,6 +75,7 @@ const TaskList = ({
             isSelected={isSelected}
             updatedAt={updatedAt}
             index={index}
+            isSortingDisabled={isSortingDisabled}
             taskSurface={taskSurface}
           />
         ),

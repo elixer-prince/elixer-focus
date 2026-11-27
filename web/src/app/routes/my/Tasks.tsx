@@ -1,8 +1,14 @@
 import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-store";
 import Column from "@/features/tasks/components/Column/Index";
 import TaskPageHeader from "@/features/tasks/components/TaskPageHeader";
-import { useReorderSubtasks, useReorderTasks, useTasksStore } from "@/stores";
+import {
+  useReorderSubtasks,
+  useReorderTasks,
+  useTasks,
+  useTasksStore,
+} from "@/stores";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import { filterTasksByQuery } from "@/features/tasks/utils/task-search";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
@@ -12,6 +18,7 @@ import {
   type DragEndEvent,
   type DragOverEvent,
 } from "@dnd-kit/dom";
+import { useSearchParams } from "react-router";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useCallback, useRef, useState } from "react";
 
@@ -46,6 +53,9 @@ function flattenTasks(grouped: GroupedTasks): Task[] {
 const TasksRoute = () => {
   const { updatePageTitle } = usePageTitle();
   const timerRunning = useTimerRunning();
+  const tasks = useTasks();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("taskSearch") ?? "";
 
   if (!timerRunning) updatePageTitle("Elixer Focus - Tasks");
 
@@ -58,6 +68,21 @@ const TasksRoute = () => {
   const reorderTasks = useReorderTasks();
   const reorderSubtasks = useReorderSubtasks();
   const [isDragging, setIsDragging] = useState(false);
+  const isSearchActive = searchQuery.trim().length > 0;
+  const visibleTasks = filterTasksByQuery(previewTasks ?? tasks, searchQuery);
+
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      const nextSearchParams = new URLSearchParams(searchParams);
+      if (query) {
+        nextSearchParams.set("taskSearch", query);
+      } else {
+        nextSearchParams.delete("taskSearch");
+      }
+      setSearchParams(nextSearchParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   const handleDragStart = useCallback(() => {
     updatePreviewTasks(
@@ -131,7 +156,20 @@ const TasksRoute = () => {
 
   return (
     <div className="p-12 max-sm:px-4">
-      <TaskPageHeader isDragging={isDragging} />
+      <TaskPageHeader
+        isDragging={isDragging}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+      />
+
+      {isSearchActive && visibleTasks.length === 0 && (
+        <p
+          className="task-panel text-base-content/70 mx-auto mt-4 max-w-100 text-center"
+          role="status"
+        >
+          No tasks match “{searchQuery.trim()}”.
+        </p>
+      )}
 
       <DragDropProvider
         sensors={[
@@ -168,7 +206,8 @@ const TasksRoute = () => {
             category="uncategorised"
             inputPlaceholder=""
             isDragging={isDragging}
-            tasks={previewTasks ?? undefined}
+            isSortingDisabled={isSearchActive}
+            tasks={visibleTasks}
             taskSurface="matrix"
           />
           <div className="tasks-row flex flex-wrap justify-center gap-8">
@@ -177,7 +216,8 @@ const TasksRoute = () => {
               category="urgent-important"
               inputPlaceholder="Finish assignment due in an hour..."
               isDragging={isDragging}
-              tasks={previewTasks ?? undefined}
+              isSortingDisabled={isSearchActive}
+              tasks={visibleTasks}
               taskSurface="matrix"
             />
             <Column
@@ -185,7 +225,8 @@ const TasksRoute = () => {
               category="not-urgent-important"
               inputPlaceholder="Practice Spanish for 30 minutes..."
               isDragging={isDragging}
-              tasks={previewTasks ?? undefined}
+              isSortingDisabled={isSearchActive}
+              tasks={visibleTasks}
               taskSurface="matrix"
             />
           </div>
@@ -195,7 +236,8 @@ const TasksRoute = () => {
               category="urgent-not-important"
               inputPlaceholder="Wash the dishes..."
               isDragging={isDragging}
-              tasks={previewTasks ?? undefined}
+              isSortingDisabled={isSearchActive}
+              tasks={visibleTasks}
               taskSurface="matrix"
             />
             <Column
@@ -203,7 +245,8 @@ const TasksRoute = () => {
               category="not-urgent-not-important"
               inputPlaceholder="Watch Netflix..."
               isDragging={isDragging}
-              tasks={previewTasks ?? undefined}
+              isSortingDisabled={isSearchActive}
+              tasks={visibleTasks}
               taskSurface="matrix"
             />
           </div>

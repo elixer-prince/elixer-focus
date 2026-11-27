@@ -1,6 +1,7 @@
 import Tasks from "@/app/routes/my/Tasks";
 import { render, screen, within } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, useLocation } from "react-router";
 
 // Mocks
 
@@ -28,6 +29,15 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
       id: "2",
       title: "Task Two",
       category: "urgent-important",
+      isCompleted: false,
+      isSelected: false,
+      createdAt: 0,
+    },
+    {
+      id: "3",
+      title: "Quiet Work",
+      description: "Practice mindful focus",
+      category: "not-urgent-important",
       isCompleted: false,
       isSelected: false,
       createdAt: 0,
@@ -89,6 +99,11 @@ vi.mock("@dnd-kit/helpers", () => ({
     return list;
   }),
 }));
+
+const CurrentLocation = () => {
+  const { search } = useLocation();
+  return <span data-testid="current-search">{search}</span>;
+};
 
 // Teardown
 
@@ -196,6 +211,46 @@ describe("Tasks page", () => {
     ).toBeInTheDocument();
     expect(
       within(urgentImportantColumn!).getByText("Task Two"),
+    ).toBeInTheDocument();
+  });
+
+  it("filters tasks by title or description across the matrix", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <Tasks />
+        <CurrentLocation />
+      </MemoryRouter>,
+    );
+
+    await user.type(
+      screen.getByRole("searchbox", { name: /search tasks/i }),
+      "mindful",
+    );
+
+    expect(screen.getByText("Quiet Work")).toBeInTheDocument();
+    expect(screen.queryByText("Task One")).not.toBeInTheDocument();
+    expect(screen.queryByText("Task Two")).not.toBeInTheDocument();
+    expect(screen.getByTestId("current-search")).toHaveTextContent(
+      "?taskSearch=mindful",
+    );
+  });
+
+  it("shows a message when no tasks match the search", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <Tasks />
+      </MemoryRouter>,
+    );
+
+    await user.type(
+      screen.getByRole("searchbox", { name: /search tasks/i }),
+      "missing task",
+    );
+
+    expect(
+      screen.getByText("No tasks match “missing task”."),
     ).toBeInTheDocument();
   });
 });

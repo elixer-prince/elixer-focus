@@ -52,7 +52,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 48  | Mobile navigation redesign         | Slice 3 (pages)       | done        |
 | 49  | Personal URL structure             | Slice 3 (pages)       | done        |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | done        |
-| 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
+| 37  | Task search and filtering          | Slice 3 (pages)       | done        |
 | 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
 | 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
 | 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
@@ -536,13 +536,13 @@ Tasks can contain subtasks, and subtasks can contain their own subtasks, forming
 
 code in `web/src/features/tasks/components/Task/SubtaskChecklist.tsx`, `web/src/features/tasks/stores/subtasks-store.ts`, `web/src/features/tasks/utils/subtask-tree.ts`, `web/src/features/calendar/services/calendar-coordinator.ts`, and `web/src/app/routes/(root)/Tasks.tsx`
 
-### 37. Task search and filtering · planned
+### 37. Task search and filtering · done
 
 Add a search input in the TaskPageHeader that filters tasks by title or description across all quadrants. Helps users find specific tasks as the matrix grows.
 
 **Done when:** user can type a search query and see only matching tasks across all columns.
 
-- [ ] Build it: `/develop task search and filtering`
+- [x] Build it: `/develop task search and filtering`
 
 ### 38. Task completion animation and archive · planned
 

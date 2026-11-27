@@ -2,12 +2,16 @@ import Task from "@/features/tasks/components/Task/Index";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { useCallback, useState } from "react";
 
-vi.mock("@dnd-kit/react/sortable", () => ({
-  useSortable: () => ({
+const mockUseSortable = vi.hoisted(() =>
+  vi.fn(() => ({
     ref: () => {},
     isDragging: false,
     handleRef: () => {},
-  }),
+  })),
+);
+
+vi.mock("@dnd-kit/react/sortable", () => ({
+  useSortable: mockUseSortable,
 }));
 
 vi.mock("@/utils/date", () => ({
@@ -77,6 +81,25 @@ describe("Task", () => {
     const task = screen.getByRole("listitem");
 
     expect(task).toBeInTheDocument();
+  });
+
+  it("should disable sorting while task filtering is active", () => {
+    render(
+      <Task
+        index={0}
+        id="ExStr123f51"
+        title="A random Task!"
+        category=""
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+        isSortingDisabled
+      />,
+    );
+
+    expect(mockUseSortable).toHaveBeenCalledWith(
+      expect.objectContaining({ disabled: true }),
+    );
   });
 
   it("should have a checkbox", () => {
