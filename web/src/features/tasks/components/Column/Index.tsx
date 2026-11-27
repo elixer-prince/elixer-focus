@@ -13,6 +13,8 @@ interface ColumnProps {
   isSortingDisabled?: boolean;
   tasks?: Task[];
   taskSurface?: "matrix" | "home";
+  onTaskExitStart?: (id: string) => void;
+  onTaskExitEnd?: (id: string, wasFocused: boolean) => void;
 }
 
 const Column = ({
@@ -23,6 +25,8 @@ const Column = ({
   isSortingDisabled = false,
   tasks,
   taskSurface = "home",
+  onTaskExitStart,
+  onTaskExitEnd,
 }: ColumnProps) => {
   const [inputShown, setInputShown] = useState(false);
 
@@ -55,6 +59,8 @@ const Column = ({
         isSortingDisabled={isSortingDisabled}
         tasks={tasks}
         taskSurface={taskSurface}
+        onTaskExitStart={onTaskExitStart}
+        onTaskExitEnd={onTaskExitEnd}
       />
     </article>
   );

@@ -120,6 +120,26 @@ describe("Task", () => {
     expect(checkbox).toBeInTheDocument();
   });
 
+  it("AC-8: starts editing when F2 activates the focused task row", () => {
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="Keyboard task"
+        category="urgent-important"
+        isCompleted={false}
+        isSelected={false}
+        updatedAt={Date.now()}
+      />,
+    );
+
+    const task = screen.getByRole("listitem");
+    task.focus();
+    fireEvent.keyDown(task, { key: "F2" });
+
+    expect(screen.getByRole("textbox", { name: "Task title" })).toBeVisible();
+  });
+
   it("should show a paragraph with the task title", () => {
     render(
       <Task
@@ -176,6 +196,51 @@ describe("Task", () => {
         name: "Expand subtasks for A random Task!",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("AC-7: keeps the checklist visible on the completed archive surface", () => {
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="A random Task!"
+        category="urgent-important"
+        isCompleted
+        isSelected={false}
+        updatedAt={Date.now()}
+        taskSurface="archive"
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Expand subtasks for A random Task!",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("AC-5: reopens an archived task through the existing completion action", async () => {
+    render(
+      <Task
+        index={0}
+        id="task-1"
+        title="A random Task!"
+        category="urgent-important"
+        isCompleted
+        isSelected={false}
+        updatedAt={Date.now()}
+        taskSurface="archive"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("checkbox", { name: "Reopen A random Task!" }),
+      );
+      await Promise.resolve();
+    });
+
+    expect(mockToggleTaskCompletion).toHaveBeenCalledWith("task-1", false);
   });
 
   it("does not show Subtask controls on the Home surface", () => {

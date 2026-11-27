@@ -53,7 +53,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 49  | Personal URL structure             | Slice 3 (pages)       | done        |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | done        |
 | 37  | Task search and filtering          | Slice 3 (pages)       | done        |
-| 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
+| 38  | Task completion animation and archive | Slice 3 (pages)   | done        |
 | 39  | Task due dates and priority        | Slice 3 (pages)       | planned     |
 | 34  | Adaptive duration logic            | Slice 3 (pages)       | planned     |
 | 14  | Auth (login/signup)                | Slice 4 (auth)        | in-progress |
@@ -544,13 +544,20 @@ Add a search input in the TaskPageHeader that filters tasks by title or descript
 
 - [x] Build it: `/develop task search and filtering`
 
-### 38. Task completion animation and archive · planned
+### 38. Task completion animation and archive · done
 
 Add a slide out animation when a task is completed. Move completed tasks to a collapsed archive section to keep the matrix clean.
 
 **Done when:** completed tasks animate out and move to an archive section that can be expanded.
 
-- [ ] Build it: `/develop task completion animation and archive`
+- [x] Design it (spec): `/architect task completion animation and archive`
+      Spec: [0014](../../specs/web/0014-task-completion-archive.md)
+- [x] Build it: `/develop task completion animation and archive`
+  - [x] Build the derived archive, active views, ordering, and reopening behavior (AC-1, AC-2, AC-3, AC-4, AC-5, AC-7)
+  - [x] Add reduced motion animation, keyboard disclosure, and focus handoff (AC-8)
+  - [x] Add regression coverage for Calendar independence, coordinator errors, and updates across tabs (AC-6, AC-9)
+
+code in `web/src/features/tasks/utils/task-archive.ts`, `web/src/features/tasks/components/TaskArchive.tsx`, `web/src/features/tasks/components/Task/Index.tsx`, `web/src/features/tasks/components/Column/TaskList.tsx`, `web/src/app/routes/my/Tasks.tsx`, `web/src/app/routes/(root)/Index.tsx`, and `web/e2e/tasks.spec.ts`
 
 ### 39. Task due dates and priority · planned
 

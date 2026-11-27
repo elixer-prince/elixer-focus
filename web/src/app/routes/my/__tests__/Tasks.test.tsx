@@ -42,6 +42,16 @@ vi.mock("@/features/tasks/stores/tasks-store", () => {
       isSelected: false,
       createdAt: 0,
     },
+    {
+      id: "4",
+      title: "Archived Work",
+      category: "urgent-important",
+      isCompleted: true,
+      isSelected: false,
+      createdAt: 0,
+      updatedAt: 200,
+      completedAt: 200,
+    },
   ];
   const setTasks = vi.fn();
   return {
@@ -212,6 +222,36 @@ describe("Tasks page", () => {
     expect(
       within(urgentImportantColumn!).getByText("Task Two"),
     ).toBeInTheDocument();
+  });
+
+  it("AC-3 and AC-4: keeps completed tasks in a collapsed archive outside active search", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <Tasks />
+      </MemoryRouter>,
+    );
+
+    const archiveButton = screen.getByRole("button", {
+      name: /completed tasks/i,
+    });
+    expect(archiveButton).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("checkbox", { name: "Reopen Archived Work" }),
+    ).not.toBeInTheDocument();
+
+    await user.click(archiveButton);
+    expect(archiveButton).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Archived Work")).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole("searchbox", { name: /search tasks/i }),
+      "mindful",
+    );
+
+    expect(screen.getByText("Archived Work")).toBeInTheDocument();
+    expect(screen.queryByText("Task One")).not.toBeInTheDocument();
+    expect(screen.queryByText("Task Two")).not.toBeInTheDocument();
   });
 
   it("filters tasks by title or description across the matrix", async () => {

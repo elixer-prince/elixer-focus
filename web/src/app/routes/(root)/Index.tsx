@@ -3,6 +3,13 @@ import { useTimerRunning } from "@/features/countdown-timer/stores/countdown-sto
 import Column from "@/features/tasks/components/Column/Index";
 import { useReorderTasks, useTasks, useTasksStore } from "@/stores";
 import type { Task, TaskCategory } from "@/features/tasks/types/task";
+import {
+  getActiveTasks,
+  getHighestPriorityActiveCategory,
+  mergeActiveTaskOrder,
+  TASK_CATEGORY_LABELS,
+  TASK_CATEGORY_ORDER,
+} from "@/features/tasks/utils/task-archive";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, PointerSensor } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
@@ -15,31 +22,9 @@ import {
 import usePageTitle from "@/hooks/usePageTitle";
 import { useCallback, useRef, useState } from "react";
 
-const CATEGORY_PRIORITY: TaskCategory[] = [
-  "urgent-important",
-  "not-urgent-important",
-  "urgent-not-important",
-  "not-urgent-not-important",
-  "uncategorised",
-];
-
-const CATEGORY_LABELS: Record<TaskCategory, string> = {
-  "urgent-important": "Urgent and Important",
-  "not-urgent-important": "Not Urgent but Important",
-  "urgent-not-important": "Urgent but Not Important",
-  "not-urgent-not-important": "Not Urgent nor Important",
-  uncategorised: "Uncategorised",
-};
-
 type GroupedTasks = Record<TaskCategory, Task[]>;
 
-const CATEGORIES: TaskCategory[] = [
-  "urgent-important",
-  "not-urgent-important",
-  "urgent-not-important",
-  "not-urgent-not-important",
-  "uncategorised",
-];
+const CATEGORIES = TASK_CATEGORY_ORDER;
 
 function groupByCategory(tasks: Task[]): GroupedTasks {
   const grouped: GroupedTasks = {
@@ -59,30 +44,63 @@ function flattenTasks(grouped: GroupedTasks): Task[] {
   return CATEGORIES.flatMap((cat) => grouped[cat]);
 }
 
-function getActiveCategory(tasks: Task[]) {
-  for (const category of CATEGORY_PRIORITY) {
-    if (tasks.some((task) => task.category === category)) {
-      return category;
-    }
-  }
-  return "uncategorised";
-}
-
 const HomeRoute = () => {
   const { updatePageTitle } = usePageTitle();
 
   const timerRunning = useTimerRunning();
 
   const tasks = useTasks();
+  const taskFocusScopeRef = useRef<HTMLDivElement>(null);
   const [previewTasks, setPreviewTasks] = useState<Task[] | null>(null);
+  const [completionCategory, setCompletionCategory] =
+    useState<TaskCategory | null>(null);
   const previewTasksRef = useRef<Task[] | null>(null);
   const updatePreviewTasks = useCallback((nextTasks: Task[] | null) => {
     previewTasksRef.current = nextTasks;
     setPreviewTasks(nextTasks);
   }, []);
-  const activeCategory = getActiveCategory(previewTasks ?? tasks);
+  const activeCategory =
+    completionCategory ??
+    getHighestPriorityActiveCategory(previewTasks ?? tasks);
   const reorderTasks = useReorderTasks();
   const [isDragging, setIsDragging] = useState(false);
+
+  const handleTaskExitEnd = useCallback((id: string, wasFocused: boolean) => {
+    setCompletionCategory(null);
+    if (!wasFocused) return;
+    const taskRows = Array.from(
+      taskFocusScopeRef.current?.querySelectorAll<HTMLLIElement>(
+        'li[data-task-surface="home"]',
+      ) ?? [],
+    );
+    const currentIndex = taskRows.findIndex(
+      (task) => task.dataset.taskId === id,
+    );
+    const nextTask = taskRows
+      .slice(currentIndex + 1)
+      .find((task) => task.dataset.taskId !== id);
+    if (nextTask) {
+      nextTask.focus();
+    } else {
+      window.requestAnimationFrame(() => {
+        const nextActiveTask =
+          taskFocusScopeRef.current?.querySelector<HTMLLIElement>(
+            'li[data-task-surface="home"]',
+          );
+        if (nextActiveTask) {
+          nextActiveTask.focus();
+        } else {
+          taskFocusScopeRef.current
+            ?.querySelector<HTMLUListElement>('ul[data-task-list="home"]')
+            ?.focus();
+        }
+      });
+    }
+  }, []);
+
+  const handleTaskExitStart = useCallback(() => {
+    setCompletionCategory(activeCategory);
+  }, [activeCategory]);
 
   const handleDragStart = useCallback(() => {
     updatePreviewTasks(
@@ -99,7 +117,7 @@ const HomeRoute = () => {
 
         const currentTasks =
           previewTasksRef.current ?? useTasksStore.getState().tasks;
-        const grouped = groupByCategory(currentTasks);
+        const grouped = groupByCategory(getActiveTasks(currentTasks));
         const moved = move(grouped, event);
 
         const result: GroupedTasks = {
@@ -115,7 +133,9 @@ const HomeRoute = () => {
             category: cat as TaskCategory,
           }));
         }
-        updatePreviewTasks(flattenTasks(result));
+        updatePreviewTasks(
+          mergeActiveTaskOrder(currentTasks, flattenTasks(result)),
+        );
       } catch {
         // Drag over handler error, revert to previous state
       }
@@ -140,6 +160,7 @@ const HomeRoute = () => {
 
   return (
     <div
+      ref={taskFocusScopeRef}
       id="main-wrapper"
       className="flex flex-col items-center justify-center gap-8 p-8"
     >
@@ -174,11 +195,13 @@ const HomeRoute = () => {
         onDragEnd={handleDragEnd}
       >
         <Column
-          title={CATEGORY_LABELS[activeCategory]}
+          title={TASK_CATEGORY_LABELS[activeCategory]}
           category={activeCategory}
           inputPlaceholder=""
           isDragging={isDragging}
           tasks={previewTasks ?? undefined}
+          onTaskExitStart={handleTaskExitStart}
+          onTaskExitEnd={handleTaskExitEnd}
         />
       </DragDropProvider>
     </div>

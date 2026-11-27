@@ -166,7 +166,7 @@ describe("calendar coordinator commands", () => {
     ).toThrow();
   });
 
-  it("keeps task completion independent from a scheduled occurrence", () => {
+  it("AC-6: keeps task completion independent from a scheduled occurrence", () => {
     const scheduled = applyCalendarCoordinatorCommand(createSnapshot(), {
       type: "schedule-task",
       taskId: "task-1",
@@ -181,6 +181,71 @@ describe("calendar coordinator commands", () => {
     expect(completed.tasks[0].completedAt).toBe(300);
     expect(completed.calendar.scheduledOccurrences[0].isCompleted).toBe(false);
     expect(scheduled.tasks[0].isCompleted).toBe(false);
+  });
+
+  it("AC-6 and AC-7: preserves Calendar and Subtask state when completing and reopening a task", () => {
+    const snapshot = applyCalendarCoordinatorCommand(createSnapshot(), {
+      type: "schedule-task",
+      taskId: "task-1",
+      date: "2026-11-25",
+    });
+    snapshot.tasks[0].archivedAt = 150;
+    snapshot.calendar.recurrenceSeries = [
+      {
+        id: "series-1",
+        taskId: task.id,
+        startDate: "2026-11-25",
+        isActive: true,
+      },
+    ];
+    snapshot.calendar.recurrenceRuleSegments = [
+      {
+        id: "segment-1",
+        seriesId: "series-1",
+        effectiveFrom: "2026-11-25",
+        frequency: "daily",
+        interval: 1,
+      },
+    ];
+    snapshot.subtasks = [
+      {
+        id: "subtask-1",
+        taskId: task.id,
+        parentSubtaskId: null,
+        title: "Review notes",
+        isCompleted: true,
+        position: 0,
+        createdAt: 100,
+        updatedAt: 100,
+      },
+    ];
+    const calendarBefore = structuredClone(snapshot.calendar);
+    const subtasksBefore = structuredClone(snapshot.subtasks);
+
+    const completed = applyCalendarCoordinatorCommand(
+      snapshot,
+      { type: "toggle-task-completion", taskId: task.id, completed: true },
+      300,
+    );
+    const reopened = applyCalendarCoordinatorCommand(
+      completed,
+      { type: "toggle-task-completion", taskId: task.id, completed: false },
+      400,
+    );
+
+    expect(completed.tasks[0]).toMatchObject({
+      archivedAt: 150,
+      isCompleted: true,
+      completedAt: 300,
+    });
+    expect(reopened.tasks[0]).toMatchObject({
+      archivedAt: 150,
+      isCompleted: false,
+      updatedAt: 400,
+    });
+    expect(reopened.tasks[0]).not.toHaveProperty("completedAt");
+    expect(reopened.calendar).toEqual(calendarBefore);
+    expect(reopened.subtasks).toEqual(subtasksBefore);
   });
 
   it("creates a recurring series and materializes each matching date once", () => {
@@ -1185,6 +1250,55 @@ describe("calendar coordinator commands", () => {
     await expect(resultPromise).resolves.toMatchObject({ success: true });
   });
 
+  it("AC-9: applies a completed task broadcast in a follower tab", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: { request: () => new Promise<void>(() => undefined) },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+    const initialSnapshot = createSnapshot();
+    channels[0].onmessage?.({
+      data: { type: "state", snapshot: initialSnapshot },
+    } as MessageEvent);
+    const resultPromise = dispatchCalendarCommand({
+      type: "toggle-task-completion",
+      taskId: task.id,
+      completed: true,
+    });
+    const commandMessage = channels[0].messages.find(
+      (message) => (message as { type?: string }).type === "command",
+    ) as { id: string; type: string };
+    const completedSnapshot = createSnapshot();
+    completedSnapshot.tasks[0] = {
+      ...completedSnapshot.tasks[0],
+      isCompleted: true,
+      completedAt: 300,
+      updatedAt: 300,
+    };
+
+    channels[0].onmessage?.({
+      data: { type: "state", snapshot: completedSnapshot },
+    } as MessageEvent);
+    channels[0].onmessage?.({
+      data: {
+        type: "result",
+        id: commandMessage.id,
+        result: { success: true },
+      },
+    } as MessageEvent);
+
+    await expect(resultPromise).resolves.toMatchObject({ success: true });
+    expect(useTasksStore.getState().tasks[0]).toMatchObject({
+      isCompleted: true,
+      completedAt: 300,
+    });
+  });
+
   it("keeps single tab scheduling available when coordination APIs are missing", async () => {
     localStorage.clear();
     useTasksStore.setState({ tasks: [{ ...task }] });
@@ -1233,6 +1347,56 @@ describe("calendar coordinator commands", () => {
     expect(
       JSON.parse(localStorage.getItem("calendar-storage")!).state,
     ).toHaveProperty("scheduledOccurrences", []);
+  });
+
+  it("AC-9: does not apply or broadcast a task completion when persistence fails", async () => {
+    localStorage.clear();
+    useTasksStore.setState({ tasks: [{ ...task }] });
+    useCalendarStore.setState({ ...initialCalendarData });
+    vi.stubGlobal("BroadcastChannel", FakeBroadcastChannel);
+    Object.defineProperty(navigator, "locks", {
+      configurable: true,
+      value: {
+        request: (_name: string, callback: () => Promise<void>) => callback(),
+      },
+    });
+
+    stopCoordinator = startCalendarCoordinator();
+    await waitFor(() =>
+      expect(channels[0].messages).toContainEqual(
+        expect.objectContaining({ type: "state" }),
+      ),
+    );
+    const stateMessageCount = channels[0].messages.filter(
+      (message) => (message as { type?: string }).type === "state",
+    ).length;
+    const originalSetItem = Storage.prototype.setItem;
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(function (
+      this: Storage,
+      key: string,
+      value: string,
+    ) {
+      if (key === "tasks-storage") throw new Error("storage is full");
+      originalSetItem.call(this, key, value);
+    });
+
+    const result = await dispatchCalendarCommand({
+      type: "toggle-task-completion",
+      taskId: task.id,
+      completed: true,
+    });
+
+    expect(result.success).toBe(false);
+    expect(useTasksStore.getState().tasks[0]).toMatchObject({
+      isCompleted: false,
+      updatedAt: task.updatedAt,
+    });
+    expect(useTasksStore.getState().tasks[0]).not.toHaveProperty("completedAt");
+    expect(
+      channels[0].messages.filter(
+        (message) => (message as { type?: string }).type === "state",
+      ),
+    ).toHaveLength(stateMessageCount);
   });
 
   it("keeps prior state when the Subtask storage write fails", async () => {

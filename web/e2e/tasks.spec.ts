@@ -209,3 +209,70 @@ for (const key of ["Space", "Enter"]) {
     await expect(header).toBeEnabled();
   });
 }
+
+test("AC-1, AC-3, AC-5, AC-8: completes and reopens a task from the archive", async ({
+  page,
+}) => {
+  await page.goto("/my/tasks");
+  const taskTitle = "Complete and reopen this task";
+  const taskInput = page.getByRole("textbox", {
+    name: "Uncategorised task input",
+  });
+  await taskInput.fill(taskTitle);
+  await taskInput.press("Enter");
+
+  const completeCheckbox = page.getByRole("checkbox", {
+    name: `Complete ${taskTitle}`,
+  });
+  await expect(completeCheckbox).toBeVisible();
+  await completeCheckbox.click();
+  await expect(completeCheckbox).toBeHidden();
+
+  const archiveButton = page.getByRole("button", { name: /Completed Tasks/ });
+  await expect(archiveButton).toHaveAttribute("aria-expanded", "false");
+  await archiveButton.click();
+  await expect(archiveButton).toHaveAttribute("aria-expanded", "true");
+
+  const reopenCheckbox = page.getByRole("checkbox", {
+    name: `Reopen ${taskTitle}`,
+  });
+  await expect(reopenCheckbox).toBeVisible();
+  await reopenCheckbox.click();
+  await expect(reopenCheckbox).toBeHidden();
+  await expect(completeCheckbox).toBeVisible();
+});
+
+test("AC-9: keeps an active task visible when its coordinator write fails", async ({
+  page,
+}) => {
+  await page.goto("/my/tasks");
+  const taskTitle = "Keep this task active";
+  const taskInput = page.getByRole("textbox", {
+    name: "Uncategorised task input",
+  });
+  await taskInput.fill(taskTitle);
+  await taskInput.press("Enter");
+
+  const completeCheckbox = page.getByRole("checkbox", {
+    name: `Complete ${taskTitle}`,
+  });
+  await expect(completeCheckbox).toBeVisible();
+  await page.evaluate(() => {
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === "tasks-storage") throw new Error("storage is full");
+      originalSetItem.call(this, key, value);
+    };
+  });
+
+  await completeCheckbox.click();
+
+  await expect(
+    page.getByText("Calendar changes were not saved: storage is full"),
+  ).toBeVisible();
+  await expect(completeCheckbox).toBeVisible();
+  await expect(completeCheckbox).not.toBeChecked();
+  await expect(
+    page.getByRole("button", { name: /Completed Tasks/ }),
+  ).toHaveCount(0);
+});

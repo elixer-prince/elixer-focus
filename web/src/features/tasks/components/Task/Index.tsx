@@ -10,6 +10,19 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const DOUBLE_CLICK_TIMEOUT = 300;
+const TASK_EXIT_DURATION_MS = 200;
+
+export type TaskCompletionTransition = {
+  status?: "pending" | "exiting";
+  onStart?: (id: string, completed: boolean, wasFocused: boolean) => void;
+  onResult?: (
+    id: string,
+    completed: boolean,
+    succeeded: boolean,
+    wasFocused: boolean,
+  ) => void;
+  onExitAnimationEnd?: (id: string) => void;
+};
 
 interface TaskProps {
   index: number;
@@ -21,7 +34,8 @@ interface TaskProps {
   isSelected: boolean;
   updatedAt: number;
   isSortingDisabled?: boolean;
-  taskSurface?: "matrix" | "home";
+  taskSurface?: "matrix" | "home" | "archive";
+  completionTransition?: TaskCompletionTransition;
 }
 
 const Task = ({
@@ -35,6 +49,7 @@ const Task = ({
   updatedAt,
   isSortingDisabled = false,
   taskSurface = "home",
+  completionTransition,
 }: TaskProps) => {
   const toggleTaskCompletion = useToggleTaskCompletion();
   const updateTask = useUpdateTask();
@@ -49,6 +64,8 @@ const Task = ({
   const lastClickTimeRef = useRef(0);
   const handleRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLLIElement>(null);
+  const completionTransitionRef = useRef(completionTransition);
+  completionTransitionRef.current = completionTransition;
 
   // Keep refs in sync with latest props on every render
   titleRef.current = title;
@@ -62,6 +79,33 @@ const Task = ({
     group: category,
     disabled: isEditing || isSortingDisabled,
   });
+
+  const handleCompletionChange = useCallback(async () => {
+    const completed = !isCompleted;
+    const wasFocused =
+      wrapperRef.current?.contains(document.activeElement) ?? false;
+    completionTransition?.onStart?.(id, completed, wasFocused);
+    const result = await toggleTaskCompletion(id, completed);
+    completionTransition?.onResult?.(
+      id,
+      completed,
+      result?.success !== false,
+      wasFocused,
+    );
+  }, [completionTransition, id, isCompleted, toggleTaskCompletion]);
+
+  useEffect(() => {
+    if (completionTransition?.status !== "exiting") return;
+
+    const prefersReducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const timeoutId = window.setTimeout(
+      () => completionTransitionRef.current?.onExitAnimationEnd?.(id),
+      prefersReducedMotion ? 0 : TASK_EXIT_DURATION_MS,
+    );
+
+    return () => window.clearTimeout(timeoutId);
+  }, [completionTransition?.status, id]);
 
   const startEditing = useCallback(() => {
     setIsEditing(true);
@@ -98,6 +142,15 @@ const Task = ({
       } else {
         lastClickTimeRef.current = now;
       }
+    },
+    [startEditing],
+  );
+
+  const handleRowKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLLIElement>) => {
+      if (e.target !== e.currentTarget || e.key !== "F2") return;
+      e.preventDefault();
+      startEditing();
     },
     [startEditing],
   );
@@ -183,14 +236,18 @@ const Task = ({
           ).current = node;
           wrapperRef.current = node;
         }}
-        className={`task bg-base-100 border-primary mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
+        data-task-id={id}
+        data-task-surface={taskSurface}
+        className={`task bg-base-100 border-primary focus-visible:outline-primary mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 transition-[transform,opacity] duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none ${completionTransition?.status === "exiting" ? "translate-x-8 opacity-0" : ""} ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
       >
         <div className="flex items-center gap-2">
           <input
             className="accent-primary-content/25"
             type="checkbox"
             checked={isCompleted}
-            onChange={() => toggleTaskCompletion(id, !isCompleted)}
+            onChange={handleCompletionChange}
+            aria-label={`${isCompleted ? "Reopen" : "Complete"} ${title}`}
+            disabled={completionTransition?.status === "pending"}
           />
           <input
             ref={titleInputRef}
@@ -199,7 +256,7 @@ const Task = ({
             onChange={(e) => setEditTitle(e.target.value)}
             onKeyDown={handleTitleKeyDown}
             aria-label="Task title"
-            className="flex-1 bg-transparent outline-none"
+            className="focus-visible:outline-primary flex-1 bg-transparent outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
           />
         </div>
         <div className="flex items-start gap-2">
@@ -209,7 +266,7 @@ const Task = ({
             onChange={(e) => setEditDescription(e.target.value)}
             placeholder="Description (optional)"
             aria-label="Task description"
-            className="flex-1 resize-none bg-transparent text-sm outline-none"
+            className="focus-visible:outline-primary flex-1 resize-none bg-transparent text-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
             rows={2}
           />
         </div>
@@ -235,11 +292,20 @@ const Task = ({
 
   return (
     <li
-      ref={ref}
+      ref={(node) => {
+        (
+          ref as unknown as React.MutableRefObject<HTMLLIElement | null>
+        ).current = node;
+        wrapperRef.current = node;
+      }}
       tabIndex={0}
       data-dragging={isDragging}
+      data-task-id={id}
+      data-task-surface={taskSurface}
+      aria-keyshortcuts="F2"
       onClick={handleClick}
-      className={`task bg-base-100 mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
+      onKeyDown={handleRowKeyDown}
+      className={`task bg-base-100 focus-visible:outline-primary mr-3 flex flex-col gap-2 rounded-md border px-3 py-2 transition-[transform,opacity] duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none ${completionTransition?.status === "exiting" ? "translate-x-8 opacity-0" : ""} ${index === 0 ? "outline-primary outline" : ""} ${isSelected ? "border-primary" : "border-base-content/25"}`.trim()}
     >
       <div className="flex items-center justify-between gap-1">
         <div className="flex min-w-0 items-center gap-2">
@@ -268,11 +334,13 @@ const Task = ({
             className="accent-primary-content/25"
             type="checkbox"
             checked={isCompleted}
-            onChange={() => toggleTaskCompletion(id, !isCompleted)}
+            onChange={handleCompletionChange}
+            aria-label={`${isCompleted ? "Reopen" : "Complete"} ${title}`}
+            disabled={completionTransition?.status === "pending"}
           />
 
           <p
-            className={`${taskSurface === "matrix" ? "min-w-0 truncate" : ""} ${isCompleted ? "text-base-content/50 line-through" : ""}`.trim()}
+            className={`${taskSurface === "matrix" ? "min-w-0 truncate" : taskSurface === "archive" ? "min-w-0 break-words" : ""} ${isCompleted ? "text-base-content/50 line-through" : ""}`.trim()}
           >
             {title}
           </p>
@@ -282,7 +350,9 @@ const Task = ({
               className={
                 taskSurface === "matrix"
                   ? "truncate text-sm opacity-70"
-                  : "text-sm opacity-70"
+                  : taskSurface === "archive"
+                    ? "min-w-0 text-sm break-words opacity-70"
+                    : "text-sm opacity-70"
               }
             >
               {description}
@@ -305,7 +375,7 @@ const Task = ({
         </div>
       </div>
 
-      {taskSurface === "matrix" && (
+      {taskSurface !== "home" && (
         <SubtaskChecklist taskId={id} taskTitle={title} />
       )}
     </li>
