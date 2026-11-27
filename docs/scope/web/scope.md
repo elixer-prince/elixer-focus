@@ -50,7 +50,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 12  | Calendar                           | Slice 3 (pages)       | done        |
 | 13  | Brain dump (Bin)                   | Slice 3 (pages)       | done        |
 | 48  | Mobile navigation redesign         | Slice 3 (pages)       | done        |
-| 49  | Personal URL structure             | Slice 3 (pages)       | planned     |
+| 49  | Personal URL structure             | Slice 3 (pages)       | done        |
 | 19  | Subtasks (nested)                  | Slice 3 (pages)       | planned     |
 | 37  | Task search and filtering          | Slice 3 (pages)       | planned     |
 | 38  | Task completion animation and archive | Slice 3 (pages)   | planned     |
@@ -507,15 +507,19 @@ After the missing page links are added, improve the mobile navigation's appearan
 
 code in `web/src/features/ui/navigation/Navbar/`
 
-### 49. Personal URL structure · planned · from spec 0009
+### 49. Personal URL structure · done · from spec 0012
 
 Move personal pages such as Journal and Profile into the `/my/` route group, coordinated with the new `/my/brain-dump` path. Decide the full page list and behavior for existing URLs before changing them.
 
 **Done when:** the agreed personal pages use `/my/` paths and any behavior for their existing URLs is defined and verified.
 
-- [ ] Design it (spec): `/architect personal URL structure`
+- [x] Design it (spec): `/architect personal URL structure`
+      Spec: [0012](../../specs/web/0012-personal-url-structure.md)
+- [x] Build it: `/develop personal URL structure`
+  - [x] Add canonical personal routes and old path redirects, then test matching and route boundaries (AC-1, AC-2, AC-3, AC-5, AC-6, AC-7, AC-8, AC-9)
+  - [x] Point shared desktop and mobile navigation to the canonical paths (AC-4)
 
-code in `web/src/app/router.tsx`
+code in `web/src/app/router.tsx`, `web/src/features/ui/navigation/Sidebar/Default/constants/links.tsx`, `web/src/app/__tests__/router.test.ts`, and `web/src/features/ui/navigation/__tests__/page-links.test.tsx`
 
 ### 19. Subtasks (nested) · planned
 

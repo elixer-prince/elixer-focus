@@ -14,7 +14,7 @@ import TimerRoute from "@/app/routes/settings/Timer";
 import CalendarSettingsRoute from "@/app/routes/settings/Calendar";
 import { Spinner } from "@/components/ui";
 import { lazy, Suspense } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 
 const CalendarRoute = lazy(() => import("@/app/routes/(root)/Calendar"));
 const BinRoute = lazy(() => import("@/app/routes/(root)/Bin"));
@@ -34,52 +34,81 @@ export const router = createBrowserRouter([
         element: <HomeRoute />,
       },
       {
+        path: "my",
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/my/profile" replace />,
+          },
+          {
+            path: "profile",
+            element: <ProfileRoute />,
+          },
+          {
+            path: "journal",
+            element: <JournalRoute />,
+          },
+          {
+            path: "brain-dump",
+            element: (
+              <Suspense
+                fallback={
+                  <div
+                    className="flex min-h-64 items-center justify-center gap-3"
+                    role="status"
+                  >
+                    <Spinner aria-hidden="true" size="lg" />
+                    <span className="sr-only">Loading Brain dump…</span>
+                  </div>
+                }
+              >
+                <BinRoute />
+              </Suspense>
+            ),
+          },
+          {
+            path: "calendar",
+            element: (
+              <Suspense
+                fallback={
+                  <div
+                    className="flex min-h-64 items-center justify-center gap-3"
+                    role="status"
+                  >
+                    <Spinner aria-hidden="true" size="lg" />
+                    <span className="sr-only">Loading Calendar…</span>
+                  </div>
+                }
+              >
+                <CalendarRoute />
+              </Suspense>
+            ),
+          },
+          {
+            path: "tasks",
+            element: <TasksRoute />,
+          },
+          {
+            path: "*",
+            element: <NotFoundRoute />,
+          },
+        ],
+      },
+      {
         path: "profile",
-        element: <ProfileRoute />,
+        element: <Navigate to="/my/profile" replace />,
       },
       {
         path: "journal",
-        element: <JournalRoute />,
-      },
-      {
-        path: "my/brain-dump",
-        element: (
-          <Suspense
-            fallback={
-              <div
-                className="flex min-h-64 items-center justify-center gap-3"
-                role="status"
-              >
-                <Spinner aria-hidden="true" size="lg" />
-                <span className="sr-only">Loading Brain dump…</span>
-              </div>
-            }
-          >
-            <BinRoute />
-          </Suspense>
-        ),
+        element: <Navigate to="/my/journal" replace />,
       },
       {
         path: "calendar",
-        element: (
-          <Suspense
-            fallback={
-              <div
-                className="flex min-h-64 items-center justify-center gap-3"
-                role="status"
-              >
-                <Spinner aria-hidden="true" size="lg" />
-                <span className="sr-only">Loading Calendar…</span>
-              </div>
-            }
-          >
-            <CalendarRoute />
-          </Suspense>
-        ),
+        element: <Navigate to="/my/calendar" replace />,
       },
       {
         path: "tasks",
-        element: <TasksRoute />,
+        element: <Navigate to="/my/tasks" replace />,
       },
     ],
   },

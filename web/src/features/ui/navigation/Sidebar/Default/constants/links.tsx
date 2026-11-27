@@ -19,7 +19,7 @@ export const defaultLinks: {
     label: "Home",
   },
   {
-    to: "/journal",
+    to: "/my/journal",
     icon: MdLibraryBooks,
     label: "Journal",
   },
@@ -29,17 +29,17 @@ export const defaultLinks: {
     label: "Brain dump",
   },
   {
-    to: "/calendar",
+    to: "/my/calendar",
     icon: MdCalendarMonth,
     label: "Calendar",
   },
   {
-    to: "/tasks",
+    to: "/my/tasks",
     icon: MdTaskAlt,
     label: "Tasks",
   },
   {
-    to: "/profile",
+    to: "/my/profile",
     icon: MdPerson,
     label: "Profile",
   },
