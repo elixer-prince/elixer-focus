@@ -441,7 +441,7 @@ Daily writing space with Markdown editor, session stats, calendar navigation, an
 - [x] Test it: `/test journal`
 - [x] Sync (record conventions): `/sync`
 
-code in `web/src/app/routes/(root)/Journal.tsx`
+code in `web/src/app/routes/my/Journal.tsx`
 
 ### 11. Profile · done
 
@@ -455,7 +455,7 @@ Social media style profile page with identity info, productivity stats, characte
   - [x] Stats row and fixed character stat bars (AC-2, AC-3, AC-8)
   - [x] Activity feed with task completion time migration, badges, theme display, and page wiring (AC-4, AC-5, AC-9)
 
-code in `web/src/app/routes/(root)/Profile.tsx`
+code in `web/src/app/routes/my/Profile.tsx`
 
 ### 12. Calendar · done
 
@@ -474,7 +474,7 @@ Sleep integration depends on Sleep Schedule feature 47 and its contract in [spec
   - [x] Drag and resize, overlap warnings, and next slot suggestions (AC-3, AC-6)
   - [x] Sleep events, actual records, awake totals, and planned rail through feature 47 (AC-7)
 
-code in `web/src/app/routes/(root)/Calendar.tsx`
+code in `web/src/app/routes/my/Calendar.tsx`
 
 ### 13. Brain dump (Bin) · done
 
@@ -490,7 +490,7 @@ Placeholder route; implement a brain dump inbox for quick capture.
   - [x] Add live search and inline autosaving edits (AC-6, AC-7, AC-14)
   - [x] Complete cross tab conflict and remote deletion recovery behavior (AC-9, AC-10, AC-12, AC-13)
 
-code in `web/src/app/routes/(root)/Bin.tsx`
+code in `web/src/app/routes/my/BrainDump.tsx`
 
 ### 48. Mobile navigation redesign · done · from spec 0010
 
@@ -534,7 +534,7 @@ Tasks can contain subtasks, and subtasks can contain their own subtasks, forming
   - [x] Add inline editing and confirmed subtree deletion, including Task deletion cleanup (AC-3, AC-5, AC-7)
   - [x] Add keyboard and pointer sibling reordering with concurrent move handling (AC-6, AC-8)
 
-code in `web/src/features/tasks/components/Task/SubtaskChecklist.tsx`, `web/src/features/tasks/stores/subtasks-store.ts`, `web/src/features/tasks/utils/subtask-tree.ts`, `web/src/features/calendar/services/calendar-coordinator.ts`, and `web/src/app/routes/(root)/Tasks.tsx`
+code in `web/src/features/tasks/components/Task/SubtaskChecklist.tsx`, `web/src/features/tasks/stores/subtasks-store.ts`, `web/src/features/tasks/utils/subtask-tree.ts`, `web/src/features/calendar/services/calendar-coordinator.ts`, and `web/src/app/routes/my/Tasks.tsx`
 
 ### 37. Task search and filtering · done
 
@@ -608,7 +608,7 @@ Social media style features (sharing, leaderboards, community). Deferred; massiv
 
 - [ ] Design it (spec): `/architect social features`
 
-### 47. Sleep schedule · done · from spec 0005
+### 47. Sleep schedule · done · from spec 0008
 
 Let people configure a daily wake time and target sleep duration, optionally override bedtime, record actual sleep, and see awake idle totals. Sleep Schedule owns planned values and actual records. Calendar reads planned events and the progress rail from this feature and sends actual event changes through its command boundary. Keep raw idle and session records unchanged, including timer sessions that occur during planned sleep.
 
@@ -622,5 +622,5 @@ Spec: [0008](../../specs/web/0008-sleep-schedule/index.md); Calendar integration
   - [x] Add actual bed and wake records, correction, and safe migration recovery (AC-5, AC-7, AC-8)
   - [x] Derive idle awake totals and show them per date in time grid views (AC-3, AC-6)
 
-code in `web/src/features/sleep-schedule/`, `web/src/features/calendar/`, `web/src/features/settings/calendar/Index.tsx`, and `web/src/app/routes/(root)/Calendar.tsx`
+code in `web/src/features/sleep-schedule/`, `web/src/features/calendar/`, `web/src/features/settings/calendar/Index.tsx`, and `web/src/app/routes/my/Calendar.tsx`
 
