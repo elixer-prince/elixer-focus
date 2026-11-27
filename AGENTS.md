@@ -126,6 +126,9 @@ cd app && npm run web           # Run web version
 - [vercel-composition-patterns](.agents/skills/vercel-composition-patterns/): vercel-labs/agent-skills, reusable React composition patterns
 - [ui-forager](.agents/skills/ui-forager/): helix98/ui-forager-skill, component discovery and adaptation for interface work
 - [web-design-guidelines](.agents/skills/web-design-guidelines/): vercel-labs/agent-skills, web interface and accessibility review guidance
+- [vercel-react-native-skills](.agents/skills/vercel-react-native-skills/): boostbrothers/agent-skills-fe, React Native and Expo implementation guidance
+
+MCP servers: Expo MCP (recommended)
 
 ## Context files
 

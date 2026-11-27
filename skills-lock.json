@@ -118,6 +118,13 @@
       "skillPath": "skills/react-best-practices/SKILL.md",
       "computedHash": "7991ed4fbecdac23f47c1a40c243e00a212a9e7f3604db93959b3ae11dffe299"
     },
+    "vercel-react-native-skills": {
+      "source": "boostbrothers/agent-skills-fe",
+      "commit": "5502436b02971cff499549fd7fc50fd1730d40d5",
+      "sourceType": "github",
+      "skillPath": "skills/react-native-skills/SKILL.md",
+      "computedHash": "68a04a40ee29f711588a682f8e1e3ce578141a65ebfdab8a5a5c17e24b03bcfd"
+    },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "commit": "5a37a6329fbad3666c3207392a6a7c0110e92efb",
