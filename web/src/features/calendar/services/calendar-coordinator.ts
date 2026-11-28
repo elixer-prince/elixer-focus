@@ -17,18 +17,16 @@ import {
   getRecurrenceDatesInRange,
   validateRecurrenceRule,
 } from "@/features/calendar/utils/calendar-recurrence";
-import type {
-  Task,
-  TaskCategory,
-  TaskUpdate,
-} from "@/features/tasks/types/task";
-import type { Subtask } from "@/features/tasks/types/subtask";
 import {
   assertValidSubtasks,
-  getSubtasksForParent,
-  removeSubtaskTree,
-  reorderSubtasks,
-} from "@/features/tasks/utils/subtask-tree";
+  createSubtaskStore,
+  createTaskStore,
+  normalizeTasks,
+  type Subtask,
+  type Task,
+  type TaskCategory,
+  type TaskUpdate,
+} from "@elixer-focus/shared/tasks";
 import { getCurrentTimestamp } from "@/utils/date";
 import { subDays } from "date-fns";
 import toast from "react-hot-toast";
@@ -209,13 +207,6 @@ type ActiveCoordinator = {
 };
 
 let activeCoordinator: ActiveCoordinator | null = null;
-
-const normalizeTasks = (tasks: Task[]): Task[] =>
-  tasks.map((task) => ({
-    ...task,
-    updatedAt: task.updatedAt ?? task.createdAt,
-    defaultDurationMinutes: task.defaultDurationMinutes ?? 30,
-  }));
 
 const normalizeCalendarData = (data: Partial<CalendarData> | null) => {
   const saved = data as
@@ -681,149 +672,121 @@ export const applyCalendarCoordinatorCommand = (
     },
     supportsSubtasks: true,
   };
+  const taskStore = createTaskStore({
+    idGenerator: () => crypto.randomUUID(),
+    getCurrentTimestamp: () => now,
+    initialTasks: next.tasks,
+  });
+  const subtaskStore = createSubtaskStore({
+    idGenerator: () => crypto.randomUUID(),
+    getCurrentTimestamp: () => now,
+    getTasks: () => taskStore.getState().tasks,
+    initialSubtasks: next.subtasks,
+  });
   assertValidSubtasks(next.tasks, next.subtasks);
 
   switch (command.type) {
     case "add-task": {
       const title = command.title.trim();
       if (!title) throw new Error("Enter a task title.");
-      next.tasks.unshift({
-        id: crypto.randomUUID(),
-        title,
-        description: command.description?.trim() || undefined,
-        category: command.category ?? "uncategorised",
-        isCompleted: false,
-        isSelected: false,
-        createdAt: now,
-        updatedAt: now,
-        defaultDurationMinutes: 30,
-      });
+      taskStore
+        .getState()
+        .addTask(
+          title,
+          command.description?.trim() || undefined,
+          command.category,
+        );
       break;
     }
     case "update-task": {
-      const task = next.tasks.find((item) => item.id === command.taskId);
+      const task = taskStore
+        .getState()
+        .tasks.find((item) => item.id === command.taskId);
       if (!task) throw new Error("This task is no longer available.");
-      const { dueAt, ...taskUpdates } = command.updates;
-      Object.assign(task, taskUpdates, { updatedAt: now });
-      if (dueAt === null) delete task.dueAt;
-      else if (dueAt !== undefined) task.dueAt = dueAt;
-      if (task.archivedAt !== undefined) {
+      taskStore.getState().updateTask(command.taskId, command.updates);
+      const updatedTask = taskStore
+        .getState()
+        .tasks.find((item) => item.id === command.taskId)!;
+      if (updatedTask.archivedAt !== undefined) {
         next.calendar.recurrenceSeries.forEach((series) => {
-          if (series.taskId === task.id) series.isActive = false;
+          if (series.taskId === updatedTask.id) series.isActive = false;
         });
       }
       break;
     }
-    case "remove-task":
-      next.tasks = next.tasks.filter((task) => task.id !== command.taskId);
-      next.subtasks = next.subtasks.filter(
-        (subtask) => subtask.taskId !== command.taskId,
-      );
+    case "remove-task": {
+      taskStore.getState().removeTask(command.taskId);
+      subtaskStore
+        .getState()
+        .setSubtasks(
+          subtaskStore
+            .getState()
+            .subtasks.filter((subtask) => subtask.taskId !== command.taskId),
+        );
       next.calendar.recurrenceSeries.forEach((series) => {
         if (series.taskId === command.taskId) series.isActive = false;
       });
       break;
+    }
     case "toggle-task-completion": {
-      const task = next.tasks.find((item) => item.id === command.taskId);
+      const task = taskStore
+        .getState()
+        .tasks.find((item) => item.id === command.taskId);
       if (!task) throw new Error("This task is no longer available.");
-      const wasCompleted = task.isCompleted;
-      task.isCompleted = command.completed;
-      task.updatedAt = now;
-      if (command.completed && !wasCompleted) task.completedAt = now;
-      else if (!command.completed) delete task.completedAt;
+      taskStore
+        .getState()
+        .toggleTaskCompletion(command.taskId, command.completed);
       break;
     }
-    case "set-tasks":
-      next.tasks = normalizeTasks(command.tasks);
-      next.subtasks = next.subtasks.filter((subtask) =>
-        next.tasks.some((task) => task.id === subtask.taskId),
-      );
+    case "set-tasks": {
+      taskStore.getState().setTasks(normalizeTasks(command.tasks));
+      subtaskStore
+        .getState()
+        .setSubtasks(
+          subtaskStore
+            .getState()
+            .subtasks.filter((subtask) =>
+              taskStore
+                .getState()
+                .tasks.some((task) => task.id === subtask.taskId),
+            ),
+        );
       next.calendar.recurrenceSeries.forEach((series) => {
-        const task = next.tasks.find((item) => item.id === series.taskId);
+        const task = taskStore
+          .getState()
+          .tasks.find((item) => item.id === series.taskId);
         if (!task || task.archivedAt !== undefined) series.isActive = false;
       });
       break;
-    case "reorder-tasks": {
-      const currentTasks = new Map(next.tasks.map((task) => [task.id, task]));
-      const orderedIds = new Set<string>();
-      const orderedTasks = command.tasks.flatMap((task) => {
-        const currentTask = currentTasks.get(task.id);
-        if (!currentTask) return [];
-        orderedIds.add(task.id);
-        return [{ ...currentTask, category: task.category }];
-      });
-      next.tasks = [
-        ...orderedTasks,
-        ...next.tasks.filter((task) => !orderedIds.has(task.id)),
-      ];
-      break;
     }
+    case "reorder-tasks":
+      taskStore.getState().reorderTasks(command.tasks);
+      break;
     case "add-subtask": {
-      const taskExists = next.tasks.some((task) => task.id === command.taskId);
-      if (!taskExists) throw new Error("This task is no longer available.");
-      const title = command.title.trim();
-      if (!title) throw new Error("Enter a subtask title.");
-      if (
-        command.parentSubtaskId !== null &&
-        !next.subtasks.some(
-          (subtask) =>
-            subtask.id === command.parentSubtaskId &&
-            subtask.taskId === command.taskId,
-        )
-      ) {
-        throw new Error("This parent subtask is no longer available.");
-      }
-      const siblings = getSubtasksForParent(
-        next.subtasks,
-        command.taskId,
-        command.parentSubtaskId,
-      );
-      const id = crypto.randomUUID();
-      if (next.subtasks.some((subtask) => subtask.id === id)) {
-        throw new Error("Unable to create a unique subtask.");
-      }
-      next.subtasks.push({
-        id,
-        taskId: command.taskId,
-        parentSubtaskId: command.parentSubtaskId,
-        title,
-        isCompleted: false,
-        position: siblings.length,
-        createdAt: now,
-        updatedAt: now,
-      });
+      subtaskStore
+        .getState()
+        .addSubtask(command.taskId, command.parentSubtaskId, command.title);
       break;
     }
-    case "update-subtask": {
-      const subtask = next.subtasks.find(
-        (item) => item.id === command.subtaskId,
-      );
-      if (!subtask) throw new Error("This subtask is no longer available.");
-      const title = command.title.trim();
-      if (!title) throw new Error("A subtask title cannot be empty.");
-      subtask.title = title;
-      subtask.updatedAt = now;
+    case "update-subtask":
+      subtaskStore.getState().updateSubtask(command.subtaskId, command.title);
       break;
-    }
-    case "toggle-subtask-completion": {
-      const subtask = next.subtasks.find(
-        (item) => item.id === command.subtaskId,
-      );
-      if (!subtask) throw new Error("This subtask is no longer available.");
-      subtask.isCompleted = command.completed;
-      subtask.updatedAt = now;
+    case "toggle-subtask-completion":
+      subtaskStore
+        .getState()
+        .toggleSubtaskCompletion(command.subtaskId, command.completed);
       break;
-    }
     case "remove-subtask":
-      next.subtasks = removeSubtaskTree(next.subtasks, command.subtaskId);
+      subtaskStore.getState().removeSubtask(command.subtaskId);
       break;
     case "reorder-subtasks":
-      next.subtasks = reorderSubtasks(
-        next.subtasks,
-        command.subtaskId,
-        command.targetSubtaskId,
-        command.before,
-      );
+      subtaskStore
+        .getState()
+        .reorderSubtask(
+          command.subtaskId,
+          command.targetSubtaskId,
+          command.before,
+        );
       break;
     case "schedule-task": {
       const task = next.tasks.find((item) => item.id === command.taskId);
@@ -841,18 +804,9 @@ export const applyCalendarCoordinatorCommand = (
     case "create-task-and-schedule": {
       const title = command.title.trim();
       if (!title) throw new Error("Enter a task title.");
-      const task: Task = {
-        id: crypto.randomUUID(),
-        title,
-        description: command.description?.trim() || undefined,
-        category: "uncategorised",
-        isCompleted: false,
-        isSelected: false,
-        createdAt: now,
-        updatedAt: now,
-        defaultDurationMinutes: 30,
-      };
-      next.tasks.unshift(task);
+      const task = taskStore
+        .getState()
+        .addTask(title, command.description?.trim() || undefined);
       next.calendar.scheduledOccurrences.push(
         createOccurrence(
           task,
@@ -872,18 +826,9 @@ export const applyCalendarCoordinatorCommand = (
     case "create-task-and-recurrence": {
       const title = command.title.trim();
       if (!title) throw new Error("Enter a task title.");
-      const task: Task = {
-        id: crypto.randomUUID(),
-        title,
-        description: command.description?.trim() || undefined,
-        category: "uncategorised",
-        isCompleted: false,
-        isSelected: false,
-        createdAt: now,
-        updatedAt: now,
-        defaultDurationMinutes: 30,
-      };
-      next.tasks.unshift(task);
+      const task = taskStore
+        .getState()
+        .addTask(title, command.description?.trim() || undefined);
       createRecurrence(next, task, command.startDate, command.rule);
       break;
     }
@@ -968,6 +913,8 @@ export const applyCalendarCoordinatorCommand = (
       break;
   }
 
+  next.tasks = taskStore.getState().tasks;
+  next.subtasks = subtaskStore.getState().subtasks;
   assertValidSubtasks(next.tasks, next.subtasks);
   return next;
 };

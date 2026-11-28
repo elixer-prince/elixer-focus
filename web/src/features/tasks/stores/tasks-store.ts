@@ -1,131 +1,55 @@
-import type {
-  Task,
-  TaskCategory,
-  TaskUpdate,
-} from "@/features/tasks/types/task";
+import {
+  createTaskStore,
+  type Task,
+  type TaskCategory,
+  type TaskStore,
+  type TaskUpdate,
+} from "@elixer-focus/shared/tasks";
 import {
   dispatchCalendarCommand,
   registerTaskStateHandler,
 } from "@/features/calendar/services/calendar-coordinator";
 import { getCurrentTimestamp } from "@/utils/date";
-import { createPersistOptions, persist } from "@/stores/persist-config";
+import { createPersistOptions } from "@/stores/persist-config";
 import { useCallback } from "react";
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { useStore } from "zustand";
 
-type TaskState = {
-  tasks: Task[];
-};
+const taskStore = createTaskStore({
+  idGenerator: () => crypto.randomUUID(),
+  getCurrentTimestamp,
+  persistOptions: createPersistOptions<TaskStore>({
+    name: "tasks-storage",
+    version: 5,
+    migrate: (state, version) => {
+      const persistedState = state as { tasks?: Task[] };
+      if (version <= 3) {
+        const migratedTasks = (persistedState.tasks || []).map((task) => {
+          const { completedAt, ...taskWithoutCompletionTime } = task;
 
-type TaskActions = {
-  setTasks: (tasks: Task[]) => void;
-  addTask: (
-    task: string,
-    description?: string,
-    category?: TaskCategory,
-    defaultDurationMinutes?: number,
-  ) => void;
-  removeTask: (id: string) => void;
-  toggleTaskCompletion: (id: string, completed: boolean) => void;
-  updateTask: (id: string, updates: TaskUpdate) => void;
-};
-
-export const useTasksStore = create<TaskState & TaskActions>()(
-  persist(
-    immer((set) => ({
-      tasks: [],
-
-      setTasks: (tasks: Task[]) => {
-        set({ tasks });
-      },
-
-      addTask: (
-        title,
-        description,
-        category = "uncategorised",
-        defaultDurationMinutes = 30,
-      ) => {
-        const now = getCurrentTimestamp();
-        set((state) => {
-          state.tasks.unshift({
-            id: crypto.randomUUID(),
-            title,
-            description,
-            category: category,
-            isCompleted: false,
-            isSelected: false,
-            createdAt: now,
-            updatedAt: now,
-            defaultDurationMinutes,
-          });
+          return {
+            ...taskWithoutCompletionTime,
+            updatedAt:
+              version === 1
+                ? (task.updatedAt ?? task.createdAt)
+                : task.updatedAt,
+            defaultDurationMinutes: task.defaultDurationMinutes ?? 30,
+            ...(task.isCompleted && (completedAt !== undefined || version <= 2)
+              ? {
+                  completedAt: completedAt ?? task.updatedAt ?? task.createdAt,
+                }
+              : {}),
+          };
         });
-      },
+        return { tasks: migratedTasks } as TaskStore;
+      }
+      return persistedState as TaskStore;
+    },
+  }),
+});
 
-      removeTask: (id) => {
-        set((state) => {
-          state.tasks = state.tasks.filter((task) => task.id !== id);
-        });
-      },
-      toggleTaskCompletion: (id, completed) => {
-        set((state) => {
-          const task = state.tasks.find((t) => t.id === id);
-          if (task) {
-            const now = getCurrentTimestamp();
-            if (completed && !task.isCompleted) {
-              task.completedAt = now;
-            } else if (!completed) {
-              delete task.completedAt;
-            }
-            task.isCompleted = completed;
-            task.updatedAt = now;
-          }
-        });
-      },
-
-      updateTask: (id, updates) => {
-        set((state) => {
-          const task = state.tasks.find((t) => t.id === id);
-          if (task) {
-            const { dueAt, ...taskUpdates } = updates;
-            Object.assign(task, taskUpdates);
-            if (dueAt === null) delete task.dueAt;
-            else if (dueAt !== undefined) task.dueAt = dueAt;
-            task.updatedAt = getCurrentTimestamp();
-          }
-        });
-      },
-    })),
-    createPersistOptions<TaskState & TaskActions>({
-      name: "tasks-storage",
-      version: 5,
-      migrate: (state, version) => {
-        const persistedState = state as { tasks?: Task[] };
-        if (version <= 3) {
-          const migratedTasks = (persistedState.tasks || []).map((task) => {
-            const { completedAt, ...taskWithoutCompletionTime } = task;
-
-            return {
-              ...taskWithoutCompletionTime,
-              updatedAt:
-                version === 1
-                  ? (task.updatedAt ?? task.createdAt)
-                  : task.updatedAt,
-              defaultDurationMinutes: task.defaultDurationMinutes ?? 30,
-              ...(task.isCompleted &&
-              (completedAt !== undefined || version <= 2)
-                ? {
-                    completedAt:
-                      completedAt ?? task.updatedAt ?? task.createdAt,
-                  }
-                : {}),
-            };
-          });
-          return { tasks: migratedTasks } as TaskState & TaskActions;
-        }
-        return persistedState as TaskState & TaskActions;
-      },
-    }),
-  ),
+export const useTasksStore = Object.assign(
+  <T>(selector: (state: TaskStore) => T) => useStore(taskStore, selector),
+  taskStore,
 );
 
 registerTaskStateHandler({

@@ -6,6 +6,7 @@ import type { CountdownSession } from "@/features/countdown-timer/types/session"
 import { useJournalStore } from "@/features/journal/stores/journal-store";
 import { convertMinutesToSeconds } from "@/utils/conversion";
 import { getFromLocalStorage, saveToLocalStorage } from "@/utils/storage";
+import { isValidSessionCountLimit } from "@elixer-focus/shared/timer";
 
 const LOCK_NAME = "elixer-focus-timer-coordinator";
 const CHANNEL_NAME = "elixer-focus-timer";
@@ -180,11 +181,7 @@ const applyCommand = (command: TimerCoordinatorCommand) => {
   }
 
   if (command.type === "set-session-count-limit") {
-    if (
-      Number.isInteger(command.limit) &&
-      command.limit >= 1 &&
-      command.limit <= 8
-    ) {
+    if (isValidSessionCountLimit(command.limit)) {
       useSessionStore.getState().setSessionCountLimit(command.limit);
     }
     return;

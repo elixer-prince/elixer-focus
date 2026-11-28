@@ -33,6 +33,7 @@ npm run lint
 - Build native interfaces with React Native components rather than browser DOM elements.
 - Keep TypeScript strict and use the `@/*` alias for imports rooted at this workspace.
 - Declare mobile specific dependencies in this workspace's `package.json`.
+- Initialize the shared task, Subtask, and timer settings stores from `services/shared-stores.ts` in the root layout. Keep Expo stores memory only and supply UUIDs with `expo-crypto`.
 
 ## Related specs
 

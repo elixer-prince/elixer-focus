@@ -4,11 +4,12 @@ This file provides guidance to agents when working with code in this repository.
 
 ## Project Structure
 
-This is a monorepo with 3 distinct applications:
+This is a monorepo with 3 applications and a shared TypeScript package:
 
 - `web/` - React 19 + Vite web app (primary focus)
 - `app/` - Expo (React Native) mobile app
 - `backend/` - Laravel 12 PHP API
+- `packages/shared/` - platform neutral task, timer, and utility code
 
 ## Build approach
 
@@ -19,13 +20,16 @@ Skateboard (MVP first; ship the thinnest usable whole, then grow).
 ### Root (Monorepo)
 
 ```bash
-npm run lint            # Lint web and app
+npm run lint            # Lint web, app, and shared package
 npm run lint:web        # Lint web only
 npm run lint:app        # Lint app only
-npm run typecheck       # Type-check web and app
+npm run lint:shared     # Lint shared package only
+npm run typecheck       # Type-check web, app, and shared package
 npm run typecheck:web   # Type-check web with a forced project build
 npm run typecheck:app   # Type-check app
-npm run test            # Run web tests
+npm run typecheck:shared # Type-check shared package only
+npm run test            # Run shared package and web tests
+npm run test:shared     # Run shared package tests only
 npm run test:web        # Run web tests only
 npm run test:backend    # Run backend tests
 npm run format          # Prettier write all files
@@ -70,6 +74,7 @@ cd app && npm run web           # Run web version
 - **Error Handling**: Global `ErrorBoundary` wraps all three route groups in `router.tsx`. API errors are handled by an axios interceptor in `web/src/config/axios.ts` that shows contextual toasts (401 session expired, server errors, network errors). Components can use the `useErrorToast` hook from `web/src/hooks/useErrorToast.ts` for unified error display via react-hot-toast.
 - **TailwindCSS v4**: Uses `@import "tailwindcss"` in CSS, NOT `@tailwind` directives
 - **Zustand Stores**: Use `persist` middleware with `createPersistOptions()` from `@/stores/persist-config`; import stores from the central barrel `@/stores`. Stores with nested array state (tasks, session history, journal) use `immer` middleware for direct draft mutations.
+- **Shared TypeScript package**: Import portable task, timer, and utility logic from `@elixer-focus/shared/tasks`, `@elixer-focus/shared/timer`, and `@elixer-focus/shared/utils`. Keep platform persistence and coordination in app adapters. Spec [0002](docs/specs/_root/0002-shared-code-package.md).
 - **Markdown Editor**: The Journal uses `@atomic-editor/editor` (CodeMirror 6) with Obsidian-style inline live preview. Content is stored as Markdown strings via `onMarkdownChange` callback. Use `documentId` prop to force remount when switching dates. Import CSS: `import "@atomic-editor/editor/styles.css"`. Spec [0003](docs/specs/web/0003-journal.md).
 - **Focus streaks**: Profile and Journal use `calculateFocusSessionStreak()` from `web/src/utils/streak.ts`. Streaks count consecutive local calendar days with at least one Focus session, starting from the most recent local day with a Focus session.
 - **Calendar**: The Journal uses react-day-picker v10 with a custom `MonthCaption` component for navigation arrows flanking the month name. Use `hideNavigation` prop and `useDayPicker()` hook for navigation. Import `subMonths`/`addMonths` from `date-fns`.
@@ -140,3 +145,4 @@ MCP servers: Expo MCP (recommended)
 - [web/AGENTS.md](web/AGENTS.md): Web workspace React, composition, and interface guidance.
 - [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.
 - [app/AGENTS.md](app/AGENTS.md): Expo app routing, platform settings, and workspace conventions.
+- [packages/shared/AGENTS.md](packages/shared/AGENTS.md): Shared package exports, commands, and platform boundaries.

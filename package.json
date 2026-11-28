@@ -1,4 +1,11 @@
 {
+  "name": "elixer-focus",
+  "private": true,
+  "workspaces": [
+    "web",
+    "app",
+    "packages/shared"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
@@ -9,15 +16,18 @@
   },
   "scripts": {
     "prepare": "husky",
-    "lint": "cd web && npm run lint && cd app && npm run lint",
+    "lint": "npm run lint:web && npm run lint:app && npm run lint:shared",
     "lint:web": "cd web && npm run lint",
     "lint:app": "cd app && npm run lint",
-    "typecheck": "npm run typecheck:web && npm run typecheck:app",
+    "lint:shared": "npm run lint --workspace=@elixer-focus/shared",
+    "typecheck": "npm run typecheck:web && npm run typecheck:app && npm run typecheck:shared",
     "typecheck:web": "cd web && npx tsc -b --force --noEmit",
     "typecheck:app": "cd app && npx tsc --noEmit",
+    "typecheck:shared": "npm run typecheck --workspace=@elixer-focus/shared",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "cd web && npm run test -- --run",
+    "test": "npm run test:shared && npm run test:web",
+    "test:shared": "npm run test --workspace=@elixer-focus/shared",
     "test:web": "cd web && npm run test -- --run",
     "test:backend": "cd backend && composer test"
   },

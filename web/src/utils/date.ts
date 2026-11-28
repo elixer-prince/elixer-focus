@@ -1,9 +1,4 @@
-/**
- * Returns the current date as a timestamp.
- *
- * @returns {number} The current date as a timestamp.
- */
-export const getCurrentTimestamp = (): number => Date.now();
+export { getCurrentTimestamp } from "@elixer-focus/shared/utils";
 
 /**
  * Formats a timestamp as a relative time string (e.g., "2 hours ago").

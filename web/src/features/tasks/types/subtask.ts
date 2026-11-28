@@ -1,10 +1,1 @@
-export type Subtask = {
-  id: string;
-  taskId: string;
-  parentSubtaskId: string | null;
-  title: string;
-  isCompleted: boolean;
-  position: number;
-  createdAt: number;
-  updatedAt: number;
-};
+export type { Subtask } from "@elixer-focus/shared/tasks";

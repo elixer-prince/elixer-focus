@@ -12,7 +12,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | #   | Feature                    | Phase       | Status  |
 | --- | -------------------------- | ----------- | ------- |
 | 1   | Monorepo tooling           | Foundation  | done    |
-| 2   | Shared code package        | Foundation  | in-progress |
+| 2   | Shared code package        | Foundation  | done        |
 | 3   | CI/CD improvements         | Foundation  | in-progress |
 | 4   | Production database        | Foundation  | planned |
 | 5   | User accounts              | Foundation  | planned |
@@ -29,7 +29,7 @@ Shared lint, format, and commit conventions with a root task runner across all w
 - [x] Build it: `/develop monorepo tooling`
 - [x] Sync (record conventions): `/sync`
 
-### 2. Shared code package · in-progress
+### 2. Shared code package · done
 
 A shared TypeScript package at the repo root (packages/shared/) that both web and mobile apps import. Right now the web app and mobile app share zero code. Both use React and will need the same domain types (Task, TaskCategory), the same Zustand stores, and the same utility functions (e.g., getCurrentTimestamp). This eliminates duplication the moment the mobile app starts implementing tasks and the timer.
 
@@ -37,12 +37,13 @@ A shared TypeScript package at the repo root (packages/shared/) that both web an
 
 **Spec**: [0002](../../specs/_root/0002-shared-code-package.md)
 
-- [x] Design it (spec): `/architect shared code package`
-- [ ] Build it: `/develop shared code package`
-  - [ ] Register npm workspaces and expose package source, then wire both apps (AC-1, AC-2, AC-3)
-  - [ ] Share Task and Subtask logic while preserving web storage and coordinator behavior (AC-2, AC-4, AC-6)
-  - [ ] Share timer settings and wire Expo memory stores with UUID providers (AC-3, AC-4, AC-5, AC-6)
-  - [ ] Add package tests and root validation commands (AC-1, AC-3, AC-7)
+**Code**: `packages/shared/`, `web/src/features/`, and `app/services/shared-stores.ts`.
+
+- [x] Build it: `/develop shared code package`
+  - [x] Register npm workspaces and expose package source, then wire both apps (AC-1, AC-2, AC-3)
+  - [x] Share Task and Subtask logic while preserving web storage and coordinator behavior (AC-2, AC-4, AC-6)
+  - [x] Share timer settings and wire Expo memory stores with UUID providers (AC-3, AC-4, AC-5, AC-6)
+  - [x] Add package tests and root validation commands (AC-1, AC-3, AC-7)
 
 ### 3. CI/CD improvements · in-progress
 

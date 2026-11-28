@@ -1,5 +1,9 @@
 import type { CountdownSession } from "@/features/countdown-timer/types/session";
 import {
+  createTimerSettingsSlice,
+  type TimerSettingsSlice,
+} from "@elixer-focus/shared/timer";
+import {
   createPersistOptions,
   persist,
   simpleMigrate,
@@ -7,53 +11,30 @@ import {
 import { create } from "zustand";
 
 type SessionState = {
-  focusDuration: number;
-  shortBreakDuration: number;
-  longBreakDuration: number;
-  sessionCountLimit: number;
   currentSessionType: CountdownSession;
   previousSessionType: CountdownSession | null;
   currentSessionCount: number;
   totalSessionsCompleted: number;
-  attributeSessionOverrun: boolean;
 };
 
 type SessionActions = {
-  setFocusDuration: (duration: number) => void;
-  setShortBreakDuration: (duration: number) => void;
-  setLongBreakDuration: (duration: number) => void;
-  setSessionCountLimit: (limit: number) => void;
   setCurrentSessionType: (type: CountdownSession) => void;
   setPreviousSessionType: (type: CountdownSession) => void;
   incrementCurrentSessionCount: () => void;
   resetCurrentSessionCount: () => void;
   setTotalSessionsCompleted: (count: number) => void;
-  setAttributeSessionOverrun: (enabled: boolean) => void;
 };
 
-type SessionStore = SessionState & SessionActions;
+type SessionStore = TimerSettingsSlice & SessionState & SessionActions;
 
 export const useSessionStore = create<SessionStore>()(
   persist(
-    (set) => ({
-      focusDuration: 25,
-      shortBreakDuration: 5,
-      longBreakDuration: 15,
-      sessionCountLimit: 4,
+    (set, get, api) => ({
+      ...createTimerSettingsSlice<SessionStore>()(set, get, api),
       currentSessionType: "Focus",
       previousSessionType: null,
       currentSessionCount: 0,
       totalSessionsCompleted: 0,
-      attributeSessionOverrun: true,
-
-      setFocusDuration: (duration) => set({ focusDuration: duration }),
-
-      setShortBreakDuration: (duration) =>
-        set({ shortBreakDuration: duration }),
-
-      setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
-
-      setSessionCountLimit: (limit) => set({ sessionCountLimit: limit }),
 
       setCurrentSessionType: (type) => set({ currentSessionType: type }),
 
@@ -68,9 +49,6 @@ export const useSessionStore = create<SessionStore>()(
 
       setTotalSessionsCompleted: (count) =>
         set({ totalSessionsCompleted: count }),
-
-      setAttributeSessionOverrun: (enabled) =>
-        set({ attributeSessionOverrun: enabled }),
     }),
     createPersistOptions<SessionStore>({
       name: "session-storage",

@@ -1,41 +1,41 @@
-import type { Subtask } from "@/features/tasks/types/subtask";
+import {
+  createSubtaskStore,
+  type Subtask,
+  type SubtaskStore,
+} from "@elixer-focus/shared/tasks";
 import {
   dispatchCalendarCommand,
   registerSubtaskStateHandler as registerCoordinatorSubtaskStateHandler,
 } from "@/features/calendar/services/calendar-coordinator";
-import { createPersistOptions, persist } from "@/stores/persist-config";
+import { createPersistOptions } from "@/stores/persist-config";
+import { getCurrentTimestamp } from "@/utils/date";
+import { useTasksStore } from "@/features/tasks/stores/tasks-store";
 import { useCallback } from "react";
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { create, useStore } from "zustand";
 
-type SubtaskState = {
-  subtasks: Subtask[];
-};
+const subtasksStore = createSubtaskStore({
+  idGenerator: () => crypto.randomUUID(),
+  getCurrentTimestamp,
+  getTasks: () => useTasksStore.getState().tasks,
+  persistOptions: createPersistOptions<SubtaskStore>({
+    name: "subtasks-storage",
+    version: 1,
+    partialize: (state) => ({ subtasks: state.subtasks }),
+    migrate: (state) => {
+      const persistedState = state as { subtasks?: unknown };
+      return {
+        subtasks: Array.isArray(persistedState.subtasks)
+          ? (persistedState.subtasks as Subtask[])
+          : [],
+      } as SubtaskStore;
+    },
+  }),
+});
 
-type SubtaskActions = {
-  setSubtasks: (subtasks: Subtask[]) => void;
-};
-
-export const useSubtasksStore = create<SubtaskState & SubtaskActions>()(
-  persist(
-    immer((set) => ({
-      subtasks: [],
-      setSubtasks: (subtasks) => set({ subtasks }),
-    })),
-    createPersistOptions<SubtaskState & SubtaskActions>({
-      name: "subtasks-storage",
-      version: 1,
-      partialize: (state) => ({ subtasks: state.subtasks }),
-      migrate: (state) => {
-        const persistedState = state as { subtasks?: unknown };
-        return {
-          subtasks: Array.isArray(persistedState.subtasks)
-            ? (persistedState.subtasks as Subtask[])
-            : [],
-        } as SubtaskState & SubtaskActions;
-      },
-    }),
-  ),
+export const useSubtasksStore = Object.assign(
+  <T>(selector: (state: SubtaskStore) => T) =>
+    useStore(subtasksStore, selector),
+  subtasksStore,
 );
 
 export const useSubtaskCoordinatorStore = create<{

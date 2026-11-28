@@ -1,0 +1,29 @@
+{
+  "name": "@elixer-focus/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tasks": "./src/tasks.ts",
+    "./timer": "./src/timer.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "immer": "11.1.3"
+  },
+  "peerDependencies": {
+    "zustand": "5.0.11"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.3",
+    "eslint": "9.39.3",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.0",
+    "vitest": "4.1.12"
+  }
+}

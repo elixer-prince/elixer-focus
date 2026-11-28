@@ -1,7 +1,5 @@
-import type { Task } from "@/features/tasks/types/task";
-import { TASK_CATEGORY_ORDER } from "@/features/tasks/utils/task-archive";
-
-export type TaskSortMode = "manual" | "due-date";
+export { sortTasksByDueAt } from "@elixer-focus/shared/tasks";
+export type { TaskSortMode } from "@elixer-focus/shared/tasks";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -24,16 +22,3 @@ export const formatDueAt = (dueAt: number) =>
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(dueAt));
-
-export const sortTasksByDueAt = (tasks: Task[]) =>
-  TASK_CATEGORY_ORDER.flatMap((category) =>
-    tasks
-      .filter((task) => task.category === category)
-      .sort((left, right) => {
-        if (left.dueAt === undefined) {
-          return right.dueAt === undefined ? 0 : 1;
-        }
-        if (right.dueAt === undefined) return -1;
-        return left.dueAt - right.dueAt;
-      }),
-  );
