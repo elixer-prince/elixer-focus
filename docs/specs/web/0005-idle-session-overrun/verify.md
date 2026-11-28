@@ -13,7 +13,7 @@ _Steps derived from spec 0005 acceptance criteria. `/check verify` runs these; `
 - [ ] Close every tab while a timer runs, wait past its end time, reopen multiple tabs, and confirm one session at the saved deadline with captured duration, one reflection, and caught up overrun → AC-7
 - [ ] Test without Web Locks or BroadcastChannel. Confirm a clear single tab warning and no claim of cross tab accuracy → AC-8
 - [ ] Select a Journal day with focus, session counts, idle, and overrun. Confirm all values show, including a day with idle time and no completed sessions → AC-9
-- [ ] Check the current Monday through Sunday chart for paired focus and idle bars. Confirm overrun remains separate from both series → AC-10
+- [ ] Check the current week chart with the default and a changed `weekStartsOn` preference. Confirm seven paired focus and idle bars start on the configured weekday, and overrun remains separate from both series → AC-10
 - [ ] Remove a completed session with linked overrun. Confirm its overrun is removed while idle intervals remain, and inspect interval IDs, timestamps, nullable user ID, and updated timestamp → AC-11
 - [ ] Load legacy active timer and pending reflection data. Confirm a stable run ID and duration are established before recovery, legacy duration uses startTimeInMinutes, pending intervals start at completedAt, and earlier idle time is not backfilled → AC-12
 - [ ] Confirm a new idle startedAt comes from the current wall clock at initialization or the lifecycle transition → AC-1
@@ -24,7 +24,7 @@ _Steps derived from spec 0005 acceptance criteria. `/check verify` runs these; `
 - [ ] Save a draft and confirm the linked completed session supplies its type and ID, and the Journal note is created once → AC-6
 - [ ] Use intervals crossing local midnight and confirm daily totals use local date overlap and linked session type → AC-9
 - [ ] Compare focus totals with completed session history and current focus timer state, including a paused timer → AC-9
-- [ ] Confirm weekly values derive from the existing Monday through Sunday local date ranges → AC-10
+- [ ] Change `weekStartsOn` and confirm weekly values derive from seven local date ranges beginning on the configured weekday → AC-10
 - [ ] Change attribution after one completion and confirm existing intervals keep their original classification while later completions use the new setting → AC-3
 - [ ] Change timer state in one tab and confirm other tabs receive the coordinator’s persisted state → AC-5
 - [ ] Confirm userId stays null and createdAt and updatedAt reflect interval creation and closure → AC-11

@@ -57,6 +57,7 @@ cd backend && composer dev     # Runs 4 services: artisan serve, queue, logs, vi
 ```bash
 cd app && npm run start        # Start Expo
 cd app && npm run android      # Run on Android
+cd app && npm run ios          # Run on iOS
 cd app && npm run web           # Run web version
 ```
 
@@ -138,3 +139,4 @@ MCP servers: Expo MCP (recommended)
 - [web/src/features/brain-dump/AGENTS.md](web/src/features/brain-dump/AGENTS.md): Brain dump capture, local persistence, search, editing, and cross tab coordination.
 - [web/AGENTS.md](web/AGENTS.md): Web workspace React, composition, and interface guidance.
 - [web/src/features/profile/AGENTS.md](web/src/features/profile/AGENTS.md): Profile store, calculation, component, and test conventions.
+- [app/AGENTS.md](app/AGENTS.md): Expo app routing, platform settings, and workspace conventions.

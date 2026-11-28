@@ -6,7 +6,7 @@
 
 The web countdown timer stores session settings and completed sessions in persisted Zustand stores. Each tab currently runs its own timer interval. If multiple tabs are open, each may process a timer completion and create a reflection prompt. If every tab is closed when a timer expires, startup recovery resets it without recording a completed session or opening its reflection.
 
-The Journal derives daily focus totals from completed sessions and shows a Monday through Sunday focus chart. Its daily stats are currently hidden when there are no completed sessions. It has no persisted source for idle time or session overrun, so it cannot report intervals that cross midnight or continue while the app is closed.
+The Journal derives daily focus totals from completed sessions and shows a weekly focus chart. Its week uses the shared configurable `weekStartsOn` preference, which defaults to Sunday. Daily stats are currently hidden when there are no completed sessions. The Journal has no persisted source for idle time or session overrun, so it cannot report intervals that cross midnight or continue while the app is closed.
 
 This is a web enhancement using local browser storage, with no backend endpoint or cross device sync in scope. The user wants idle time to include pauses and the time before the first session, and wants the raw timeline retained for a future sleep schedule. The project approach is Skateboard, so the first release must provide a complete and usable tracking flow rather than ship disconnected infrastructure.
 

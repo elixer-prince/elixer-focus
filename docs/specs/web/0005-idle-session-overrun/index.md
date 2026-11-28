@@ -27,7 +27,7 @@ Track time when the countdown is not running and time after a session completes,
 * **AC-7**: If all app tabs are closed when the timer expires, the next app open records the session at its saved end time, uses the active countdown duration captured when the run started, creates one pending reflection, and catches up the elapsed overrun from that time when attribution is enabled. No timer completion or reflection notification is duplicated during recovery or coordinator handoff.
 * **AC-8**: If Web Locks or BroadcastChannel is unavailable, the app continues in one tab and clearly warns that cross tab control is unavailable. It does not claim best effort multi tab accuracy.
 * **AC-9**: The selected Journal day shows completed focus time and session counts, total idle time, and overrun totals by session type. The stats appear when any of those values exist, including on an idle only day, and keep focus duration distinct from overrun.
-* **AC-10**: The current week chart shows paired focus and idle bars for each Monday through Sunday date. Overrun remains a separate daily statistic and is not included in the focus or idle chart series.
+* **AC-10**: The current week chart shows paired focus and idle bars for each of the seven local dates in the current week, ordered from the weekday configured by the shared `weekStartsOn` preference (Sunday by default). Overrun remains a separate daily statistic and is not included in the focus or idle chart series.
 * **AC-11**: Each `TrackedInterval` has an ID, kind, start and end timestamps, optional session link, nullable `userId`, `createdAt`, and `updatedAt`. An overrun interval must link to one completed session, a session may have at most one overrun interval, and removing that session removes its overrun interval but not idle intervals.
 * **AC-12**: On first initialization after upgrade, an existing active timer is assigned and persists a stable run ID and duration before completion processing. If its captured duration is absent, use the existing persisted `startTimeInMinutes` value converted to seconds. An existing pending `lastCompletedSession` without an interval gets an interval starting at its `completedAt`, classified according to the current attribution setting. If neither exists, idle begins at first feature use without backfilling earlier time.
 
@@ -74,7 +74,7 @@ There are no backend endpoints. This feature extends existing client store actio
 | Timer settings | Change attribution | Boolean setting | Persisted `attributeSessionOverrun` value | Local settings store |
 | Reflection | Save, skip, or close | Completed session ID and shared draft text | One reflection resolution and, on save, one Journal note | Local Journal store; duplicate resolution is ignored |
 | Daily Journal stats | Read a selected date | Browser local calendar date | Focus time, session counts, idle time, and overrun by type | Derived from local session and interval records |
-| Weekly chart | Read current week | Monday through Sunday local date ranges | One focus value and one idle value per day | Derived from local session and interval records |
+| Weekly chart | Read current week | Seven local date ranges beginning on the persisted `weekStartsOn` preference | One focus value and one idle value per day | Derived from local session and interval records |
 
 **Value sourcing**:
 
@@ -88,7 +88,7 @@ There are no backend endpoints. This feature extends existing client store actio
 | Resolve reflection | Session type and draft text | Linked `CompletedSession` and synchronized modal draft; the existing Journal note action saves it once |
 | Daily totals | Idle and overrun duration by local date | Overlap between interval timestamps and local day boundaries; overrun type comes from linked `CompletedSession.sessionType` |
 | Focus statistics and chart values | Completed focus duration and counts | Existing session history queries; the current running focus value continues to use the existing timer state |
-| Weekly chart | One focus and one idle value per weekday | Existing Monday through Sunday ranges, completed sessions, and interval overlap calculations |
+| Weekly chart | One focus and one idle value per weekday | Current local date, persisted `weekStartsOn` preference from Calendar, completed sessions, and interval overlap calculations |
 | Attribution label | Overrun or counted as idle | Persisted `attributeSessionOverrun` value at session completion |
 | Cross tab state | Timer, interval, and pending reflection state | The coordinator's persisted local state, broadcast to same origin tabs |
 | Sync ownership fields | `userId`, `createdAt`, and `updatedAt` | `userId` is null until accounts are available; timestamps come from interval mutations |
@@ -102,6 +102,7 @@ There are no backend endpoints. This feature extends existing client store actio
 * At most one `TrackedInterval` is open at once. Intervals have nonnegative durations, do not overlap, and may meet at the same timestamp.
 * An idle interval has no `sessionId`. An overrun interval has one completed session link and is removed with that session.
 * Daily totals split intervals at midnight in the browser's local timezone. The epoch timestamps preserve actual elapsed time across daylight saving changes.
+* The Journal weekly chart uses the shared `weekStartsOn` preference from spec [0007](../0007-calendar-planner/index.md), with Sunday as the default, and includes seven consecutive local dates.
 * `Date.now()` wall clock timestamps are required to reconstruct time after shutdown. Manual system clock changes can alter elapsed totals; a negative duration is clamped to zero and never displayed as negative.
 * If either required coordination API is unavailable, the app warns and supports one tab only rather than claiming race free synchronization.
 * No backend endpoint, credentials, or remote telemetry are added. Data remains local to the browser profile.
@@ -121,7 +122,7 @@ Local only. There are no new roles, API permissions, or server data. `BroadcastC
 * Edge case: edit a reflection draft in one tab, verify it appears in the other, resolve it from either tab, and verify one Journal note and all modal copies close, verifies **AC-6**.
 * Failure case: run without Web Locks or BroadcastChannel and verify a clear single tab warning with no best effort cross tab claim, verifies **AC-8**.
 * Happy path: select a date with idle time and no completed sessions, verify stats appear with separate focus, idle, and overrun values; verify linked session deletion removes only its overrun, verifies **AC-9**, **AC-11**.
-* Happy path: view the current week and verify paired focus and idle bars, with intervals crossing midnight split between the correct local dates, verifies **AC-2**, **AC-10**.
+* Happy path: view the current week with the default and a changed `weekStartsOn` preference. Verify seven paired focus and idle bars start on the configured weekday, and intervals crossing midnight split between the correct local dates, verifies **AC-2**, **AC-10**.
 
 ## Build plan
 

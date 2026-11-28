@@ -4,7 +4,7 @@
 
 The Tasks matrix currently stores reusable `Task` records and has no child hierarchy. The planned feature needs arbitrary nesting, but Calendar and Profile already treat a `Task` as a standalone record. Subtasks must not change task completion, Calendar behavior, or Profile counts and activity.
 
-Task state is persisted in the version 4 `tasks-storage` key. The Calendar and Tasks coordinator serializes writes across tabs, persists before broadcasting, and can be active in an older open tab after a new version is loaded. A task only storage format cannot safely accept new fields from an older writer, and an older coordinator does not know Subtask commands.
+Task state is persisted in the version 5 `tasks-storage` key. The migration from version 4 is defined by spec [0015](../0015-task-due-dates-priority/index.md). The Calendar and Tasks coordinator serializes writes across tabs, persists before broadcasting, and can be active in an older open tab after a new version is loaded. A task only storage format cannot safely accept new fields from an older writer, and an older coordinator does not know Subtask commands.
 
 The matrix columns have a height limit and scroll their task lists. The existing Task component edits on double click, saves with Enter or a Save action, and cancels with Cancel, Escape, or an outside click. The accepted inline editing spec describes blur saving, which differs from the current component.
 
