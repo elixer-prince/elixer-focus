@@ -15,7 +15,7 @@
     "prettier-plugin-tailwindcss": "^0.7.1"
   },
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky || true",
     "lint": "npm run lint:web && npm run lint:app && npm run lint:shared",
     "lint:web": "cd web && npm run lint",
     "lint:app": "cd app && npm run lint",
